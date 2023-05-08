@@ -1,4 +1,4 @@
-import 'package:cupertino_kit_example/calendar/calendar.dart';
+import 'package:cupertino_kit/cupertino_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -71,10 +71,11 @@ class _MyHomePageState extends State<MyHomePage> {
             CupertinoTheme(
               data: const CupertinoThemeData(brightness: Brightness.light),
               child: CupertinoCalendar(
-                firstDate: DateTime.now(),
+                minimumDate:
+                    DateTime.now().subtract(const Duration(days: 10000)),
                 initialDate: DateTime.now(),
                 currentDate: DateTime.now(),
-                lastDate: DateTime.now().add(const Duration(days: 35)),
+                maximumDate: DateTime.now().add(const Duration(days: 10000)),
                 onDateChanged: (_) {},
               ),
             ),
