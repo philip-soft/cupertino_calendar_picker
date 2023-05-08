@@ -1,6 +1,6 @@
 {
-    "name": "cupertino_kit_example",
-    "short_name": "cupertino_kit_example",
+    "name": "cupertino_calendar_example",
+    "short_name": "cupertino_calendar_example",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

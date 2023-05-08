@@ -1,3 +1,3 @@
-library cupertino_kit;
+library cupertino_calendar;
 
 export 'calendar/cupertino_calendar.dart';

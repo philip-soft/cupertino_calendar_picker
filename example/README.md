@@ -1,4 +1,4 @@
-# cupertino_kit_example
+# cupertino_calendar_example
 
 A new Flutter project.
 

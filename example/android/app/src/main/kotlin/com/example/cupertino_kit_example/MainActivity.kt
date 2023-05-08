@@ -1,4 +1,4 @@
-package com.example.cupertino_kit_example
+package com.example.cupertino_calendar_example
 
 import io.flutter.embedding.android.FlutterActivity
 
