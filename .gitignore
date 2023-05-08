@@ -77,27 +77,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Firebase
-ios/Firebase/**/GoogleService-Info.plist
-android/app/**/google-services.json
-lib/firebase_options.dart
-ios/firebase_app_id_file.json
-
-# Keys
-android/app/keystores/
-android/app/src/main/res/values/keys.xml
-ios/Runner/APIKeys.plist
-
 # Env
 env/*.env
 !env/.example.env
-
-# Fastlane
-/distribution/.env.*
-/distribution/app-store-authkey.p8
-/distribution/google_service_account.json
-!env/distribution/.env.example
-!env/distribution/groups.txt
-!env/distribution/release-notes.txt
-android/fastlane/report.xml
-ios/fastlane/report.xml
