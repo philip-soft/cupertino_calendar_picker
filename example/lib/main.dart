@@ -1,5 +1,6 @@
 import 'package:cupertino_calendar/cupertino_calendar.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
@@ -14,32 +15,25 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  void _changeTheme() {
-    setState(() {
-      _brightness =
-          _brightness == Brightness.dark ? Brightness.light : Brightness.dark;
-    });
-  }
-
-  Brightness _brightness = Brightness.dark;
-
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
+    return MaterialApp(
       title: 'Flutter Demo',
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      theme: ThemeData(
+        brightness: Brightness.light,
+      ),
       supportedLocales: const [
         Locale('ru'),
         Locale('en'),
       ],
       locale: const Locale('en'),
-      home: MyHomePage(
+      home: const MyHomePage(
         title: 'Flutter Demo Home Page',
-        changeTheme: _changeTheme,
       ),
     );
   }
@@ -48,12 +42,10 @@ class _MyAppState extends State<MyApp> {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
     required this.title,
-    required this.changeTheme,
     super.key,
   });
 
   final String title;
-  final VoidCallback changeTheme;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -62,22 +54,18 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return Scaffold(
       backgroundColor: CupertinoColors.systemGrey,
-      child: Center(
+      body: Center(
         child: Stack(
           children: [
             const SizedBox(height: 50.0),
-            CupertinoTheme(
-              data: const CupertinoThemeData(brightness: Brightness.light),
-              child: CupertinoCalendar(
-                minimumDate:
-                    DateTime.now().subtract(const Duration(days: 10000)),
-                initialDate: DateTime.now(),
-                currentDate: DateTime.now(),
-                maximumDate: DateTime.now().add(const Duration(days: 10000)),
-                onDateChanged: (_) {},
-              ),
+            CupertinoCalendar(
+              minimumDate: DateTime.now().subtract(const Duration(days: 10000)),
+              initialDate: DateTime.now(),
+              currentDate: DateTime.now(),
+              maximumDate: DateTime.now().add(const Duration(days: 10000)),
+              onDateChanged: (_) {},
             ),
             const SizedBox(height: 100.0),
           ],

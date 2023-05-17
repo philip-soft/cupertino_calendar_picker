@@ -1,5 +1,8 @@
-import 'package:cupertino_calendar/calendar/calendar.dart';
+import 'package:cupertino_calendar/src/calendar/calendar.dart';
+import 'package:cupertino_calendar/src/utils/utils.dart';
 import 'package:flutter/material.dart';
+
+import '../decoration/decoration.dart';
 
 class CupertinoCalendar extends StatefulWidget {
   /// Creates a cupertino calendar picker.
@@ -25,6 +28,8 @@ class CupertinoCalendar extends StatefulWidget {
     required this.onDateChanged,
     DateTime? currentDate,
     this.onDisplayedMonthChanged,
+    this.containerDecoration,
+    this.weekdaysDecoration,
     super.key,
   })  : initialDate = DateUtils.dateOnly(initialDate),
         minimumDate = DateUtils.dateOnly(minimumDate),
@@ -61,6 +66,9 @@ class CupertinoCalendar extends StatefulWidget {
 
   /// Called when the user navigates to a new month in the picker.
   final ValueChanged<DateTime>? onDisplayedMonthChanged;
+
+  final CalendarContainerDecoration? containerDecoration;
+  final CalendarWeekdaysDecoration? weekdaysDecoration;
 
   @override
   State<CupertinoCalendar> createState() => _CupertinoCalendarState();
@@ -130,7 +138,9 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
       child: AspectRatio(
         aspectRatio: calendarAspectRatio,
         child: CalendarContainer(
-          child: CalendarMonth(
+          decoration: widget.containerDecoration ??
+              CalendarContainerDecoration.defaultWithDynamicColor(context),
+          child: CalendarPicker(
             initialMonth: _currentlyDisplayedMonthDate,
             currentDate: widget.currentDate,
             minimumDate: widget.minimumDate,
@@ -139,6 +149,8 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
             onChanged: _handleCalendarDayChange,
             onDisplayedMonthChanged: _handleCalendarMonthChange,
             onDatePickerChanged: _handleCalendarDateChange,
+            weekdayDecoration: widget.weekdaysDecoration ??
+                CalendarWeekdaysDecoration.defaultWithDynamicColor(context),
           ),
         ),
       ),

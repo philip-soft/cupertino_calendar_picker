@@ -1,14 +1,14 @@
-// /// Displays the days of a given month and allows choosing a day.
-// ///
-// /// The days are arranged in a rectangular grid with one column for each day of
-// /// the week.
 import 'dart:math';
 
-import 'package:cupertino_calendar/calendar/calendar.dart';
+import 'package:cupertino_calendar/src/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+// /// Displays the days of a given month and allows choosing a day.
+// ///
+// /// The days are arranged in a rectangular grid with one column for each day of
+// /// the week.
 class CalendarDaysGrid extends StatefulWidget {
   /// Creates a day picker.
   CalendarDaysGrid({

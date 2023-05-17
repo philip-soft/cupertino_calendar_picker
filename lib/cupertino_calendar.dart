@@ -1,3 +1,4 @@
 library cupertino_calendar;
 
-export 'calendar/cupertino_calendar.dart';
+export 'src/calendar/cupertino_calendar.dart';
+export 'src/decoration/decoration.dart';

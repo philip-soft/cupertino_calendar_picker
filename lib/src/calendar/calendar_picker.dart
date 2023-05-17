@@ -1,11 +1,11 @@
-import 'package:cupertino_calendar/calendar/calendar.dart';
+import 'package:cupertino_calendar/lib.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 
-class CalendarMonth extends StatefulWidget {
-  /// Creates a calendar month picker.
-  CalendarMonth({
+class CalendarPicker extends StatefulWidget {
+  /// Creates a calendar picker.
+  CalendarPicker({
     required this.initialMonth,
     required this.currentDate,
     required this.minimumDate,
@@ -14,6 +14,7 @@ class CalendarMonth extends StatefulWidget {
     required this.onChanged,
     required this.onDisplayedMonthChanged,
     required this.onDatePickerChanged,
+    this.weekdayDecoration,
     super.key,
   })  : assert(!minimumDate.isAfter(maximumDate)),
         assert(!selectedDate.isBefore(minimumDate)),
@@ -49,38 +50,39 @@ class CalendarMonth extends StatefulWidget {
   final ValueChanged<DateTime> onDisplayedMonthChanged;
 
   final ValueChanged<DateTime> onDatePickerChanged;
+  final CalendarWeekdaysDecoration? weekdayDecoration;
 
   @override
-  CalendarMonthState createState() => CalendarMonthState();
+  CalendarPickerState createState() => CalendarPickerState();
 }
 
-class CalendarMonthState extends State<CalendarMonth>
+class CalendarPickerState extends State<CalendarPicker>
     with SingleTickerProviderStateMixin {
-  late GlobalKey _pageViewKey;
   late DateTime _currentMonth;
   late PageController _pageController;
-  late AnimationController _controller;
-  DateTime? _focusedDay;
+  late AnimationController _animationController;
+  late bool _isYearPickerShowed;
 
   @override
   void initState() {
     super.initState();
-    _pageViewKey = GlobalKey();
     _currentMonth = widget.initialMonth;
-    _pageController = PageController(
-      initialPage: DateUtils.monthDelta(widget.minimumDate, _currentMonth),
-    );
-    _controller = AnimationController(
+
+    final monthDelta = DateUtils.monthDelta(widget.minimumDate, _currentMonth);
+    _pageController = PageController(initialPage: monthDelta);
+    _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+    _isYearPickerShowed = _animationController.isCompleted;
   }
 
   @override
-  void didUpdateWidget(CalendarMonth oldWidget) {
+  void didUpdateWidget(CalendarPicker oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.initialMonth != oldWidget.initialMonth &&
-        widget.initialMonth != _currentMonth) {
+    final initialMonth = widget.initialMonth;
+    final oldInitialMonth = oldWidget.initialMonth;
+    if (initialMonth != oldInitialMonth && initialMonth != _currentMonth) {
       // We can't interrupt this widget build with a scroll, so do it next frame
       WidgetsBinding.instance.addPostFrameCallback(
         (timeStamp) => _showMonth(widget.initialMonth, jump: true),
@@ -91,59 +93,26 @@ class CalendarMonthState extends State<CalendarMonth>
   @override
   void dispose() {
     _pageController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
-  void _handleDateSelected(DateTime selectedDate) {
-    _focusedDay = selectedDate;
+  void _handleDateSelection(DateTime selectedDate) {
     widget.onChanged(selectedDate);
   }
 
   void _handleMonthPageChanged(int monthPage) {
     setState(() {
-      final monthDate =
-          DateUtils.addMonthsToMonthDate(widget.minimumDate, monthPage);
-      if (!DateUtils.isSameMonth(_currentMonth, monthDate)) {
+      final minimumDate = widget.minimumDate;
+      final monthDate = DateUtils.addMonthsToMonthDate(minimumDate, monthPage);
+      final isCurrentMonth = DateUtils.isSameMonth(_currentMonth, monthDate);
+      if (!isCurrentMonth) {
         _currentMonth = DateTime(monthDate.year, monthDate.month);
         widget.onDisplayedMonthChanged(_currentMonth);
-        if (_focusedDay != null &&
-            !DateUtils.isSameMonth(_focusedDay, _currentMonth)) {
-          // We have navigated to a new month with the grid focused, but the
-          // focused day is not in this month. Choose a new one trying to keep
-          // the same day of the month.
-          _focusedDay = _focusableDayForMonth(_currentMonth, _focusedDay!.day);
-        }
       }
     });
   }
 
-  /// Returns a focusable date for the given month.
-  ///
-  /// If the preferredDay is available in the month it will be returned,
-  /// otherwise the first selectable day in the month will be returned. If
-  /// no dates are selectable in the month, then it will return null.
-  DateTime? _focusableDayForMonth(DateTime month, int preferredDay) {
-    final int daysInMonth = DateUtils.getDaysInMonth(month.year, month.month);
-
-    // Can we use the preferred day in this month?
-    if (preferredDay <= daysInMonth) {
-      final DateTime newFocus = DateTime(month.year, month.month, preferredDay);
-      if (_isSelectable(newFocus)) {
-        return newFocus;
-      }
-    }
-
-    // Start at the 1st and take the first selectable date.
-    for (int day = 1; day <= daysInMonth; day++) {
-      final DateTime newFocus = DateTime(month.year, month.month, day);
-      if (_isSelectable(newFocus)) {
-        return newFocus;
-      }
-    }
-    return null;
-  }
-
-  /// Navigate to the next month.
   void _handleNextMonth() {
     if (!_isDisplayingLastMonth) {
       _pageController.nextPage(
@@ -153,7 +122,6 @@ class CalendarMonthState extends State<CalendarMonth>
     }
   }
 
-  /// Navigate to the previous month.
   void _handlePreviousMonth() {
     if (!_isDisplayingFirstMonth) {
       _pageController.previousPage(
@@ -163,9 +131,8 @@ class CalendarMonthState extends State<CalendarMonth>
     }
   }
 
-  /// Navigate to the given month.
   void _showMonth(DateTime month, {bool jump = false}) {
-    final int monthPage = DateUtils.monthDelta(widget.minimumDate, month);
+    final monthPage = DateUtils.monthDelta(widget.minimumDate, month);
     if (jump) {
       _pageController.jumpToPage(monthPage);
     } else {
@@ -177,22 +144,20 @@ class CalendarMonthState extends State<CalendarMonth>
     }
   }
 
-  /// True if the earliest allowable month is displayed.
+  /// Earliest allowable month.
   bool get _isDisplayingFirstMonth {
+    final minimumDate = widget.minimumDate;
     return !_currentMonth.isAfter(
-      DateTime(widget.minimumDate.year, widget.minimumDate.month),
+      DateTime(minimumDate.year, minimumDate.month),
     );
   }
 
-  /// True if the latest allowable month is displayed.
+  /// Latest allowable month.
   bool get _isDisplayingLastMonth {
+    final maximumDate = widget.maximumDate;
     return !_currentMonth.isBefore(
-      DateTime(widget.maximumDate.year, widget.maximumDate.month),
+      DateTime(maximumDate.year, maximumDate.month),
     );
-  }
-
-  bool _isSelectable(DateTime date) {
-    return false;
   }
 
   Widget _buildItems(BuildContext context, int index) {
@@ -201,7 +166,7 @@ class CalendarMonthState extends State<CalendarMonth>
       key: ValueKey<DateTime>(month),
       selectedDate: widget.selectedDate,
       currentDate: widget.currentDate,
-      onChanged: _handleDateSelected,
+      onChanged: _handleDateSelection,
       minimumDate: widget.minimumDate,
       maximumDate: widget.maximumDate,
       displayedMonth: month,
@@ -225,23 +190,27 @@ class CalendarMonthState extends State<CalendarMonth>
       final weekday = weekdayFormat.format(
         firstDayOfWeekDate.add(Duration(days: index)),
       );
-      return CalendarWeekday(weekday: weekday.toUpperCase());
+      return CalendarWeekday(
+        weekday: weekday.toUpperCase(),
+        decoration: widget.weekdayDecoration,
+      );
     });
   }
 
-  void _showPicker() {
+  void _showYearPicker() {
     setState(() {
-      _controller.isCompleted ? _controller.reverse() : _controller.forward();
-      _isPickerShowed = !_isPickerShowed;
+      _animationController.isCompleted
+          ? _animationController.reverse()
+          : _animationController.forward();
+      _isYearPickerShowed = !_isYearPickerShowed;
     });
   }
-
-  bool _isPickerShowed = false;
 
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterialLocalizations(context));
 
+    final dateFormat = intl.DateFormat('MMMM yyyy');
     final localizations = MaterialLocalizations.of(context);
     final enabledColor = CupertinoDynamicColor.resolve(
       CupertinoDynamicColor.withBrightness(
@@ -273,16 +242,16 @@ class CalendarMonthState extends State<CalendarMonth>
             children: [
               GestureDetector(
                 behavior: HitTestBehavior.translucent,
-                onTap: _showPicker,
+                onTap: _showYearPicker,
                 child: SizedBox(
                   height: 44.0,
                   child: Row(
                     children: [
                       Text(
-                        intl.DateFormat('MMMM yyyy').format(_currentMonth),
+                        dateFormat.format(_currentMonth),
                         style: TextStyle(
                           color: CupertinoDynamicColor.resolve(
-                            _isPickerShowed
+                            _isYearPickerShowed
                                 ? CupertinoDynamicColor.withBrightness(
                                     color: CupertinoColors.systemRed,
                                     darkColor:
@@ -302,7 +271,7 @@ class CalendarMonthState extends State<CalendarMonth>
                       AnimatedRotation(
                         duration: const Duration(milliseconds: 250),
                         curve: Curves.easeInOut,
-                        turns: _isPickerShowed ? 1.25 : 1.0,
+                        turns: _isYearPickerShowed ? 1.25 : 1.0,
                         child: Icon(
                           CupertinoIcons.chevron_forward,
                           color: enabledColor,
@@ -318,7 +287,7 @@ class CalendarMonthState extends State<CalendarMonth>
                 duration: const Duration(milliseconds: 250),
                 switchInCurve: Curves.easeInOut,
                 switchOutCurve: Curves.easeInOut,
-                child: _isPickerShowed
+                child: _isYearPickerShowed
                     ? const SizedBox()
                     : Row(
                         children: [
@@ -357,7 +326,7 @@ class CalendarMonthState extends State<CalendarMonth>
         ),
         Expanded(
           child: AnimatedCrossFade(
-            crossFadeState: _isPickerShowed
+            crossFadeState: _isYearPickerShowed
                 ? CrossFadeState.showSecond
                 : CrossFadeState.showFirst,
             duration: const Duration(milliseconds: 250),
@@ -375,7 +344,6 @@ class CalendarMonthState extends State<CalendarMonth>
                 const SizedBox(height: 3.0),
                 Expanded(
                   child: PageView.builder(
-                    key: _pageViewKey,
                     controller: _pageController,
                     itemBuilder: _buildItems,
                     itemCount: DateUtils.monthDelta(
