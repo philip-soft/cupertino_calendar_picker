@@ -25,7 +25,8 @@ class _MyAppState extends State<MyApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       theme: ThemeData(
-        brightness: Brightness.light,
+        // brightness: Brightness.light,
+        brightness: Brightness.dark,
       ),
       supportedLocales: const [
         Locale('ru'),

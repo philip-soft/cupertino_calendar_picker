@@ -1,6 +1,5 @@
+import 'package:cupertino_calendar/lib.dart';
 import 'package:flutter/cupertino.dart';
-
-import '../decoration/decoration.dart';
 
 class CalendarContainer extends StatelessWidget {
   const CalendarContainer({
@@ -14,14 +13,20 @@ class CalendarContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        borderRadius: decoration.borderRadius,
-        color: decoration.backgroundColor,
-        boxShadow: decoration.boxShadow,
+    return SizedBox(
+      width: calendarWidth,
+      child: AspectRatio(
+        aspectRatio: calendarAspectRatio,
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: decoration.borderRadius,
+            color: decoration.backgroundColor,
+            boxShadow: decoration.boxShadow,
+          ),
+          child: child,
+        ),
       ),
-      child: child,
     );
   }
 }

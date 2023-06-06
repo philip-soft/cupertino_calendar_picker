@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 
-class CalendarWeekdaysDecoration {
-  const CalendarWeekdaysDecoration._({
-    this.textStyle,
+class CalendarWeekdayDecoration {
+  const CalendarWeekdayDecoration._({
+    required this.textStyle,
   });
 
-  factory CalendarWeekdaysDecoration.defaultDecoration({TextStyle? textStyle}) {
-    return CalendarWeekdaysDecoration._(
+  factory CalendarWeekdayDecoration({
+    TextStyle? textStyle,
+  }) {
+    return CalendarWeekdayDecoration._(
       textStyle: textStyle ??
           const TextStyle(
             color: CupertinoColors.tertiaryLabel,
@@ -17,14 +19,14 @@ class CalendarWeekdaysDecoration {
     );
   }
 
-  factory CalendarWeekdaysDecoration.defaultWithDynamicColor(
+  factory CalendarWeekdayDecoration.withDynamicColor(
     BuildContext context, {
     TextStyle? textStyle,
   }) {
-    final defaultDecoration = CalendarWeekdaysDecoration.defaultDecoration();
-    return defaultDecoration.copyWith(
+    final CalendarWeekdayDecoration decoration = CalendarWeekdayDecoration();
+    return decoration.copyWith(
       textStyle: textStyle ??
-          defaultDecoration.textStyle?.copyWith(
+          decoration.textStyle.copyWith(
             color: CupertinoDynamicColor.resolve(
               CupertinoDynamicColor.withBrightness(
                 color: CupertinoColors.tertiaryLabel,
@@ -36,12 +38,12 @@ class CalendarWeekdaysDecoration {
     );
   }
 
-  final TextStyle? textStyle;
+  final TextStyle textStyle;
 
-  CalendarWeekdaysDecoration copyWith({
+  CalendarWeekdayDecoration copyWith({
     TextStyle? textStyle,
   }) {
-    return CalendarWeekdaysDecoration._(
+    return CalendarWeekdayDecoration._(
       textStyle: textStyle ?? this.textStyle,
     );
   }

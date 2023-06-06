@@ -30,6 +30,8 @@ class CupertinoCalendar extends StatefulWidget {
     this.onDisplayedMonthChanged,
     this.containerDecoration,
     this.weekdaysDecoration,
+    this.dayDecoration,
+    this.todayDecoration,
     super.key,
   })  : initialDate = DateUtils.dateOnly(initialDate),
         minimumDate = DateUtils.dateOnly(minimumDate),
@@ -68,7 +70,9 @@ class CupertinoCalendar extends StatefulWidget {
   final ValueChanged<DateTime>? onDisplayedMonthChanged;
 
   final CalendarContainerDecoration? containerDecoration;
-  final CalendarWeekdaysDecoration? weekdaysDecoration;
+  final CalendarWeekdayDecoration? weekdaysDecoration;
+  final CalendarDayDecoration? dayDecoration;
+  final CalendarDayDecoration? todayDecoration;
 
   @override
   State<CupertinoCalendar> createState() => _CupertinoCalendarState();
@@ -81,34 +85,30 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
   @override
   void initState() {
     super.initState();
-    final initialDate = widget.initialDate;
-    _currentlyDisplayedMonthDate = DateTime(
-      initialDate.year,
-      initialDate.month,
-    );
-    _selectedDate = initialDate;
+    final DateTime initialDate = widget.initialDate;
+    _currentlyDisplayedMonthDate = PackageDateUtils.monthDateOnly(initialDate);
+    _selectedDate = DateUtils.dateOnly(initialDate);
   }
 
   @override
   void didUpdateWidget(CupertinoCalendar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final initialDate = widget.initialDate;
-    final oldInitialDate = oldWidget.initialDate;
-    if (!DateUtils.isSameDay(initialDate, oldInitialDate)) {
-      _currentlyDisplayedMonthDate = DateTime(
-        initialDate.year,
-        initialDate.month,
-      );
-      _selectedDate = initialDate;
-    }
+    final DateTime initialDate = widget.initialDate;
+    _currentlyDisplayedMonthDate = PackageDateUtils.monthDateOnly(
+      initialDate,
+    );
+    _selectedDate = DateUtils.dateOnly(initialDate);
   }
 
   void _handleCalendarMonthChange(DateTime date) {
-    final displayedYear = _currentlyDisplayedMonthDate.year;
-    final displayedMonth = _currentlyDisplayedMonthDate.month;
+    final DateTime displayedDate = PackageDateUtils.monthDateOnly(
+      _currentlyDisplayedMonthDate,
+    );
     setState(() {
-      if (displayedYear != date.year || displayedMonth != date.month) {
-        _currentlyDisplayedMonthDate = DateTime(date.year, date.month);
+      if (!DateUtils.isSameMonth(displayedDate, date)) {
+        _currentlyDisplayedMonthDate = PackageDateUtils.monthDateOnly(
+          date,
+        );
         widget.onDisplayedMonthChanged?.call(_currentlyDisplayedMonthDate);
       }
     });
@@ -133,26 +133,24 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: calendarWidth,
-      child: AspectRatio(
-        aspectRatio: calendarAspectRatio,
-        child: CalendarContainer(
-          decoration: widget.containerDecoration ??
-              CalendarContainerDecoration.defaultWithDynamicColor(context),
-          child: CalendarPicker(
-            initialMonth: _currentlyDisplayedMonthDate,
-            currentDate: widget.currentDate,
-            minimumDate: widget.minimumDate,
-            maximumDate: widget.maximumDate,
-            selectedDate: _selectedDate,
-            onChanged: _handleCalendarDayChange,
-            onDisplayedMonthChanged: _handleCalendarMonthChange,
-            onDatePickerChanged: _handleCalendarDateChange,
-            weekdayDecoration: widget.weekdaysDecoration ??
-                CalendarWeekdaysDecoration.defaultWithDynamicColor(context),
-          ),
-        ),
+    return CalendarContainer(
+      decoration: widget.containerDecoration ??
+          CalendarContainerDecoration.withDynamicColor(context),
+      child: CalendarPicker(
+        initialMonth: _currentlyDisplayedMonthDate,
+        currentDate: widget.currentDate,
+        minimumDate: widget.minimumDate,
+        maximumDate: widget.maximumDate,
+        selectedDate: _selectedDate,
+        onChanged: _handleCalendarDayChange,
+        onDisplayedMonthChanged: _handleCalendarMonthChange,
+        onDatePickerChanged: _handleCalendarDateChange,
+        weekdayDecoration: widget.weekdaysDecoration ??
+            CalendarWeekdayDecoration.withDynamicColor(context),
+        dayDecoration: widget.dayDecoration ??
+            CalendarDayDecoration.withDynamicColor(context),
+        todayDecoration: widget.todayDecoration ??
+            CalendarDayDecoration.withDynamicColor(context),
       ),
     );
   }

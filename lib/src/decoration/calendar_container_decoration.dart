@@ -7,7 +7,7 @@ class CalendarContainerDecoration {
     required this.boxShadow,
   });
 
-  factory CalendarContainerDecoration.defaultDecoration({
+  factory CalendarContainerDecoration({
     BorderRadius? borderRadius,
     Color? backgroundColor,
     List<BoxShadow>? boxShadow,
@@ -15,7 +15,7 @@ class CalendarContainerDecoration {
     return CalendarContainerDecoration._(
       backgroundColor: CupertinoColors.systemBackground,
       boxShadow: boxShadow ??
-          const [
+          const <BoxShadow>[
             BoxShadow(
               color: Color.fromRGBO(0, 0, 0, 0.1),
               offset: Offset(0.0, 10.0),
@@ -27,14 +27,15 @@ class CalendarContainerDecoration {
     );
   }
 
-  factory CalendarContainerDecoration.defaultWithDynamicColor(
+  factory CalendarContainerDecoration.withDynamicColor(
     BuildContext context, {
     BorderRadius? borderRadius,
     CupertinoDynamicColor? backgroundColor,
     List<BoxShadow>? boxShadow,
   }) {
-    final defaultDecoration = CalendarContainerDecoration.defaultDecoration();
-    return defaultDecoration.copyWith(
+    final CalendarContainerDecoration decoration =
+        CalendarContainerDecoration();
+    return decoration.copyWith(
       backgroundColor: CupertinoDynamicColor.resolve(
         backgroundColor ??
             CupertinoDynamicColor.withBrightness(

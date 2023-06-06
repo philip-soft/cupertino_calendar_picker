@@ -501,7 +501,7 @@ class _CupertinoDatePickerDateState extends State<CupertinoCalendarDatePicker> {
     Widget selectionOverlay,
   ) {
     return NotificationListener<ScrollNotification>(
-      onNotification: (notification) {
+      onNotification: (ScrollNotification notification) {
         if (notification is ScrollStartNotification) {
           isMonthPickerScrolling = true;
         } else if (notification is ScrollEndNotification) {
@@ -519,7 +519,7 @@ class _CupertinoDatePickerDateState extends State<CupertinoCalendarDatePicker> {
         magnification: _kMagnification,
         backgroundColor: widget.backgroundColor,
         squeeze: _kSqueeze,
-        onSelectedItemChanged: (index) {
+        onSelectedItemChanged: (int index) {
           selectedMonth = index + 1;
           if (_isCurrentDateValid) {
             widget.onDateTimeChanged(
@@ -529,7 +529,7 @@ class _CupertinoDatePickerDateState extends State<CupertinoCalendarDatePicker> {
         },
         looping: true,
         selectionOverlay: selectionOverlay,
-        children: List<Widget>.generate(12, (index) {
+        children: List<Widget>.generate(12, (int index) {
           final int month = index + 1;
           final bool isInvalidMonth =
               (widget.minimumDate?.year == selectedYear &&
@@ -555,7 +555,7 @@ class _CupertinoDatePickerDateState extends State<CupertinoCalendarDatePicker> {
     Widget selectionOverlay,
   ) {
     return NotificationListener<ScrollNotification>(
-      onNotification: (notification) {
+      onNotification: (ScrollNotification notification) {
         if (notification is ScrollStartNotification) {
           isYearPickerScrolling = true;
         } else if (notification is ScrollEndNotification) {
@@ -572,7 +572,7 @@ class _CupertinoDatePickerDateState extends State<CupertinoCalendarDatePicker> {
         useMagnifier: _kUseMagnifier,
         magnification: _kMagnification,
         backgroundColor: widget.backgroundColor,
-        onSelectedItemChanged: (index) {
+        onSelectedItemChanged: (int index) {
           selectedYear = index;
           if (_isCurrentDateValid) {
             widget.onDateTimeChanged(
@@ -580,7 +580,7 @@ class _CupertinoDatePickerDateState extends State<CupertinoCalendarDatePicker> {
             );
           }
         },
-        itemBuilder: (context, year) {
+        itemBuilder: (BuildContext context, int year) {
           if (year < widget.minimumYear) {
             return null;
           }
@@ -657,7 +657,7 @@ class _CupertinoDatePickerDateState extends State<CupertinoCalendarDatePicker> {
   }
 
   void _scrollToDate(DateTime newDate) {
-    SchedulerBinding.instance.addPostFrameCallback((timestamp) {
+    SchedulerBinding.instance.addPostFrameCallback((Duration timestamp) {
       if (selectedYear != newDate.year) {
         _animateColumnControllerToItem(yearController, newDate.year);
       }
@@ -670,11 +670,12 @@ class _CupertinoDatePickerDateState extends State<CupertinoCalendarDatePicker> {
 
   @override
   Widget build(BuildContext context) {
-    final pickerBuilders = <Widget Function(double, TransitionBuilder, Widget)>[
+    final List<Widget Function(double p1, TransitionBuilder p2, Widget p3)>
+        pickerBuilders = <Widget Function(double, TransitionBuilder, Widget)>[
       _buildMonthPicker,
       _buildYearPicker
     ];
-    final columnWidths = <double>[
+    final List<double> columnWidths = <double>[
       estimatedColumnWidths[_PickerColumnType.month.index]!,
       estimatedColumnWidths[_PickerColumnType.year.index]!,
     ];
@@ -701,7 +702,7 @@ class _CupertinoDatePickerDateState extends State<CupertinoCalendarDatePicker> {
           id: i,
           child: pickerBuilders[i](
             offAxisFraction,
-            (context, child) {
+            (BuildContext context, Widget? child) {
               return Container(
                 alignment: i == columnWidths.length - 1
                     ? alignCenterLeft

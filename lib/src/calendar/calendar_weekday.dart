@@ -9,7 +9,7 @@ class CalendarWeekday extends StatelessWidget {
   });
 
   final String weekday;
-  final CalendarWeekdaysDecoration? decoration;
+  final CalendarWeekdayDecoration? decoration;
 
   @override
   Widget build(BuildContext context) {
