@@ -19,7 +19,7 @@ class CalendarWeekdayDecoration {
     );
   }
 
-  factory CalendarWeekdayDecoration.withDynamicColor(
+  factory CalendarWeekdayDecoration.defaultDecoration(
     BuildContext context, {
     TextStyle? textStyle,
   }) {

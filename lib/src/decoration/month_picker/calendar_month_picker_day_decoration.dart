@@ -1,22 +1,22 @@
 import 'package:flutter/cupertino.dart';
 
-class CalendarDayDecoration {
+class CalendarMonthPickerDayDecoration {
   final BoxShape shape;
   final TextStyle textStyle;
   final Color? backgroundColor;
 
-  const CalendarDayDecoration._({
+  const CalendarMonthPickerDayDecoration._({
     required this.shape,
     required this.textStyle,
     this.backgroundColor,
   });
 
-  factory CalendarDayDecoration({
+  factory CalendarMonthPickerDayDecoration({
     BoxShape? shape,
     Color? backgroundColor,
     TextStyle? textStyle,
   }) {
-    return CalendarDayDecoration._(
+    return CalendarMonthPickerDayDecoration._(
       shape: shape ?? BoxShape.circle,
       backgroundColor: backgroundColor,
       textStyle: textStyle ??
@@ -29,13 +29,14 @@ class CalendarDayDecoration {
     );
   }
 
-  factory CalendarDayDecoration.withDynamicColor(
+  factory CalendarMonthPickerDayDecoration.withDynamicColor(
     BuildContext context, {
     BoxShape? shape,
     CupertinoDynamicColor? backgroundColor,
     TextStyle? textStyle,
   }) {
-    final CalendarDayDecoration decoration = CalendarDayDecoration();
+    final CalendarMonthPickerDayDecoration decoration =
+        CalendarMonthPickerDayDecoration();
     return decoration.copyWith(
       shape: shape,
       textStyle: textStyle ??
@@ -56,12 +57,12 @@ class CalendarDayDecoration {
     );
   }
 
-  CalendarDayDecoration copyWith({
+  CalendarMonthPickerDayDecoration copyWith({
     BoxShape? shape,
     TextStyle? textStyle,
     Color? backgroundColor,
   }) {
-    return CalendarDayDecoration(
+    return CalendarMonthPickerDayDecoration(
       shape: shape ?? this.shape,
       textStyle: textStyle ?? this.textStyle,
       backgroundColor: backgroundColor ?? this.backgroundColor,

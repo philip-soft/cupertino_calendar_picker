@@ -1,5 +1,4 @@
 import 'package:cupertino_calendar/lib.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 
@@ -15,8 +14,8 @@ class CalendarPicker extends StatefulWidget {
     required this.onDisplayedMonthChanged,
     required this.onDatePickerChanged,
     required this.weekdayDecoration,
-    required this.dayDecoration,
-    required this.todayDecoration,
+    required this.monthPickerDecoration,
+    required this.calendarHeaderDecoration,
     super.key,
   })  : assert(!minimumDate.isAfter(maximumDate)),
         assert(!currentDate.isBefore(minimumDate)),
@@ -53,8 +52,8 @@ class CalendarPicker extends StatefulWidget {
 
   final ValueChanged<DateTime> onDatePickerChanged;
   final CalendarWeekdayDecoration weekdayDecoration;
-  final CalendarDayDecoration dayDecoration;
-  final CalendarDayDecoration todayDecoration;
+  final CalendarMonthPickerDecoration monthPickerDecoration;
+  final CalendarHeaderDecoration calendarHeaderDecoration;
 
   @override
   CalendarPickerState createState() => CalendarPickerState();
@@ -168,7 +167,9 @@ class CalendarPickerState extends State<CalendarPicker>
     );
   }
 
-  List<Widget> _weekdays(MaterialLocalizations localizations) {
+  Iterable<Widget> get _weekdays sync* {
+    final MaterialLocalizations localizations =
+        MaterialLocalizations.of(context);
     final DateTime nowDate = DateTime.now();
     final int year = nowDate.year;
     final int month = nowDate.month;
@@ -181,7 +182,7 @@ class CalendarPickerState extends State<CalendarPicker>
     final DateTime firstDayOfWeekDate = DateTime(year, month).subtract(
       Duration(days: firstDayOffset),
     );
-    return List<Widget>.generate(DateTime.daysPerWeek, (int index) {
+    yield* List<Widget>.generate(DateTime.daysPerWeek, (int index) {
       final String weekday = weekdayFormat.format(
         firstDayOfWeekDate.add(Duration(days: index)),
       );
@@ -205,37 +206,17 @@ class CalendarPickerState extends State<CalendarPicker>
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterialLocalizations(context));
 
-    final intl.DateFormat dateFormat = intl.DateFormat('MMMM yyyy');
-    final MaterialLocalizations localizations =
-        MaterialLocalizations.of(context);
-    final Color enabledColor = CupertinoDynamicColor.resolve(
-      CupertinoDynamicColor.withBrightness(
-        color: CupertinoColors.systemRed,
-        darkColor: CupertinoColors.systemRed.darkColor,
-      ),
-      context,
-    );
-    final Color disabledColor = CupertinoDynamicColor.resolve(
-      CupertinoDynamicColor.withBrightness(
-        color: CupertinoColors.opaqueSeparator,
-        darkColor: CupertinoColors.opaqueSeparator.darkColor,
-      ),
-      context,
-    );
-
-    final Color forwardButtonColor =
-        _isDisplayingLastMonth ? disabledColor : enabledColor;
-    final Color backwardButtonColor =
-        _isDisplayingFirstMonth ? disabledColor : enabledColor;
-
     return Column(
       children: <Widget>[
         const SizedBox(height: 4.0),
         CalendarHeader(
           currentMonth: _currentMonth,
-          onNextMonthIconTapped: _handleNextMonth,
-          onPreviousMonthIconTapped: _handlePreviousMonth,
+          onNextMonthIconTapped:
+              _isDisplayingLastMonth ? null : _handleNextMonth,
+          onPreviousMonthIconTapped:
+              _isDisplayingFirstMonth ? null : _handlePreviousMonth,
           onYearPickerStateChanged: _toggleYearPicker,
+          decoration: widget.calendarHeaderDecoration,
         ),
         Expanded(
           child: AnimatedCrossFade(
@@ -251,7 +232,7 @@ class CalendarPickerState extends State<CalendarPicker>
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: _weekdays(localizations),
+                    children: _weekdays.toList(),
                   ),
                 ),
                 const SizedBox(height: 3.0),
@@ -264,8 +245,7 @@ class CalendarPickerState extends State<CalendarPicker>
                   maximumDate: widget.maximumDate,
                   selectedDate: widget.selectedDate,
                   onChanged: widget.onChanged,
-                  dayDecoration: widget.dayDecoration,
-                  todayDecoration: widget.todayDecoration,
+                  monthPickerDecoration: widget.monthPickerDecoration,
                 ),
               ],
             ),

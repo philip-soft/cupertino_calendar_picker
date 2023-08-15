@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
+import '../../lib.dart';
+
 typedef YearPickerCallback = void Function(bool shouldShowYearPicker);
 
 class CalendarHeader extends StatefulWidget {
@@ -9,13 +11,15 @@ class CalendarHeader extends StatefulWidget {
     required this.onYearPickerStateChanged,
     required this.onPreviousMonthIconTapped,
     required this.onNextMonthIconTapped,
+    required this.decoration,
     Key? key,
   }) : super(key: key);
 
   final DateTime currentMonth;
-  final VoidCallback onPreviousMonthIconTapped;
-  final VoidCallback onNextMonthIconTapped;
+  final VoidCallback? onPreviousMonthIconTapped;
+  final VoidCallback? onNextMonthIconTapped;
   final YearPickerCallback onYearPickerStateChanged;
+  final CalendarHeaderDecoration decoration;
 
   @override
   State<CalendarHeader> createState() => _CalendarHeaderState();
@@ -30,9 +34,14 @@ class _CalendarHeaderState extends State<CalendarHeader> {
     });
   }
 
+  CalendarHeaderDecoration get _decoration => widget.decoration;
+  bool get _isBackwardDisabled => widget.onPreviousMonthIconTapped == null;
+  bool get _isForwardDisabled => widget.onNextMonthIconTapped == null;
+
   @override
   Widget build(BuildContext context) {
     final DateFormat monthFormat = DateFormat('MMMM yyyy');
+
     return Container(
       margin: const EdgeInsets.only(left: 16.0),
       alignment: Alignment.center,
@@ -69,9 +78,9 @@ class _CalendarHeaderState extends State<CalendarHeader> {
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                     turns: _shouldShowYearPicker ? 1.25 : 1.0,
-                    child: const Icon(
+                    child: Icon(
                       CupertinoIcons.chevron_forward,
-                      // color: enabledColor,
+                      color: widget.decoration.monthDateArrowColor,
                       size: 20.0,
                     ),
                   ),
@@ -83,17 +92,18 @@ class _CalendarHeaderState extends State<CalendarHeader> {
           AnimatedCrossFade(
             firstChild: const SizedBox(),
             secondChild: Row(
-              key: ValueKey<bool>(_shouldShowYearPicker),
               children: <Widget>[
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: widget.onPreviousMonthIconTapped,
-                  child: const SizedBox(
+                  child: SizedBox(
                     height: 44.0,
                     width: 44.0,
                     child: Icon(
                       CupertinoIcons.chevron_back,
-                      // color: backwardButtonColor,
+                      color: _isBackwardDisabled
+                          ? _decoration.backwardDisabledButtonColor
+                          : _decoration.backwardButtonColor,
                       size: 26.0,
                     ),
                   ),
@@ -102,12 +112,14 @@ class _CalendarHeaderState extends State<CalendarHeader> {
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: widget.onNextMonthIconTapped,
-                  child: const SizedBox(
+                  child: SizedBox(
                     height: 44.0,
                     width: 44.0,
                     child: Icon(
                       CupertinoIcons.chevron_forward,
-                      // color: forwardButtonColor,
+                      color: _isForwardDisabled
+                          ? _decoration.forwardDisabledButtonColor
+                          : _decoration.forwardButtonColor,
                       size: 26.0,
                     ),
                   ),
@@ -115,8 +127,8 @@ class _CalendarHeaderState extends State<CalendarHeader> {
               ],
             ),
             crossFadeState: _shouldShowYearPicker
-                ? CrossFadeState.showSecond
-                : CrossFadeState.showFirst,
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
             duration: const Duration(milliseconds: 300),
             layoutBuilder: (
               Widget topChild,

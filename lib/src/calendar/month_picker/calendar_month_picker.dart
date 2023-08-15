@@ -1,5 +1,4 @@
 import 'package:cupertino_calendar/lib.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // /// Displays the days of a given month and allows choosing a day.
@@ -17,8 +16,7 @@ class CalendarMonthPicker extends StatefulWidget {
     required this.maximumDate,
     required this.selectedDate,
     required this.onChanged,
-    required this.dayDecoration,
-    required this.todayDecoration,
+    required this.monthPickerDecoration,
     super.key,
   })  : assert(!minimumDate.isAfter(maximumDate)),
         assert(!selectedDate.isBefore(minimumDate)),
@@ -51,8 +49,7 @@ class CalendarMonthPicker extends StatefulWidget {
   /// The month whose days are displayed by this picker.
   final DateTime displayedMonth;
 
-  final CalendarDayDecoration dayDecoration;
-  final CalendarDayDecoration todayDecoration;
+  final CalendarMonthPickerDecoration monthPickerDecoration;
 
   @override
   State<CalendarMonthPicker> createState() => CalendarMonthPickerState();
@@ -75,24 +72,47 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
       if (day < 1) {
         yield const SizedBox();
       } else {
-        late CalendarDayStyle style;
+        late CalendarMonthPickerDayStyle style;
 
         final DateTime nowDate = DateTime.now();
         final DateTime date = DateTime(year, month, day);
         final bool isToday = DateUtils.isSameDay(nowDate, date);
+        final bool isSelectedDay = DateUtils.isSameDay(
+          widget.selectedDate,
+          date,
+        );
+        final bool isDisabledDay = date.isAfter(widget.maximumDate) ||
+            date.isBefore(widget.minimumDate);
 
-        if (DateUtils.isSameDay(widget.selectedDate, date)) {
-          style = CalendarDayStyle.selected;
+        final CalendarMonthPickerDecoration monthPickerDecoration =
+            widget.monthPickerDecoration;
+
+        if (isDisabledDay) {
+          style = monthPickerDecoration.disabledDayStyle ??
+              CalendarMonthPickerDisabledDayStyle.defaultDecoration(context);
         } else if (isToday) {
-          style = CalendarDayStyle.today;
+          style = monthPickerDecoration.todayStyle ??
+              CalendarMonthPickerTodayStyle.defaultDecoration(context);
+
+          if (isSelectedDay) {
+            style = monthPickerDecoration.selectedTodayStyle ??
+                CalendarMonthPickerSelectedTodayStyle.defaultDecoration(
+                  context,
+                );
+          }
+        } else if (isSelectedDay) {
+          style = monthPickerDecoration.selectedDayStyle ??
+              CalendarMonthPickerSelectedDayStyle.defaultDecoration(
+                context,
+              );
         } else {
-          style = CalendarDayStyle.defaultDay;
+          style = monthPickerDecoration.dayStyle ??
+              CalendarMonthPickerDefaultDayStyle.defaultDecoration(context);
         }
 
-        final CalendarDay dayWidget = CalendarDay(
-          day: '$day',
-          decoration: widget.dayDecoration,
-          todayDecoration: widget.todayDecoration,
+        final Widget dayWidget = CalendarMonthPickerDay(
+          dayDate: date,
+          onDaySelected: isDisabledDay ? null : widget.onChanged,
           style: style,
         );
         yield dayWidget;
@@ -132,114 +152,6 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterialLocalizations(context));
 
-    final MaterialLocalizations localizations =
-        MaterialLocalizations.of(context);
-    const TextStyle dayStyle = TextStyle(fontSize: 20.0, letterSpacing: 0.38);
-    final Color enabledDayColor = CupertinoDynamicColor.resolve(
-      CupertinoDynamicColor.withBrightness(
-        color: CupertinoColors.label,
-        darkColor: CupertinoColors.label.darkColor,
-      ),
-      context,
-    );
-    final Color disabledDayColor = CupertinoDynamicColor.resolve(
-      CupertinoDynamicColor.withBrightness(
-        color: CupertinoColors.opaqueSeparator,
-        darkColor: CupertinoColors.opaqueSeparator.darkColor,
-      ),
-      context,
-    );
-    final Color selectedDayColor = CupertinoDynamicColor.resolve(
-      CupertinoDynamicColor.withBrightness(
-        color: CupertinoColors.systemRed,
-        darkColor: CupertinoColors.systemRed.darkColor,
-      ),
-      context,
-    );
-    final Color selectedDayBackground = selectedDayColor.withOpacity(0.12);
-    final Color todayColor = selectedDayColor;
-
-    final int year = widget.displayedMonth.year;
-    final int month = widget.displayedMonth.month;
-
-    final List<Widget> dayItems = <Widget>[];
-    final int daysInMonth = DateUtils.getDaysInMonth(year, month);
-    final int dayOffset = DateUtils.firstDayOffset(year, month, localizations);
-    // 1-based day of month, e.g. 1-31 for January, and 1-29 for February on
-    // a leap year.
-    int day = -dayOffset;
-
-    while (day < daysInMonth) {
-      day++;
-      if (day < 1) {
-        dayItems.add(const SizedBox());
-      } else {
-        final DateTime dayToBuild = DateTime(year, month, day);
-        final bool isDisabled = dayToBuild.isAfter(widget.maximumDate) ||
-            dayToBuild.isBefore(widget.minimumDate);
-        final bool isSelectedDay = DateUtils.isSameDay(
-          widget.selectedDate,
-          dayToBuild,
-        );
-        final bool isToday =
-            DateUtils.isSameDay(widget.currentDate, dayToBuild);
-
-        BoxDecoration? decoration;
-        Color dayColor = enabledDayColor;
-        Color? backgroundColor;
-        FontWeight dayFontWeight = FontWeight.w400;
-
-        if (isSelectedDay) {
-          dayFontWeight = FontWeight.w600;
-          dayColor = selectedDayColor;
-          backgroundColor = selectedDayBackground;
-          decoration = BoxDecoration(
-            color: selectedDayBackground,
-            shape: BoxShape.circle,
-          );
-        }
-
-        if (isToday) {
-          if (isSelectedDay) {
-            backgroundColor = selectedDayColor;
-            dayColor = CupertinoColors.white;
-          } else {
-            dayColor = todayColor;
-          }
-          decoration = BoxDecoration(
-            color: backgroundColor,
-            shape: BoxShape.circle,
-          );
-        }
-
-        if (isDisabled) {
-          dayColor = disabledDayColor;
-        }
-
-        Widget dayWidget = DecoratedBox(
-          decoration: decoration ?? const BoxDecoration(),
-          child: Center(
-            child: Text(
-              '$day',
-              style: dayStyle
-                  .copyWith(fontWeight: dayFontWeight)
-                  .apply(color: dayColor),
-            ),
-          ),
-        );
-
-        if (!isDisabled) {
-          dayWidget = GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () => widget.onChanged(dayToBuild),
-            child: dayWidget,
-          );
-        }
-
-        dayItems.add(dayWidget);
-      }
-    }
-
     /// [+ 1] to include the last month
     final int itemCount = DateUtils.monthDelta(
           widget.minimumDate,
@@ -252,6 +164,7 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
         controller: widget.monthPageController,
         itemBuilder: (BuildContext context, int index) {
           final Iterable<Widget> days = _days(context, index);
+
           return GridView.custom(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             physics: const NeverScrollableScrollPhysics(),
