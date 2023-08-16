@@ -22,7 +22,7 @@ class CalendarMonthPickerDecoration extends Equatable {
   ) {
     return CalendarMonthPickerDecoration(
       dayStyle: CalendarMonthPickerDefaultDayStyle.defaultDecoration(context),
-      todayStyle: CalendarMonthPickerTodayStyle.defaultDecoration(context),
+      todayStyle: CalendarMonthPickerCurrentDayStyle.defaultDecoration(context),
       disabledDayStyle: CalendarMonthPickerDisabledDayStyle.defaultDecoration(
         context,
       ),
@@ -30,7 +30,7 @@ class CalendarMonthPickerDecoration extends Equatable {
         context,
       ),
       selectedTodayStyle:
-          CalendarMonthPickerSelectedTodayStyle.defaultDecoration(
+          CalendarMonthPickerCurrentAndSelectedStyle.defaultDecoration(
         context,
       ),
     );

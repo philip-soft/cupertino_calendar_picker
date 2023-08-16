@@ -20,11 +20,15 @@ class CalendarMonthPickerDay extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: onDaySelected != null ? () => onDaySelected?.call(dayDate) : null,
-      child: CustomPaint(
-        painter: CalendarMonthPickerDayPainter(
-          day: '${dayDate.day}',
-          style: style.textStyle,
-          backgroundColor: style.backgroundColor,
+      child: SizedBox(
+        height: 44.0,
+        width: 44.0,
+        child: CustomPaint(
+          painter: CalendarMonthPickerDayPainter(
+            day: '${dayDate.day}',
+            style: style.textStyle,
+            backgroundColor: style.backgroundColor,
+          ),
         ),
       ),
     );
@@ -45,13 +49,7 @@ class CalendarMonthPickerDayPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final ParagraphBuilder paragraphBuilder = ParagraphBuilder(
-      ParagraphStyle(
-        fontSize: style.fontSize,
-        fontFamily: style.fontFamily,
-        fontStyle: style.fontStyle,
-        fontWeight: style.fontWeight,
-        textAlign: TextAlign.center,
-      ),
+      style.getParagraphStyle(textAlign: TextAlign.center),
     )
       ..pushStyle(style.getTextStyle())
       ..addText(day);
@@ -95,7 +93,7 @@ class CalendarMonthPickerDayPainter extends CustomPainter {
     final Paint paint = Paint()..color = color;
     canvas.drawCircle(
       offset,
-      20.0,
+      calendarMonthPickerDayHeight / 2,
       paint,
     );
   }

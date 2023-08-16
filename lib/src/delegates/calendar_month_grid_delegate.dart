@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cupertino_calendar/lib.dart';
 import 'package:flutter/rendering.dart';
 
 class CalendarMonthGridDelegate extends SliverGridDelegate {
@@ -19,22 +20,22 @@ class CalendarMonthGridDelegate extends SliverGridDelegate {
       calendarDayRowHeight,
       constraints.viewportMainAxisExtent / (rowCount + 1),
     );
-    late double factor;
+    // late double factor;
 
-    // TODO: Check factor
-    if (rowCount > 5) {
-      factor = 1.5;
-    } else if (rowCount < 5) {
-      factor = -1.5;
-    } else {
-      factor = 0.0;
-    }
+    // // TODO: Check factor
+    // if (rowCount > 5) {
+    //   factor = 1.5;
+    // } else if (rowCount < 5) {
+    //   factor = -1.5;
+    // } else {
+    //   factor = -1.2;
+    // }
     return SliverGridRegularTileLayout(
       childCrossAxisExtent: tileWidth,
       childMainAxisExtent: tileHeight,
       crossAxisCount: columnCount,
       crossAxisStride: tileWidth,
-      mainAxisStride: (tileHeight * 1.135) - factor,
+      mainAxisStride: tileHeight + calendarMonthPickerRowPadding,
       reverseCrossAxis: axisDirectionIsReversed(constraints.crossAxisDirection),
     );
   }

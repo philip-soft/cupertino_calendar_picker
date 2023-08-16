@@ -27,13 +27,13 @@ class CalendarMonthPickerDisabledDayStyle extends CalendarMonthPickerDayStyle {
             fontSize: 20.0,
             color: CupertinoDynamicColor.resolve(
               CupertinoDynamicColor.withBrightness(
-                color: CupertinoColors.opaqueSeparator,
-                darkColor: CupertinoColors.opaqueSeparator.darkColor,
+                color: CupertinoColors.tertiaryLabel,
+                darkColor: CupertinoColors.tertiaryLabel.darkColor,
               ),
               context,
             ),
             fontWeight: FontWeight.w400,
-            letterSpacing: 0.38,
+            letterSpacing: -0.4,
           ),
       backgroundColor: null,
     );
@@ -53,11 +53,17 @@ class CalendarMonthPickerDefaultDayStyle extends CalendarMonthPickerDayStyle {
   }) {
     return CalendarMonthPickerDefaultDayStyle(
       textStyle: textStyle ??
-          const TextStyle(
+          TextStyle(
             fontSize: 20.0,
-            color: CupertinoColors.label,
+            color: CupertinoDynamicColor.resolve(
+              CupertinoDynamicColor.withBrightness(
+                color: CupertinoColors.label,
+                darkColor: CupertinoColors.label.darkColor,
+              ),
+              context,
+            ),
             fontWeight: FontWeight.w400,
-            letterSpacing: 0.38,
+            letterSpacing: -0.4,
           ),
       backgroundColor: null,
     );
@@ -78,13 +84,12 @@ class CalendarMonthPickerSelectedDayStyle extends CalendarMonthPickerDayStyle {
     return CalendarMonthPickerSelectedDayStyle(
       textStyle: textStyle ??
           TextStyle(
-            fontSize: 20.0,
+            fontSize: 24.0,
             color: CupertinoDynamicColor.withBrightness(
               color: CupertinoColors.systemRed,
               darkColor: CupertinoColors.systemRed.darkColor,
             ),
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.38,
+            fontWeight: FontWeight.w500,
           ),
       backgroundColor: CupertinoDynamicColor.resolve(
         backgroundColor ??
@@ -98,28 +103,30 @@ class CalendarMonthPickerSelectedDayStyle extends CalendarMonthPickerDayStyle {
   }
 }
 
-class CalendarMonthPickerSelectedTodayStyle
+class CalendarMonthPickerCurrentAndSelectedStyle
     extends CalendarMonthPickerDayStyle {
-  const CalendarMonthPickerSelectedTodayStyle({
+  const CalendarMonthPickerCurrentAndSelectedStyle({
     required super.textStyle,
     required super.backgroundColor,
   });
 
-  factory CalendarMonthPickerSelectedTodayStyle.defaultDecoration(
+  factory CalendarMonthPickerCurrentAndSelectedStyle.defaultDecoration(
     BuildContext context, {
     Color? backgroundColor,
     TextStyle? textStyle,
   }) {
-    return CalendarMonthPickerSelectedTodayStyle(
+    return CalendarMonthPickerCurrentAndSelectedStyle(
       textStyle: textStyle ??
           TextStyle(
-            fontSize: 20.0,
-            color: CupertinoDynamicColor.withBrightness(
-              color: CupertinoColors.label.darkColor,
-              darkColor: CupertinoColors.label,
+            fontSize: 24.0,
+            color: CupertinoDynamicColor.resolve(
+              CupertinoDynamicColor.withBrightness(
+                color: CupertinoColors.label.darkColor,
+                darkColor: CupertinoColors.label.darkColor,
+              ),
+              context,
             ),
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.38,
+            fontWeight: FontWeight.w500,
           ),
       backgroundColor: CupertinoDynamicColor.resolve(
         backgroundColor ??
@@ -133,18 +140,18 @@ class CalendarMonthPickerSelectedTodayStyle
   }
 }
 
-class CalendarMonthPickerTodayStyle extends CalendarMonthPickerDayStyle {
-  const CalendarMonthPickerTodayStyle({
+class CalendarMonthPickerCurrentDayStyle extends CalendarMonthPickerDayStyle {
+  const CalendarMonthPickerCurrentDayStyle({
     required super.textStyle,
     required super.backgroundColor,
   });
 
-  factory CalendarMonthPickerTodayStyle.defaultDecoration(
+  factory CalendarMonthPickerCurrentDayStyle.defaultDecoration(
     BuildContext context, {
     Color? backgroundColor,
     TextStyle? textStyle,
   }) {
-    return CalendarMonthPickerTodayStyle(
+    return CalendarMonthPickerCurrentDayStyle(
       textStyle: textStyle ??
           TextStyle(
             fontSize: 20.0,
@@ -156,7 +163,7 @@ class CalendarMonthPickerTodayStyle extends CalendarMonthPickerDayStyle {
               context,
             ),
             fontWeight: FontWeight.w400,
-            letterSpacing: 0.38,
+            letterSpacing: -0.4,
           ),
       backgroundColor: null,
     );

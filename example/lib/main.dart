@@ -18,6 +18,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      showPerformanceOverlay: true,
       title: 'Flutter Demo',
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
@@ -25,8 +26,8 @@ class _MyAppState extends State<MyApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       theme: ThemeData(
-        brightness: Brightness.light,
-        // brightness: Brightness.dark,
+        // brightness: Brightness.light,
+        brightness: Brightness.dark,
       ),
       supportedLocales: const [
         Locale('ru'),
@@ -64,9 +65,9 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             const SizedBox(height: 50.0),
             CupertinoCalendar(
-              minimumDate: nowDate.subtract(const Duration(days: 7)),
-              initialDate: nowDate,
-              currentDate: nowDate,
+              minimumDate: nowDate.subtract(const Duration(days: 90)),
+              initialDate: DateTime(2023, 06, 16),
+              currentDate: DateTime(2023, 06, 16),
               maximumDate: nowDate.add(const Duration(days: 30)),
               onDateChanged: (_) {},
             ),

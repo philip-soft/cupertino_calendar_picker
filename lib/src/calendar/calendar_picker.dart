@@ -1,6 +1,6 @@
 import 'package:cupertino_calendar/lib.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart' as intl;
 
 class CalendarPicker extends StatefulWidget {
   /// Creates a calendar picker.
@@ -167,32 +167,6 @@ class CalendarPickerState extends State<CalendarPicker>
     );
   }
 
-  Iterable<Widget> get _weekdays sync* {
-    final MaterialLocalizations localizations =
-        MaterialLocalizations.of(context);
-    final DateTime nowDate = DateTime.now();
-    final int year = nowDate.year;
-    final int month = nowDate.month;
-    final int firstDayOffset = DateUtils.firstDayOffset(
-      year,
-      month,
-      localizations,
-    );
-    final intl.DateFormat weekdayFormat = intl.DateFormat.E();
-    final DateTime firstDayOfWeekDate = DateTime(year, month).subtract(
-      Duration(days: firstDayOffset),
-    );
-    yield* List<Widget>.generate(DateTime.daysPerWeek, (int index) {
-      final String weekday = weekdayFormat.format(
-        firstDayOfWeekDate.add(Duration(days: index)),
-      );
-      return CalendarWeekday(
-        weekday: weekday.toUpperCase(),
-        decoration: widget.weekdayDecoration,
-      );
-    });
-  }
-
   void _toggleYearPicker(bool shouldShowYearPicker) {
     setState(() {
       _animationController.isCompleted
@@ -208,7 +182,7 @@ class CalendarPickerState extends State<CalendarPicker>
 
     return Column(
       children: <Widget>[
-        const SizedBox(height: 4.0),
+        const SizedBox(height: 5.0),
         CalendarHeader(
           currentMonth: _currentMonth,
           onNextMonthIconTapped:
@@ -228,13 +202,7 @@ class CalendarPickerState extends State<CalendarPicker>
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 const SizedBox(height: 4.0),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: _weekdays.toList(),
-                  ),
-                ),
+                CalendarWeekdays(weekdayDecoration: widget.weekdayDecoration),
                 const SizedBox(height: 3.0),
                 CalendarMonthPicker(
                   monthPageController: _monthPageController,
@@ -256,10 +224,10 @@ class CalendarPickerState extends State<CalendarPicker>
                 top: 10.0,
                 bottom: 38.0,
               ),
-              child: CupertinoCalendarDatePicker(
+              child: CupertinoDatePicker(
                 minimumDate: widget.minimumDate,
                 maximumDate: widget.maximumDate,
-                onDidDateStopScrolling: print,
+                mode: CupertinoDatePickerMode.monthYear,
                 onDateTimeChanged: widget.onDatePickerChanged,
               ),
             ),

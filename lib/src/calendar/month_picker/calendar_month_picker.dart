@@ -74,9 +74,8 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
       } else {
         late CalendarMonthPickerDayStyle style;
 
-        final DateTime nowDate = DateTime.now();
         final DateTime date = DateTime(year, month, day);
-        final bool isToday = DateUtils.isSameDay(nowDate, date);
+        final bool isCurrentDay = DateUtils.isSameDay(widget.currentDate, date);
         final bool isSelectedDay = DateUtils.isSameDay(
           widget.selectedDate,
           date,
@@ -90,13 +89,13 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
         if (isDisabledDay) {
           style = monthPickerDecoration.disabledDayStyle ??
               CalendarMonthPickerDisabledDayStyle.defaultDecoration(context);
-        } else if (isToday) {
+        } else if (isCurrentDay) {
           style = monthPickerDecoration.todayStyle ??
-              CalendarMonthPickerTodayStyle.defaultDecoration(context);
+              CalendarMonthPickerCurrentDayStyle.defaultDecoration(context);
 
           if (isSelectedDay) {
             style = monthPickerDecoration.selectedTodayStyle ??
-                CalendarMonthPickerSelectedTodayStyle.defaultDecoration(
+                CalendarMonthPickerCurrentAndSelectedStyle.defaultDecoration(
                   context,
                 );
           }
@@ -166,11 +165,11 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
           final Iterable<Widget> days = _days(context, index);
 
           return GridView.custom(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: CalendarMonthGridDelegate(
               rowCount: _rowCount(days.length),
-              calendarDayRowHeight: calendarDayRowHeight,
+              calendarDayRowHeight: calendarMonthPickerDayHeight,
             ),
             childrenDelegate: SliverChildListDelegate(
               days.toList(),

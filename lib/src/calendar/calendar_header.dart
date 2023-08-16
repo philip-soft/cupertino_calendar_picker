@@ -31,6 +31,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
   void _handleYearPickerStateChange() {
     setState(() {
       _shouldShowYearPicker = !_shouldShowYearPicker;
+      widget.onYearPickerStateChanged.call(_shouldShowYearPicker);
     });
   }
 
@@ -42,85 +43,90 @@ class _CalendarHeaderState extends State<CalendarHeader> {
   Widget build(BuildContext context) {
     final DateFormat monthFormat = DateFormat('MMMM yyyy');
 
-    return Container(
-      margin: const EdgeInsets.only(left: 16.0),
-      alignment: Alignment.center,
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 9.0,
+        bottom: 11.0,
+        left: 16.0,
+        right: 16.0,
+      ),
       child: Row(
         children: <Widget>[
           GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: _handleYearPickerStateChange,
-            child: SizedBox(
-              height: 44.0,
-              child: Row(
-                children: <Widget>[
-                  Text(
-                    monthFormat.format(widget.currentMonth),
-                    style: TextStyle(
-                      color: CupertinoDynamicColor.resolve(
-                        _shouldShowYearPicker
-                            ? CupertinoDynamicColor.withBrightness(
-                                color: CupertinoColors.systemRed,
-                                darkColor: CupertinoColors.systemRed.darkColor,
-                              )
-                            : CupertinoDynamicColor.withBrightness(
-                                color: CupertinoColors.label,
-                                darkColor: CupertinoColors.label.darkColor,
-                              ),
-                        context,
-                      ),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 17.0,
-                      letterSpacing: -0.41,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  monthFormat.format(widget.currentMonth),
+                  style: TextStyle(
+                    color: CupertinoDynamicColor.resolve(
+                      _shouldShowYearPicker
+                          ? CupertinoDynamicColor.withBrightness(
+                              color: CupertinoColors.systemRed,
+                              darkColor: CupertinoColors.systemRed.darkColor,
+                            )
+                          : CupertinoDynamicColor.withBrightness(
+                              color: CupertinoColors.label,
+                              darkColor: CupertinoColors.label.darkColor,
+                            ),
+                      context,
                     ),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 17.0,
+                    letterSpacing: -0.5,
                   ),
-                  AnimatedRotation(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    turns: _shouldShowYearPicker ? 1.25 : 1.0,
+                ),
+                const SizedBox(width: 4.0),
+                AnimatedRotation(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  turns: _shouldShowYearPicker ? 1.25 : 1.0,
+                  child: SizedBox(
+                    width: 11.0,
+                    height: 22.0,
                     child: Icon(
                       CupertinoIcons.chevron_forward,
                       color: widget.decoration.monthDateArrowColor,
                       size: 20.0,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           const Spacer(),
           AnimatedCrossFade(
             firstChild: const SizedBox(),
             secondChild: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: widget.onPreviousMonthIconTapped,
                   child: SizedBox(
-                    height: 44.0,
-                    width: 44.0,
                     child: Icon(
                       CupertinoIcons.chevron_back,
                       color: _isBackwardDisabled
                           ? _decoration.backwardDisabledButtonColor
                           : _decoration.backwardButtonColor,
-                      size: 26.0,
+                      size: 24.0,
                     ),
                   ),
                 ),
-                const SizedBox(width: 2.0),
+                const SizedBox(width: 20.0),
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: widget.onNextMonthIconTapped,
                   child: SizedBox(
-                    height: 44.0,
-                    width: 44.0,
                     child: Icon(
                       CupertinoIcons.chevron_forward,
                       color: _isForwardDisabled
                           ? _decoration.forwardDisabledButtonColor
                           : _decoration.forwardButtonColor,
-                      size: 26.0,
+                      size: 24.0,
                     ),
                   ),
                 ),
