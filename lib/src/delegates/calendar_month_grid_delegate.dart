@@ -6,36 +6,34 @@ import 'package:flutter/rendering.dart';
 class CalendarMonthGridDelegate extends SliverGridDelegate {
   const CalendarMonthGridDelegate({
     required this.rowCount,
-    required this.calendarDayRowHeight,
+    required this.calendarDayRowSize,
   });
 
   final int rowCount;
-  final double calendarDayRowHeight;
+  final double calendarDayRowSize;
 
   @override
   SliverGridLayout getLayout(SliverConstraints constraints) {
     const int columnCount = DateTime.daysPerWeek;
     final double tileWidth = constraints.crossAxisExtent / columnCount;
     final double tileHeight = min(
-      calendarDayRowHeight,
+      calendarDayRowSize,
       constraints.viewportMainAxisExtent / (rowCount + 1),
     );
-    // late double factor;
+    late double rowPadding;
 
-    // // TODO: Check factor
-    // if (rowCount > 5) {
-    //   factor = 1.5;
-    // } else if (rowCount < 5) {
-    //   factor = -1.5;
-    // } else {
-    //   factor = -1.2;
-    // }
+    if (rowCount == 5) {
+      rowPadding = calendarMonthPickerFiveRowsPadding;
+    } else if (rowCount > 5 || rowCount < 5) {
+      rowPadding = calendarMonthPickerOtherRowsAmountPadding;
+    }
+
     return SliverGridRegularTileLayout(
       childCrossAxisExtent: tileWidth,
       childMainAxisExtent: tileHeight,
       crossAxisCount: columnCount,
       crossAxisStride: tileWidth,
-      mainAxisStride: tileHeight + calendarMonthPickerRowPadding,
+      mainAxisStride: tileHeight + rowPadding,
       reverseCrossAxis: axisDirectionIsReversed(constraints.crossAxisDirection),
     );
   }

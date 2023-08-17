@@ -182,7 +182,7 @@ class CalendarPickerState extends State<CalendarPicker>
 
     return Column(
       children: <Widget>[
-        const SizedBox(height: 5.0),
+        const SizedBox(height: 4.0),
         CalendarHeader(
           currentMonth: _currentMonth,
           onNextMonthIconTapped:
@@ -199,11 +199,11 @@ class CalendarPickerState extends State<CalendarPicker>
                 : CrossFadeState.showFirst,
             duration: const Duration(milliseconds: 250),
             firstChild: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                const SizedBox(height: 4.0),
-                CalendarWeekdays(weekdayDecoration: widget.weekdayDecoration),
                 const SizedBox(height: 3.0),
+                CalendarWeekdays(weekdayDecoration: widget.weekdayDecoration),
+                const SizedBox(height: 1.0),
                 CalendarMonthPicker(
                   monthPageController: _monthPageController,
                   onMonthPageChanged: _handleMonthPageChanged,
@@ -231,8 +231,12 @@ class CalendarPickerState extends State<CalendarPicker>
                 onDateTimeChanged: widget.onDatePickerChanged,
               ),
             ),
-            layoutBuilder: (Widget topChild, Key topChildKey,
-                Widget bottomChild, Key bottomChildKey) {
+            layoutBuilder: (
+              Widget topChild,
+              Key topChildKey,
+              Widget bottomChild,
+              Key bottomChildKey,
+            ) {
               return Stack(
                 children: <Widget>[
                   bottomChild,

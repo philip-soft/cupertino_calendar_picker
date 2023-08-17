@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:cupertino_calendar/lib.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class CalendarMonthPickerDay extends StatelessWidget {
   const CalendarMonthPickerDay({
@@ -20,15 +20,11 @@ class CalendarMonthPickerDay extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: onDaySelected != null ? () => onDaySelected?.call(dayDate) : null,
-      child: SizedBox(
-        height: 44.0,
-        width: 44.0,
-        child: CustomPaint(
-          painter: CalendarMonthPickerDayPainter(
-            day: '${dayDate.day}',
-            style: style.textStyle,
-            backgroundColor: style.backgroundColor,
-          ),
+      child: CustomPaint(
+        painter: CalendarMonthPickerDayPainter(
+          day: '${dayDate.day}',
+          style: style.textStyle,
+          backgroundColor: style.backgroundColor,
         ),
       ),
     );
@@ -93,7 +89,7 @@ class CalendarMonthPickerDayPainter extends CustomPainter {
     final Paint paint = Paint()..color = color;
     canvas.drawCircle(
       offset,
-      calendarMonthPickerDayHeight / 2,
+      calendarMonthPickerDaySize / 2,
       paint,
     );
   }

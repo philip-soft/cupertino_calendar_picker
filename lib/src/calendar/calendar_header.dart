@@ -43,15 +43,11 @@ class _CalendarHeaderState extends State<CalendarHeader> {
   Widget build(BuildContext context) {
     final DateFormat monthFormat = DateFormat('MMMM yyyy');
 
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 9.0,
-        bottom: 11.0,
-        left: 16.0,
-        right: 16.0,
-      ),
+    return SizedBox(
+      height: 44.0,
       child: Row(
         children: <Widget>[
+          const SizedBox(width: 16.0),
           GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: _handleYearPickerStateChange,
@@ -78,7 +74,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
                     letterSpacing: -0.5,
                   ),
                 ),
-                const SizedBox(width: 4.0),
+                const SizedBox(width: 5.0),
                 AnimatedRotation(
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
@@ -100,33 +96,37 @@ class _CalendarHeaderState extends State<CalendarHeader> {
           AnimatedCrossFade(
             firstChild: const SizedBox(),
             secondChild: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: widget.onPreviousMonthIconTapped,
                   child: SizedBox(
+                    height: 44.0,
+                    width: 44.0,
                     child: Icon(
                       CupertinoIcons.chevron_back,
                       color: _isBackwardDisabled
                           ? _decoration.backwardDisabledButtonColor
                           : _decoration.backwardButtonColor,
-                      size: 24.0,
+                      size: 26.5,
                     ),
                   ),
                 ),
-                const SizedBox(width: 20.0),
+                const SizedBox(width: 2.0),
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: widget.onNextMonthIconTapped,
                   child: SizedBox(
+                    height: 44.0,
+                    width: 44.0,
                     child: Icon(
                       CupertinoIcons.chevron_forward,
                       color: _isForwardDisabled
                           ? _decoration.forwardDisabledButtonColor
                           : _decoration.forwardButtonColor,
-                      size: 24.0,
+                      size: 26.5,
                     ),
                   ),
                 ),

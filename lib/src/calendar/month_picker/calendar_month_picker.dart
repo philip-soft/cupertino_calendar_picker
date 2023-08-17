@@ -165,11 +165,11 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
           final Iterable<Widget> days = _days(context, index);
 
           return GridView.custom(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: CalendarMonthGridDelegate(
               rowCount: _rowCount(days.length),
-              calendarDayRowHeight: calendarMonthPickerDayHeight,
+              calendarDayRowSize: calendarMonthPickerDaySize,
             ),
             childrenDelegate: SliverChildListDelegate(
               days.toList(),

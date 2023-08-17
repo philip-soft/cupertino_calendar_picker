@@ -66,9 +66,9 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 50.0),
             CupertinoCalendar(
               minimumDate: nowDate.subtract(const Duration(days: 90)),
-              initialDate: DateTime(2023, 06, 16),
-              currentDate: DateTime(2023, 06, 16),
-              maximumDate: nowDate.add(const Duration(days: 30)),
+              initialDate: DateTime(2026, 02, 16),
+              currentDate: DateTime(2026, 02, 14),
+              maximumDate: DateTime(2030, 02, 14),
               onDateChanged: (_) {},
             ),
             const SizedBox(height: 100.0),

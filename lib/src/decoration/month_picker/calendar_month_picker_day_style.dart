@@ -84,7 +84,7 @@ class CalendarMonthPickerSelectedDayStyle extends CalendarMonthPickerDayStyle {
     return CalendarMonthPickerSelectedDayStyle(
       textStyle: textStyle ??
           TextStyle(
-            fontSize: 24.0,
+            fontSize: 22.0,
             color: CupertinoDynamicColor.withBrightness(
               color: CupertinoColors.systemRed,
               darkColor: CupertinoColors.systemRed.darkColor,
@@ -118,7 +118,7 @@ class CalendarMonthPickerCurrentAndSelectedStyle
     return CalendarMonthPickerCurrentAndSelectedStyle(
       textStyle: textStyle ??
           TextStyle(
-            fontSize: 24.0,
+            fontSize: 22.0,
             color: CupertinoDynamicColor.resolve(
               CupertinoDynamicColor.withBrightness(
                 color: CupertinoColors.label.darkColor,
