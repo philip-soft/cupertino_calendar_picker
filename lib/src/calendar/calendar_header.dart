@@ -1,7 +1,6 @@
+import 'package:cupertino_calendar/lib.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-
-import '../../lib.dart';
 
 typedef YearPickerCallback = void Function(bool shouldShowYearPicker);
 
@@ -43,14 +42,14 @@ class _CalendarHeaderState extends State<CalendarHeader> {
   Widget build(BuildContext context) {
     final DateFormat monthFormat = DateFormat('MMMM yyyy');
 
-    return SizedBox(
-      height: 44.0,
-      child: Row(
-        children: <Widget>[
-          const SizedBox(width: 16.0),
-          GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: _handleYearPickerStateChange,
+    return Row(
+      children: <Widget>[
+        const SizedBox(width: 16.0),
+        GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: _handleYearPickerStateChange,
+          child: SizedBox(
+            height: 44.0,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
@@ -92,66 +91,66 @@ class _CalendarHeaderState extends State<CalendarHeader> {
               ],
             ),
           ),
-          const Spacer(),
-          AnimatedCrossFade(
-            firstChild: const SizedBox(),
-            secondChild: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: widget.onPreviousMonthIconTapped,
-                  child: SizedBox(
-                    height: 44.0,
-                    width: 44.0,
-                    child: Icon(
-                      CupertinoIcons.chevron_back,
-                      color: _isBackwardDisabled
-                          ? _decoration.backwardDisabledButtonColor
-                          : _decoration.backwardButtonColor,
-                      size: 26.5,
-                    ),
+        ),
+        const Spacer(),
+        AnimatedCrossFade(
+          firstChild: const SizedBox(),
+          secondChild: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: widget.onPreviousMonthIconTapped,
+                child: SizedBox(
+                  height: 44.0,
+                  width: 44.0,
+                  child: Icon(
+                    CupertinoIcons.chevron_back,
+                    color: _isBackwardDisabled
+                        ? _decoration.backwardDisabledButtonColor
+                        : _decoration.backwardButtonColor,
+                    size: 26.5,
                   ),
                 ),
-                const SizedBox(width: 2.0),
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: widget.onNextMonthIconTapped,
-                  child: SizedBox(
-                    height: 44.0,
-                    width: 44.0,
-                    child: Icon(
-                      CupertinoIcons.chevron_forward,
-                      color: _isForwardDisabled
-                          ? _decoration.forwardDisabledButtonColor
-                          : _decoration.forwardButtonColor,
-                      size: 26.5,
-                    ),
+              ),
+              const SizedBox(width: 2.0),
+              GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: widget.onNextMonthIconTapped,
+                child: SizedBox(
+                  height: 44.0,
+                  width: 44.0,
+                  child: Icon(
+                    CupertinoIcons.chevron_forward,
+                    color: _isForwardDisabled
+                        ? _decoration.forwardDisabledButtonColor
+                        : _decoration.forwardButtonColor,
+                    size: 26.5,
                   ),
                 ),
-              ],
-            ),
-            crossFadeState: _shouldShowYearPicker
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
-            duration: const Duration(milliseconds: 300),
-            layoutBuilder: (
-              Widget topChild,
-              Key topChildKey,
-              Widget bottomChild,
-              Key bottomChildKey,
-            ) {
-              return Stack(
-                children: <Widget>[
-                  bottomChild,
-                  topChild,
-                ],
-              );
-            },
+              ),
+            ],
           ),
-        ],
-      ),
+          crossFadeState: _shouldShowYearPicker
+              ? CrossFadeState.showFirst
+              : CrossFadeState.showSecond,
+          duration: const Duration(milliseconds: 300),
+          layoutBuilder: (
+            Widget topChild,
+            Key topChildKey,
+            Widget bottomChild,
+            Key bottomChildKey,
+          ) {
+            return Stack(
+              children: <Widget>[
+                bottomChild,
+                topChild,
+              ],
+            );
+          },
+        ),
+      ],
     );
   }
 }

@@ -12,7 +12,7 @@ class CalendarPicker extends StatefulWidget {
     required this.selectedDate,
     required this.onChanged,
     required this.onDisplayedMonthChanged,
-    required this.onDatePickerChanged,
+    required this.onYearPickerChanged,
     required this.weekdayDecoration,
     required this.monthPickerDecoration,
     required this.calendarHeaderDecoration,
@@ -50,7 +50,7 @@ class CalendarPicker extends StatefulWidget {
   /// Called when the user navigates to a new month.
   final ValueChanged<DateTime> onDisplayedMonthChanged;
 
-  final ValueChanged<DateTime> onDatePickerChanged;
+  final ValueChanged<DateTime> onYearPickerChanged;
   final CalendarWeekdayDecoration weekdayDecoration;
   final CalendarMonthPickerDecoration monthPickerDecoration;
   final CalendarHeaderDecoration calendarHeaderDecoration;
@@ -100,10 +100,6 @@ class CalendarPickerState extends State<CalendarPicker>
     _monthPageController.dispose();
     _animationController.dispose();
     super.dispose();
-  }
-
-  void _handleDateSelection(DateTime selectedDate) {
-    widget.onChanged(selectedDate);
   }
 
   void _handleMonthPageChanged(int monthPage) {
@@ -178,8 +174,6 @@ class CalendarPickerState extends State<CalendarPicker>
 
   @override
   Widget build(BuildContext context) {
-    assert(debugCheckHasMaterialLocalizations(context));
-
     return Column(
       children: <Widget>[
         const SizedBox(height: 4.0),
@@ -225,10 +219,17 @@ class CalendarPickerState extends State<CalendarPicker>
                 bottom: 38.0,
               ),
               child: CupertinoDatePicker(
-                minimumDate: widget.minimumDate,
-                maximumDate: widget.maximumDate,
+                minimumDate: DateTime(
+                  widget.minimumDate.year,
+                  widget.minimumDate.month,
+                ),
+                maximumDate: DateTime(
+                  widget.maximumDate.year,
+                  widget.maximumDate.month,
+                ),
                 mode: CupertinoDatePickerMode.monthYear,
-                onDateTimeChanged: widget.onDatePickerChanged,
+                onDateTimeChanged: widget.onYearPickerChanged,
+                initialDateTime: _currentMonth,
               ),
             ),
             layoutBuilder: (
@@ -239,8 +240,14 @@ class CalendarPickerState extends State<CalendarPicker>
             ) {
               return Stack(
                 children: <Widget>[
-                  bottomChild,
-                  topChild,
+                  SizedBox(
+                    key: bottomChildKey,
+                    child: bottomChild,
+                  ),
+                  SizedBox(
+                    key: topChildKey,
+                    child: topChild,
+                  ),
                 ],
               );
             },

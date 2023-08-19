@@ -15,16 +15,22 @@ class CalendarContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: calendarWidth,
-      child: AspectRatio(
-        aspectRatio: calendarAspectRatio,
-        child: Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: decoration.borderRadius,
-            color: decoration.backgroundColor,
-            boxShadow: decoration.boxShadow,
+      height: calendarHeight,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: decoration.borderRadius,
+          color: decoration.backgroundColor,
+          boxShadow: decoration.boxShadow,
+        ),
+        clipBehavior: Clip.hardEdge,
+        child: FittedBox(
+          alignment: Alignment.topCenter,
+          fit: BoxFit.none,
+          child: SizedBox(
+            width: calendarWidth,
+            height: calendarHeight,
+            child: child,
           ),
-          child: child,
         ),
       ),
     );

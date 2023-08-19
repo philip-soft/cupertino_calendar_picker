@@ -85,43 +85,52 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
   @override
   void initState() {
     super.initState();
-    final DateTime initialDate = widget.initialDate;
-    _currentlyDisplayedMonthDate = PackageDateUtils.monthDateOnly(initialDate);
-    _selectedDate = DateUtils.dateOnly(initialDate);
+    _initializeInitialDate();
   }
 
   @override
   void didUpdateWidget(CupertinoCalendar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final DateTime initialDate = widget.initialDate;
-    _currentlyDisplayedMonthDate = PackageDateUtils.monthDateOnly(
-      initialDate,
-    );
-    _selectedDate = DateUtils.dateOnly(initialDate);
+    if (oldWidget.initialDate != widget.initialDate) {
+      _initializeInitialDate();
+    }
   }
 
-  void _handleCalendarMonthChange(DateTime date) {
-    final DateTime displayedDate = PackageDateUtils.monthDateOnly(
-      _currentlyDisplayedMonthDate,
-    );
-    setState(() {
-      if (!DateUtils.isSameMonth(displayedDate, date)) {
-        _currentlyDisplayedMonthDate = PackageDateUtils.monthDateOnly(
-          date,
-        );
-        widget.onDisplayedMonthChanged?.call(_currentlyDisplayedMonthDate);
-      }
-    });
+  void _initializeInitialDate() {
+    final DateTime initialDate = widget.initialDate;
+    _currentlyDisplayedMonthDate = PackageDateUtils.monthDateOnly(initialDate);
+    _selectedDate = DateUtils.dateOnly(initialDate);
   }
 
   void _handleCalendarDateChange(DateTime date) {
     DateTime newDate = date;
-    if (newDate.isBefore(widget.minimumDate)) {
+
+    final bool exceedMinimumDate = newDate.isBefore(widget.minimumDate);
+    final bool exceedMaximumDate = newDate.isAfter(widget.maximumDate);
+    if (exceedMinimumDate) {
       newDate = widget.minimumDate;
-    } else if (newDate.isAfter(widget.maximumDate)) {
+    } else if (exceedMaximumDate) {
       newDate = widget.maximumDate;
     }
     _handleCalendarMonthChange(newDate);
+  }
+
+  void _handleCalendarMonthChange(DateTime newMonthDate) {
+    setState(() {
+      final DateTime displayedMonth = PackageDateUtils.monthDateOnly(
+        _currentlyDisplayedMonthDate,
+      );
+      final bool monthChanged = !DateUtils.isSameMonth(
+        displayedMonth,
+        newMonthDate,
+      );
+      if (monthChanged) {
+        _currentlyDisplayedMonthDate = PackageDateUtils.monthDateOnly(
+          newMonthDate,
+        );
+        widget.onDisplayedMonthChanged?.call(_currentlyDisplayedMonthDate);
+      }
+    });
   }
 
   void _handleCalendarDayChange(DateTime date) {
@@ -144,7 +153,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
         selectedDate: _selectedDate,
         onChanged: _handleCalendarDayChange,
         onDisplayedMonthChanged: _handleCalendarMonthChange,
-        onDatePickerChanged: _handleCalendarDateChange,
+        onYearPickerChanged: _handleCalendarDateChange,
         weekdayDecoration: widget.weekdaysDecoration ??
             CalendarWeekdayDecoration.defaultDecoration(context),
         monthPickerDecoration: widget.monthPickerDecoration ??

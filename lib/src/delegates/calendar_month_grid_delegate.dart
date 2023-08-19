@@ -24,7 +24,7 @@ class CalendarMonthGridDelegate extends SliverGridDelegate {
 
     if (rowCount == 5) {
       rowPadding = calendarMonthPickerFiveRowsPadding;
-    } else if (rowCount > 5 || rowCount < 5) {
+    } else {
       rowPadding = calendarMonthPickerOtherRowsAmountPadding;
     }
 
