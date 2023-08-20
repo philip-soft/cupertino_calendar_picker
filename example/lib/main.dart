@@ -1,12 +1,11 @@
 import 'package:cupertino_calendar/lib.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
 
 void main() {
-  // timeDilation = 5.0;
+  // timeDilation = 10.0;
   runApp(const MyApp());
 }
 
@@ -55,31 +54,234 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
-  late AnimationController _controller;
-  late AnimationController _fadeController;
-  late Animation<double> _animation;
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> opacity;
+  late final Animation<double> scale;
+  late final Animation<double> height;
+
   bool _isExpanded = false;
 
   @override
   void initState() {
     super.initState();
-    const duration = Duration(milliseconds: 400);
-
     _controller = AnimationController(
       vsync: this,
-      duration: duration,
-      value: 1.0,
-      lowerBound: 0.3,
+      duration: const Duration(milliseconds: 300),
     );
 
-    _fadeController = AnimationController(
-      vsync: this,
-      duration: duration,
-      value: 1.0,
+    scale = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 0.29,
+          end: 0.39,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 0.39,
+          end: 0.5,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 0.5,
+          end: 0.61,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 0.61,
+          end: 0.7,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 0.7,
+          end: 0.785,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 0.785,
+          end: 0.85,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 0.85,
+          end: 0.9,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 0.9,
+          end: 0.94,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 0.94,
+          end: 0.965,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 0.965,
+          end: 0.985,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 0.985,
+          end: 0.997,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 0.997,
+          end: 1.0,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 1.0,
+          end: 1.01,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 1.01,
+          end: 1.0,
+        ),
+        weight: 0.071,
+      ),
+    ]).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.linear,
+      ),
     );
 
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+    height = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 75.0,
+          end: 110.0,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 110.0,
+          end: 150.0,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 150.0,
+          end: 185.0,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 185.0,
+          end: 220.0,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 220.0,
+          end: 245.0,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 245.0,
+          end: 265.0,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 265.0,
+          end: 283.0,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 283.0,
+          end: 295.0,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 295.0,
+          end: 305.0,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 305.0,
+          end: 310.0,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 310.0,
+          end: 315.0,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 315.0,
+          end: 318.0,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 318.0,
+          end: 319.0,
+        ),
+        weight: 0.071,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 319.0,
+          end: calendarHeight,
+        ),
+        weight: 0.071,
+      ),
+    ]).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.linear,
+      ),
+    );
   }
 
   @override
@@ -91,10 +293,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   void _toggleAnimation() {
     if (_isExpanded) {
       _controller.reverse();
-      _fadeController.reverse();
     } else {
       _controller.forward();
-      _fadeController.forward();
     }
     setState(() {
       _isExpanded = !_isExpanded;
@@ -104,8 +304,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       _width = calendarWidth;
       _height = calendarHeight;
     } else {
-      _width = 204.0;
-      _height = 94.0;
+      _width = calendarWidth - 3.0;
+      _height = 75.0;
     }
 
     setState(() {});
@@ -125,49 +325,25 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           Positioned(
             bottom: 211.0,
             right: 30.0,
-            child: FadeTransition(
-              opacity: CurvedAnimation(
-                parent: _fadeController,
-                curve: Curves.easeInOut,
+            child: AnimatedBuilder(
+              animation: _controller,
+              child: CupertinoCalendar(
+                minimumDate: nowDate.subtract(const Duration(days: 15)),
+                initialDate: nowDate,
+                currentDate: nowDate,
+                maximumDate: DateTime(2030, 02, 14),
+                onDateChanged: (_) {},
               ),
-              child: ScaleTransition(
-                scale: TweenSequence<double>([
-                  TweenSequenceItem(
-                    tween: Tween(
-                      begin: 0.0,
-                      end: 1.0,
-                    ),
-                    weight: 0.8,
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: scale.value,
+                  alignment: const Alignment(0.5, 1.0),
+                  child: SizedBox(
+                    height: height.value,
+                    child: child,
                   ),
-                  TweenSequenceItem(
-                    tween: Tween(
-                      begin: 1.0,
-                      end: 1.05,
-                    ),
-                    weight: 0.1,
-                  ),
-                  TweenSequenceItem(
-                    tween: Tween(
-                      begin: 1.05,
-                      end: 1.0,
-                    ),
-                    weight: 0.1,
-                  ),
-                ]).animate(_controller),
-                alignment: Alignment.bottomCenter,
-                child: AnimatedContainer(
-                  duration: _controller.duration!,
-                  curve: Curves.easeInOut,
-                  height: _height,
-                  child: CupertinoCalendar(
-                    minimumDate: nowDate.subtract(const Duration(days: 15)),
-                    initialDate: nowDate,
-                    currentDate: nowDate,
-                    maximumDate: DateTime(2030, 02, 14),
-                    onDateChanged: (_) {},
-                  ),
-                ),
-              ),
+                );
+              },
             ),
           ),
           Positioned(
