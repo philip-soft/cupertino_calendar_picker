@@ -27,7 +27,7 @@ class _CalendarContainerState extends State<CalendarContainer>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 410),
+      duration: const Duration(milliseconds: 430),
       reverseDuration: const Duration(milliseconds: 280),
     );
 
