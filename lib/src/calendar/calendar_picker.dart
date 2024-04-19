@@ -193,7 +193,6 @@ class CalendarPickerState extends State<CalendarPicker>
                 : CrossFadeState.showFirst,
             duration: const Duration(milliseconds: 250),
             firstChild: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 const SizedBox(height: 3.0),
                 CalendarWeekdays(weekdayDecoration: widget.weekdayDecoration),

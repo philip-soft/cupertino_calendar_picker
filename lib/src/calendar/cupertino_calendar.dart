@@ -1,8 +1,7 @@
 import 'package:cupertino_calendar/src/calendar/calendar.dart';
+import 'package:cupertino_calendar/src/decoration/decoration.dart';
 import 'package:cupertino_calendar/src/utils/utils.dart';
 import 'package:flutter/material.dart';
-
-import '../decoration/decoration.dart';
 
 class CupertinoCalendar extends StatefulWidget {
   /// Creates a cupertino calendar picker.
@@ -25,6 +24,7 @@ class CupertinoCalendar extends StatefulWidget {
     required DateTime initialDate,
     required DateTime minimumDate,
     required DateTime maximumDate,
+    required this.scaleAlignment,
     required this.onDateChanged,
     DateTime? currentDate,
     this.onDisplayedMonthChanged,
@@ -73,6 +73,7 @@ class CupertinoCalendar extends StatefulWidget {
   final CalendarWeekdayDecoration? weekdaysDecoration;
   final CalendarMonthPickerDecoration? monthPickerDecoration;
   final CalendarHeaderDecoration? calendarHeaderDecoration;
+  final Alignment scaleAlignment;
 
   @override
   State<CupertinoCalendar> createState() => _CupertinoCalendarState();
@@ -143,6 +144,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
   @override
   Widget build(BuildContext context) {
     return CalendarContainer(
+      scaleAlignment: widget.scaleAlignment,
       decoration: widget.containerDecoration ??
           CalendarContainerDecoration.withDynamicColor(context),
       child: CalendarPicker(

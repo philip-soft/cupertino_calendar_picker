@@ -11,12 +11,6 @@ class CalendarMonthPickerDecoration extends Equatable {
     this.disabledDayStyle,
   });
 
-  final CalendarMonthPickerDayStyle? dayStyle;
-  final CalendarMonthPickerDayStyle? todayStyle;
-  final CalendarMonthPickerDayStyle? selectedDayStyle;
-  final CalendarMonthPickerDayStyle? selectedTodayStyle;
-  final CalendarMonthPickerDayStyle? disabledDayStyle;
-
   factory CalendarMonthPickerDecoration.defaultDecoration(
     BuildContext context,
   ) {
@@ -35,6 +29,12 @@ class CalendarMonthPickerDecoration extends Equatable {
       ),
     );
   }
+
+  final CalendarMonthPickerDayStyle? dayStyle;
+  final CalendarMonthPickerDayStyle? todayStyle;
+  final CalendarMonthPickerDayStyle? selectedDayStyle;
+  final CalendarMonthPickerDayStyle? selectedTodayStyle;
+  final CalendarMonthPickerDayStyle? disabledDayStyle;
 
   CalendarMonthPickerDecoration copyWith({
     CalendarMonthPickerDayStyle? dayStyle,

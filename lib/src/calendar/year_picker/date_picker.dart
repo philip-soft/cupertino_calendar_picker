@@ -673,7 +673,7 @@ class _CupertinoDatePickerDateState extends State<CupertinoCalendarDatePicker> {
     final List<Widget Function(double p1, TransitionBuilder p2, Widget p3)>
         pickerBuilders = <Widget Function(double, TransitionBuilder, Widget)>[
       _buildMonthPicker,
-      _buildYearPicker
+      _buildYearPicker,
     ];
     final List<double> columnWidths = <double>[
       estimatedColumnWidths[_PickerColumnType.month.index]!,
@@ -722,7 +722,7 @@ class _CupertinoDatePickerDateState extends State<CupertinoCalendarDatePicker> {
     }
 
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
       child: DefaultTextStyle.merge(
         style: _kDefaultPickerTextStyle,
         child: CustomMultiChildLayout(

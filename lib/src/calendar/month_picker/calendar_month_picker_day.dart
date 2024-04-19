@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 class CalendarMonthPickerDay extends StatelessWidget {
   const CalendarMonthPickerDay({
     required this.dayDate,
-    this.onDaySelected,
     required this.style,
+    this.onDaySelected,
     super.key,
   });
 

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class CalendarWeekdays extends StatelessWidget {
-  const CalendarWeekdays({super.key, required this.weekdayDecoration});
+  const CalendarWeekdays({required this.weekdayDecoration, super.key});
 
   final CalendarWeekdayDecoration weekdayDecoration;
 
@@ -38,7 +38,6 @@ class CalendarWeekdays extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: _weekdays(context).toList(),
       ),
     );

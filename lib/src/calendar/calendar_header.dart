@@ -11,8 +11,8 @@ class CalendarHeader extends StatefulWidget {
     required this.onPreviousMonthIconTapped,
     required this.onNextMonthIconTapped,
     required this.decoration,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final DateTime currentMonth;
   final VoidCallback? onPreviousMonthIconTapped;
@@ -51,7 +51,6 @@ class _CalendarHeaderState extends State<CalendarHeader> {
           child: SizedBox(
             height: 44.0,
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(
                   monthFormat.format(widget.currentMonth),
@@ -96,7 +95,6 @@ class _CalendarHeaderState extends State<CalendarHeader> {
         AnimatedCrossFade(
           firstChild: const SizedBox(),
           secondChild: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               GestureDetector(

@@ -1,12 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
 class CalendarContainerDecoration {
-  const CalendarContainerDecoration._({
-    required this.borderRadius,
-    required this.backgroundColor,
-    required this.boxShadow,
-  });
-
   factory CalendarContainerDecoration({
     BorderRadius? borderRadius,
     Color? backgroundColor,
@@ -26,6 +20,12 @@ class CalendarContainerDecoration {
           borderRadius ?? const BorderRadius.all(Radius.circular(13.0)),
     );
   }
+
+  const CalendarContainerDecoration._({
+    required this.borderRadius,
+    required this.backgroundColor,
+    required this.boxShadow,
+  });
 
   factory CalendarContainerDecoration.withDynamicColor(
     BuildContext context, {

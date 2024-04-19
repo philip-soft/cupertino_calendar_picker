@@ -9,12 +9,6 @@ class CalendarHeaderDecoration {
     this.forwardDisabledButtonColor,
   });
 
-  final Color? monthDateArrowColor;
-  final Color? forwardButtonColor;
-  final Color? backwardButtonColor;
-  final Color? backwardDisabledButtonColor;
-  final Color? forwardDisabledButtonColor;
-
   factory CalendarHeaderDecoration.defaultDecoration(
     BuildContext context, {
     Color? monthDateArrowColor,
@@ -66,4 +60,10 @@ class CalendarHeaderDecoration {
           ),
     );
   }
+
+  final Color? monthDateArrowColor;
+  final Color? forwardButtonColor;
+  final Color? backwardButtonColor;
+  final Color? backwardDisabledButtonColor;
+  final Color? forwardDisabledButtonColor;
 }

@@ -1,15 +1,18 @@
 import 'package:cupertino_calendar/lib.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class CalendarContainer extends StatefulWidget {
   const CalendarContainer({
     required this.child,
     required this.decoration,
+    required this.scaleAlignment,
     super.key,
   });
 
   final Widget child;
   final CalendarContainerDecoration decoration;
+  final Alignment scaleAlignment;
 
   @override
   State<CalendarContainer> createState() => _CalendarContainerState();
@@ -43,6 +46,8 @@ class _CalendarContainerState extends State<CalendarContainer>
         curve: Curves.ease,
       ),
     );
+
+    _controller.forward();
   }
 
   @override
@@ -63,8 +68,36 @@ class _CalendarContainerState extends State<CalendarContainer>
     _isExpanded = !_isExpanded;
   }
 
+  Offset get originFromScaleAlignment {
+    return switch (widget.scaleAlignment) {
+      Alignment.topCenter => const Offset(0, -calendarHeight),
+      Alignment.topRight => const Offset(calendarWidth, -calendarHeight),
+      Alignment.topLeft => const Offset(-calendarWidth, -calendarHeight),
+      Alignment.bottomRight => const Offset(calendarWidth, 0),
+      Alignment.bottomLeft => const Offset(-calendarWidth, 0),
+      Alignment.bottomCenter => Offset.zero,
+      Alignment.center => Offset.zero,
+      _ => Offset.zero,
+    };
+  }
+
+  Alignment get innerAlignment {
+    return switch (widget.scaleAlignment) {
+      Alignment.topCenter => Alignment.bottomCenter,
+      Alignment.topRight => Alignment.bottomRight,
+      Alignment.topLeft => Alignment.bottomLeft,
+      Alignment.bottomRight => Alignment.topRight,
+      Alignment.bottomLeft => Alignment.topLeft,
+      Alignment.bottomCenter => Alignment.topCenter,
+      Alignment.center => Alignment.center,
+      _ => Alignment.topCenter,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
+    final Offset origin = originFromScaleAlignment;
+
     return Column(
       children: <Widget>[
         AnimatedBuilder(
@@ -80,7 +113,7 @@ class _CalendarContainerState extends State<CalendarContainer>
               ),
               clipBehavior: Clip.hardEdge,
               child: FittedBox(
-                alignment: Alignment.topCenter,
+                alignment: innerAlignment,
                 fit: BoxFit.none,
                 child: SizedBox(
                   width: calendarWidth,
@@ -93,16 +126,19 @@ class _CalendarContainerState extends State<CalendarContainer>
           builder: (BuildContext context, Widget? child) {
             return Transform.scale(
               scale: scale.value,
-              alignment: const Alignment(0.6, 1.0),
-              child: SizedBox(
-                height: height.value,
-                child: child,
+              alignment: Alignment.bottomCenter,
+              origin: origin,
+              child: Container(
+                height: 319.0,
+                alignment: widget.scaleAlignment,
+                child: SizedBox(
+                  height: height.value,
+                  child: child,
+                ),
               ),
             );
           },
         ),
-        const SizedBox(height: 50.0),
-        FloatingActionButton(onPressed: _toggleAnimation)
       ],
     );
   }
