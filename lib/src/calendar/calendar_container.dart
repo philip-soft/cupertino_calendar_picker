@@ -1,18 +1,19 @@
 import 'package:cupertino_calendar/lib.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class CalendarContainer extends StatefulWidget {
   const CalendarContainer({
     required this.child,
     required this.decoration,
     required this.scaleAlignment,
+    required this.onInitialized,
     super.key,
   });
 
   final Widget child;
   final CalendarContainerDecoration decoration;
   final Alignment scaleAlignment;
+  final void Function(AnimationController controller) onInitialized;
 
   @override
   State<CalendarContainer> createState() => _CalendarContainerState();
@@ -30,55 +31,30 @@ class _CalendarContainerState extends State<CalendarContainer>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 430),
-      reverseDuration: const Duration(milliseconds: 280),
+      duration: calendarAnimationDuration,
+      reverseDuration: calendarAnimationReverseDuration,
     );
 
     scale = CalendarAnimations.scaleAnimation.animate(
       CurvedAnimation(
         parent: _controller,
-        curve: Curves.ease,
+        curve: calendarAnimationCurve,
       ),
     );
     height = CalendarAnimations.heightAnimation.animate(
       CurvedAnimation(
         parent: _controller,
-        curve: Curves.ease,
+        curve: calendarAnimationCurve,
       ),
     );
 
-    _controller.forward();
+    widget.onInitialized(_controller);
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  bool _isExpanded = false;
-
-  void _toggleAnimation() {
-    if (_isExpanded) {
-      _controller.reverse(from: 0.75);
-    } else {
-      _controller.forward();
-    }
-
-    _isExpanded = !_isExpanded;
-  }
-
-  Offset get originFromScaleAlignment {
-    return switch (widget.scaleAlignment) {
-      Alignment.topCenter => const Offset(0, -calendarHeight),
-      Alignment.topRight => const Offset(calendarWidth, -calendarHeight),
-      Alignment.topLeft => const Offset(-calendarWidth, -calendarHeight),
-      Alignment.bottomRight => const Offset(calendarWidth, 0),
-      Alignment.bottomLeft => const Offset(-calendarWidth, 0),
-      Alignment.bottomCenter => Offset.zero,
-      Alignment.center => Offset.zero,
-      _ => Offset.zero,
-    };
   }
 
   Alignment get innerAlignment {
@@ -96,8 +72,6 @@ class _CalendarContainerState extends State<CalendarContainer>
 
   @override
   Widget build(BuildContext context) {
-    final Offset origin = originFromScaleAlignment;
-
     return Column(
       children: <Widget>[
         AnimatedBuilder(
@@ -126,8 +100,7 @@ class _CalendarContainerState extends State<CalendarContainer>
           builder: (BuildContext context, Widget? child) {
             return Transform.scale(
               scale: scale.value,
-              alignment: Alignment.bottomCenter,
-              origin: origin,
+              alignment: widget.scaleAlignment,
               child: Container(
                 height: 319.0,
                 alignment: widget.scaleAlignment,
