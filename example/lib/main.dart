@@ -76,28 +76,30 @@ class _MyHomePageState extends State<MyHomePage> {
       body: ListView(
         padding: EdgeInsets.zero,
         children: [
-          Stack(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                  top: _offset.dy,
-                  left: _offset.dx,
-                ),
-                child: CupertinoCalendarButton(
-                  calendarOffset: const Offset(0, 30),
-                  calendarHorizontalSpacing: 10.0,
-                  onPressed: () {},
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(12),
+          Padding(
+            padding: EdgeInsets.only(
+              top: _offset.dy,
+              right: _offset.dx,
+            ),
+            child: CupertinoCalendarButton(
+              onPressed: () {},
+              child: Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  alignment: Alignment.center,
+                  width: 50,
+                  height: 40,
+                  child: const Center(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
                     ),
-                    width: 100,
-                    height: 40,
                   ),
                 ),
               ),
-            ],
+            ),
           ),
         ],
       ),

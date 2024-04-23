@@ -5,11 +5,9 @@ const String _barrierLabel = 'CupertinoCalendarPickerBarrier';
 
 Future<void> showCupertinoCalendarPicker(
   BuildContext context, {
-  required Alignment scaleAligment,
-  double? top,
-  double? left,
-  double? right,
-  double? bottom,
+  double horizontalSpacing = 10.0,
+  Offset offset = const Offset(0.0, 30.0),
+  RenderBox? widgetRenderBox,
 }) {
   return showGeneralDialog(
     context: context,
@@ -31,11 +29,9 @@ Future<void> showCupertinoCalendarPicker(
       Animation<double> secondaryAnimation,
     ) {
       return CupertinoCalendarOverlay(
-        top: top,
-        left: left,
-        right: right,
-        bottom: bottom,
-        scaleAligment: scaleAligment,
+        horizontalSpacing: horizontalSpacing,
+        offset: offset,
+        widgetRenderBox: widgetRenderBox,
       );
     },
   );
