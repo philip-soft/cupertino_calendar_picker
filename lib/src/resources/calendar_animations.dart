@@ -209,13 +209,13 @@ class CalendarAnimations {
     TweenSequenceItem<double>(
       tween: Tween<double>(
         begin: 318.0,
-        end: 319.0,
+        end: calendarMaxAnimationHeight,
       ),
       weight: 0.0666,
     ),
     TweenSequenceItem<double>(
       tween: Tween<double>(
-        begin: 319.0,
+        begin: calendarMaxAnimationHeight,
         end: calendarHeight,
       ),
       weight: 0.0666,

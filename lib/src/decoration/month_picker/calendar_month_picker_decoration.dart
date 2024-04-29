@@ -1,8 +1,7 @@
 import 'package:cupertino_calendar/lib.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-class CalendarMonthPickerDecoration extends Equatable {
+class CalendarMonthPickerDecoration {
   const CalendarMonthPickerDecoration({
     this.dayStyle,
     this.todayStyle,
@@ -51,13 +50,4 @@ class CalendarMonthPickerDecoration extends Equatable {
       disabledDayStyle: disabledDayStyle ?? this.disabledDayStyle,
     );
   }
-
-  @override
-  List<Object?> get props => <Object?>[
-        dayStyle,
-        todayStyle,
-        selectedDayStyle,
-        selectedTodayStyle,
-        disabledDayStyle,
-      ];
 }

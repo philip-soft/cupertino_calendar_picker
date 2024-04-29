@@ -35,26 +35,17 @@ class _CalendarContainerState extends State<CalendarContainer>
       reverseDuration: calendarAnimationReverseDuration,
     );
 
-    scale = CalendarAnimations.scaleAnimation.animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: calendarAnimationCurve,
-      ),
-    );
-    height = CalendarAnimations.heightAnimation.animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: calendarAnimationCurve,
-      ),
-    );
+    scale = CalendarAnimations.scaleAnimation.animate(_curvedAnimation);
+    height = CalendarAnimations.heightAnimation.animate(_curvedAnimation);
 
     widget.onInitialized(_controller);
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  CurvedAnimation get _curvedAnimation {
+    return CurvedAnimation(
+      parent: _controller,
+      curve: calendarAnimationCurve,
+    );
   }
 
   Alignment get innerAlignment {
@@ -68,6 +59,12 @@ class _CalendarContainerState extends State<CalendarContainer>
       Alignment.center => Alignment.center,
       _ => Alignment.topCenter,
     };
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -102,7 +99,7 @@ class _CalendarContainerState extends State<CalendarContainer>
               scale: scale.value,
               alignment: widget.scaleAlignment,
               child: Container(
-                height: 319.0,
+                height: calendarMaxAnimationHeight,
                 alignment: widget.scaleAlignment,
                 child: SizedBox(
                   height: height.value,

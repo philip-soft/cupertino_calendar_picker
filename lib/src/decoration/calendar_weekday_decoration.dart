@@ -1,26 +1,27 @@
+import 'package:cupertino_calendar/lib.dart';
 import 'package:flutter/cupertino.dart';
 
 class CalendarWeekdayDecoration {
-  const CalendarWeekdayDecoration({
+  factory CalendarWeekdayDecoration({
+    TextStyle? textStyle,
+  }) {
+    return CalendarWeekdayDecoration._(
+      textStyle: textStyle ?? calendarWeekdayStyle,
+    );
+  }
+
+  const CalendarWeekdayDecoration._({
     required this.textStyle,
   });
 
-  factory CalendarWeekdayDecoration.defaultDecoration(
+  factory CalendarWeekdayDecoration.withDynamicColor(
     BuildContext context, {
     TextStyle? textStyle,
   }) {
     return CalendarWeekdayDecoration(
       textStyle: textStyle ??
-          TextStyle(
-            color: CupertinoDynamicColor.resolve(
-              CupertinoDynamicColor.withBrightness(
-                color: CupertinoColors.tertiaryLabel,
-                darkColor: CupertinoColors.tertiaryLabel.darkColor,
-              ),
-              context,
-            ),
-            fontSize: 13.0,
-            fontWeight: FontWeight.w600,
+          calendarWeekdayStyle.copyWith(
+            color: calendarWeekdayColor.resolveFrom(context),
           ),
     );
   }

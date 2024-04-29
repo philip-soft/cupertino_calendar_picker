@@ -54,23 +54,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
               children: <Widget>[
                 Text(
                   monthFormat.format(widget.currentMonth),
-                  style: TextStyle(
-                    color: CupertinoDynamicColor.resolve(
-                      _shouldShowYearPicker
-                          ? CupertinoDynamicColor.withBrightness(
-                              color: CupertinoColors.systemRed,
-                              darkColor: CupertinoColors.systemRed.darkColor,
-                            )
-                          : CupertinoDynamicColor.withBrightness(
-                              color: CupertinoColors.label,
-                              darkColor: CupertinoColors.label.darkColor,
-                            ),
-                      context,
-                    ),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 17.0,
-                    letterSpacing: -0.5,
-                  ),
+                  style: widget.decoration.monthDateStyle,
                 ),
                 const SizedBox(width: 5.0),
                 AnimatedRotation(
@@ -83,7 +67,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
                     child: Icon(
                       CupertinoIcons.chevron_forward,
                       color: widget.decoration.monthDateArrowColor,
-                      size: 20.0,
+                      size: calendarMonthPickerIconSize,
                     ),
                   ),
                 ),
@@ -101,14 +85,14 @@ class _CalendarHeaderState extends State<CalendarHeader> {
                 behavior: HitTestBehavior.translucent,
                 onTap: widget.onPreviousMonthIconTapped,
                 child: SizedBox(
-                  height: 44.0,
-                  width: 44.0,
+                  height: calendarMonthSwitcherSize,
+                  width: calendarMonthSwitcherSize,
                   child: Icon(
                     CupertinoIcons.chevron_back,
                     color: _isBackwardDisabled
                         ? _decoration.backwardDisabledButtonColor
                         : _decoration.backwardButtonColor,
-                    size: 26.5,
+                    size: calendarMonthSwitcherIconSize,
                   ),
                 ),
               ),
@@ -117,14 +101,14 @@ class _CalendarHeaderState extends State<CalendarHeader> {
                 behavior: HitTestBehavior.translucent,
                 onTap: widget.onNextMonthIconTapped,
                 child: SizedBox(
-                  height: 44.0,
-                  width: 44.0,
+                  height: calendarMonthSwitcherSize,
+                  width: calendarMonthSwitcherSize,
                   child: Icon(
                     CupertinoIcons.chevron_forward,
                     color: _isForwardDisabled
                         ? _decoration.forwardDisabledButtonColor
                         : _decoration.forwardButtonColor,
-                    size: 26.5,
+                    size: calendarMonthSwitcherIconSize,
                   ),
                 ),
               ),

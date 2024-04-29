@@ -30,7 +30,7 @@ class CupertinoCalendar extends StatefulWidget {
     DateTime? currentDate,
     this.onDisplayedMonthChanged,
     this.containerDecoration,
-    this.weekdaysDecoration,
+    this.weekdayDecoration,
     this.monthPickerDecoration,
     this.calendarHeaderDecoration,
     super.key,
@@ -71,7 +71,7 @@ class CupertinoCalendar extends StatefulWidget {
   final ValueChanged<DateTime>? onDisplayedMonthChanged;
 
   final CalendarContainerDecoration? containerDecoration;
-  final CalendarWeekdayDecoration? weekdaysDecoration;
+  final CalendarWeekdayDecoration? weekdayDecoration;
   final CalendarMonthPickerDecoration? monthPickerDecoration;
   final CalendarHeaderDecoration? calendarHeaderDecoration;
   final Alignment scaleAlignment;
@@ -159,12 +159,12 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
         onChanged: _handleCalendarDayChange,
         onDisplayedMonthChanged: _handleCalendarMonthChange,
         onYearPickerChanged: _handleCalendarDateChange,
-        weekdayDecoration: widget.weekdaysDecoration ??
-            CalendarWeekdayDecoration.defaultDecoration(context),
+        weekdayDecoration: widget.weekdayDecoration ??
+            CalendarWeekdayDecoration.withDynamicColor(context),
         monthPickerDecoration: widget.monthPickerDecoration ??
             CalendarMonthPickerDecoration.defaultDecoration(context),
         calendarHeaderDecoration: widget.calendarHeaderDecoration ??
-            CalendarHeaderDecoration.defaultDecoration(context),
+            CalendarHeaderDecoration.withDynamicColor(context),
       ),
     );
   }

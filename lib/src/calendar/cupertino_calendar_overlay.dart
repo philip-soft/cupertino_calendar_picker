@@ -93,7 +93,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
     }
 
     final double space = moreSpaceOnLeft ? spaceOnLeft : spaceOnRight;
-    double xAlignment = space / calendarWidth;
+    double xAlignment = ((space / calendarWidth) - 0.5) * 2;
 
     if (moreSpaceOnLeft) {
       xAlignment = xAlignment > 1 ? 1.0 : xAlignment;
@@ -125,6 +125,13 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
             color: Colors.transparent,
             child: CupertinoCalendar(
               onInitialized: _onInitialized,
+              weekdayDecoration: CalendarWeekdayDecoration.withDynamicColor(
+                context,
+              ),
+              calendarHeaderDecoration:
+                  CalendarHeaderDecoration.withDynamicColor(
+                context,
+              ),
               minimumDate: nowDate.subtract(const Duration(days: 15)),
               initialDate: nowDate,
               currentDate: nowDate,
