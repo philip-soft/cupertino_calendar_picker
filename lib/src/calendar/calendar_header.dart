@@ -44,7 +44,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
 
     return Row(
       children: <Widget>[
-        const SizedBox(width: 16.0),
+        const SizedBox(width: 20.0),
         GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: _handleYearPickerStateChange,

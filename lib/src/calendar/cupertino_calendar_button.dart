@@ -33,7 +33,7 @@ class _CupertinoCalendarButtonState extends State<CupertinoCalendarButton> {
       minimumDate: nowDate.subtract(const Duration(days: 15)),
       initialDate: nowDate,
       currentDate: nowDate,
-      maximumDate: DateTime(2024, 5, 25),
+      maximumDate: DateTime(2030, 5, 25),
     );
   }
 

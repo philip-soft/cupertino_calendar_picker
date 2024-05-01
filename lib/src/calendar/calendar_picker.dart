@@ -77,7 +77,7 @@ class CalendarPickerState extends State<CalendarPicker>
     _monthPageController = PageController(initialPage: monthDelta);
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: calendarYearPickerDuration,
     );
     _isYearPickerShowed = _animationController.isCompleted;
   }
@@ -176,7 +176,7 @@ class CalendarPickerState extends State<CalendarPicker>
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        const SizedBox(height: 4.0),
+        const SizedBox(height: 13.0),
         CalendarHeader(
           currentMonth: _currentMonth,
           onNextMonthIconTapped:
@@ -194,9 +194,8 @@ class CalendarPickerState extends State<CalendarPicker>
             duration: const Duration(milliseconds: 250),
             firstChild: Column(
               children: <Widget>[
-                const SizedBox(height: 3.0),
+                const SizedBox(height: 11.0),
                 CalendarWeekdays(weekdayDecoration: widget.weekdayDecoration),
-                const SizedBox(height: 1.0),
                 CalendarMonthPicker(
                   monthPageController: _monthPageController,
                   onMonthPageChanged: _handleMonthPageChanged,

@@ -77,9 +77,9 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: EdgeInsets.zero,
         children: [
           Padding(
-            padding: EdgeInsets.only(
-              top: _offset.dy,
-              right: _offset.dx,
+            padding: const EdgeInsets.only(
+              top: 300,
+              right: 200,
             ),
             child: CupertinoCalendarButton(
               onPressed: () {},

@@ -7,12 +7,14 @@ class CalendarMonthPickerDay extends StatelessWidget {
   const CalendarMonthPickerDay({
     required this.dayDate,
     required this.style,
+    required this.daySize,
     this.onDaySelected,
     super.key,
   });
 
   final DateTime dayDate;
   final CalendarMonthPickerDayStyle style;
+  final double daySize;
   final ValueChanged<DateTime>? onDaySelected;
 
   @override
@@ -25,6 +27,7 @@ class CalendarMonthPickerDay extends StatelessWidget {
           day: '${dayDate.day}',
           style: style.textStyle,
           backgroundColor: style.backgroundColor,
+          daySize: daySize,
         ),
       ),
     );
@@ -35,12 +38,14 @@ class CalendarMonthPickerDayPainter extends CustomPainter {
   const CalendarMonthPickerDayPainter({
     required this.day,
     required this.style,
+    required this.daySize,
     this.backgroundColor,
   });
 
   final String day;
   final Color? backgroundColor;
   final TextStyle style;
+  final double daySize;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -89,7 +94,7 @@ class CalendarMonthPickerDayPainter extends CustomPainter {
     final Paint paint = Paint()..color = color;
     canvas.drawCircle(
       offset,
-      calendarMonthPickerDaySize / 2,
+      daySize / 2,
       paint,
     );
   }

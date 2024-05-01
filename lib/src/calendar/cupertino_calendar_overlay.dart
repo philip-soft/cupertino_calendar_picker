@@ -83,7 +83,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
 
     final double spaceOnTop = widgetCenterY;
     final double spaceOnLeft = widgetCenterX - horizontalSpacing;
-    final double spaceOnRight = screenWidth - widgetCenterX - horizontalSpacing;
+    final double spaceOnRight = screenWidth - spaceOnLeft;
     final double spaceOnBottom = screenHeight - widgetCenterY;
     final bool moreSpaceOnTop = spaceOnTop >= spaceOnBottom;
     final bool moreSpaceOnLeft = spaceOnLeft >= spaceOnRight;

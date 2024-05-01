@@ -56,7 +56,24 @@ class CalendarMonthPicker extends StatefulWidget {
 }
 
 class CalendarMonthPickerState extends State<CalendarMonthPicker> {
-  Iterable<Widget> _days(BuildContext context, int index) sync* {
+  int _daysCount(BuildContext context, int index) {
+    final MaterialLocalizations localizations =
+        MaterialLocalizations.of(context);
+    final DateTime monthDate =
+        DateUtils.addMonthsToMonthDate(widget.minimumDate, index);
+    final int year = monthDate.year;
+    final int month = monthDate.month;
+    final int daysInMonth = DateUtils.getDaysInMonth(year, month);
+    final int dayOffset = DateUtils.firstDayOffset(year, month, localizations);
+
+    return daysInMonth + dayOffset;
+  }
+
+  Iterable<Widget> _days(
+    BuildContext context, {
+    required int index,
+    required double daySize,
+  }) sync* {
     final MaterialLocalizations localizations =
         MaterialLocalizations.of(context);
     final DateTime monthDate =
@@ -113,6 +130,7 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
           dayDate: date,
           onDaySelected: isDisabledDay ? null : widget.onChanged,
           style: style,
+          daySize: daySize,
         );
         yield dayWidget;
       }
@@ -147,6 +165,14 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
     }
   }
 
+  double _rowSize(int rowCount) {
+    if (rowCount == 6) {
+      return calendarMonthPickerSixRowsSize;
+    } else {
+      return calendarMonthPickerOtherRowsSize;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterialLocalizations(context));
@@ -162,14 +188,23 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
       child: PageView.builder(
         controller: widget.monthPageController,
         itemBuilder: (BuildContext context, int index) {
-          final Iterable<Widget> days = _days(context, index);
+          final int daysCount = _daysCount(context, index);
+          final int rowCount = _rowCount(daysCount);
+          final double rowSize = _rowSize(rowCount);
+          final Iterable<Widget> days = _days(
+            context,
+            index: index,
+            daySize: rowSize > calendarMonthPickerMaxDaySize
+                ? calendarMonthPickerMaxDaySize
+                : rowSize,
+          );
 
           return GridView.custom(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 11.0),
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: CalendarMonthGridDelegate(
-              rowCount: _rowCount(days.length),
-              calendarDayRowSize: calendarMonthPickerDaySize,
+              rowCount: rowCount,
+              rowSize: rowSize,
             ),
             childrenDelegate: SliverChildListDelegate(
               days.toList(),

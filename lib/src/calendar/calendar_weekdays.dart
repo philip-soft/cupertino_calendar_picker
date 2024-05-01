@@ -34,8 +34,8 @@ class CalendarWeekdays extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 20.0,
-      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      height: 18.0,
+      margin: const EdgeInsets.symmetric(horizontal: 12.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: _weekdays(context).toList(),

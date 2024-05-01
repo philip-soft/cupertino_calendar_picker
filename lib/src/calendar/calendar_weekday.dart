@@ -14,8 +14,7 @@ class CalendarWeekday extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 32.0,
-      height: 18.0,
+      width: 40.0,
       child: Text(
         weekday,
         textAlign: TextAlign.center,
