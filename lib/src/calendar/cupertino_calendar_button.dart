@@ -21,23 +21,25 @@ class CupertinoCalendarButton extends StatefulWidget {
 }
 
 class _CupertinoCalendarButtonState extends State<CupertinoCalendarButton> {
-  final GlobalKey<State<StatefulWidget>> _key = GlobalKey();
-
   Future<void> _onTap() {
-    final RenderBox? renderBox =
-        _key.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+    final DateTime nowDate = DateTime.now();
+
     return showCupertinoCalendarPicker(
       context,
       horizontalSpacing: widget.calendarHorizontalSpacing,
       offset: widget.calendarOffset,
       widgetRenderBox: renderBox,
+      minimumDate: nowDate.subtract(const Duration(days: 15)),
+      initialDate: nowDate,
+      currentDate: nowDate,
+      maximumDate: DateTime(2024, 5, 25),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      key: _key,
       onTap: _onTap,
       behavior: HitTestBehavior.translucent,
       child: widget.child,

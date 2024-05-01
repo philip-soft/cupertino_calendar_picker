@@ -21,12 +21,12 @@ class CupertinoCalendar extends StatefulWidget {
   /// date will be highlighted in the day grid. If null, the date of
   /// `DateTime.now()` will be used.
   CupertinoCalendar({
-    required DateTime initialDate,
     required DateTime minimumDate,
     required DateTime maximumDate,
     required this.scaleAlignment,
-    required this.onDateChanged,
     required this.onInitialized,
+    this.onDateChanged,
+    DateTime? initialDate,
     DateTime? currentDate,
     this.onDisplayedMonthChanged,
     this.containerDecoration,
@@ -34,7 +34,7 @@ class CupertinoCalendar extends StatefulWidget {
     this.monthPickerDecoration,
     this.calendarHeaderDecoration,
     super.key,
-  })  : initialDate = DateUtils.dateOnly(initialDate),
+  })  : initialDate = DateUtils.dateOnly(initialDate ?? DateTime.now()),
         minimumDate = DateUtils.dateOnly(minimumDate),
         maximumDate = DateUtils.dateOnly(maximumDate),
         currentDate = DateUtils.dateOnly(currentDate ?? DateTime.now()) {
@@ -65,7 +65,7 @@ class CupertinoCalendar extends StatefulWidget {
   final DateTime currentDate;
 
   /// Called when the user selects a date in the picker.
-  final ValueChanged<DateTime> onDateChanged;
+  final ValueChanged<DateTime>? onDateChanged;
 
   /// Called when the user navigates to a new month in the picker.
   final ValueChanged<DateTime>? onDisplayedMonthChanged;
@@ -139,7 +139,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
   void _handleCalendarDayChange(DateTime date) {
     setState(() {
       _selectedDate = date;
-      widget.onDateChanged(_selectedDate);
+      widget.onDateChanged?.call(_selectedDate);
     });
   }
 
@@ -162,7 +162,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
         weekdayDecoration: widget.weekdayDecoration ??
             CalendarWeekdayDecoration.withDynamicColor(context),
         monthPickerDecoration: widget.monthPickerDecoration ??
-            CalendarMonthPickerDecoration.defaultDecoration(context),
+            CalendarMonthPickerDecoration.withDynamicColor(context),
         calendarHeaderDecoration: widget.calendarHeaderDecoration ??
             CalendarHeaderDecoration.withDynamicColor(context),
       ),

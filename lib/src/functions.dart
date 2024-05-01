@@ -5,9 +5,19 @@ const String _barrierLabel = 'CupertinoCalendarPickerBarrier';
 
 Future<void> showCupertinoCalendarPicker(
   BuildContext context, {
+  required DateTime minimumDate,
+  required DateTime maximumDate,
+  ValueChanged<DateTime>? onDateChanged,
+  DateTime? initialDate,
+  DateTime? currentDate,
+  ValueChanged<DateTime>? onDisplayedMonthChanged,
   double horizontalSpacing = 10.0,
   Offset offset = const Offset(0.0, 30.0),
   RenderBox? widgetRenderBox,
+  CalendarContainerDecoration? containerDecoration,
+  CalendarWeekdayDecoration? weekdayDecoration,
+  CalendarMonthPickerDecoration? monthPickerDecoration,
+  CalendarHeaderDecoration? calendarHeaderDecoration,
 }) {
   return showGeneralDialog(
     context: context,
@@ -32,6 +42,16 @@ Future<void> showCupertinoCalendarPicker(
         horizontalSpacing: horizontalSpacing,
         offset: offset,
         widgetRenderBox: widgetRenderBox,
+        initialDate: initialDate,
+        minimumDate: minimumDate,
+        maximumDate: maximumDate,
+        currentDate: currentDate,
+        onDateChanged: onDateChanged,
+        onDisplayedMonthChanged: onDisplayedMonthChanged,
+        containerDecoration: containerDecoration,
+        weekdayDecoration: weekdayDecoration,
+        monthPickerDecoration: monthPickerDecoration,
+        calendarHeaderDecoration: calendarHeaderDecoration,
       );
     },
   );

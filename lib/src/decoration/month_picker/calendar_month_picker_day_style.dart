@@ -1,3 +1,4 @@
+import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/cupertino.dart';
 
 sealed class CalendarMonthPickerDayStyle {
@@ -16,124 +17,110 @@ class CalendarMonthPickerDisabledDayStyle extends CalendarMonthPickerDayStyle {
     required super.backgroundColor,
   });
 
-  factory CalendarMonthPickerDisabledDayStyle.defaultDecoration(
+  factory CalendarMonthPickerDisabledDayStyle.withDynamicColor(
     BuildContext context, {
-    Color? backgroundColor,
+    CupertinoDynamicColor? backgroundColor,
     TextStyle? textStyle,
   }) {
     return CalendarMonthPickerDisabledDayStyle(
       textStyle: textStyle ??
-          TextStyle(
-            fontSize: 20.0,
-            color: CupertinoDynamicColor.resolve(
-              CupertinoDynamicColor.withBrightness(
-                color: CupertinoColors.tertiaryLabel,
-                darkColor: CupertinoColors.tertiaryLabel.darkColor,
-              ),
-              context,
-            ),
-            fontWeight: FontWeight.w400,
-            letterSpacing: -0.4,
+          calendarMonthPickerDisabledDayStyle.copyWith(
+            color: calendarMonthPickerDisabledDayColor.resolveFrom(context),
           ),
-      backgroundColor: null,
+      backgroundColor: backgroundColor?.resolveFrom(context),
     );
   }
 }
 
 class CalendarMonthPickerDefaultDayStyle extends CalendarMonthPickerDayStyle {
-  const CalendarMonthPickerDefaultDayStyle({
+  factory CalendarMonthPickerDefaultDayStyle({
+    Color? backgroundColor,
+    TextStyle? textStyle,
+  }) {
+    return CalendarMonthPickerDefaultDayStyle._(
+      textStyle: textStyle ?? calendarMonthPickerDefaultDayStyle,
+      backgroundColor: backgroundColor,
+    );
+  }
+
+  const CalendarMonthPickerDefaultDayStyle._({
     required super.textStyle,
     required super.backgroundColor,
   });
 
-  factory CalendarMonthPickerDefaultDayStyle.defaultDecoration(
+  factory CalendarMonthPickerDefaultDayStyle.withDynamicColor(
     BuildContext context, {
-    Color? backgroundColor,
     TextStyle? textStyle,
+    CupertinoDynamicColor? backgroundColor,
   }) {
     return CalendarMonthPickerDefaultDayStyle(
       textStyle: textStyle ??
-          TextStyle(
-            fontSize: 20.0,
-            color: CupertinoDynamicColor.resolve(
-              CupertinoDynamicColor.withBrightness(
-                color: CupertinoColors.label,
-                darkColor: CupertinoColors.label.darkColor,
-              ),
-              context,
-            ),
-            fontWeight: FontWeight.w400,
-            letterSpacing: -0.4,
+          calendarMonthPickerDefaultDayStyle.copyWith(
+            color: calendarMonthPickerDefaultDayColor.resolveFrom(context),
           ),
-      backgroundColor: null,
+      backgroundColor: backgroundColor?.resolveFrom(context),
     );
   }
 }
 
 class CalendarMonthPickerSelectedDayStyle extends CalendarMonthPickerDayStyle {
-  const CalendarMonthPickerSelectedDayStyle({
+  factory CalendarMonthPickerSelectedDayStyle({
+    Color? backgroundColor,
+    TextStyle? textStyle,
+  }) {
+    return CalendarMonthPickerSelectedDayStyle._(
+      textStyle: textStyle ?? calendarMonthPickerSelectedDayStyle,
+      backgroundColor: backgroundColor ?? calendarMonthPickerSelectedDayColor,
+    );
+  }
+
+  const CalendarMonthPickerSelectedDayStyle._({
     required super.textStyle,
     required super.backgroundColor,
   });
 
-  factory CalendarMonthPickerSelectedDayStyle.defaultDecoration(
+  factory CalendarMonthPickerSelectedDayStyle.withDynamicColor(
     BuildContext context, {
-    Color? backgroundColor,
     TextStyle? textStyle,
+    CupertinoDynamicColor? backgroundColor,
   }) {
     return CalendarMonthPickerSelectedDayStyle(
-      textStyle: textStyle ??
-          TextStyle(
-            fontSize: 22.0,
-            color: CupertinoDynamicColor.withBrightness(
-              color: CupertinoColors.systemRed,
-              darkColor: CupertinoColors.systemRed.darkColor,
-            ),
-            fontWeight: FontWeight.w500,
-          ),
+      textStyle: textStyle ?? calendarMonthPickerSelectedDayStyle,
       backgroundColor: CupertinoDynamicColor.resolve(
-        backgroundColor ??
-            CupertinoDynamicColor.withBrightness(
-              color: CupertinoColors.systemRed,
-              darkColor: CupertinoColors.systemRed.darkColor,
-            ).withOpacity(0.12),
+        backgroundColor ?? calendarMonthPickerSelectedDayBackgroundColor,
         context,
       ),
     );
   }
 }
 
-class CalendarMonthPickerCurrentAndSelectedStyle
+class CalendarMonthPickerCurrentAndSelectedDayStyle
     extends CalendarMonthPickerDayStyle {
-  const CalendarMonthPickerCurrentAndSelectedStyle({
+  factory CalendarMonthPickerCurrentAndSelectedDayStyle({
+    Color? backgroundColor,
+    TextStyle? textStyle,
+  }) {
+    return CalendarMonthPickerCurrentAndSelectedDayStyle._(
+      textStyle: textStyle ?? calendarMonthPickerCurrentAndSelectedDayStyle,
+      backgroundColor:
+          backgroundColor ?? calendarMonthPickerCurrentAndSelectedDayColor,
+    );
+  }
+
+  const CalendarMonthPickerCurrentAndSelectedDayStyle._({
     required super.textStyle,
     required super.backgroundColor,
   });
 
-  factory CalendarMonthPickerCurrentAndSelectedStyle.defaultDecoration(
+  factory CalendarMonthPickerCurrentAndSelectedDayStyle.withDynamicColor(
     BuildContext context, {
-    Color? backgroundColor,
     TextStyle? textStyle,
+    CupertinoDynamicColor? backgroundColor,
   }) {
-    return CalendarMonthPickerCurrentAndSelectedStyle(
-      textStyle: textStyle ??
-          TextStyle(
-            fontSize: 22.0,
-            color: CupertinoDynamicColor.resolve(
-              CupertinoDynamicColor.withBrightness(
-                color: CupertinoColors.label.darkColor,
-                darkColor: CupertinoColors.label.darkColor,
-              ),
-              context,
-            ),
-            fontWeight: FontWeight.w500,
-          ),
+    return CalendarMonthPickerCurrentAndSelectedDayStyle(
+      textStyle: textStyle ?? calendarMonthPickerCurrentAndSelectedDayStyle,
       backgroundColor: CupertinoDynamicColor.resolve(
-        backgroundColor ??
-            CupertinoDynamicColor.withBrightness(
-              color: CupertinoColors.systemRed,
-              darkColor: CupertinoColors.systemRed.darkColor,
-            ),
+        backgroundColor ?? calendarMonthPickerCurrentAndSelectedDayColor,
         context,
       ),
     );
@@ -141,31 +128,32 @@ class CalendarMonthPickerCurrentAndSelectedStyle
 }
 
 class CalendarMonthPickerCurrentDayStyle extends CalendarMonthPickerDayStyle {
-  const CalendarMonthPickerCurrentDayStyle({
+  factory CalendarMonthPickerCurrentDayStyle({
+    Color? backgroundColor,
+    TextStyle? textStyle,
+  }) {
+    return CalendarMonthPickerCurrentDayStyle._(
+      textStyle: textStyle ?? calendarMonthPickerCurrentDayStyle,
+      backgroundColor: backgroundColor,
+    );
+  }
+
+  const CalendarMonthPickerCurrentDayStyle._({
     required super.textStyle,
     required super.backgroundColor,
   });
 
-  factory CalendarMonthPickerCurrentDayStyle.defaultDecoration(
+  factory CalendarMonthPickerCurrentDayStyle.withDynamicColor(
     BuildContext context, {
-    Color? backgroundColor,
     TextStyle? textStyle,
+    CupertinoDynamicColor? backgroundColor,
   }) {
     return CalendarMonthPickerCurrentDayStyle(
       textStyle: textStyle ??
-          TextStyle(
-            fontSize: 20.0,
-            color: CupertinoDynamicColor.resolve(
-              CupertinoDynamicColor.withBrightness(
-                color: CupertinoColors.systemRed,
-                darkColor: CupertinoColors.systemRed.darkColor,
-              ),
-              context,
-            ),
-            fontWeight: FontWeight.w400,
-            letterSpacing: -0.4,
+          calendarMonthPickerCurrentDayStyle.copyWith(
+            color: calendarMonthPickerCurrentDayColor.resolveFrom(context),
           ),
-      backgroundColor: null,
+      backgroundColor: backgroundColor?.resolveFrom(context),
     );
   }
 }

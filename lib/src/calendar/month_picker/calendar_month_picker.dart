@@ -88,25 +88,25 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
 
         if (isDisabledDay) {
           style = monthPickerDecoration.disabledDayStyle ??
-              CalendarMonthPickerDisabledDayStyle.defaultDecoration(context);
+              CalendarMonthPickerDisabledDayStyle.withDynamicColor(context);
         } else if (isCurrentDay) {
           style = monthPickerDecoration.todayStyle ??
-              CalendarMonthPickerCurrentDayStyle.defaultDecoration(context);
+              CalendarMonthPickerCurrentDayStyle.withDynamicColor(context);
 
           if (isSelectedDay) {
             style = monthPickerDecoration.selectedTodayStyle ??
-                CalendarMonthPickerCurrentAndSelectedStyle.defaultDecoration(
+                CalendarMonthPickerCurrentAndSelectedDayStyle.withDynamicColor(
                   context,
                 );
           }
         } else if (isSelectedDay) {
           style = monthPickerDecoration.selectedDayStyle ??
-              CalendarMonthPickerSelectedDayStyle.defaultDecoration(
+              CalendarMonthPickerSelectedDayStyle.withDynamicColor(
                 context,
               );
         } else {
           style = monthPickerDecoration.dayStyle ??
-              CalendarMonthPickerDefaultDayStyle.defaultDecoration(context);
+              CalendarMonthPickerDefaultDayStyle.withDynamicColor(context);
         }
 
         final Widget dayWidget = CalendarMonthPickerDay(

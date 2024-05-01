@@ -2,7 +2,23 @@ import 'package:cupertino_calendar/lib.dart';
 import 'package:flutter/material.dart';
 
 class CalendarMonthPickerDecoration {
-  const CalendarMonthPickerDecoration({
+  factory CalendarMonthPickerDecoration({
+    CalendarMonthPickerDayStyle? dayStyle,
+    CalendarMonthPickerDayStyle? todayStyle,
+    CalendarMonthPickerDayStyle? selectedDayStyle,
+    CalendarMonthPickerDayStyle? selectedTodayStyle,
+    CalendarMonthPickerDayStyle? disabledDayStyle,
+  }) {
+    return CalendarMonthPickerDecoration._(
+      dayStyle: dayStyle,
+      todayStyle: todayStyle,
+      selectedDayStyle: selectedDayStyle,
+      selectedTodayStyle: selectedTodayStyle,
+      disabledDayStyle: disabledDayStyle,
+    );
+  }
+
+  const CalendarMonthPickerDecoration._({
     this.dayStyle,
     this.todayStyle,
     this.selectedDayStyle,
@@ -10,22 +26,31 @@ class CalendarMonthPickerDecoration {
     this.disabledDayStyle,
   });
 
-  factory CalendarMonthPickerDecoration.defaultDecoration(
-    BuildContext context,
-  ) {
+  factory CalendarMonthPickerDecoration.withDynamicColor(
+    BuildContext context, {
+    CalendarMonthPickerDayStyle? dayStyle,
+    CalendarMonthPickerDayStyle? todayStyle,
+    CalendarMonthPickerDayStyle? selectedDayStyle,
+    CalendarMonthPickerDayStyle? selectedTodayStyle,
+    CalendarMonthPickerDayStyle? disabledDayStyle,
+  }) {
     return CalendarMonthPickerDecoration(
-      dayStyle: CalendarMonthPickerDefaultDayStyle.defaultDecoration(context),
-      todayStyle: CalendarMonthPickerCurrentDayStyle.defaultDecoration(context),
-      disabledDayStyle: CalendarMonthPickerDisabledDayStyle.defaultDecoration(
-        context,
-      ),
-      selectedDayStyle: CalendarMonthPickerSelectedDayStyle.defaultDecoration(
-        context,
-      ),
-      selectedTodayStyle:
-          CalendarMonthPickerCurrentAndSelectedStyle.defaultDecoration(
-        context,
-      ),
+      dayStyle: dayStyle ??
+          CalendarMonthPickerDefaultDayStyle.withDynamicColor(context),
+      todayStyle: todayStyle ??
+          CalendarMonthPickerCurrentDayStyle.withDynamicColor(context),
+      disabledDayStyle: selectedDayStyle ??
+          CalendarMonthPickerDisabledDayStyle.withDynamicColor(
+            context,
+          ),
+      selectedDayStyle: selectedTodayStyle ??
+          CalendarMonthPickerSelectedDayStyle.withDynamicColor(
+            context,
+          ),
+      selectedTodayStyle: disabledDayStyle ??
+          CalendarMonthPickerCurrentAndSelectedDayStyle.withDynamicColor(
+            context,
+          ),
     );
   }
 

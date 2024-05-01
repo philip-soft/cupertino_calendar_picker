@@ -66,4 +66,24 @@ class CalendarHeaderDecoration {
   final Color? backwardButtonColor;
   final Color? backwardDisabledButtonColor;
   final Color? forwardDisabledButtonColor;
+
+  CalendarHeaderDecoration copyWith({
+    TextStyle? monthDateStyle,
+    Color? monthDateArrowColor,
+    Color? forwardButtonColor,
+    Color? backwardButtonColor,
+    Color? backwardDisabledButtonColor,
+    Color? forwardDisabledButtonColor,
+  }) {
+    return CalendarHeaderDecoration(
+      monthDateStyle: monthDateStyle ?? this.monthDateStyle,
+      monthDateArrowColor: monthDateArrowColor ?? this.monthDateArrowColor,
+      forwardButtonColor: forwardButtonColor ?? this.forwardButtonColor,
+      backwardButtonColor: backwardButtonColor ?? this.backwardButtonColor,
+      backwardDisabledButtonColor:
+          backwardDisabledButtonColor ?? this.backwardDisabledButtonColor,
+      forwardDisabledButtonColor:
+          forwardDisabledButtonColor ?? this.forwardDisabledButtonColor,
+    );
+  }
 }

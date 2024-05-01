@@ -58,7 +58,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
                 ),
                 const SizedBox(width: 5.0),
                 AnimatedRotation(
-                  duration: const Duration(milliseconds: 300),
+                  duration: calendarYearPickerFadeDuration,
                   curve: Curves.easeInOut,
                   turns: _shouldShowYearPicker ? 1.25 : 1.0,
                   child: SizedBox(
@@ -117,7 +117,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
           crossFadeState: _shouldShowYearPicker
               ? CrossFadeState.showFirst
               : CrossFadeState.showSecond,
-          duration: const Duration(milliseconds: 300),
+          duration: calendarYearPickerFadeDuration,
           layoutBuilder: (
             Widget topChild,
             Key topChildKey,

@@ -3,15 +3,35 @@ import 'package:flutter/material.dart';
 
 class CupertinoCalendarOverlay extends StatefulWidget {
   const CupertinoCalendarOverlay({
-    this.horizontalSpacing = 10.0,
-    this.offset = const Offset(0.0, 30.0),
-    this.widgetRenderBox,
+    required this.minimumDate,
+    required this.maximumDate,
+    required this.horizontalSpacing,
+    required this.offset,
+    this.onDateChanged,
+    this.currentDate,
+    this.initialDate,
     super.key,
+    this.widgetRenderBox,
+    this.onDisplayedMonthChanged,
+    this.containerDecoration,
+    this.weekdayDecoration,
+    this.monthPickerDecoration,
+    this.calendarHeaderDecoration,
   });
 
   final double horizontalSpacing;
   final Offset offset;
   final RenderBox? widgetRenderBox;
+  final DateTime? initialDate;
+  final DateTime minimumDate;
+  final DateTime maximumDate;
+  final DateTime? currentDate;
+  final ValueChanged<DateTime>? onDateChanged;
+  final ValueChanged<DateTime>? onDisplayedMonthChanged;
+  final CalendarContainerDecoration? containerDecoration;
+  final CalendarWeekdayDecoration? weekdayDecoration;
+  final CalendarMonthPickerDecoration? monthPickerDecoration;
+  final CalendarHeaderDecoration? calendarHeaderDecoration;
 
   @override
   State<CupertinoCalendarOverlay> createState() =>
@@ -43,7 +63,6 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    final DateTime nowDate = DateTime.now();
     final RenderBox? renderBox = widget.widgetRenderBox;
     final double horizontalSpacing = widget.horizontalSpacing;
     final Offset offset = widget.offset;
@@ -125,18 +144,16 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
             color: Colors.transparent,
             child: CupertinoCalendar(
               onInitialized: _onInitialized,
-              weekdayDecoration: CalendarWeekdayDecoration.withDynamicColor(
-                context,
-              ),
-              calendarHeaderDecoration:
-                  CalendarHeaderDecoration.withDynamicColor(
-                context,
-              ),
-              minimumDate: nowDate.subtract(const Duration(days: 15)),
-              initialDate: nowDate,
-              currentDate: nowDate,
-              maximumDate: DateTime(2030, 02, 14),
-              onDateChanged: (_) {},
+              containerDecoration: widget.containerDecoration,
+              weekdayDecoration: widget.weekdayDecoration,
+              monthPickerDecoration: widget.monthPickerDecoration,
+              calendarHeaderDecoration: widget.calendarHeaderDecoration,
+              minimumDate: widget.minimumDate,
+              initialDate: widget.initialDate,
+              currentDate: widget.currentDate,
+              maximumDate: widget.maximumDate,
+              onDateChanged: widget.onDateChanged,
+              onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
               scaleAlignment: scaleAligment,
             ),
           ),

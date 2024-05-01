@@ -29,8 +29,8 @@ class CalendarContainerDecoration {
     return CalendarContainerDecoration(
       backgroundColor: (backgroundColor ?? calendarBackgroundDynamicColor)
           .resolveFrom(context),
-      boxShadow: boxShadow,
-      borderRadius: borderRadius,
+      boxShadow: boxShadow ?? boxShadow,
+      borderRadius: borderRadius ?? calendarBorderRadius,
     );
   }
 
