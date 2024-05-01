@@ -1,13 +1,8 @@
-import 'dart:math';
-
-import 'package:cupertino_calendar/cupertino_calendar.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
-  // timeDilation = 3.0;
-
   runApp(const MyApp());
 }
 
@@ -29,51 +24,26 @@ class _MyAppState extends State<MyApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       theme: ThemeData(
-        brightness: Brightness.dark,
+        brightness: Brightness.light,
       ),
-      supportedLocales: const [
-        Locale('ru'),
-        Locale('en'),
-      ],
-      locale: const Locale('en'),
-      home: const MyHomePage(
-        title: 'Flutter Demo Home Page',
-      ),
+      home: const ExamplePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({
-    required this.title,
+class ExamplePage extends StatefulWidget {
+  const ExamplePage({
     super.key,
   });
 
-  final String title;
-
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<ExamplePage> createState() => _ExamplePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  Offset _offset = Offset.zero;
-
-  void _onFABTapped() {
-    final Size screenSize = MediaQuery.sizeOf(context);
-    final double screenWidth = screenSize.width;
-    final double screenHeight = screenSize.height;
-
-    setState(() {
-      final randomX = Random().nextDouble() * screenWidth;
-      final randomY = Random().nextDouble() * screenHeight;
-      _offset = Offset(randomX, randomY);
-    });
-  }
-
+class _ExamplePageState extends State<ExamplePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -82,34 +52,60 @@ class _MyHomePageState extends State<MyHomePage> {
               top: 200,
               right: 200,
             ),
-            child: CupertinoCalendarButton(
+            child: _CupertinoCalendarButton(
               onPressed: () {},
-              child: Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  alignment: Alignment.center,
-                  width: 50,
-                  height: 40,
-                  child: const Center(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                    ),
-                  ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                alignment: Alignment.center,
+                width: 30,
+                height: 200,
               ),
             ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _onFABTapped,
-        child: const Icon(
-          CupertinoIcons.refresh,
-        ),
-      ),
+    );
+  }
+}
+
+class _CupertinoCalendarButton extends StatefulWidget {
+  const _CupertinoCalendarButton({
+    required this.child,
+    required this.onPressed,
+  });
+
+  final Widget child;
+  final VoidCallback onPressed;
+
+  @override
+  State<_CupertinoCalendarButton> createState() =>
+      _CupertinoCalendarButtonState();
+}
+
+class _CupertinoCalendarButtonState extends State<_CupertinoCalendarButton> {
+  Future<void> _onTap() {
+    final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+    final DateTime nowDate = DateTime.now();
+
+    return showCupertinoCalendarPicker(
+      context,
+      widgetRenderBox: renderBox,
+      minimumDate: nowDate.subtract(const Duration(days: 15)),
+      initialDate: nowDate,
+      currentDate: nowDate,
+      maximumDate: DateTime(2030, 5, 25),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _onTap,
+      behavior: HitTestBehavior.translucent,
+      child: widget.child,
     );
   }
 }

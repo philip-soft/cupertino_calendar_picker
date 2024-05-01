@@ -1,4 +1,4 @@
-import 'package:cupertino_calendar/src/src.dart';
+import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/material.dart';
 
 class CalendarContainer extends StatefulWidget {
@@ -22,7 +22,6 @@ class CalendarContainer extends StatefulWidget {
 class _CalendarContainerState extends State<CalendarContainer>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
   late Animation<double> scale;
   late Animation<double> height;
 
@@ -62,12 +61,6 @@ class _CalendarContainerState extends State<CalendarContainer>
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
@@ -99,7 +92,7 @@ class _CalendarContainerState extends State<CalendarContainer>
               scale: scale.value,
               alignment: widget.scaleAlignment,
               child: Container(
-                height: calendarMaxAnimationHeight,
+                height: calendarMaxHeight,
                 alignment: widget.scaleAlignment,
                 child: SizedBox(
                   height: height.value,
@@ -111,5 +104,11 @@ class _CalendarContainerState extends State<CalendarContainer>
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

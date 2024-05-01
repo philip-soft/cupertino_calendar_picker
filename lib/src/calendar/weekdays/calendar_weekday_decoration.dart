@@ -1,5 +1,12 @@
-import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/cupertino.dart';
+
+const CupertinoDynamicColor calendarWeekdayColor =
+    CupertinoColors.tertiaryLabel;
+const TextStyle calendarWeekdayStyle = TextStyle(
+  color: calendarWeekdayColor,
+  fontSize: 13.0,
+  fontWeight: FontWeight.w600,
+);
 
 class CalendarWeekdayDecoration {
   factory CalendarWeekdayDecoration({

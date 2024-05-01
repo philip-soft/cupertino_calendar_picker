@@ -1,8 +1,7 @@
-import 'package:cupertino_calendar/src/src.dart';
+import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
 
-typedef YearPickerCallback = void Function(bool shouldShowYearPicker);
+typedef YearPickerCallback = void Function(bool showYearPicker);
 
 class CalendarHeader extends StatefulWidget {
   const CalendarHeader({
@@ -25,22 +24,31 @@ class CalendarHeader extends StatefulWidget {
 }
 
 class _CalendarHeaderState extends State<CalendarHeader> {
-  bool _shouldShowYearPicker = false;
-
-  void _handleYearPickerStateChange() {
-    setState(() {
-      _shouldShowYearPicker = !_shouldShowYearPicker;
-      widget.onYearPickerStateChanged.call(_shouldShowYearPicker);
-    });
-  }
+  bool _showYearPicker = false;
 
   CalendarHeaderDecoration get _decoration => widget.decoration;
   bool get _isBackwardDisabled => widget.onPreviousMonthIconTapped == null;
   bool get _isForwardDisabled => widget.onNextMonthIconTapped == null;
 
+  void _handleYearPickerStateChange() {
+    setState(() {
+      _showYearPicker = !_showYearPicker;
+      widget.onYearPickerStateChanged.call(_showYearPicker);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final DateFormat monthFormat = DateFormat('MMMM yyyy');
+    final CupertinoLocalizations localization =
+        CupertinoLocalizations.of(context);
+    final DateTime date = widget.currentMonth;
+    final String monthString = localization.datePickerStandaloneMonth(
+      date.month,
+    );
+    final String yearString = localization.datePickerYear(
+      date.year,
+    );
+    final String headerString = '$monthString $yearString';
 
     return Row(
       children: <Widget>[
@@ -53,20 +61,24 @@ class _CalendarHeaderState extends State<CalendarHeader> {
             child: Row(
               children: <Widget>[
                 Text(
-                  monthFormat.format(widget.currentMonth),
-                  style: widget.decoration.monthDateStyle,
+                  headerString,
+                  style: _showYearPicker
+                      ? _decoration.monthDateStyle?.copyWith(
+                          color: _decoration.monthDateArrowColor,
+                        )
+                      : _decoration.monthDateStyle,
                 ),
                 const SizedBox(width: 5.0),
                 AnimatedRotation(
                   duration: calendarHeaderFadeDuration,
                   curve: Curves.easeInOut,
-                  turns: _shouldShowYearPicker ? 1.25 : 1.0,
+                  turns: _showYearPicker ? 1.25 : 1.0,
                   child: SizedBox(
                     width: 11.0,
                     height: 22.0,
                     child: Icon(
                       CupertinoIcons.chevron_forward,
-                      color: widget.decoration.monthDateArrowColor,
+                      color: _decoration.monthDateArrowColor,
                       size: calendarMonthPickerIconSize,
                     ),
                   ),
@@ -114,7 +126,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
               ),
             ],
           ),
-          crossFadeState: _shouldShowYearPicker
+          crossFadeState: _showYearPicker
               ? CrossFadeState.showFirst
               : CrossFadeState.showSecond,
           duration: calendarHeaderFadeDuration,

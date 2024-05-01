@@ -1,12 +1,8 @@
 import 'package:flutter/rendering.dart';
 
-class CalendarMonthGridDelegate extends SliverGridDelegate {
-  const CalendarMonthGridDelegate({
-    required this.rowCount,
-    required this.rowSize,
-  });
+class CalendarMonthPickerGridDelegate extends SliverGridDelegate {
+  const CalendarMonthPickerGridDelegate({required this.rowSize});
 
-  final int rowCount;
   final double rowSize;
 
   @override
@@ -26,5 +22,5 @@ class CalendarMonthGridDelegate extends SliverGridDelegate {
   }
 
   @override
-  bool shouldRelayout(CalendarMonthGridDelegate oldDelegate) => false;
+  bool shouldRelayout(CalendarMonthPickerGridDelegate oldDelegate) => false;
 }

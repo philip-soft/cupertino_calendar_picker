@@ -1,4 +1,4 @@
-import 'package:cupertino_calendar/src/src.dart';
+import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 
 final TweenSequence<double> heightAnimation =
@@ -111,13 +111,13 @@ final TweenSequence<double> heightAnimation =
   TweenSequenceItem<double>(
     tween: Tween<double>(
       begin: calendarHeight,
-      end: calendarMaxAnimationHeight,
+      end: calendarMaxHeight,
     ),
     weight: 1.0,
   ),
   TweenSequenceItem<double>(
     tween: Tween<double>(
-      begin: calendarMaxAnimationHeight,
+      begin: calendarMaxHeight,
       end: calendarHeight,
     ),
     weight: 1.0,

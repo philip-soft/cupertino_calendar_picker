@@ -1,4 +1,4 @@
-import 'package:cupertino_calendar/src/src.dart';
+import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/material.dart';
 
 class CupertinoCalendarOverlay extends StatefulWidget {
@@ -61,12 +61,6 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
         _controller?.reverse(from: 0.75);
       }
     }
-  }
-
-  @override
-  void dispose() {
-    _controller?.removeStatusListener(_statusListener);
-    super.dispose();
   }
 
   @override
@@ -167,5 +161,11 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _controller?.removeStatusListener(_statusListener);
+    super.dispose();
   }
 }

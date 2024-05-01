@@ -1,4 +1,4 @@
-import 'package:cupertino_calendar/src/src.dart';
+import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -95,11 +95,20 @@ class CalendarPickerState extends State<CalendarPicker>
     }
   }
 
-  @override
-  void dispose() {
-    _monthPageController.dispose();
-    _animationController.dispose();
-    super.dispose();
+  /// Earliest allowable month.
+  bool get _isDisplayingFirstMonth {
+    final DateTime minimumDate = widget.minimumDate;
+    return !_currentMonth.isAfter(
+      DateTime(minimumDate.year, minimumDate.month),
+    );
+  }
+
+  /// Latest allowable month.
+  bool get _isDisplayingLastMonth {
+    final DateTime maximumDate = widget.maximumDate;
+    return !_currentMonth.isBefore(
+      DateTime(maximumDate.year, maximumDate.month),
+    );
   }
 
   void _handleMonthPageChanged(int monthPage) {
@@ -147,22 +156,6 @@ class CalendarPickerState extends State<CalendarPicker>
     }
   }
 
-  /// Earliest allowable month.
-  bool get _isDisplayingFirstMonth {
-    final DateTime minimumDate = widget.minimumDate;
-    return !_currentMonth.isAfter(
-      DateTime(minimumDate.year, minimumDate.month),
-    );
-  }
-
-  /// Latest allowable month.
-  bool get _isDisplayingLastMonth {
-    final DateTime maximumDate = widget.maximumDate;
-    return !_currentMonth.isBefore(
-      DateTime(maximumDate.year, maximumDate.month),
-    );
-  }
-
   void _toggleYearPicker(bool shouldShowYearPicker) {
     setState(() {
       _animationController.isCompleted
@@ -195,7 +188,7 @@ class CalendarPickerState extends State<CalendarPicker>
             firstChild: Column(
               children: <Widget>[
                 const SizedBox(height: 11.0),
-                CalendarWeekdays(weekdayDecoration: widget.weekdayDecoration),
+                CalendarWeekdays(decoration: widget.weekdayDecoration),
                 CalendarMonthPicker(
                   monthPageController: _monthPageController,
                   onMonthPageChanged: _handleMonthPageChanged,
@@ -205,7 +198,7 @@ class CalendarPickerState extends State<CalendarPicker>
                   maximumDate: widget.maximumDate,
                   selectedDate: widget.selectedDate,
                   onChanged: widget.onChanged,
-                  monthPickerDecoration: widget.monthPickerDecoration,
+                  decoration: widget.monthPickerDecoration,
                 ),
               ],
             ),
@@ -253,5 +246,12 @@ class CalendarPickerState extends State<CalendarPicker>
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _monthPageController.dispose();
+    _animationController.dispose();
+    super.dispose();
   }
 }

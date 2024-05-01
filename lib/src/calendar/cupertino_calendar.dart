@@ -1,23 +1,7 @@
-import 'package:cupertino_calendar/src/src.dart';
+import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/material.dart';
 
 class CupertinoCalendar extends StatefulWidget {
-  /// Creates a cupertino calendar picker.
-  ///
-  /// It will display a grid of days for the [initialDate]'s month. The day
-  /// indicated by [initialDate] will be selected.
-  ///
-  /// The optional [onDisplayedMonthChanged] callback can be used to track
-  /// the currently displayed month.
-  ///
-  /// [maximumDate] must be after or equal to [minimumDate].
-  ///
-  /// [initialDate] must be between [minimumDate] and [maximumDate] or equal to
-  /// one of them.
-  ///
-  /// [currentDate] represents the current day (i.e. today). This
-  /// date will be highlighted in the day grid. If null, the date of
-  /// `DateTime.now()` will be used.
   CupertinoCalendar({
     required DateTime minimumDate,
     required DateTime maximumDate,
@@ -50,24 +34,12 @@ class CupertinoCalendar extends StatefulWidget {
     );
   }
 
-  /// The initially selected [DateTime] that the calendar should display.
   final DateTime initialDate;
-
-  /// The minimum selectable [DateTime].
   final DateTime minimumDate;
-
-  /// The maximum selectable [DateTime].
   final DateTime maximumDate;
-
-  /// The [DateTime] representing today. It will be highlighted in the day grid.
   final DateTime currentDate;
-
-  /// Called when the user selects a date in the picker.
   final ValueChanged<DateTime>? onDateChanged;
-
-  /// Called when the user navigates to a new month in the picker.
   final ValueChanged<DateTime>? onDisplayedMonthChanged;
-
   final CalendarContainerDecoration? containerDecoration;
   final CalendarWeekdayDecoration? weekdayDecoration;
   final CalendarMonthPickerDecoration? monthPickerDecoration;

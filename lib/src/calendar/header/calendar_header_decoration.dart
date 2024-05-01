@@ -1,5 +1,22 @@
-import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/cupertino.dart';
+
+const CupertinoDynamicColor calendarMontDateColor = CupertinoColors.label;
+const TextStyle calendarMonthDateStyle = TextStyle(
+  color: calendarMontDateColor,
+  fontWeight: FontWeight.w600,
+  fontSize: 17.0,
+  letterSpacing: -0.5,
+);
+const CupertinoDynamicColor calendarMonthDateArrowColor =
+    CupertinoColors.systemRed;
+const CupertinoDynamicColor calendarForwardButtonColor =
+    CupertinoColors.systemRed;
+const CupertinoDynamicColor calendarBackwardButtonColor =
+    CupertinoColors.systemRed;
+const CupertinoDynamicColor calendarForwardDisabledButtonColor =
+    CupertinoColors.opaqueSeparator;
+const CupertinoDynamicColor calendarBackwardDisabledButtonColor =
+    CupertinoColors.opaqueSeparator;
 
 class CalendarHeaderDecoration {
   factory CalendarHeaderDecoration({

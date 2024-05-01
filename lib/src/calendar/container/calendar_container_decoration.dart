@@ -1,5 +1,18 @@
-import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/cupertino.dart';
+
+const List<BoxShadow> calendarBoxShadow = <BoxShadow>[
+  BoxShadow(
+    color: Color.fromRGBO(0, 0, 0, 0.1),
+    offset: Offset(0.0, 10.0),
+    blurRadius: 60.0,
+  ),
+];
+final BorderRadius calendarBorderRadius = BorderRadius.circular(13.0);
+final CupertinoDynamicColor calendarBackgroundColor =
+    CupertinoDynamicColor.withBrightness(
+  color: CupertinoColors.systemBackground,
+  darkColor: CupertinoColors.systemBackground.darkElevatedColor,
+);
 
 class CalendarContainerDecoration {
   factory CalendarContainerDecoration({
@@ -27,8 +40,8 @@ class CalendarContainerDecoration {
     List<BoxShadow>? boxShadow,
   }) {
     return CalendarContainerDecoration(
-      backgroundColor: (backgroundColor ?? calendarBackgroundDynamicColor)
-          .resolveFrom(context),
+      backgroundColor:
+          (backgroundColor ?? calendarBackgroundColor).resolveFrom(context),
       boxShadow: boxShadow ?? boxShadow,
       borderRadius: borderRadius ?? calendarBorderRadius,
     );

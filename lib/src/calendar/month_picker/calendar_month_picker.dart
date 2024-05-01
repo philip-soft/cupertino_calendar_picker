@@ -1,4 +1,4 @@
-import 'package:cupertino_calendar/src/src.dart';
+import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/material.dart';
 
 // /// Displays the days of a given month and allows choosing a day.
@@ -16,7 +16,7 @@ class CalendarMonthPicker extends StatefulWidget {
     required this.maximumDate,
     required this.selectedDate,
     required this.onChanged,
-    required this.monthPickerDecoration,
+    required this.decoration,
     super.key,
   })  : assert(!minimumDate.isAfter(maximumDate)),
         assert(!selectedDate.isBefore(minimumDate)),
@@ -49,7 +49,7 @@ class CalendarMonthPicker extends StatefulWidget {
   /// The month whose days are displayed by this picker.
   final DateTime displayedMonth;
 
-  final CalendarMonthPickerDecoration monthPickerDecoration;
+  final CalendarMonthPickerDecoration decoration;
 
   @override
   State<CalendarMonthPicker> createState() => CalendarMonthPickerState();
@@ -57,16 +57,29 @@ class CalendarMonthPicker extends StatefulWidget {
 
 class CalendarMonthPickerState extends State<CalendarMonthPicker> {
   int _daysCount(BuildContext context, int index) {
-    final MaterialLocalizations localizations =
-        MaterialLocalizations.of(context);
-    final DateTime monthDate =
-        DateUtils.addMonthsToMonthDate(widget.minimumDate, index);
+    final DateTime monthDate = DateUtils.addMonthsToMonthDate(
+      widget.minimumDate,
+      index,
+    );
     final int year = monthDate.year;
     final int month = monthDate.month;
     final int daysInMonth = DateUtils.getDaysInMonth(year, month);
-    final int dayOffset = DateUtils.firstDayOffset(year, month, localizations);
-
+    final int dayOffset = _dayOffset(context, monthDate: monthDate);
     return daysInMonth + dayOffset;
+  }
+
+  int _dayOffset(
+    BuildContext context, {
+    required DateTime monthDate,
+  }) {
+    final int year = monthDate.year;
+    final int month = monthDate.month;
+    final int dayOffset = DateUtils.firstDayOffset(
+      year,
+      month,
+      MaterialLocalizations.of(context),
+    );
+    return dayOffset;
   }
 
   Iterable<Widget> _days(
@@ -74,14 +87,14 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
     required int index,
     required double backgroundCircleSize,
   }) sync* {
-    final MaterialLocalizations localizations =
-        MaterialLocalizations.of(context);
-    final DateTime monthDate =
-        DateUtils.addMonthsToMonthDate(widget.minimumDate, index);
+    final DateTime monthDate = DateUtils.addMonthsToMonthDate(
+      widget.minimumDate,
+      index,
+    );
     final int year = monthDate.year;
     final int month = monthDate.month;
     final int daysInMonth = DateUtils.getDaysInMonth(year, month);
-    final int dayOffset = DateUtils.firstDayOffset(year, month, localizations);
+    final int dayOffset = _dayOffset(context, monthDate: monthDate);
 
     int day = -dayOffset;
     while (day < daysInMonth) {
@@ -100,29 +113,28 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
         final bool isDisabledDay = date.isAfter(widget.maximumDate) ||
             date.isBefore(widget.minimumDate);
 
-        final CalendarMonthPickerDecoration monthPickerDecoration =
-            widget.monthPickerDecoration;
+        final CalendarMonthPickerDecoration decoration = widget.decoration;
 
         if (isDisabledDay) {
-          style = monthPickerDecoration.disabledDayStyle ??
+          style = decoration.disabledDayStyle ??
               CalendarMonthPickerDisabledDayStyle.withDynamicColor(context);
         } else if (isCurrentDay) {
-          style = monthPickerDecoration.todayStyle ??
+          style = decoration.todayStyle ??
               CalendarMonthPickerCurrentDayStyle.withDynamicColor(context);
 
           if (isSelectedDay) {
-            style = monthPickerDecoration.selectedTodayStyle ??
+            style = decoration.selectedTodayStyle ??
                 CalendarMonthPickerCurrentAndSelectedDayStyle.withDynamicColor(
                   context,
                 );
           }
         } else if (isSelectedDay) {
-          style = monthPickerDecoration.selectedDayStyle ??
+          style = decoration.selectedDayStyle ??
               CalendarMonthPickerSelectedDayStyle.withDynamicColor(
                 context,
               );
         } else {
-          style = monthPickerDecoration.dayStyle ??
+          style = decoration.dayStyle ??
               CalendarMonthPickerDefaultDayStyle.withDynamicColor(context);
         }
 
@@ -194,8 +206,8 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
           final Iterable<Widget> days = _days(
             context,
             index: index,
-            backgroundCircleSize: rowSize > calendarMonthPickerMaxDaySize
-                ? calendarMonthPickerMaxDaySize
+            backgroundCircleSize: rowSize > calendarMonthPickerDayMaxSize
+                ? calendarMonthPickerDayMaxSize
                 : rowSize,
           );
 
@@ -204,10 +216,7 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
               horizontal: calendarMonthPickerHorizontalPadding,
             ),
             physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: CalendarMonthGridDelegate(
-              rowCount: rowCount,
-              rowSize: rowSize,
-            ),
+            gridDelegate: CalendarMonthPickerGridDelegate(rowSize: rowSize),
             childrenDelegate: SliverChildListDelegate(
               days.toList(),
               addRepaintBoundaries: false,

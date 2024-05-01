@@ -1,13 +1,13 @@
-import 'package:cupertino_calendar/src/src.dart';
+import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class CalendarWeekdays extends StatelessWidget {
-  const CalendarWeekdays({required this.weekdayDecoration, super.key});
+  const CalendarWeekdays({required this.decoration, super.key});
 
-  final CalendarWeekdayDecoration weekdayDecoration;
+  final CalendarWeekdayDecoration decoration;
 
-  Iterable<Widget> _weekdays(BuildContext context) sync* {
+  List<Widget> _weekdays(BuildContext context) {
     final DateTime nowDate = DateTime.now();
     final int year = nowDate.year;
     final int month = nowDate.month;
@@ -20,13 +20,13 @@ class CalendarWeekdays extends StatelessWidget {
     final DateTime firstDayOfWeekDate = DateTime(year, month).subtract(
       Duration(days: firstDayOffset),
     );
-    yield* List<Widget>.generate(DateTime.daysPerWeek, (int index) {
+    return List<Widget>.generate(DateTime.daysPerWeek, (int index) {
       final String weekday = weekdayFormat.format(
         firstDayOfWeekDate.add(Duration(days: index)),
       );
       return CalendarWeekday(
         weekday: weekday.toUpperCase(),
-        decoration: weekdayDecoration,
+        decoration: decoration,
       );
     });
   }
@@ -40,7 +40,7 @@ class CalendarWeekdays extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: _weekdays(context).toList(),
+        children: _weekdays(context),
       ),
     );
   }

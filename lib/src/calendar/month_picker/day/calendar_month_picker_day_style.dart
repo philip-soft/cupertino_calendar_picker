@@ -1,5 +1,53 @@
-import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/cupertino.dart';
+
+const CupertinoDynamicColor calendarMonthPickerDisabledDayColor =
+    CupertinoColors.tertiaryLabel;
+const TextStyle calendarMonthPickerDisabledDayStyle = TextStyle(
+  fontSize: 20.0,
+  color: calendarMonthPickerDisabledDayColor,
+  fontWeight: FontWeight.w400,
+  letterSpacing: -0.4,
+);
+
+const CupertinoDynamicColor calendarMonthPickerDefaultDayColor =
+    CupertinoColors.label;
+const TextStyle calendarMonthPickerDefaultDayStyle = TextStyle(
+  fontSize: 20.0,
+  color: calendarMonthPickerDefaultDayColor,
+  fontWeight: FontWeight.w400,
+  letterSpacing: -0.4,
+);
+
+const CupertinoDynamicColor calendarMonthPickerSelectedDayColor =
+    CupertinoColors.systemRed;
+
+final Color calendarMonthPickerSelectedDayBackgroundCircleColor =
+    CupertinoColors.systemRed.withOpacity(0.12);
+
+const TextStyle calendarMonthPickerSelectedDayStyle = TextStyle(
+  fontSize: 22.0,
+  color: calendarMonthPickerSelectedDayColor,
+  fontWeight: FontWeight.w500,
+);
+const CupertinoDynamicColor calendarMonthPickerCurrentAndSelectedDayColor =
+    CupertinoColors.systemRed;
+final TextStyle calendarMonthPickerCurrentAndSelectedDayStyle = TextStyle(
+  fontSize: 22.0,
+  color: CupertinoDynamicColor.withBrightness(
+    color: CupertinoColors.label.darkColor,
+    darkColor: CupertinoColors.label.darkColor,
+  ),
+  fontWeight: FontWeight.w500,
+);
+const CupertinoDynamicColor calendarMonthPickerCurrentDayColor =
+    CupertinoColors.systemRed;
+
+const TextStyle calendarMonthPickerCurrentDayStyle = TextStyle(
+  fontSize: 20.0,
+  color: calendarMonthPickerCurrentDayColor,
+  fontWeight: FontWeight.w400,
+  letterSpacing: -0.4,
+);
 
 sealed class CalendarMonthPickerDayStyle {
   const CalendarMonthPickerDayStyle({
