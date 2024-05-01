@@ -63,7 +63,7 @@ const TextStyle calendarMonthPickerDefaultDayStyle = TextStyle(
 const CupertinoDynamicColor calendarMonthPickerSelectedDayColor =
     CupertinoColors.systemRed;
 
-final Color calendarMonthPickerSelectedDayBackgroundColor =
+final Color calendarMonthPickerSelectedDayBackgroundCircleColor =
     CupertinoColors.systemRed.withOpacity(0.12);
 
 const TextStyle calendarMonthPickerSelectedDayStyle = TextStyle(

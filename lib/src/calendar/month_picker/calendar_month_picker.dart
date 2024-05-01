@@ -1,4 +1,4 @@
-import 'package:cupertino_calendar/lib.dart';
+import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/material.dart';
 
 // /// Displays the days of a given month and allows choosing a day.
@@ -72,7 +72,7 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
   Iterable<Widget> _days(
     BuildContext context, {
     required int index,
-    required double daySize,
+    required double backgroundCircleSize,
   }) sync* {
     final MaterialLocalizations localizations =
         MaterialLocalizations.of(context);
@@ -130,7 +130,7 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
           dayDate: date,
           onDaySelected: isDisabledDay ? null : widget.onChanged,
           style: style,
-          daySize: daySize,
+          backgroundCircleSize: backgroundCircleSize,
         );
         yield dayWidget;
       }
@@ -138,7 +138,7 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
   }
 
   int _rowCount(int daysLength) {
-    /// If a month has such a week structure or similar, then [daysLength] will be [36]
+    /// If a month has such a week structure or similar, then [daysLength] will more then [35]
     /// and therefore [_rowCount] will be [6]
     /// Su Mo Tu We Th Fr St
     /// __ __ __ __ __ __ 01
@@ -146,11 +146,11 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
     /// 09 10 11 12 13 14 15
     /// 16 17 18 19 20 21 22
     /// 23 24 25 26 27 28 29
-    /// 30
+    /// 30 31
     if (daysLength > 35) {
       return 6;
 
-      /// If a month has such a week structure, then [daysLength] will be [28]
+      /// If a month has such a week structure, then [daysLength] will be less then [29]
       /// and therefore [_rowCount] will be [4]
       /// Su Mo Tu We Th Fr St
       /// 01 02 03 04 05 06 07
@@ -194,13 +194,15 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
           final Iterable<Widget> days = _days(
             context,
             index: index,
-            daySize: rowSize > calendarMonthPickerMaxDaySize
+            backgroundCircleSize: rowSize > calendarMonthPickerMaxDaySize
                 ? calendarMonthPickerMaxDaySize
                 : rowSize,
           );
 
           return GridView.custom(
-            padding: const EdgeInsets.symmetric(horizontal: 11.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: calendarMonthPickerHorizontalPadding,
+            ),
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: CalendarMonthGridDelegate(
               rowCount: rowCount,

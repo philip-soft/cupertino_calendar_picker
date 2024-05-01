@@ -1,4 +1,4 @@
-import 'package:cupertino_calendar/lib.dart';
+import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/cupertino.dart';
 
 class CalendarWeekdayDecoration {

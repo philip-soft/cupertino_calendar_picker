@@ -1,8 +1,8 @@
+export 'animations/animations.dart';
 export 'calendar/calendar.dart';
-export 'config.dart';
-export 'decoration/decoration.dart';
-export 'decoration_config.dart';
+export 'config/config.dart';
+export 'config/decoration_config.dart';
+export 'config/ui_config.dart';
 export 'delegates/delegates.dart';
 export 'functions.dart';
-export 'resources/resources.dart';
 export 'utils/utils.dart';

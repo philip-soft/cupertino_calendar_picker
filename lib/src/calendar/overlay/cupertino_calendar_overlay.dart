@@ -1,4 +1,4 @@
-import 'package:cupertino_calendar/lib.dart';
+import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/material.dart';
 
 class CupertinoCalendarOverlay extends StatefulWidget {
@@ -43,12 +43,14 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
 
   void _onInitialized(AnimationController animationController) {
     _controller = animationController;
-    _controller!.forward();
-    _controller!.addStatusListener((AnimationStatus status) {
-      if (status == AnimationStatus.dismissed) {
-        Navigator.of(context).pop();
-      }
-    });
+    _controller?.forward();
+    _controller?.addStatusListener(_statusListener);
+  }
+
+  void _statusListener(AnimationStatus status) {
+    if (status == AnimationStatus.dismissed) {
+      Navigator.of(context).pop();
+    }
   }
 
   void _onOutsideTap() {
@@ -59,6 +61,12 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
         _controller?.reverse(from: 0.75);
       }
     }
+  }
+
+  @override
+  void dispose() {
+    _controller?.removeStatusListener(_statusListener);
+    super.dispose();
   }
 
   @override
@@ -144,7 +152,6 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
             color: Colors.transparent,
             child: CupertinoCalendar(
               onInitialized: _onInitialized,
-              containerDecoration: widget.containerDecoration,
               weekdayDecoration: widget.weekdayDecoration,
               monthPickerDecoration: widget.monthPickerDecoration,
               calendarHeaderDecoration: widget.calendarHeaderDecoration,

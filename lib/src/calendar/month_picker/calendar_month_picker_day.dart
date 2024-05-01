@@ -1,20 +1,20 @@
 import 'dart:ui';
 
-import 'package:cupertino_calendar/lib.dart';
+import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/material.dart';
 
 class CalendarMonthPickerDay extends StatelessWidget {
   const CalendarMonthPickerDay({
     required this.dayDate,
     required this.style,
-    required this.daySize,
+    required this.backgroundCircleSize,
     this.onDaySelected,
     super.key,
   });
 
   final DateTime dayDate;
   final CalendarMonthPickerDayStyle style;
-  final double daySize;
+  final double backgroundCircleSize;
   final ValueChanged<DateTime>? onDaySelected;
 
   @override
@@ -26,8 +26,8 @@ class CalendarMonthPickerDay extends StatelessWidget {
         painter: CalendarMonthPickerDayPainter(
           day: '${dayDate.day}',
           style: style.textStyle,
-          backgroundColor: style.backgroundColor,
-          daySize: daySize,
+          backgroundCircleColor: style.backgroundCircleColor,
+          backgroundCircleSize: backgroundCircleSize,
         ),
       ),
     );
@@ -38,14 +38,14 @@ class CalendarMonthPickerDayPainter extends CustomPainter {
   const CalendarMonthPickerDayPainter({
     required this.day,
     required this.style,
-    required this.daySize,
-    this.backgroundColor,
+    required this.backgroundCircleSize,
+    this.backgroundCircleColor,
   });
 
   final String day;
-  final Color? backgroundColor;
   final TextStyle style;
-  final double daySize;
+  final Color? backgroundCircleColor;
+  final double backgroundCircleSize;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -62,11 +62,11 @@ class CalendarMonthPickerDayPainter extends CustomPainter {
     final double centerY = size.height / 2;
     final double dayHalfHeight = dayPragrapth.height / 2;
 
-    if (backgroundColor != null) {
+    if (backgroundCircleColor != null) {
       _drawBackgroundCircle(
         canvas,
         Offset(centerX, centerY),
-        backgroundColor!,
+        backgroundCircleColor!,
       );
     }
 
@@ -83,7 +83,7 @@ class CalendarMonthPickerDayPainter extends CustomPainter {
     final CalendarMonthPickerDayPainter oldPainter =
         oldDelegate as CalendarMonthPickerDayPainter;
     return style != oldPainter.style ||
-        backgroundColor != oldPainter.backgroundColor;
+        backgroundCircleColor != oldPainter.backgroundCircleColor;
   }
 
   void _drawDayParagraph(Canvas canvas, Offset offset, Paragraph day) {
@@ -94,7 +94,7 @@ class CalendarMonthPickerDayPainter extends CustomPainter {
     final Paint paint = Paint()..color = color;
     canvas.drawCircle(
       offset,
-      daySize / 2,
+      backgroundCircleSize / 2,
       paint,
     );
   }

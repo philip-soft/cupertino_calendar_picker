@@ -1,4 +1,4 @@
-import 'package:cupertino_calendar/lib.dart';
+import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -191,7 +191,7 @@ class CalendarPickerState extends State<CalendarPicker>
             crossFadeState: _isYearPickerShowed
                 ? CrossFadeState.showSecond
                 : CrossFadeState.showFirst,
-            duration: const Duration(milliseconds: 250),
+            duration: calendarYearPickerFadeDuration,
             firstChild: Column(
               children: <Widget>[
                 const SizedBox(height: 11.0),

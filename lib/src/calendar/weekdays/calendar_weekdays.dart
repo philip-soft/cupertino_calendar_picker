@@ -1,4 +1,4 @@
-import 'package:cupertino_calendar/lib.dart';
+import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -34,8 +34,10 @@ class CalendarWeekdays extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 18.0,
-      margin: const EdgeInsets.symmetric(horizontal: 12.0),
+      height: calendarWeekdaysHeight,
+      margin: const EdgeInsets.symmetric(
+        horizontal: calendarWeekdaysHorizontalPadding,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: _weekdays(context).toList(),

@@ -1,6 +1,4 @@
-import 'package:cupertino_calendar/src/calendar/calendar.dart';
-import 'package:cupertino_calendar/src/decoration/decoration.dart';
-import 'package:cupertino_calendar/src/utils/utils.dart';
+import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/material.dart';
 
 class CupertinoCalendar extends StatefulWidget {

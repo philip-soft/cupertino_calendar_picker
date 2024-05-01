@@ -1,4 +1,4 @@
-import 'package:cupertino_calendar/lib.dart';
+import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
@@ -58,7 +58,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
                 ),
                 const SizedBox(width: 5.0),
                 AnimatedRotation(
-                  duration: calendarYearPickerFadeDuration,
+                  duration: calendarHeaderFadeDuration,
                   curve: Curves.easeInOut,
                   turns: _shouldShowYearPicker ? 1.25 : 1.0,
                   child: SizedBox(
@@ -117,7 +117,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
           crossFadeState: _shouldShowYearPicker
               ? CrossFadeState.showFirst
               : CrossFadeState.showSecond,
-          duration: calendarYearPickerFadeDuration,
+          duration: calendarHeaderFadeDuration,
           layoutBuilder: (
             Widget topChild,
             Key topChildKey,

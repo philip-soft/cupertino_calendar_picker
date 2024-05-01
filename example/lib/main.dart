@@ -1,12 +1,13 @@
 import 'dart:math';
 
-import 'package:cupertino_calendar/lib.dart';
+import 'package:cupertino_calendar/cupertino_calendar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   // timeDilation = 3.0;
+
   runApp(const MyApp());
 }
 
@@ -78,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Padding(
             padding: const EdgeInsets.only(
-              top: 300,
+              top: 200,
               right: 200,
             ),
             child: CupertinoCalendarButton(

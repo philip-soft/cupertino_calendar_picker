@@ -1,4 +1,4 @@
-import 'package:cupertino_calendar/lib.dart';
+import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/material.dart';
 
 class CalendarContainer extends StatefulWidget {
@@ -35,8 +35,8 @@ class _CalendarContainerState extends State<CalendarContainer>
       reverseDuration: calendarAnimationReverseDuration,
     );
 
-    scale = CalendarAnimations.scaleAnimation.animate(_curvedAnimation);
-    height = CalendarAnimations.heightAnimation.animate(_curvedAnimation);
+    scale = scaleAnimation.animate(_curvedAnimation);
+    height = heightAnimation.animate(_curvedAnimation);
 
     widget.onInitialized(_controller);
   }
