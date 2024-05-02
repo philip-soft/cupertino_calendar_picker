@@ -7,6 +7,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     required this.maximumDate,
     required this.horizontalSpacing,
     required this.offset,
+    required this.mainColor,
     this.onDateChanged,
     this.currentDate,
     this.initialDate,
@@ -32,6 +33,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
   final CalendarWeekdayDecoration? weekdayDecoration;
   final CalendarMonthPickerDecoration? monthPickerDecoration;
   final CalendarHeaderDecoration? calendarHeaderDecoration;
+  final Color mainColor;
 
   @override
   State<CupertinoCalendarOverlay> createState() =>
@@ -73,58 +75,67 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
     final double screenWidth = screenSize.width;
     final double screenHeight = screenSize.height;
 
-    final Offset position =
+    final Offset widgetPosition =
         renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
     final Size widgetSize = renderBox?.size ?? Size.zero;
     final double widgetWidth = widgetSize.width;
     final double widgetHeight = widgetSize.height;
     final double widgetHalfWidth = widgetWidth / 2;
     final double widgetHalfHeight = widgetHeight / 2;
-    final double widgetCenterY = position.dy + widgetHalfHeight;
-    final double widgetCenterX = position.dx + widgetHalfWidth;
+    final double widgetCenterY = widgetPosition.dy + widgetHalfHeight;
+    final double widgetCenterX = widgetPosition.dx + widgetHalfWidth;
 
     final double spaceOnTop = widgetCenterY;
     final double spaceOnLeft = widgetCenterX - horizontalSpacing;
-    final double spaceOnRight = screenWidth - spaceOnLeft;
+    final double spaceOnRight = screenWidth - widgetCenterX - horizontalSpacing;
     final double spaceOnBottom = screenHeight - widgetCenterY;
-    final bool moreSpaceOnTop = spaceOnTop >= spaceOnBottom;
-    final bool moreSpaceOnLeft = spaceOnLeft >= spaceOnRight;
+
+    const double calendarHalfWidth = calendarWidth / 2;
+    final bool fitsOnTop = spaceOnTop >= spaceOnBottom;
+    final bool fitsOnLeft = spaceOnLeft >= calendarHalfWidth;
+    final bool fitsOnRight = spaceOnRight >= calendarHalfWidth;
+    final bool fitsHorizontally = fitsOnLeft && fitsOnRight;
 
     double? top;
     double? left;
     double? right;
     double? bottom;
 
-    if (moreSpaceOnTop) {
-      top = widgetCenterY - calendarHeight - offset.dy;
+    if (fitsOnTop) {
+      top = widgetCenterY - calendarHeight - widgetHalfHeight - offset.dy;
     } else {
-      top = widgetCenterY + offset.dy;
+      top = widgetCenterY + widgetHalfHeight + offset.dy;
     }
 
-    if (moreSpaceOnLeft) {
-      left = widgetCenterX - calendarWidth;
-      left = left < horizontalSpacing ? horizontalSpacing : left;
+    if (fitsHorizontally) {
+      left = widgetCenterX - calendarHalfWidth;
+    } else if (fitsOnLeft) {
+      left = screenWidth - calendarWidth - horizontalSpacing;
+    } else if (fitsOnRight) {
+      left = horizontalSpacing;
     } else {
-      final bool isNotFitOnRight = spaceOnRight <= calendarWidth;
-      if (isNotFitOnRight) {
-        right = horizontalSpacing;
-      } else {
-        left = widgetCenterX;
-      }
+      left = 0;
+      right = 0;
     }
 
-    final double space = moreSpaceOnLeft ? spaceOnLeft : spaceOnRight;
+    left += offset.dx;
+
+    final double space = fitsOnLeft ? spaceOnLeft : spaceOnRight;
     double xAlignment = ((space / calendarWidth) - 0.5) * 2;
 
-    if (moreSpaceOnLeft) {
+    if (fitsHorizontally) {
+      xAlignment = 0.0;
+    } else if (fitsOnLeft) {
       xAlignment = xAlignment > 1 ? 1.0 : xAlignment;
-    } else {
+    } else if (fitsOnRight) {
       xAlignment = xAlignment > 1 ? -1.0 : -xAlignment;
+    } else {
+      xAlignment = 0.0;
     }
 
     final Alignment scaleAligment = Alignment(
       xAlignment,
-      moreSpaceOnTop ? 1.0 : -1.0,
+      fitsOnTop ? 1.0 : -1.0,
     );
 
     return Stack(
@@ -156,6 +167,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
               onDateChanged: widget.onDateChanged,
               onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
               scaleAlignment: scaleAligment,
+              mainColor: widget.mainColor,
             ),
           ),
         ),

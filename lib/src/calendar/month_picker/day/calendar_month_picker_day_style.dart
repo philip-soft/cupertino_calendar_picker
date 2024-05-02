@@ -18,19 +18,11 @@ const TextStyle calendarMonthPickerDefaultDayStyle = TextStyle(
   letterSpacing: -0.4,
 );
 
-const CupertinoDynamicColor calendarMonthPickerSelectedDayColor =
-    CupertinoColors.systemRed;
-
-final Color calendarMonthPickerSelectedDayBackgroundCircleColor =
-    CupertinoColors.systemRed.withOpacity(0.12);
-
 const TextStyle calendarMonthPickerSelectedDayStyle = TextStyle(
   fontSize: 22.0,
-  color: calendarMonthPickerSelectedDayColor,
   fontWeight: FontWeight.w500,
 );
-const CupertinoDynamicColor calendarMonthPickerCurrentAndSelectedDayColor =
-    CupertinoColors.systemRed;
+
 final TextStyle calendarMonthPickerCurrentAndSelectedDayStyle = TextStyle(
   fontSize: 22.0,
   color: CupertinoDynamicColor.withBrightness(
@@ -39,12 +31,9 @@ final TextStyle calendarMonthPickerCurrentAndSelectedDayStyle = TextStyle(
   ),
   fontWeight: FontWeight.w500,
 );
-const CupertinoDynamicColor calendarMonthPickerCurrentDayColor =
-    CupertinoColors.systemRed;
 
 const TextStyle calendarMonthPickerCurrentDayStyle = TextStyle(
   fontSize: 20.0,
-  color: calendarMonthPickerCurrentDayColor,
   fontWeight: FontWeight.w400,
   letterSpacing: -0.4,
 );
@@ -113,13 +102,14 @@ class CalendarMonthPickerDefaultDayStyle extends CalendarMonthPickerDayStyle {
 
 class CalendarMonthPickerSelectedDayStyle extends CalendarMonthPickerDayStyle {
   factory CalendarMonthPickerSelectedDayStyle({
+    required Color mainColor,
     Color? backgroundCircleColor,
     TextStyle? textStyle,
   }) {
     return CalendarMonthPickerSelectedDayStyle._(
-      textStyle: textStyle ?? calendarMonthPickerSelectedDayStyle,
-      backgroundCircleColor:
-          backgroundCircleColor ?? calendarMonthPickerSelectedDayColor,
+      textStyle: textStyle ??
+          calendarMonthPickerSelectedDayStyle.copyWith(color: mainColor),
+      backgroundCircleColor: backgroundCircleColor ?? mainColor,
     );
   }
 
@@ -130,17 +120,18 @@ class CalendarMonthPickerSelectedDayStyle extends CalendarMonthPickerDayStyle {
 
   factory CalendarMonthPickerSelectedDayStyle.withDynamicColor(
     BuildContext context, {
+    required Color mainColor,
     TextStyle? textStyle,
     CupertinoDynamicColor? backgroundCircleColor,
   }) {
     return CalendarMonthPickerSelectedDayStyle(
+      mainColor: mainColor,
       textStyle: textStyle ??
           calendarMonthPickerSelectedDayStyle.copyWith(
-            color: calendarMonthPickerSelectedDayColor.resolveFrom(context),
+            color: CupertinoDynamicColor.resolve(mainColor, context),
           ),
       backgroundCircleColor: CupertinoDynamicColor.resolve(
-        backgroundCircleColor ??
-            calendarMonthPickerSelectedDayBackgroundCircleColor,
+        backgroundCircleColor ?? mainColor.withOpacity(0.12),
         context,
       ),
     );
@@ -150,13 +141,13 @@ class CalendarMonthPickerSelectedDayStyle extends CalendarMonthPickerDayStyle {
 class CalendarMonthPickerCurrentAndSelectedDayStyle
     extends CalendarMonthPickerDayStyle {
   factory CalendarMonthPickerCurrentAndSelectedDayStyle({
+    required Color mainColor,
     Color? backgroundCircleColor,
     TextStyle? textStyle,
   }) {
     return CalendarMonthPickerCurrentAndSelectedDayStyle._(
       textStyle: textStyle ?? calendarMonthPickerCurrentAndSelectedDayStyle,
-      backgroundCircleColor: backgroundCircleColor ??
-          calendarMonthPickerCurrentAndSelectedDayColor,
+      backgroundCircleColor: backgroundCircleColor ?? mainColor,
     );
   }
 
@@ -167,13 +158,15 @@ class CalendarMonthPickerCurrentAndSelectedDayStyle
 
   factory CalendarMonthPickerCurrentAndSelectedDayStyle.withDynamicColor(
     BuildContext context, {
+    required Color mainColor,
     TextStyle? textStyle,
     CupertinoDynamicColor? backgroundCircleColor,
   }) {
     return CalendarMonthPickerCurrentAndSelectedDayStyle(
+      mainColor: mainColor,
       textStyle: textStyle ?? calendarMonthPickerCurrentAndSelectedDayStyle,
       backgroundCircleColor: CupertinoDynamicColor.resolve(
-        backgroundCircleColor ?? calendarMonthPickerCurrentAndSelectedDayColor,
+        backgroundCircleColor ?? mainColor,
         context,
       ),
     );
@@ -198,13 +191,14 @@ class CalendarMonthPickerCurrentDayStyle extends CalendarMonthPickerDayStyle {
 
   factory CalendarMonthPickerCurrentDayStyle.withDynamicColor(
     BuildContext context, {
+    required Color mainColor,
     TextStyle? textStyle,
     CupertinoDynamicColor? backgroundCircleColor,
   }) {
     return CalendarMonthPickerCurrentDayStyle(
       textStyle: textStyle ??
           calendarMonthPickerCurrentDayStyle.copyWith(
-            color: calendarMonthPickerCurrentDayColor.resolveFrom(context),
+            color: CupertinoDynamicColor.resolve(mainColor, context),
           ),
       backgroundCircleColor: backgroundCircleColor?.resolveFrom(context),
     );

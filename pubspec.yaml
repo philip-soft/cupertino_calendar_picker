@@ -1,6 +1,6 @@
 name: cupertino_calendar
-description: A cupertino calendar picker package.
-version: 0.1.0
+description: The cupertino calendar package.
+version: 1.0.0
 homepage: homepage
 
 environment:

@@ -49,14 +49,10 @@ class _CalendarContainerState extends State<CalendarContainer>
 
   Alignment get innerAlignment {
     return switch (widget.scaleAlignment) {
-      Alignment.topCenter => Alignment.bottomCenter,
-      Alignment.topRight => Alignment.bottomRight,
-      Alignment.topLeft => Alignment.bottomLeft,
       Alignment.bottomRight => Alignment.topRight,
       Alignment.bottomLeft => Alignment.topLeft,
       Alignment.bottomCenter => Alignment.topCenter,
-      Alignment.center => Alignment.center,
-      _ => Alignment.topCenter,
+      _ => widget.scaleAlignment,
     };
   }
 

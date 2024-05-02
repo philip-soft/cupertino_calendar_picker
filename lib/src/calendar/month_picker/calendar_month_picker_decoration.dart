@@ -1,5 +1,5 @@
 import 'package:cupertino_calendar/src/src.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 class CalendarMonthPickerDecoration {
   factory CalendarMonthPickerDecoration({
@@ -28,6 +28,7 @@ class CalendarMonthPickerDecoration {
 
   factory CalendarMonthPickerDecoration.withDynamicColor(
     BuildContext context, {
+    required Color mainColor,
     CalendarMonthPickerDayStyle? dayStyle,
     CalendarMonthPickerDayStyle? todayStyle,
     CalendarMonthPickerDayStyle? selectedDayStyle,
@@ -38,7 +39,10 @@ class CalendarMonthPickerDecoration {
       dayStyle: dayStyle ??
           CalendarMonthPickerDefaultDayStyle.withDynamicColor(context),
       todayStyle: todayStyle ??
-          CalendarMonthPickerCurrentDayStyle.withDynamicColor(context),
+          CalendarMonthPickerCurrentDayStyle.withDynamicColor(
+            context,
+            mainColor: mainColor,
+          ),
       disabledDayStyle: selectedDayStyle ??
           CalendarMonthPickerDisabledDayStyle.withDynamicColor(
             context,
@@ -46,10 +50,12 @@ class CalendarMonthPickerDecoration {
       selectedDayStyle: selectedTodayStyle ??
           CalendarMonthPickerSelectedDayStyle.withDynamicColor(
             context,
+            mainColor: mainColor,
           ),
       selectedTodayStyle: disabledDayStyle ??
           CalendarMonthPickerCurrentAndSelectedDayStyle.withDynamicColor(
             context,
+            mainColor: mainColor,
           ),
     );
   }

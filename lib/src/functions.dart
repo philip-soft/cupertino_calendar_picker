@@ -1,4 +1,5 @@
 import 'package:cupertino_calendar/src/src.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 const String _barrierLabel = 'CupertinoCalendarPickerBarrier';
@@ -39,18 +40,19 @@ Future<void> showCupertinoCalendarPicker(
   /// Called when the user navigates to a new month in the picker.
   ValueChanged<DateTime>? onDisplayedMonthChanged,
 
-  /// The spacing from left and right sides of the screen
+  /// The spacing from left and right sides of the screen.
   double horizontalSpacing = 10.0,
 
-  /// The offset from the provided [widgetRenderBox] location.
-  Offset offset = const Offset(0.0, 30.0),
+  /// The offset from top/bottom of the [widgetRenderBox] location.
+  Offset offset = const Offset(0.0, 10.0),
 
-  /// The widget's render box around which the calendar will be displayed
+  /// The widget's render box around which the calendar will be displayed.
   RenderBox? widgetRenderBox,
   CalendarContainerDecoration? containerDecoration,
   CalendarWeekdayDecoration? weekdayDecoration,
   CalendarMonthPickerDecoration? monthPickerDecoration,
   CalendarHeaderDecoration? calendarHeaderDecoration,
+  Color mainColor = CupertinoColors.systemRed,
 }) {
   return showGeneralDialog(
     context: context,
@@ -72,6 +74,7 @@ Future<void> showCupertinoCalendarPicker(
       Animation<double> ___,
     ) {
       return CupertinoCalendarOverlay(
+        mainColor: mainColor,
         horizontalSpacing: horizontalSpacing,
         offset: offset,
         widgetRenderBox: widgetRenderBox,

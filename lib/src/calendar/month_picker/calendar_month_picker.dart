@@ -17,6 +17,7 @@ class CalendarMonthPicker extends StatefulWidget {
     required this.selectedDate,
     required this.onChanged,
     required this.decoration,
+    required this.mainColor,
     super.key,
   })  : assert(!minimumDate.isAfter(maximumDate)),
         assert(!selectedDate.isBefore(minimumDate)),
@@ -48,8 +49,12 @@ class CalendarMonthPicker extends StatefulWidget {
 
   /// The month whose days are displayed by this picker.
   final DateTime displayedMonth;
-
+  
+  /// The decoration class for each day type.
   final CalendarMonthPickerDecoration decoration;
+
+  /// The main color of the month picker.
+  final Color mainColor;
 
   @override
   State<CalendarMonthPicker> createState() => CalendarMonthPickerState();
@@ -120,18 +125,23 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
               CalendarMonthPickerDisabledDayStyle.withDynamicColor(context);
         } else if (isCurrentDay) {
           style = decoration.todayStyle ??
-              CalendarMonthPickerCurrentDayStyle.withDynamicColor(context);
+              CalendarMonthPickerCurrentDayStyle.withDynamicColor(
+                context,
+                mainColor: widget.mainColor,
+              );
 
           if (isSelectedDay) {
             style = decoration.selectedTodayStyle ??
                 CalendarMonthPickerCurrentAndSelectedDayStyle.withDynamicColor(
                   context,
+                  mainColor: widget.mainColor,
                 );
           }
         } else if (isSelectedDay) {
           style = decoration.selectedDayStyle ??
               CalendarMonthPickerSelectedDayStyle.withDynamicColor(
                 context,
+                mainColor: widget.mainColor,
               );
         } else {
           style = decoration.dayStyle ??

@@ -40,8 +40,10 @@ class CalendarContainerDecoration {
     List<BoxShadow>? boxShadow,
   }) {
     return CalendarContainerDecoration(
-      backgroundColor:
-          (backgroundColor ?? calendarBackgroundColor).resolveFrom(context),
+      backgroundColor: CupertinoDynamicColor.resolve(
+        backgroundColor ?? calendarBackgroundColor,
+        context,
+      ),
       boxShadow: boxShadow ?? boxShadow,
       borderRadius: borderRadius ?? calendarBorderRadius,
     );

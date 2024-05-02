@@ -16,6 +16,7 @@ class CalendarPicker extends StatefulWidget {
     required this.weekdayDecoration,
     required this.monthPickerDecoration,
     required this.calendarHeaderDecoration,
+    required this.mainColor,
     super.key,
   })  : assert(!minimumDate.isAfter(maximumDate)),
         assert(!currentDate.isBefore(minimumDate)),
@@ -54,6 +55,7 @@ class CalendarPicker extends StatefulWidget {
   final CalendarWeekdayDecoration weekdayDecoration;
   final CalendarMonthPickerDecoration monthPickerDecoration;
   final CalendarHeaderDecoration calendarHeaderDecoration;
+  final Color mainColor;
 
   @override
   CalendarPickerState createState() => CalendarPickerState();
@@ -199,6 +201,7 @@ class CalendarPickerState extends State<CalendarPicker>
                   selectedDate: widget.selectedDate,
                   onChanged: widget.onChanged,
                   decoration: widget.monthPickerDecoration,
+                  mainColor: widget.mainColor,
                 ),
               ],
             ),

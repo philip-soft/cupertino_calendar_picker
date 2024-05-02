@@ -3,17 +3,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ExampleApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class ExampleApp extends StatefulWidget {
+  const ExampleApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<ExampleApp> createState() => _ExampleAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _ExampleAppState extends State<ExampleApp> {
   DateTime _selectedDate = DateTime.now();
 
   Future<void> _onTap(BuildContext context) {
@@ -25,7 +25,6 @@ class _MyAppState extends State<MyApp> {
       widgetRenderBox: renderBox,
       minimumDate: nowDate.subtract(const Duration(days: 15)),
       initialDate: _selectedDate,
-      currentDate: nowDate,
       maximumDate: DateTime(2030, 5, 25),
       onDateChanged: _onDateChanged,
     );
@@ -41,6 +40,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return CupertinoApp(
       title: 'Cupertino Calendar Example',
+      debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -48,8 +48,7 @@ class _MyAppState extends State<MyApp> {
       ],
       home: CupertinoPageScaffold(
         child: Align(
-          // TODO: FIX THIS CASE AND CASE WHEN WIDGET IS IN THE CENTER
-          alignment: const Alignment(-0.8, 0.2),
+          alignment: const Alignment(0.0, 0.2),
           child: Builder(
             builder: (context) {
               return GestureDetector(
@@ -71,7 +70,6 @@ class _MyAppState extends State<MyApp> {
 
 class _ExampleWidget extends StatelessWidget {
   const _ExampleWidget({
-    super.key,
     required this.selectedDate,
   });
 
@@ -97,12 +95,11 @@ class _ExampleWidget extends StatelessWidget {
       ),
       alignment: Alignment.center,
       height: 34,
-      width: 99,
       padding: const EdgeInsets.symmetric(horizontal: 11.0),
       child: Text(
         '$monthString $dayString, $yearString',
         style: TextStyle(
-          color: CupertinoColors.systemBlue.resolveFrom(context),
+          color: CupertinoColors.systemRed.resolveFrom(context),
           fontSize: 17.0,
         ),
       ),

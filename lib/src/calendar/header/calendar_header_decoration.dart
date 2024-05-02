@@ -7,12 +7,7 @@ const TextStyle calendarMonthDateStyle = TextStyle(
   fontSize: 17.0,
   letterSpacing: -0.5,
 );
-const CupertinoDynamicColor calendarMonthDateArrowColor =
-    CupertinoColors.systemRed;
-const CupertinoDynamicColor calendarForwardButtonColor =
-    CupertinoColors.systemRed;
-const CupertinoDynamicColor calendarBackwardButtonColor =
-    CupertinoColors.systemRed;
+
 const CupertinoDynamicColor calendarForwardDisabledButtonColor =
     CupertinoColors.opaqueSeparator;
 const CupertinoDynamicColor calendarBackwardDisabledButtonColor =
@@ -20,6 +15,7 @@ const CupertinoDynamicColor calendarBackwardDisabledButtonColor =
 
 class CalendarHeaderDecoration {
   factory CalendarHeaderDecoration({
+    required Color mainColor,
     TextStyle? monthDateStyle,
     Color? monthDateArrowColor,
     Color? forwardButtonColor,
@@ -29,13 +25,13 @@ class CalendarHeaderDecoration {
   }) {
     return CalendarHeaderDecoration._(
       monthDateStyle: monthDateStyle ?? calendarMonthDateStyle,
-      monthDateArrowColor: monthDateArrowColor ?? calendarMonthDateArrowColor,
-      forwardButtonColor: forwardButtonColor ?? calendarForwardButtonColor,
-      backwardButtonColor: backwardButtonColor ?? backwardButtonColor,
+      monthDateArrowColor: monthDateArrowColor ?? mainColor,
+      forwardButtonColor: forwardButtonColor ?? mainColor,
+      backwardButtonColor: backwardButtonColor ?? mainColor,
       backwardDisabledButtonColor:
-          backwardDisabledButtonColor ?? backwardDisabledButtonColor,
+          backwardDisabledButtonColor ?? calendarForwardDisabledButtonColor,
       forwardDisabledButtonColor:
-          forwardDisabledButtonColor ?? forwardDisabledButtonColor,
+          forwardDisabledButtonColor ?? calendarForwardDisabledButtonColor,
     );
   }
 
@@ -50,6 +46,7 @@ class CalendarHeaderDecoration {
 
   factory CalendarHeaderDecoration.withDynamicColor(
     BuildContext context, {
+    required Color mainColor,
     TextStyle? monthDateStyle,
     CupertinoDynamicColor? monthDateArrowColor,
     CupertinoDynamicColor? forwardButtonColor,
@@ -58,16 +55,14 @@ class CalendarHeaderDecoration {
     CupertinoDynamicColor? forwardDisabledButtonColor,
   }) {
     return CalendarHeaderDecoration(
+      mainColor: mainColor,
       monthDateStyle: monthDateStyle ??
           calendarMonthDateStyle.copyWith(
             color: calendarMontDateColor.resolveFrom(context),
           ),
-      monthDateArrowColor: (monthDateArrowColor ?? calendarMonthDateArrowColor)
-          .resolveFrom(context),
-      forwardButtonColor: (forwardButtonColor ?? calendarForwardButtonColor)
-          .resolveFrom(context),
-      backwardButtonColor: (backwardButtonColor ?? calendarBackwardButtonColor)
-          .resolveFrom(context),
+      monthDateArrowColor: monthDateArrowColor ?? mainColor,
+      forwardButtonColor: forwardButtonColor ?? mainColor,
+      backwardButtonColor: backwardButtonColor ?? mainColor,
       forwardDisabledButtonColor:
           (forwardDisabledButtonColor ?? calendarForwardDisabledButtonColor)
               .resolveFrom(context),
@@ -92,7 +87,7 @@ class CalendarHeaderDecoration {
     Color? backwardDisabledButtonColor,
     Color? forwardDisabledButtonColor,
   }) {
-    return CalendarHeaderDecoration(
+    return CalendarHeaderDecoration._(
       monthDateStyle: monthDateStyle ?? this.monthDateStyle,
       monthDateArrowColor: monthDateArrowColor ?? this.monthDateArrowColor,
       forwardButtonColor: forwardButtonColor ?? this.forwardButtonColor,
