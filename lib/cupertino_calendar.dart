@@ -1,3 +1,3 @@
-library cupertino_calendar_picker;
+library cupertino_calendar;
 
 export 'src/src.dart' show showCupertinoCalendarPicker;

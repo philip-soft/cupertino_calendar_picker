@@ -1,4 +1,4 @@
-package com.example.cupertino_calendar_picker_example
+package com.example.cupertino_calendar_example
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,4 +1,4 @@
-import 'package:cupertino_calendar_picker/src/src.dart';
+import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

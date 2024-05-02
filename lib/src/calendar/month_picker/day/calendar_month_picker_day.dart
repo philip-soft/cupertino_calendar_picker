@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:cupertino_calendar_picker/src/src.dart';
+import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/material.dart';
 
 class CalendarMonthPickerDay extends StatelessWidget {

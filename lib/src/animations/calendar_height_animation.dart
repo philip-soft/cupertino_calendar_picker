@@ -1,8 +1,15 @@
-import 'package:cupertino_calendar_picker/src/src.dart';
+import 'package:cupertino_calendar/src/src.dart';
 import 'package:flutter/cupertino.dart';
 
 final TweenSequence<double> heightAnimation =
     TweenSequence<double>(<TweenSequenceItem<double>>[
+  TweenSequenceItem<double>(
+    tween: Tween<double>(
+      begin: 0.0,
+      end: 75.0,
+    ),
+    weight: 1.0,
+  ),
   TweenSequenceItem<double>(
     tween: Tween<double>(
       begin: 75.0,

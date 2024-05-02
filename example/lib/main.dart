@@ -1,5 +1,5 @@
-import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_calendar/cupertino_calendar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
@@ -14,79 +14,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      theme: ThemeData(
-        brightness: Brightness.light,
-      ),
-      home: const ExamplePage(),
-    );
-  }
-}
+  DateTime _selectedDate = DateTime.now();
 
-class ExamplePage extends StatefulWidget {
-  const ExamplePage({
-    super.key,
-  });
-
-  @override
-  State<ExamplePage> createState() => _ExamplePageState();
-}
-
-class _ExamplePageState extends State<ExamplePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 200,
-              right: 200,
-            ),
-            child: _CupertinoCalendarButton(
-              onPressed: () {},
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                alignment: Alignment.center,
-                width: 30,
-                height: 200,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CupertinoCalendarButton extends StatefulWidget {
-  const _CupertinoCalendarButton({
-    required this.child,
-    required this.onPressed,
-  });
-
-  final Widget child;
-  final VoidCallback onPressed;
-
-  @override
-  State<_CupertinoCalendarButton> createState() =>
-      _CupertinoCalendarButtonState();
-}
-
-class _CupertinoCalendarButtonState extends State<_CupertinoCalendarButton> {
-  Future<void> _onTap() {
+  Future<void> _onTap(BuildContext context) {
     final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
     final DateTime nowDate = DateTime.now();
 
@@ -94,18 +24,88 @@ class _CupertinoCalendarButtonState extends State<_CupertinoCalendarButton> {
       context,
       widgetRenderBox: renderBox,
       minimumDate: nowDate.subtract(const Duration(days: 15)),
-      initialDate: nowDate,
+      initialDate: _selectedDate,
       currentDate: nowDate,
       maximumDate: DateTime(2030, 5, 25),
+      onDateChanged: _onDateChanged,
     );
+  }
+
+  void _onDateChanged(DateTime newDate) {
+    setState(() {
+      _selectedDate = newDate;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _onTap,
-      behavior: HitTestBehavior.translucent,
-      child: widget.child,
+    return CupertinoApp(
+      title: 'Cupertino Calendar Example',
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      home: CupertinoPageScaffold(
+        child: Align(
+          // TODO: FIX THIS CASE AND CASE WHEN WIDGET IS IN THE CENTER
+          alignment: const Alignment(-0.8, 0.2),
+          child: Builder(
+            builder: (context) {
+              return GestureDetector(
+                onTap: () => _onTap(context),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _ExampleWidget(selectedDate: _selectedDate),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ExampleWidget extends StatelessWidget {
+  const _ExampleWidget({
+    super.key,
+    required this.selectedDate,
+  });
+
+  final DateTime selectedDate;
+
+  @override
+  Widget build(BuildContext context) {
+    final localization = CupertinoLocalizations.of(context);
+    final day = selectedDate.day;
+    final month = selectedDate.month;
+    final year = selectedDate.year;
+    final fullMonthString = localization.datePickerMonth(month);
+    final dayString = localization.datePickerDayOfMonth(day);
+    final monthString = fullMonthString.substring(0, 3);
+    final yearString = localization.datePickerYear(year);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: CupertinoColors.tertiaryLabel
+            .resolveFrom(context)
+            .withOpacity(0.12),
+        borderRadius: BorderRadius.circular(6.0),
+      ),
+      alignment: Alignment.center,
+      height: 34,
+      width: 99,
+      padding: const EdgeInsets.symmetric(horizontal: 11.0),
+      child: Text(
+        '$monthString $dayString, $yearString',
+        style: TextStyle(
+          color: CupertinoColors.systemBlue.resolveFrom(context),
+          fontSize: 17.0,
+        ),
+      ),
     );
   }
 }

@@ -9,7 +9,7 @@ environment:
   sdk: ">=3.3.3 <4.0.0"
 
 dependencies:
-  cupertino_calendar_picker:
+  cupertino_calendar:
     path: ../
   cupertino_icons: ^1.0.8
   flutter:
