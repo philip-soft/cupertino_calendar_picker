@@ -33,7 +33,6 @@ The package provides a sleek and stylish cupertino calendar designed to mimic th
 In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
-  ...
   cupertino_calendar: ^1.0.0
 ```
 
