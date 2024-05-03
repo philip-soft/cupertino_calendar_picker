@@ -83,7 +83,7 @@ Future<void> onTap(BuildContext context) {
 }
 ```
 
-## How to get a Render Box?
+## How to get a `RenderBox`?
 There are three simple ways of how you can get the widget's render box to pass it to the `showCupertinoCalendarPicker` function.
 
 You can choose **any** of these.
