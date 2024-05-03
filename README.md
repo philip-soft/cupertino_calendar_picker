@@ -15,10 +15,10 @@ The package provides a sleek and stylish cupertino calendar designed to mimic th
 
 <p>
    <img src="https://github.com/philip-soft/cupertino_calendar/blob/master/doc/calendar_months_switches.gif?raw=true"
-    alt="Calendar months switches" height="270"/>
+    alt="Calendar months switches" width="280"/>
   &nbsp;
    <img src="https://github.com/philip-soft/cupertino_calendar/blob/master/doc/calendar_year_picker.gif?raw=true"
-    alt="Calendar year picker" height="270"/>
+    alt="Calendar year picker" width="280"/>
 </p>
 
 ## Features
@@ -71,7 +71,8 @@ Widget build(BuildContext context) {
     home: CupertinoPageScaffold(
       child: Builder(
         builder: (context) {
-          /// Passing exactly this `BuildContext` is mandatory here to get the `RenderBox` of the appropriate widget.
+          /// Passing exactly this `BuildContext` is mandatory here to 
+          /// get the `RenderBox` of the appropriate widget.
           return _YourWidget(
             onTap: () => onTap(context),
           );
@@ -113,7 +114,8 @@ Builder(
 );
 
 Future<void> onTap(BuildContext context) {
-  /// And here you can get the `RenderBox` of your widget using the `Builder`s `BuildContext`
+  /// And here you can get the `RenderBox` of your widget 
+  /// using the `Builder`s `BuildContext`
   final renderBox = context.findRenderObject() as RenderBox?;
   return showCupertinoCalendarPicker(...);
 }
