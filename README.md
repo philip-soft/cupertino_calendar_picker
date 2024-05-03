@@ -26,7 +26,7 @@ dependencies:
 Import it:
 
 ```dart
-import 'package:cupertino_calendar_picker_picker/cupertino_calendar_picker.dart';
+import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
 ```
 
 In your `CupertinoApp` or `MaterialApp` add the `localizationsDelegates`
