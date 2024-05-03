@@ -13,7 +13,7 @@ The package provides a sleek and stylish cupertino calendar designed to mimic th
 * **iOS Style**: The cupertino calendar follows the design principles of iOS, ensuring consistency and familiarity for iOS users.
 * **Smooth Animations**: Enjoy fluid animations that enhance the overall look and feel of the calendar, providing a polished user experience.
 * **Customizable**: Easily customize the appearance of the calendar to match your app's theme and branding.
-* **Intuitive Interactions**: Users can effortlessly navigate through years, months and interact with the calendar thanks to its intuitive design
+* **Intuitive Interactions**: Users can effortlessly navigate through years, months and interact with the calendar thanks to its intuitive design.
 
 ## Getting started
 
@@ -84,7 +84,7 @@ Future<void> onTap(BuildContext context) {
 ```
 
 ## How to get a `RenderBox`?
-There are three simple ways of how you can get the widget's render box to pass it to the `showCupertinoCalendarPicker` function.
+There are 3 simple ways of how you can get the widget's render box to pass it to the `showCupertinoCalendarPicker` function.
 
 You can choose **any** of these.
 
