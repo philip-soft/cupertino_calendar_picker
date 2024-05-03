@@ -28,6 +28,27 @@ The package provides a sleek and stylish cupertino calendar designed to mimic th
 * **Customizable**: Easily customize the appearance of the calendar to match your app's theme and branding.
 * **Intuitive Interactions**: Users can effortlessly navigate through years, months and interact with the calendar thanks to its intuitive design
 
+
+## Themes
+
+### Dark
+<p>
+   <img src="https://github.com/philip-soft/cupertino_calendar/blob/master/doc/calendar_dark.png?raw=true"
+    alt="Calendar months switches" width="300"/>
+  &nbsp;
+   <img src="https://github.com/philip-soft/cupertino_calendar/blob/master/doc/calendar_year_picker_dark.png?raw=true"
+    alt="Calendar months switches" width="300"/>
+</p>
+
+### Light
+<p>
+   <img src="https://github.com/philip-soft/cupertino_calendar/blob/master/doc/calendar_light.png?raw=true"
+    alt="Calendar months switches" width="300"/>
+  &nbsp;
+   <img src="https://github.com/philip-soft/cupertino_calendar/blob/master/doc/calendar_year_picker_light.png?raw=true"
+    alt="Calendar months switches" width="300"/>
+</p>
+
 ## Getting started
 
 In the `pubspec.yaml` of your flutter project, add the following dependency:
