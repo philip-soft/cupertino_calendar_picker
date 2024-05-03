@@ -1,4 +1,4 @@
-name: cupertino_calendar_example
+name: cupertino_calendar_picker_example
 description: A new Flutter project.
 
 publish_to: "none"
@@ -9,7 +9,7 @@ environment:
   sdk: ">=3.3.3 <4.0.0"
 
 dependencies:
-  cupertino_calendar:
+  cupertino_calendar_picker:
     path: ../
   cupertino_icons: ^1.0.8
   flutter:

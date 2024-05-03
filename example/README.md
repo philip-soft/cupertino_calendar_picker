@@ -1,4 +1,4 @@
-# cupertino_calendar_example
+# cupertino_calendar_picker_example
 
 A new Flutter project.
 

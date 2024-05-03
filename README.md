@@ -20,13 +20,13 @@ The package provides a sleek and stylish cupertino calendar designed to mimic th
 In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
-  cupertino_calendar: ^1.0.0
+  cupertino_calendar_picker: ^1.0.0
 ```
 
 Import it:
 
 ```dart
-import 'package:cupertino_calendar/cupertino_calendar.dart';
+import 'package:cupertino_calendar_picker_picker/cupertino_calendar_picker.dart';
 ```
 
 In your `CupertinoApp` or `MaterialApp` add the `localizationsDelegates`

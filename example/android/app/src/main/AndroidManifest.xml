@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.cupertino_calendar_example">
+    package="com.example.cupertino_calendar_picker_example">
     <application
-        android:label="cupertino_calendar_example"
+        android:label="cupertino_calendar_picker_example"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

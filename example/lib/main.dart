@@ -1,4 +1,4 @@
-import 'package:cupertino_calendar/cupertino_calendar.dart';
+import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
