@@ -25,7 +25,7 @@ class _ExampleAppState extends State<ExampleApp> {
       widgetRenderBox: renderBox,
       minimumDate: nowDate.subtract(const Duration(days: 15)),
       initialDate: _selectedDate,
-      maximumDate: nowDate.add(const Duration(days: 60)),
+      maximumDate: nowDate.add(const Duration(days: 360)),
       onDateChanged: _onDateChanged,
     );
   }
