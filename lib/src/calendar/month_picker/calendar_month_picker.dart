@@ -49,7 +49,7 @@ class CalendarMonthPicker extends StatefulWidget {
 
   /// The month whose days are displayed by this picker.
   final DateTime displayedMonth;
-  
+
   /// The decoration class for each day type.
   final CalendarMonthPickerDecoration decoration;
 
@@ -77,6 +77,8 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
     BuildContext context, {
     required DateTime monthDate,
   }) {
+    assert(debugCheckHasMaterialLocalizations(context));
+
     final int year = monthDate.year;
     final int month = monthDate.month;
     final int dayOffset = DateUtils.firstDayOffset(
@@ -124,15 +126,15 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
           style = decoration.disabledDayStyle ??
               CalendarMonthPickerDisabledDayStyle.withDynamicColor(context);
         } else if (isCurrentDay) {
-          style = decoration.todayStyle ??
+          style = decoration.currentDayStyle ??
               CalendarMonthPickerCurrentDayStyle.withDynamicColor(
                 context,
                 mainColor: widget.mainColor,
               );
 
           if (isSelectedDay) {
-            style = decoration.selectedTodayStyle ??
-                CalendarMonthPickerCurrentAndSelectedDayStyle.withDynamicColor(
+            style = decoration.selectedCurrentDayStyle ??
+                CalendarMonthPickerSelectedCurrentDayStyle.withDynamicColor(
                   context,
                   mainColor: widget.mainColor,
                 );
@@ -144,7 +146,7 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
                 mainColor: widget.mainColor,
               );
         } else {
-          style = decoration.dayStyle ??
+          style = decoration.defaultDayStyle ??
               CalendarMonthPickerDefaultDayStyle.withDynamicColor(context);
         }
 
@@ -197,8 +199,6 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
 
   @override
   Widget build(BuildContext context) {
-    assert(debugCheckHasMaterialLocalizations(context));
-
     /// [+ 1] to include the last month
     final int itemCount = DateUtils.monthDelta(
           widget.minimumDate,

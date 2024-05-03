@@ -25,11 +25,11 @@ class CalendarWeekdayDecoration {
     BuildContext context, {
     TextStyle? textStyle,
   }) {
+    final TextStyle style = textStyle ?? calendarWeekdayStyle;
     return CalendarWeekdayDecoration(
-      textStyle: textStyle ??
-          calendarWeekdayStyle.copyWith(
-            color: calendarWeekdayColor.resolveFrom(context),
-          ),
+      textStyle: style.copyWith(
+        color: CupertinoDynamicColor.maybeResolve(style.color, context),
+      ),
     );
   }
 

@@ -1,11 +1,11 @@
 name: cupertino_calendar
 description: The cupertino calendar package.
 version: 1.0.0
-homepage: homepage
+repository: https://github.com/philip-soft/cupertino_calendar
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=1.17.0"
+  sdk: ^3.0.0
+  flutter: ">=3.13.0"
 
 dependencies:
   flutter:

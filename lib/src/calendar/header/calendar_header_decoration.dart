@@ -15,7 +15,7 @@ const CupertinoDynamicColor calendarBackwardDisabledButtonColor =
 
 class CalendarHeaderDecoration {
   factory CalendarHeaderDecoration({
-    required Color mainColor,
+    Color? mainColor,
     TextStyle? monthDateStyle,
     Color? monthDateArrowColor,
     Color? forwardButtonColor,
@@ -46,7 +46,7 @@ class CalendarHeaderDecoration {
 
   factory CalendarHeaderDecoration.withDynamicColor(
     BuildContext context, {
-    required Color mainColor,
+    Color? mainColor,
     TextStyle? monthDateStyle,
     CupertinoDynamicColor? monthDateArrowColor,
     CupertinoDynamicColor? forwardButtonColor,
@@ -54,21 +54,35 @@ class CalendarHeaderDecoration {
     CupertinoDynamicColor? backwardDisabledButtonColor,
     CupertinoDynamicColor? forwardDisabledButtonColor,
   }) {
+    final TextStyle style = monthDateStyle ?? calendarMonthDateStyle;
     return CalendarHeaderDecoration(
       mainColor: mainColor,
-      monthDateStyle: monthDateStyle ??
-          calendarMonthDateStyle.copyWith(
-            color: calendarMontDateColor.resolveFrom(context),
-          ),
-      monthDateArrowColor: monthDateArrowColor ?? mainColor,
-      forwardButtonColor: forwardButtonColor ?? mainColor,
-      backwardButtonColor: backwardButtonColor ?? mainColor,
-      forwardDisabledButtonColor:
-          (forwardDisabledButtonColor ?? calendarForwardDisabledButtonColor)
-              .resolveFrom(context),
-      backwardDisabledButtonColor:
-          (backwardDisabledButtonColor ?? calendarBackwardDisabledButtonColor)
-              .resolveFrom(context),
+      monthDateStyle: style.copyWith(
+        color: CupertinoDynamicColor.resolve(
+          style.color ?? calendarMontDateColor,
+          context,
+        ),
+      ),
+      monthDateArrowColor: CupertinoDynamicColor.maybeResolve(
+        monthDateArrowColor ?? mainColor,
+        context,
+      ),
+      forwardButtonColor: CupertinoDynamicColor.maybeResolve(
+        forwardButtonColor ?? mainColor,
+        context,
+      ),
+      backwardButtonColor: CupertinoDynamicColor.maybeResolve(
+        backwardButtonColor ?? mainColor,
+        context,
+      ),
+      forwardDisabledButtonColor: CupertinoDynamicColor.maybeResolve(
+        forwardDisabledButtonColor ?? calendarForwardDisabledButtonColor,
+        context,
+      ),
+      backwardDisabledButtonColor: CupertinoDynamicColor.maybeResolve(
+        backwardDisabledButtonColor ?? calendarBackwardDisabledButtonColor,
+        context,
+      ),
     );
   }
 

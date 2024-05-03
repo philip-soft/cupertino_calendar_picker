@@ -19,6 +19,8 @@ class CalendarMonthPickerDay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final CalendarMonthPickerDayStyle dayStyle = style;
+
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: onDaySelected != null ? () => onDaySelected?.call(dayDate) : null,
@@ -26,7 +28,10 @@ class CalendarMonthPickerDay extends StatelessWidget {
         painter: CalendarMonthPickerDayPainter(
           day: '${dayDate.day}',
           style: style.textStyle,
-          backgroundCircleColor: style.backgroundCircleColor,
+          backgroundCircleColor:
+              dayStyle is CalendarMonthPickerBackgroundCircledDayStyle
+                  ? dayStyle.backgroundCircleColor
+                  : null,
           backgroundCircleSize: backgroundCircleSize,
         ),
       ),

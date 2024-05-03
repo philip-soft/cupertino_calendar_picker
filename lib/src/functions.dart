@@ -48,11 +48,11 @@ Future<void> showCupertinoCalendarPicker(
 
   /// The widget's render box around which the calendar will be displayed.
   RenderBox? widgetRenderBox,
+  Color mainColor = CupertinoColors.systemRed,
   CalendarContainerDecoration? containerDecoration,
   CalendarWeekdayDecoration? weekdayDecoration,
   CalendarMonthPickerDecoration? monthPickerDecoration,
   CalendarHeaderDecoration? calendarHeaderDecoration,
-  Color mainColor = CupertinoColors.systemRed,
 }) {
   return showGeneralDialog(
     context: context,

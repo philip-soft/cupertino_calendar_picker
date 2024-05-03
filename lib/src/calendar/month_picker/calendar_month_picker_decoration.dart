@@ -3,81 +3,82 @@ import 'package:flutter/cupertino.dart';
 
 class CalendarMonthPickerDecoration {
   factory CalendarMonthPickerDecoration({
-    CalendarMonthPickerDayStyle? dayStyle,
-    CalendarMonthPickerDayStyle? todayStyle,
-    CalendarMonthPickerDayStyle? selectedDayStyle,
-    CalendarMonthPickerDayStyle? selectedTodayStyle,
-    CalendarMonthPickerDayStyle? disabledDayStyle,
+    CalendarMonthPickerDefaultDayStyle? defaultDayStyle,
+    CalendarMonthPickerCurrentDayStyle? currentDayStyle,
+    CalendarMonthPickerSelectedDayStyle? selectedDayStyle,
+    CalendarMonthPickerSelectedCurrentDayStyle? selectedCurrentDayStyle,
+    CalendarMonthPickerDisabledDayStyle? disabledDayStyle,
   }) {
     return CalendarMonthPickerDecoration._(
-      dayStyle: dayStyle,
-      todayStyle: todayStyle,
+      defaultDayStyle: defaultDayStyle,
+      currentDayStyle: currentDayStyle,
       selectedDayStyle: selectedDayStyle,
-      selectedTodayStyle: selectedTodayStyle,
+      selectedCurrentDayStyle: selectedCurrentDayStyle,
       disabledDayStyle: disabledDayStyle,
     );
   }
 
   const CalendarMonthPickerDecoration._({
-    this.dayStyle,
-    this.todayStyle,
+    this.defaultDayStyle,
+    this.currentDayStyle,
     this.selectedDayStyle,
-    this.selectedTodayStyle,
+    this.selectedCurrentDayStyle,
     this.disabledDayStyle,
   });
 
   factory CalendarMonthPickerDecoration.withDynamicColor(
     BuildContext context, {
-    required Color mainColor,
-    CalendarMonthPickerDayStyle? dayStyle,
-    CalendarMonthPickerDayStyle? todayStyle,
-    CalendarMonthPickerDayStyle? selectedDayStyle,
-    CalendarMonthPickerDayStyle? selectedTodayStyle,
-    CalendarMonthPickerDayStyle? disabledDayStyle,
+    Color? mainColor,
+    CalendarMonthPickerDefaultDayStyle? defaultDayStyle,
+    CalendarMonthPickerCurrentDayStyle? currentDayStyle,
+    CalendarMonthPickerSelectedDayStyle? selectedDayStyle,
+    CalendarMonthPickerSelectedCurrentDayStyle? selectedCurrentDayStyle,
+    CalendarMonthPickerDisabledDayStyle? disabledDayStyle,
   }) {
     return CalendarMonthPickerDecoration(
-      dayStyle: dayStyle ??
+      defaultDayStyle: defaultDayStyle ??
           CalendarMonthPickerDefaultDayStyle.withDynamicColor(context),
-      todayStyle: todayStyle ??
+      currentDayStyle: currentDayStyle ??
           CalendarMonthPickerCurrentDayStyle.withDynamicColor(
             context,
             mainColor: mainColor,
           ),
-      disabledDayStyle: selectedDayStyle ??
+      disabledDayStyle: disabledDayStyle ??
           CalendarMonthPickerDisabledDayStyle.withDynamicColor(
             context,
           ),
-      selectedDayStyle: selectedTodayStyle ??
+      selectedDayStyle: selectedDayStyle ??
           CalendarMonthPickerSelectedDayStyle.withDynamicColor(
             context,
             mainColor: mainColor,
           ),
-      selectedTodayStyle: disabledDayStyle ??
-          CalendarMonthPickerCurrentAndSelectedDayStyle.withDynamicColor(
+      selectedCurrentDayStyle: selectedCurrentDayStyle ??
+          CalendarMonthPickerSelectedCurrentDayStyle.withDynamicColor(
             context,
             mainColor: mainColor,
           ),
     );
   }
 
-  final CalendarMonthPickerDayStyle? dayStyle;
-  final CalendarMonthPickerDayStyle? todayStyle;
-  final CalendarMonthPickerDayStyle? selectedDayStyle;
-  final CalendarMonthPickerDayStyle? selectedTodayStyle;
-  final CalendarMonthPickerDayStyle? disabledDayStyle;
+  final CalendarMonthPickerDefaultDayStyle? defaultDayStyle;
+  final CalendarMonthPickerCurrentDayStyle? currentDayStyle;
+  final CalendarMonthPickerSelectedDayStyle? selectedDayStyle;
+  final CalendarMonthPickerSelectedCurrentDayStyle? selectedCurrentDayStyle;
+  final CalendarMonthPickerDisabledDayStyle? disabledDayStyle;
 
   CalendarMonthPickerDecoration copyWith({
-    CalendarMonthPickerDayStyle? dayStyle,
-    CalendarMonthPickerDayStyle? todayStyle,
-    CalendarMonthPickerDayStyle? selectedDayStyle,
-    CalendarMonthPickerDayStyle? selectedTodayStyle,
-    CalendarMonthPickerDayStyle? disabledDayStyle,
+    CalendarMonthPickerDefaultDayStyle? defaultDayStyle,
+    CalendarMonthPickerCurrentDayStyle? currentDayStyle,
+    CalendarMonthPickerSelectedDayStyle? selectedDayStyle,
+    CalendarMonthPickerSelectedCurrentDayStyle? selectedCurrentDayStyle,
+    CalendarMonthPickerDisabledDayStyle? disabledDayStyle,
   }) {
     return CalendarMonthPickerDecoration(
-      dayStyle: dayStyle ?? this.dayStyle,
-      todayStyle: todayStyle ?? this.todayStyle,
+      defaultDayStyle: defaultDayStyle ?? defaultDayStyle,
+      currentDayStyle: currentDayStyle ?? currentDayStyle,
       selectedDayStyle: selectedDayStyle ?? this.selectedDayStyle,
-      selectedTodayStyle: selectedTodayStyle ?? this.selectedTodayStyle,
+      selectedCurrentDayStyle:
+          selectedCurrentDayStyle ?? selectedCurrentDayStyle,
       disabledDayStyle: disabledDayStyle ?? this.disabledDayStyle,
     );
   }
