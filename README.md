@@ -1,4 +1,4 @@
-The package provides a sleek and stylish cupertino calendar designed to mimic the aesthetics of iOS. With smooth animations and intuitive user interactions, it seamlessly integrates into your Flutter app to deliver a delightful user experience.
+The package provides a sleek and stylish cupertino calendar picker designed to mimic the aesthetics of iOS. With smooth animations and intuitive user interactions, it seamlessly integrates into your Flutter app to deliver a delightful user experience.
 
 <p>
    <img src="https://github.com/philip-soft/cupertino_calendar/blob/master/doc/calendar_months_switches.gif?raw=true"
@@ -10,7 +10,7 @@ The package provides a sleek and stylish cupertino calendar designed to mimic th
 
 ## Features
 
-* **iOS Style**: The cupertino calendar follows the design principles of iOS, ensuring consistency and familiarity for iOS users.
+* **iOS Style**: The cupertino calendar picker follows the design principles of iOS, ensuring consistency and familiarity for iOS users.
 * **Smooth Animations**: Enjoy fluid animations that enhance the overall look and feel of the calendar, providing a polished user experience.
 * **Customizable**: Easily customize the appearance of the calendar to match your app's theme and branding.
 * **Intuitive Interactions**: Users can effortlessly navigate through years, months and interact with the calendar thanks to its intuitive design.
