@@ -16,7 +16,8 @@ class ExampleApp extends StatefulWidget {
 class _ExampleAppState extends State<ExampleApp> {
   DateTime _selectedDate = DateTime.now();
 
-  Future<void> _onTap(BuildContext context) {
+  /// The context comes from the `Builder` above the widget tree.
+  Future<void> onTap(BuildContext context) {
     final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
     final DateTime nowDate = DateTime.now();
 
@@ -52,7 +53,9 @@ class _ExampleAppState extends State<ExampleApp> {
           child: Builder(
             builder: (context) {
               return GestureDetector(
-                onTap: () => _onTap(context),
+                /// Passing exactly this `BuildContext` is mandatory to get
+                /// the `RenderBox` of the appropriate widget.
+                onTap: () => onTap(context),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
