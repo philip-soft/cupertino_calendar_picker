@@ -11,6 +11,18 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages).
 -->
 
+
+<p>
+  <img src="https://github.com/philip-soft/cupertino_calendar/blob/master/doc/calendar_appear_animation.gif?raw=true"
+    alt="Calendar appear animation" height="270"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+   <img src="https://github.com/philip-soft/cupertino_calendar/blob/master/doc/calendar_year_picker.gif?raw=true"
+    alt="Calendar year picker" height="270"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+   <img src="https://github.com/philip-soft/cupertino_calendar/blob/master/doc/calendar_months_switches.gif?raw=true"
+    alt="Calendar months switches" height="270"/>
+</p>
+
 TODO: Put a short description of the package here that helps potential users
 know whether this package might be useful for them.
 
