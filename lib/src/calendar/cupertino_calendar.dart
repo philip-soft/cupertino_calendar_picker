@@ -6,6 +6,7 @@ class CupertinoCalendar extends StatefulWidget {
     required DateTime minimumDate,
     required DateTime maximumDate,
     required this.scaleAlignment,
+    required this.innerAlignment,
     required this.onInitialized,
     required this.mainColor,
     this.onDateChanged,
@@ -47,6 +48,7 @@ class CupertinoCalendar extends StatefulWidget {
   final CalendarHeaderDecoration? calendarHeaderDecoration;
   final Color mainColor;
   final Alignment scaleAlignment;
+  final Alignment innerAlignment;
   final void Function(AnimationController controller) onInitialized;
 
   @override
@@ -120,6 +122,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
     return CalendarContainer(
       onInitialized: widget.onInitialized,
       scaleAlignment: widget.scaleAlignment,
+      innerAlignment: widget.innerAlignment,
       decoration: widget.containerDecoration ??
           CalendarContainerDecoration.withDynamicColor(context),
       child: CalendarPicker(

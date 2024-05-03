@@ -6,6 +6,7 @@ class CalendarContainer extends StatefulWidget {
     required this.child,
     required this.decoration,
     required this.scaleAlignment,
+    required this.innerAlignment,
     required this.onInitialized,
     super.key,
   });
@@ -13,6 +14,7 @@ class CalendarContainer extends StatefulWidget {
   final Widget child;
   final CalendarContainerDecoration decoration;
   final Alignment scaleAlignment;
+  final Alignment innerAlignment;
   final void Function(AnimationController controller) onInitialized;
 
   @override
@@ -47,15 +49,6 @@ class _CalendarContainerState extends State<CalendarContainer>
     );
   }
 
-  Alignment get innerAlignment {
-    return switch (widget.scaleAlignment) {
-      Alignment.bottomRight => Alignment.topRight,
-      Alignment.bottomLeft => Alignment.topLeft,
-      Alignment.bottomCenter => Alignment.topCenter,
-      _ => widget.scaleAlignment,
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -73,7 +66,7 @@ class _CalendarContainerState extends State<CalendarContainer>
               ),
               clipBehavior: Clip.hardEdge,
               child: FittedBox(
-                alignment: innerAlignment,
+                alignment: widget.innerAlignment,
                 fit: BoxFit.none,
                 child: SizedBox(
                   width: calendarWidth,

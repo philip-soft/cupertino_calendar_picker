@@ -137,6 +137,8 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
       xAlignment,
       fitsOnTop ? 1.0 : -1.0,
     );
+    final Alignment innerAlignment =
+        fitsOnTop ? Alignment.topCenter : Alignment.bottomCenter;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -167,6 +169,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
               onDateChanged: widget.onDateChanged,
               onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
               scaleAlignment: scaleAligment,
+              innerAlignment: innerAlignment,
               mainColor: widget.mainColor,
             ),
           ),
