@@ -15,10 +15,10 @@ The package provides a sleek and stylish cupertino calendar designed to mimic th
 
 <p>
    <img src="https://github.com/philip-soft/cupertino_calendar/blob/master/doc/calendar_months_switches.gif?raw=true"
-    alt="Calendar months switches" width="280"/>
+    alt="Calendar months switches" width="320"/>
   &nbsp;
    <img src="https://github.com/philip-soft/cupertino_calendar/blob/master/doc/calendar_year_picker.gif?raw=true"
-    alt="Calendar year picker" width="280"/>
+    alt="Calendar year picker" width="320"/>
 </p>
 
 ## Features
@@ -27,27 +27,6 @@ The package provides a sleek and stylish cupertino calendar designed to mimic th
 * **Smooth Animations**: Enjoy fluid animations that enhance the overall look and feel of the calendar, providing a polished user experience.
 * **Customizable**: Easily customize the appearance of the calendar to match your app's theme and branding.
 * **Intuitive Interactions**: Users can effortlessly navigate through years, months and interact with the calendar thanks to its intuitive design
-
-
-## Themes
-
-### Dark
-<p>
-   <img src="https://github.com/philip-soft/cupertino_calendar/blob/master/doc/calendar_dark.png?raw=true"
-    alt="Calendar months switches" width="300"/>
-  &nbsp;
-   <img src="https://github.com/philip-soft/cupertino_calendar/blob/master/doc/calendar_year_picker_dark.png?raw=true"
-    alt="Calendar months switches" width="300"/>
-</p>
-
-### Light
-<p>
-   <img src="https://github.com/philip-soft/cupertino_calendar/blob/master/doc/calendar_light.png?raw=true"
-    alt="Calendar months switches" width="300"/>
-  &nbsp;
-   <img src="https://github.com/philip-soft/cupertino_calendar/blob/master/doc/calendar_year_picker_light.png?raw=true"
-    alt="Calendar months switches" width="300"/>
-</p>
 
 ## Getting started
 
