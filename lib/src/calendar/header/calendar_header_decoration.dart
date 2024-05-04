@@ -13,7 +13,12 @@ const CupertinoDynamicColor calendarForwardDisabledButtonColor =
 const CupertinoDynamicColor calendarBackwardDisabledButtonColor =
     CupertinoColors.opaqueSeparator;
 
+/// A decoration class for the calendar's header.
 class CalendarHeaderDecoration {
+  /// Creates a calendar's header decoration class with default values
+  /// for non-provided parameters.
+  ///
+  /// [mainColor] is used only if any other color is not provided.
   factory CalendarHeaderDecoration({
     Color? mainColor,
     TextStyle? monthDateStyle,
@@ -44,6 +49,12 @@ class CalendarHeaderDecoration {
     this.forwardDisabledButtonColor,
   });
 
+  /// Creates a calendar's header decoration class with default values
+  /// for non-provided parameters.
+  ///
+  /// Applies the [CupertinoDynamicColor.resolve] method for colors.
+  ///
+  /// [mainColor] is used only if any other color is not provided.
   factory CalendarHeaderDecoration.withDynamicColor(
     BuildContext context, {
     Color? mainColor,
@@ -86,13 +97,26 @@ class CalendarHeaderDecoration {
     );
   }
 
+  /// The [TextStyle] of the calendar's month date at the top left.
   final TextStyle? monthDateStyle;
+
+  /// The [Color] of the calendar's month date arrow
+  /// on the right of the month date.
   final Color? monthDateArrowColor;
+
+  /// The [Color] of the calendar's forward arrow at the top right.
   final Color? forwardButtonColor;
+
+  /// The [Color] of the calendar's backward arrow at the top right.
   final Color? backwardButtonColor;
+
+  /// The [Color] of the calendar's disabled backward arrow at the top right.
   final Color? backwardDisabledButtonColor;
+
+  /// The [Color] of the calendar's disabled forward arrow at the top right.
   final Color? forwardDisabledButtonColor;
 
+  /// Creates a copy of the class with the provided parameters.
   CalendarHeaderDecoration copyWith({
     TextStyle? monthDateStyle,
     Color? monthDateArrowColor,
@@ -101,7 +125,7 @@ class CalendarHeaderDecoration {
     Color? backwardDisabledButtonColor,
     Color? forwardDisabledButtonColor,
   }) {
-    return CalendarHeaderDecoration._(
+    return CalendarHeaderDecoration(
       monthDateStyle: monthDateStyle ?? this.monthDateStyle,
       monthDateArrowColor: monthDateArrowColor ?? this.monthDateArrowColor,
       forwardButtonColor: forwardButtonColor ?? this.forwardButtonColor,

@@ -1,3 +1,8 @@
+## 1.0.2
+
+* Decoration classes updated (copyWith, documentation)
+* `pubspec` update
+
 ## 1.0.1
 
 * README fix

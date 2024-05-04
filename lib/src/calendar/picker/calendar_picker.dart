@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CalendarPicker extends StatefulWidget {
-  /// Creates a calendar picker.
+  /// Creates a calendar's picker.
   CalendarPicker({
     required this.initialMonth,
     required this.currentDate,

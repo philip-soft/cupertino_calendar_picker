@@ -14,16 +14,19 @@ final CupertinoDynamicColor calendarBackgroundColor =
   darkColor: CupertinoColors.systemBackground.darkElevatedColor,
 );
 
+/// A decoration class for the calendar's background container.
 class CalendarContainerDecoration {
+  /// Creates a calendar's container decoration class with default values
+  /// for non-provided parameters.
   factory CalendarContainerDecoration({
     BorderRadius? borderRadius,
     Color? backgroundColor,
     List<BoxShadow>? boxShadow,
   }) {
     return CalendarContainerDecoration._(
+      borderRadius: borderRadius ?? calendarBorderRadius,
       backgroundColor: backgroundColor ?? calendarBackgroundColor,
       boxShadow: boxShadow ?? calendarBoxShadow,
-      borderRadius: borderRadius ?? calendarBorderRadius,
     );
   }
 
@@ -33,6 +36,10 @@ class CalendarContainerDecoration {
     required this.boxShadow,
   });
 
+  /// Creates a calendar's container decoration class with default values
+  /// for non-provided parameters.
+  ///
+  /// Applies the [CupertinoDynamicColor.resolve] method for colors.
   factory CalendarContainerDecoration.withDynamicColor(
     BuildContext context, {
     BorderRadius? borderRadius,
@@ -49,16 +56,22 @@ class CalendarContainerDecoration {
     );
   }
 
+  /// The [borderRadius] of the calendar container.
   final BorderRadius borderRadius;
+
+  /// The [backgroundColor] of the calendar container.
   final Color backgroundColor;
+
+  /// The [boxShadow] of the calendar container.
   final List<BoxShadow> boxShadow;
 
+  /// Creates a copy of the class with the provided parameters.
   CalendarContainerDecoration copyWith({
     BorderRadius? borderRadius,
     Color? backgroundColor,
     List<BoxShadow>? boxShadow,
   }) {
-    return CalendarContainerDecoration._(
+    return CalendarContainerDecoration(
       borderRadius: borderRadius ?? this.borderRadius,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       boxShadow: boxShadow ?? this.boxShadow,
