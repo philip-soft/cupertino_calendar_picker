@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class CupertinoCalendarOverlay extends StatefulWidget {
   const CupertinoCalendarOverlay({
+    required this.widgetRenderBox,
     required this.minimumDate,
     required this.maximumDate,
     required this.horizontalSpacing,
@@ -12,7 +13,6 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     this.currentDate,
     this.initialDate,
     super.key,
-    this.widgetRenderBox,
     this.onDisplayedMonthChanged,
     this.containerDecoration,
     this.weekdayDecoration,

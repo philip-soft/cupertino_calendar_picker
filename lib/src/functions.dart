@@ -22,6 +22,9 @@ const String _barrierLabel = 'CupertinoCalendarPickerBarrier';
 /// `DateTime.now()` will be used.
 Future<void> showCupertinoCalendarPicker(
   BuildContext context, {
+  /// The widget's render box around which the calendar will be displayed.
+  required RenderBox? widgetRenderBox,
+
   /// The minimum selectable [DateTime].
   required DateTime minimumDate,
 
@@ -45,9 +48,6 @@ Future<void> showCupertinoCalendarPicker(
 
   /// The offset from top/bottom of the [widgetRenderBox] location.
   Offset offset = const Offset(0.0, 10.0),
-
-  /// The widget's render box around which the calendar will be displayed.
-  RenderBox? widgetRenderBox,
   Color mainColor = CupertinoColors.systemRed,
   CalendarContainerDecoration? containerDecoration,
   CalendarWeekdayDecoration? weekdayDecoration,

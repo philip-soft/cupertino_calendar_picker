@@ -1,12 +1,14 @@
 name: cupertino_calendar_picker
-description: The package contains an iOS-style calendar picker with the capability to display it around your widget.
-version: 1.0.2
+description: The package contains an iOS-style calendar picker with the
+  capability to display it around your widget.
+version: 1.0.3
 repository: https://github.com/philip-soft/cupertino_calendar_picker
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
+  cupertino_icons: ^1.0.8
   flutter:
     sdk: flutter
   flutter_localizations:

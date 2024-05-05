@@ -1,3 +1,9 @@
+## 1.0.3
+
+* `cupertino_icons` dependency added
+* `widgetRenderBox` is required now
+* `pubspec` screenshots update
+
 ## 1.0.2
 
 * Decoration classes updated (copyWith, documentation)

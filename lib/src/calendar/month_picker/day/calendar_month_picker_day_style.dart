@@ -62,8 +62,8 @@ abstract class CalendarMonthPickerBackgroundCircledDayStyle
 
 /// A decoration class for the calendar's month picker disabled day.
 class CalendarMonthPickerDisabledDayStyle extends CalendarMonthPickerDayStyle {
-  /// Creates a calendar's month picker disabled day decoration class with default values
-  /// for non-provided parameters.
+  /// Creates a calendar's month picker disabled day decoration class
+  /// with default values for non-provided parameters.
   factory CalendarMonthPickerDisabledDayStyle({
     TextStyle? textStyle,
   }) {
