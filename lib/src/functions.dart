@@ -2,8 +2,6 @@ import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-const String _barrierLabel = 'CupertinoCalendarPickerBarrier';
-
 /// Shows a cupertino calendar picker as an overlay above or below the widget.
 ///
 /// It will display a grid of days for the [initialDate]'s month. The day
@@ -44,10 +42,14 @@ Future<void> showCupertinoCalendarPicker(
   ValueChanged<DateTime>? onDisplayedMonthChanged,
 
   /// The spacing from left and right sides of the screen.
-  double horizontalSpacing = 10.0,
+  double horizontalSpacing = 15.0,
+
+  /// The spacing from top and bottom sides of the screen.
+  double verticalSpacing = 15.0,
 
   /// The offset from top/bottom of the [widgetRenderBox] location.
   Offset offset = const Offset(0.0, 10.0),
+  Color barrierColor = Colors.transparent,
   Color mainColor = CupertinoColors.systemRed,
   CalendarContainerDecoration? containerDecoration,
   CalendarWeekdayDecoration? weekdayDecoration,
@@ -57,9 +59,10 @@ Future<void> showCupertinoCalendarPicker(
   return showGeneralDialog(
     context: context,
     barrierDismissible: false,
-    barrierLabel: _barrierLabel,
-    barrierColor: Colors.transparent,
+    barrierLabel: calendarPickerBarrierLabel,
+    barrierColor: barrierColor,
     transitionDuration: Duration.zero,
+    routeSettings: const RouteSettings(name: calendarPickerRouteName),
     transitionBuilder: (
       BuildContext _,
       Animation<double> __,
@@ -76,6 +79,7 @@ Future<void> showCupertinoCalendarPicker(
       return CupertinoCalendarOverlay(
         mainColor: mainColor,
         horizontalSpacing: horizontalSpacing,
+        verticalSpacing: verticalSpacing,
         offset: offset,
         widgetRenderBox: widgetRenderBox,
         initialDate: initialDate,

@@ -6,9 +6,9 @@ class CupertinoCalendar extends StatefulWidget {
     required DateTime minimumDate,
     required DateTime maximumDate,
     required this.scaleAlignment,
-    required this.innerAlignment,
     required this.onInitialized,
     required this.mainColor,
+    required this.maxScale,
     this.onDateChanged,
     DateTime? initialDate,
     DateTime? currentDate,
@@ -48,7 +48,7 @@ class CupertinoCalendar extends StatefulWidget {
   final CalendarHeaderDecoration? calendarHeaderDecoration;
   final Color mainColor;
   final Alignment scaleAlignment;
-  final Alignment innerAlignment;
+  final double maxScale;
   final void Function(AnimationController controller) onInitialized;
 
   @override
@@ -80,7 +80,15 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
   }
 
   void _handleCalendarDateChange(DateTime date) {
-    DateTime newDate = date;
+    final int year = date.year;
+    final int month = date.month;
+    final int daysInMonth = DateUtils.getDaysInMonth(year, month);
+    int selectedDay = _selectedDate.day;
+
+    if (daysInMonth < selectedDay) {
+      selectedDay = daysInMonth;
+    }
+    DateTime newDate = date.copyWith(day: selectedDay);
 
     final bool exceedMinimumDate = newDate.isBefore(widget.minimumDate);
     final bool exceedMaximumDate = newDate.isAfter(widget.maximumDate);
@@ -90,6 +98,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
       newDate = widget.maximumDate;
     }
     _handleCalendarMonthChange(newDate);
+    _handleCalendarDayChange(newDate);
   }
 
   void _handleCalendarMonthChange(DateTime newMonthDate) {
@@ -122,7 +131,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
     return CalendarContainer(
       onInitialized: widget.onInitialized,
       scaleAlignment: widget.scaleAlignment,
-      innerAlignment: widget.innerAlignment,
+      maxScale: widget.maxScale,
       decoration: widget.containerDecoration ??
           CalendarContainerDecoration.withDynamicColor(context),
       child: CalendarPicker(

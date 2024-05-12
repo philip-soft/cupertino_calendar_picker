@@ -1,18 +1,21 @@
+import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 
 const List<BoxShadow> calendarBoxShadow = <BoxShadow>[
   BoxShadow(
-    color: Color.fromRGBO(0, 0, 0, 0.1),
-    offset: Offset(0.0, 10.0),
-    blurRadius: 60.0,
+    color: Color.fromRGBO(0, 0, 0, 0.145),
+    blurRadius: 85.0,
+    spreadRadius: 9.0,
   ),
 ];
 final BorderRadius calendarBorderRadius = BorderRadius.circular(13.0);
 final CupertinoDynamicColor calendarBackgroundColor =
     CupertinoDynamicColor.withBrightness(
   color: CupertinoColors.systemBackground,
-  darkColor: CupertinoColors.systemBackground.darkElevatedColor,
+  darkColor: CupertinoColors.tertiarySystemBackground.darkColor,
 );
+const CalendarBackgroundType calendarBackgroundType =
+    CalendarBackgroundType.transparentAndBlured;
 
 /// A decoration class for the calendar's background container.
 class CalendarContainerDecoration {
@@ -21,11 +24,21 @@ class CalendarContainerDecoration {
   factory CalendarContainerDecoration({
     BorderRadius? borderRadius,
     Color? backgroundColor,
+    CalendarBackgroundType backgroundType = calendarBackgroundType,
     List<BoxShadow>? boxShadow,
   }) {
+    Color color = backgroundColor ?? calendarBackgroundColor;
+
+    if (backgroundType == CalendarBackgroundType.transparentAndBlured) {
+      color = color.alpha > calendarBluredLightBackgroundColorAlpha
+          ? color.withAlpha(calendarBluredLightBackgroundColorAlpha)
+          : color;
+    }
+
     return CalendarContainerDecoration._(
       borderRadius: borderRadius ?? calendarBorderRadius,
-      backgroundColor: backgroundColor ?? calendarBackgroundColor,
+      backgroundColor: color,
+      backgroundType: backgroundType,
       boxShadow: boxShadow ?? calendarBoxShadow,
     );
   }
@@ -33,6 +46,7 @@ class CalendarContainerDecoration {
   const CalendarContainerDecoration._({
     required this.borderRadius,
     required this.backgroundColor,
+    required this.backgroundType,
     required this.boxShadow,
   });
 
@@ -44,14 +58,24 @@ class CalendarContainerDecoration {
     BuildContext context, {
     BorderRadius? borderRadius,
     CupertinoDynamicColor? backgroundColor,
+    CalendarBackgroundType backgroundType = calendarBackgroundType,
     List<BoxShadow>? boxShadow,
   }) {
+    CupertinoDynamicColor color = backgroundColor ?? calendarBackgroundColor;
+
+    if (backgroundType == CalendarBackgroundType.transparentAndBlured) {
+      color = CupertinoDynamicColor.withBrightness(
+        color: color.withAlpha(calendarBluredLightBackgroundColorAlpha),
+        darkColor: color.darkColor.withAlpha(
+          calendarBluredDarkBackgroundColorAlpha,
+        ),
+      );
+    }
+
     return CalendarContainerDecoration(
-      backgroundColor: CupertinoDynamicColor.resolve(
-        backgroundColor ?? calendarBackgroundColor,
-        context,
-      ),
-      boxShadow: boxShadow ?? boxShadow,
+      backgroundColor: CupertinoDynamicColor.resolve(color, context),
+      backgroundType: backgroundType,
+      boxShadow: boxShadow,
       borderRadius: borderRadius ?? calendarBorderRadius,
     );
   }
@@ -61,6 +85,9 @@ class CalendarContainerDecoration {
 
   /// The [backgroundColor] of the calendar container.
   final Color backgroundColor;
+
+  /// The [CalendarBackgroundType] of the calendar container.
+  final CalendarBackgroundType backgroundType;
 
   /// The [boxShadow] of the calendar container.
   final List<BoxShadow> boxShadow;

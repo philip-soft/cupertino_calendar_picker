@@ -91,9 +91,7 @@ class _ExampleWidget extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: CupertinoColors.tertiaryLabel
-            .resolveFrom(context)
-            .withOpacity(0.12),
+        color: CupertinoColors.tertiarySystemFill.resolveFrom(context),
         borderRadius: BorderRadius.circular(6.0),
       ),
       alignment: Alignment.center,
