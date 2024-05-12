@@ -182,6 +182,7 @@ class _CalendarPickerButtonState extends State<CalendarPickerButton>
             duration: kFadeInDuration,
             curve: Curves.easeOutCubic,
           );
+    // ignore: cascade_invocations
     ticker.then<void>((void value) {
       if (mounted && wasHeldDown != _buttonHeldDown) {
         _animate();

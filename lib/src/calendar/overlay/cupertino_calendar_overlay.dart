@@ -100,7 +100,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
     final double spaceOnRight =
         screenWidth - widgetCenterX - horizontalSpacing - safeArea.right;
     final double spaceOnBottom = screenHeight -
-        widgetBottomCenterY +
+        widgetBottomCenterY -
         offset.dy -
         verticalSpacing -
         safeArea.bottom;
@@ -153,9 +153,9 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
     if (fitsHorizontally) {
       xAlignment = 0.0;
     } else if (fitsOnLeft) {
-      xAlignment = xAlignment > 1 ? 1.0 : xAlignment;
+      xAlignment = xAlignment > 1 ? 0.0 : xAlignment;
     } else if (fitsOnRight) {
-      xAlignment = xAlignment > 1 ? -1.0 : -xAlignment;
+      xAlignment = xAlignment > 1 ? 0.0 : -xAlignment;
     } else {
       xAlignment = 0.0;
     }
@@ -169,7 +169,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
 
     final double availableWidth =
         screenWidth - (horizontalSpacing * 2) - offset.dx;
-    final double availableHeight = verticalSpace - verticalSpacing;
+    final double availableHeight = verticalSpace;
     if (availableHeight < calendarHeight) {
       maxScale = availableHeight / calendarHeight;
     }
