@@ -41,10 +41,10 @@ Future<void> showCupertinoCalendarPicker(
   /// Called when the user navigates to a new month in the picker.
   ValueChanged<DateTime>? onDisplayedMonthChanged,
 
-  /// The spacing from left and right sides of the screen.
+  /// The spacing from left and right side of the screen.
   double horizontalSpacing = 15.0,
 
-  /// The spacing from top and bottom sides of the screen.
+  /// The spacing from top and bottom side of the screen.
   double verticalSpacing = 15.0,
 
   /// The offset from top/bottom of the [widgetRenderBox] location.
@@ -54,7 +54,7 @@ Future<void> showCupertinoCalendarPicker(
   CalendarContainerDecoration? containerDecoration,
   CalendarWeekdayDecoration? weekdayDecoration,
   CalendarMonthPickerDecoration? monthPickerDecoration,
-  CalendarHeaderDecoration? calendarHeaderDecoration,
+  CalendarHeaderDecoration? headerDecoration,
 }) {
   return showGeneralDialog(
     context: context,
@@ -91,7 +91,7 @@ Future<void> showCupertinoCalendarPicker(
         containerDecoration: containerDecoration,
         weekdayDecoration: weekdayDecoration,
         monthPickerDecoration: monthPickerDecoration,
-        calendarHeaderDecoration: calendarHeaderDecoration,
+        headerDecoration: headerDecoration,
       );
     },
   );

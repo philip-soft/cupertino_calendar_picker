@@ -49,7 +49,7 @@ class _ExampleAppState extends State<ExampleApp> {
       ],
       home: CupertinoPageScaffold(
         child: Align(
-          alignment: const Alignment(0.0, 0.2),
+          alignment: const Alignment(0.7, 0.8),
           child: Builder(
             builder: (context) {
               return GestureDetector(

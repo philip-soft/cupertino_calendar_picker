@@ -7,12 +7,12 @@ abstract final class CalendarAnimations {
     return TweenSequence<double>(
       generateHeighAnimation(
         height: height,
-        percentageList: heightPercentages,
+        percentageList: _heightPercentages,
       ).toList(),
     );
   }
 
-  static List<double> heightPercentages = <double>[
+  static final List<double> _heightPercentages = <double>[
     22.590361445783135,
     33.13253012048193,
     45.18072289156627,
@@ -60,13 +60,13 @@ abstract final class CalendarAnimations {
     return TweenSequence<double>(
       generateScaleAnimation(
         maxScale: maxScale,
-        valueList: scaleValues,
+        valueList: _scaleValues,
       ).toList(),
     );
   }
 
   /// Considering that [maxScale] is [1.0]
-  static List<double> scaleValues = <double>[
+  static final List<double> _scaleValues = <double>[
     0.39,
     0.5,
     0.61,

@@ -18,7 +18,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     this.containerDecoration,
     this.weekdayDecoration,
     this.monthPickerDecoration,
-    this.calendarHeaderDecoration,
+    this.headerDecoration,
   });
 
   final double horizontalSpacing;
@@ -34,7 +34,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
   final CalendarContainerDecoration? containerDecoration;
   final CalendarWeekdayDecoration? weekdayDecoration;
   final CalendarMonthPickerDecoration? monthPickerDecoration;
-  final CalendarHeaderDecoration? calendarHeaderDecoration;
+  final CalendarHeaderDecoration? headerDecoration;
   final Color mainColor;
 
   @override
@@ -144,6 +144,10 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
 
     final double verticalSpace = fitsOnTop ? spaceOnTop : spaceOnBottom;
     final double horizontalSpace = fitsOnLeft ? spaceOnLeft : spaceOnRight;
+
+    /// [horizontalSpace / calendarWidth] is in range from [0] to [1]
+    /// Decreased by [0.5] because we need a half of the value
+    /// Multiplied by [2] because [Alignment] range is from [-1] to [1]
     double xAlignment = ((horizontalSpace / calendarWidth) - 0.5) * 2;
 
     if (fitsHorizontally) {
@@ -163,7 +167,8 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
 
     double maxScale = 1.0;
 
-    final double availableWidth = screenWidth - (horizontalSpacing * 2);
+    final double availableWidth =
+        screenWidth - (horizontalSpacing * 2) - offset.dx;
     final double availableHeight = verticalSpace - verticalSpacing;
     if (availableHeight < calendarHeight) {
       maxScale = availableHeight / calendarHeight;
@@ -207,7 +212,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
               onInitialized: _onInitialized,
               weekdayDecoration: widget.weekdayDecoration,
               monthPickerDecoration: widget.monthPickerDecoration,
-              calendarHeaderDecoration: widget.calendarHeaderDecoration,
+              headerDecoration: widget.headerDecoration,
               minimumDate: widget.minimumDate,
               initialDate: widget.initialDate,
               currentDate: widget.currentDate,

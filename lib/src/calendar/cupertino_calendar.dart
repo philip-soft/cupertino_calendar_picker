@@ -16,7 +16,7 @@ class CupertinoCalendar extends StatefulWidget {
     this.containerDecoration,
     this.weekdayDecoration,
     this.monthPickerDecoration,
-    this.calendarHeaderDecoration,
+    this.headerDecoration,
     super.key,
   })  : initialDate = DateUtils.dateOnly(initialDate ?? DateTime.now()),
         minimumDate = DateUtils.dateOnly(minimumDate),
@@ -45,7 +45,7 @@ class CupertinoCalendar extends StatefulWidget {
   final CalendarContainerDecoration? containerDecoration;
   final CalendarWeekdayDecoration? weekdayDecoration;
   final CalendarMonthPickerDecoration? monthPickerDecoration;
-  final CalendarHeaderDecoration? calendarHeaderDecoration;
+  final CalendarHeaderDecoration? headerDecoration;
   final Color mainColor;
   final Alignment scaleAlignment;
   final double maxScale;
@@ -151,7 +151,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
               context,
               mainColor: widget.mainColor,
             ),
-        calendarHeaderDecoration: widget.calendarHeaderDecoration ??
+        headerDecoration: widget.headerDecoration ??
             CalendarHeaderDecoration.withDynamicColor(
               context,
               mainColor: widget.mainColor,
