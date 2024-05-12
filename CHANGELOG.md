@@ -1,3 +1,8 @@
+## 1.1.1
+
+* Fixed an issue where `safeArea` top wasn't considered in the position calculation.
+* Fixed an issue where `CalendarContainerDecoration` wasn't applied to the calendar.
+
 ## 1.1.0
 
 * Updates to the `CupertinoCalendarPicker` position calculation:

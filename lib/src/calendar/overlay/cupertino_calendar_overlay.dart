@@ -94,7 +94,8 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
     final double widgetTopCenterY = widgetPosition.dy;
     final double widgetBottomCenterY = widgetPosition.dy + widgetHeight;
 
-    final double spaceOnTop = widgetTopCenterY - offset.dy - verticalSpacing;
+    final double spaceOnTop =
+        widgetTopCenterY - offset.dy - verticalSpacing - safeArea.top;
     final double spaceOnLeft =
         widgetCenterX - horizontalSpacing - safeArea.left;
     final double spaceOnRight =
@@ -212,6 +213,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
               onInitialized: _onInitialized,
               weekdayDecoration: widget.weekdayDecoration,
               monthPickerDecoration: widget.monthPickerDecoration,
+              containerDecoration: widget.containerDecoration,
               headerDecoration: widget.headerDecoration,
               minimumDate: widget.minimumDate,
               initialDate: widget.initialDate,
