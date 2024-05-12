@@ -7,6 +7,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     required this.minimumDate,
     required this.maximumDate,
     required this.horizontalSpacing,
+    required this.verticalSpacing,
     required this.offset,
     required this.mainColor,
     this.onDateChanged,
@@ -17,10 +18,11 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     this.containerDecoration,
     this.weekdayDecoration,
     this.monthPickerDecoration,
-    this.calendarHeaderDecoration,
+    this.headerDecoration,
   });
 
   final double horizontalSpacing;
+  final double verticalSpacing;
   final Offset offset;
   final RenderBox? widgetRenderBox;
   final DateTime? initialDate;
@@ -32,7 +34,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
   final CalendarContainerDecoration? containerDecoration;
   final CalendarWeekdayDecoration? weekdayDecoration;
   final CalendarMonthPickerDecoration? monthPickerDecoration;
-  final CalendarHeaderDecoration? calendarHeaderDecoration;
+  final CalendarHeaderDecoration? headerDecoration;
   final Color mainColor;
 
   @override
@@ -42,6 +44,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
 
 class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
   AnimationController? _controller;
+  Offset? _widgetPosition;
 
   void _onInitialized(AnimationController animationController) {
     _controller = animationController;
@@ -69,31 +72,50 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
   Widget build(BuildContext context) {
     final RenderBox? renderBox = widget.widgetRenderBox;
     final double horizontalSpacing = widget.horizontalSpacing;
+    final double verticalSpacing = widget.verticalSpacing;
     final Offset offset = widget.offset;
 
     final Size screenSize = MediaQuery.sizeOf(context);
+    final EdgeInsets safeArea = MediaQuery.viewPaddingOf(context);
     final double screenWidth = screenSize.width;
     final double screenHeight = screenSize.height;
 
-    final Offset widgetPosition =
-        renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
+    final bool isAttached = renderBox?.attached ?? false;
+    if (isAttached) {
+      _widgetPosition = renderBox?.localToGlobal(Offset.zero);
+    }
+
+    final Offset widgetPosition = _widgetPosition ?? Offset.zero;
     final Size widgetSize = renderBox?.size ?? Size.zero;
     final double widgetWidth = widgetSize.width;
     final double widgetHeight = widgetSize.height;
     final double widgetHalfWidth = widgetWidth / 2;
-    final double widgetHalfHeight = widgetHeight / 2;
-    final double widgetCenterY = widgetPosition.dy + widgetHalfHeight;
     final double widgetCenterX = widgetPosition.dx + widgetHalfWidth;
+    final double widgetTopCenterY = widgetPosition.dy;
+    final double widgetBottomCenterY = widgetPosition.dy + widgetHeight;
 
-    final double spaceOnTop = widgetCenterY;
-    final double spaceOnLeft = widgetCenterX - horizontalSpacing;
-    final double spaceOnRight = screenWidth - widgetCenterX - horizontalSpacing;
-    final double spaceOnBottom = screenHeight - widgetCenterY;
+    final double spaceOnTop = widgetTopCenterY - offset.dy - verticalSpacing;
+    final double spaceOnLeft =
+        widgetCenterX - horizontalSpacing - safeArea.left;
+    final double spaceOnRight =
+        screenWidth - widgetCenterX - horizontalSpacing - safeArea.right;
+    final double spaceOnBottom = screenHeight -
+        widgetBottomCenterY -
+        offset.dy -
+        verticalSpacing -
+        safeArea.bottom;
 
     const double calendarHalfWidth = calendarWidth / 2;
+    final double neededSpaceOnRight = spaceOnLeft < calendarHalfWidth
+        ? calendarWidth - spaceOnLeft
+        : calendarHalfWidth;
+    final double neededSpaceOnLeft = spaceOnRight < calendarHalfWidth
+        ? calendarWidth - spaceOnRight
+        : calendarHalfWidth;
+
     final bool fitsOnTop = spaceOnTop >= spaceOnBottom;
-    final bool fitsOnLeft = spaceOnLeft >= calendarHalfWidth;
-    final bool fitsOnRight = spaceOnRight >= calendarHalfWidth;
+    final bool fitsOnLeft = spaceOnLeft >= neededSpaceOnLeft;
+    final bool fitsOnRight = spaceOnRight >= neededSpaceOnRight;
     final bool fitsHorizontally = fitsOnLeft && fitsOnRight;
 
     double? top;
@@ -102,9 +124,9 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
     double? bottom;
 
     if (fitsOnTop) {
-      top = widgetCenterY - calendarHeight - widgetHalfHeight - offset.dy;
+      top = widgetTopCenterY - calendarHeight - offset.dy;
     } else {
-      top = widgetCenterY + widgetHalfHeight + offset.dy;
+      top = widgetBottomCenterY + offset.dy;
     }
 
     if (fitsHorizontally) {
@@ -120,15 +142,20 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
 
     left += offset.dx;
 
-    final double space = fitsOnLeft ? spaceOnLeft : spaceOnRight;
-    double xAlignment = ((space / calendarWidth) - 0.5) * 2;
+    final double verticalSpace = fitsOnTop ? spaceOnTop : spaceOnBottom;
+    final double horizontalSpace = fitsOnLeft ? spaceOnLeft : spaceOnRight;
+
+    /// [horizontalSpace / calendarWidth] is in range from [0] to [1]
+    /// Decreased by [0.5] because we need a half of the value
+    /// Multiplied by [2] because [Alignment] range is from [-1] to [1]
+    double xAlignment = ((horizontalSpace / calendarWidth) - 0.5) * 2;
 
     if (fitsHorizontally) {
       xAlignment = 0.0;
     } else if (fitsOnLeft) {
-      xAlignment = xAlignment > 1 ? 1.0 : xAlignment;
+      xAlignment = xAlignment > 1 ? 0.0 : xAlignment;
     } else if (fitsOnRight) {
-      xAlignment = xAlignment > 1 ? -1.0 : -xAlignment;
+      xAlignment = xAlignment > 1 ? 0.0 : -xAlignment;
     } else {
       xAlignment = 0.0;
     }
@@ -137,8 +164,32 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
       xAlignment,
       fitsOnTop ? 1.0 : -1.0,
     );
-    final Alignment innerAlignment =
-        fitsOnTop ? Alignment.topCenter : Alignment.bottomCenter;
+
+    double maxScale = 1.0;
+
+    final double availableWidth =
+        screenWidth - (horizontalSpacing * 2) - offset.dx;
+    final double availableHeight = verticalSpace;
+    if (availableHeight < calendarHeight) {
+      maxScale = availableHeight / calendarHeight;
+    }
+
+    if (availableWidth < calendarWidth) {
+      final double newMaxScale = availableWidth / calendarWidth;
+      if (newMaxScale < maxScale) {
+        maxScale = newMaxScale;
+      }
+
+      if (maxScale < 1.0) {
+        if (left == right) {
+          left = -calendarWidth * 2;
+          right = -calendarWidth * 2;
+        } else {
+          left = 0;
+          right = 0;
+        }
+      }
+    }
 
     return Stack(
       clipBehavior: Clip.none,
@@ -161,7 +212,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
               onInitialized: _onInitialized,
               weekdayDecoration: widget.weekdayDecoration,
               monthPickerDecoration: widget.monthPickerDecoration,
-              calendarHeaderDecoration: widget.calendarHeaderDecoration,
+              headerDecoration: widget.headerDecoration,
               minimumDate: widget.minimumDate,
               initialDate: widget.initialDate,
               currentDate: widget.currentDate,
@@ -169,7 +220,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
               onDateChanged: widget.onDateChanged,
               onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
               scaleAlignment: scaleAligment,
-              innerAlignment: innerAlignment,
+              maxScale: maxScale,
               mainColor: widget.mainColor,
             ),
           ),

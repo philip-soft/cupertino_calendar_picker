@@ -1,1 +1,1 @@
-export 'ui_config.dart';
+export 'package_config.dart';

@@ -1,20 +1,22 @@
+import 'dart:ui';
+
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 class CalendarContainer extends StatefulWidget {
   const CalendarContainer({
     required this.child,
     required this.decoration,
     required this.scaleAlignment,
-    required this.innerAlignment,
     required this.onInitialized,
+    required this.maxScale,
     super.key,
   });
 
   final Widget child;
   final CalendarContainerDecoration decoration;
   final Alignment scaleAlignment;
-  final Alignment innerAlignment;
+  final double maxScale;
   final void Function(AnimationController controller) onInitialized;
 
   @override
@@ -36,8 +38,12 @@ class _CalendarContainerState extends State<CalendarContainer>
       reverseDuration: calendarAnimationReverseDuration,
     );
 
-    scale = scaleAnimation.animate(_curvedAnimation);
-    height = heightAnimation.animate(_curvedAnimation);
+    scale = CalendarAnimations.scaleAnimation(
+      maxScale: widget.maxScale,
+    ).animate(_curvedAnimation);
+    height = CalendarAnimations.heightAnimation(
+      height: calendarHeight,
+    ).animate(_curvedAnimation);
 
     widget.onInitialized(_controller);
   }
@@ -50,7 +56,20 @@ class _CalendarContainerState extends State<CalendarContainer>
   }
 
   @override
+  void didUpdateWidget(covariant CalendarContainer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.maxScale != oldWidget.maxScale) {
+      scale = CalendarAnimations.scaleAnimation(
+        maxScale: widget.maxScale,
+      ).animate(_curvedAnimation);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final CalendarContainerDecoration decoration = widget.decoration;
+
     return Column(
       children: <Widget>[
         AnimatedBuilder(
@@ -58,22 +77,49 @@ class _CalendarContainerState extends State<CalendarContainer>
           child: SizedBox(
             width: calendarWidth,
             height: calendarHeight,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: widget.decoration.borderRadius,
-                color: widget.decoration.backgroundColor,
-                boxShadow: widget.decoration.boxShadow,
-              ),
-              clipBehavior: Clip.hardEdge,
-              child: FittedBox(
-                alignment: widget.innerAlignment,
-                fit: BoxFit.none,
-                child: SizedBox(
-                  width: calendarWidth,
-                  height: calendarHeight,
-                  child: widget.child,
-                ),
-              ),
+            child: Builder(
+              builder: (BuildContext context) {
+                final FittedBox child = FittedBox(
+                  alignment: Alignment.topCenter,
+                  fit: BoxFit.none,
+                  child: SizedBox(
+                    width: calendarWidth,
+                    height: calendarHeight,
+                    child: widget.child,
+                  ),
+                );
+
+                return switch (decoration.backgroundType) {
+                  CalendarBackgroundType.transparentAndBlured => DecoratedBox(
+                      decoration: BoxDecoration(
+                        boxShadow: decoration.boxShadow,
+                        borderRadius: decoration.borderRadius,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: decoration.borderRadius,
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(
+                            sigmaX: calendarBlurAmount,
+                            sigmaY: calendarBlurAmount,
+                          ),
+                          child: ColoredBox(
+                            color: decoration.backgroundColor,
+                            child: child,
+                          ),
+                        ),
+                      ),
+                    ),
+                  CalendarBackgroundType.plainColor => Container(
+                      decoration: BoxDecoration(
+                        borderRadius: decoration.borderRadius,
+                        color: decoration.backgroundColor,
+                        boxShadow: decoration.boxShadow,
+                      ),
+                      clipBehavior: Clip.hardEdge,
+                      child: child,
+                    ),
+                };
+              },
             ),
           ),
           builder: (BuildContext context, Widget? child) {
@@ -81,7 +127,8 @@ class _CalendarContainerState extends State<CalendarContainer>
               scale: scale.value,
               alignment: widget.scaleAlignment,
               child: Container(
-                height: calendarMaxHeight,
+                height: calendarHeight *
+                    (CalendarAnimations.maxHeightPercentage / 100),
                 alignment: widget.scaleAlignment,
                 child: SizedBox(
                   height: height.value,

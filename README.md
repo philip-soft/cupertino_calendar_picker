@@ -20,7 +20,7 @@ The package provides a sleek and stylish cupertino calendar picker designed to m
 In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
-  cupertino_calendar_picker: ^1.0.3
+  cupertino_calendar_picker: ^1.1.0
 ```
 
 Import it:
@@ -59,7 +59,7 @@ Widget build(BuildContext context) {
         builder: (context) {
           /// Passing exactly this `BuildContext` is mandatory here to 
           /// get the `RenderBox` of the appropriate widget.
-          return _YourWidget(
+          return YourWidget(
             onTap: () => onTap(context),
           );
         },
@@ -93,7 +93,7 @@ You can choose **any** of these.
 ```dart
 Builder(
   builder: (context) {
-    return _YourWidget(
+    return YourWidget(
       onTap: () => onTap(context),
     );
   },
@@ -122,7 +122,7 @@ Widget build(BuildContext context) {
       GlobalCupertinoLocalizations.delegate,
     ],
     home: CupertinoPageScaffold(
-      child: _YourWidget(
+      child: YourWidget(
         key: globalKey,
         onTap: onTap,
       ),
@@ -141,8 +141,8 @@ Future<void> onTap(BuildContext context) {
 3. Pass a `BuildContext` directly from your widget's `build` method.
 
 ```dart
-class _YourWidget extends StatelessWidget {
-  const _YourWidget({
+class YourWidget extends StatelessWidget {
+  const YourWidget({
     required this.onTap,
   });
 
