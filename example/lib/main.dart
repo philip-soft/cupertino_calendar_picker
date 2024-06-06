@@ -17,7 +17,7 @@ class _ExampleAppState extends State<ExampleApp> {
   DateTime _selectedDate = DateTime.now();
 
   /// The context comes from the `Builder` above the widget tree.
-  Future<void> onTap(BuildContext context) {
+  Future<DateTime?> onTap(BuildContext context) async {
     final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
     final DateTime nowDate = DateTime.now();
 

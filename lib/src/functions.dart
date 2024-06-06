@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 /// Shows a cupertino calendar picker as an overlay above or below the widget.
 ///
+/// Returns a [DateTime] if a date was selected. Returns `null` if calendar was dismissed without a selected date.
+///
 /// It will display a grid of days for the [initialDate]'s month. The day
 /// indicated by [initialDate] will be selected.
 ///
@@ -18,7 +20,10 @@ import 'package:flutter/material.dart';
 /// [currentDate] represents the current day (i.e. today). This
 /// date will be highlighted in the day grid. If null, the date of
 /// `DateTime.now()` will be used.
-Future<void> showCupertinoCalendarPicker(
+///
+/// [dismissBehaviour] represents how the calendar can be closed.
+/// Android back button always close the calendar.
+Future<DateTime?> showCupertinoCalendarPicker(
   BuildContext context, {
   /// The widget's render box around which the calendar will be displayed.
   required RenderBox? widgetRenderBox,
@@ -29,8 +34,11 @@ Future<void> showCupertinoCalendarPicker(
   /// The maximum selectable [DateTime].
   required DateTime maximumDate,
 
-  /// Called when the user selects a date in the picker.
+  /// Called on date changes in the picker.
   ValueChanged<DateTime>? onDateChanged,
+
+  /// Called when the user selects a date in the picker.
+  ValueChanged<DateTime>? onDateSelected,
 
   /// The initially selected [DateTime] that the calendar should display.
   DateTime? initialDate,
@@ -51,14 +59,15 @@ Future<void> showCupertinoCalendarPicker(
   Offset offset = const Offset(0.0, 10.0),
   Color barrierColor = Colors.transparent,
   Color mainColor = CupertinoColors.systemRed,
+  CalendarDismissBehavior dismissBehaviour =
+      CalendarDismissBehavior.onOutsideTap,
   CalendarContainerDecoration? containerDecoration,
   CalendarWeekdayDecoration? weekdayDecoration,
   CalendarMonthPickerDecoration? monthPickerDecoration,
   CalendarHeaderDecoration? headerDecoration,
 }) {
-  return showGeneralDialog(
+  return showGeneralDialog<DateTime?>(
     context: context,
-    barrierDismissible: false,
     barrierLabel: calendarPickerBarrierLabel,
     barrierColor: barrierColor,
     transitionDuration: Duration.zero,
@@ -87,11 +96,13 @@ Future<void> showCupertinoCalendarPicker(
         maximumDate: maximumDate,
         currentDate: currentDate,
         onDateChanged: onDateChanged,
+        onDateSelected: onDateSelected,
         onDisplayedMonthChanged: onDisplayedMonthChanged,
         containerDecoration: containerDecoration,
         weekdayDecoration: weekdayDecoration,
         monthPickerDecoration: monthPickerDecoration,
         headerDecoration: headerDecoration,
+        dismissBehaviour: dismissBehaviour,
       );
     },
   );

@@ -1,3 +1,10 @@
+## 1.1.2
+
+* The `CalendarDismissBehavior` enum was added to specify different dismiss behaviors.
+* The `onDateSelected` parameter was added.
+* The `showCupertinoCalendarPicker` function now returns a `DateTime`.
+* Fixed an issue where the calendar closed without animation when the Android back button was tapped. (Thanks to @JCKodel)
+
 ## 1.1.1
 
 * Fixed an issue where `safeArea` top wasn't considered in the position calculation.

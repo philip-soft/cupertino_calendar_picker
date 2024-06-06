@@ -10,6 +10,7 @@ class CupertinoCalendar extends StatefulWidget {
     required this.mainColor,
     required this.maxScale,
     this.onDateChanged,
+    this.onDateSelected,
     DateTime? initialDate,
     DateTime? currentDate,
     this.onDisplayedMonthChanged,
@@ -41,6 +42,7 @@ class CupertinoCalendar extends StatefulWidget {
   final DateTime maximumDate;
   final DateTime currentDate;
   final ValueChanged<DateTime>? onDateChanged;
+  final ValueChanged<DateTime>? onDateSelected;
   final ValueChanged<DateTime>? onDisplayedMonthChanged;
   final CalendarContainerDecoration? containerDecoration;
   final CalendarWeekdayDecoration? weekdayDecoration;
@@ -76,7 +78,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
   void _initializeInitialDate() {
     final DateTime initialDate = widget.initialDate;
     _currentlyDisplayedMonthDate = PackageDateUtils.monthDateOnly(initialDate);
-    _selectedDate = DateUtils.dateOnly(initialDate);
+    _selectedDate = initialDate;
   }
 
   void _handleCalendarDateChange(DateTime date) {
@@ -126,6 +128,11 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
     });
   }
 
+  void _onChanged(DateTime date) {
+    _handleCalendarDayChange(date);
+    widget.onDateSelected?.call(date);
+  }
+
   @override
   Widget build(BuildContext context) {
     return CalendarContainer(
@@ -140,7 +147,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
         minimumDate: widget.minimumDate,
         maximumDate: widget.maximumDate,
         selectedDate: _selectedDate,
-        onChanged: _handleCalendarDayChange,
+        onChanged: _onChanged,
         onDisplayedMonthChanged: _handleCalendarMonthChange,
         onYearPickerChanged: _handleCalendarDateChange,
         mainColor: widget.mainColor,

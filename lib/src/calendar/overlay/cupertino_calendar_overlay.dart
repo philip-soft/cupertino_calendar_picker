@@ -10,7 +10,9 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     required this.verticalSpacing,
     required this.offset,
     required this.mainColor,
+    required this.dismissBehaviour,
     this.onDateChanged,
+    this.onDateSelected,
     this.currentDate,
     this.initialDate,
     super.key,
@@ -30,11 +32,13 @@ class CupertinoCalendarOverlay extends StatefulWidget {
   final DateTime maximumDate;
   final DateTime? currentDate;
   final ValueChanged<DateTime>? onDateChanged;
+  final ValueChanged<DateTime>? onDateSelected;
   final ValueChanged<DateTime>? onDisplayedMonthChanged;
   final CalendarContainerDecoration? containerDecoration;
   final CalendarWeekdayDecoration? weekdayDecoration;
   final CalendarMonthPickerDecoration? monthPickerDecoration;
   final CalendarHeaderDecoration? headerDecoration;
+  final CalendarDismissBehavior dismissBehaviour;
   final Color mainColor;
 
   @override
@@ -45,6 +49,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
 class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
   AnimationController? _controller;
   Offset? _widgetPosition;
+  DateTime? _selectedDate;
 
   void _onInitialized(AnimationController animationController) {
     _controller = animationController;
@@ -54,17 +59,35 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
 
   void _statusListener(AnimationStatus status) {
     if (status == AnimationStatus.dismissed) {
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(_selectedDate);
     }
   }
 
   void _onOutsideTap() {
+    _closeOverlay();
+  }
+
+  void _closeOverlay() {
     if (_controller != null) {
       final bool isReverseInProgress =
           _controller!.status == AnimationStatus.reverse;
       if (!isReverseInProgress) {
         _controller?.reverse(from: 0.75);
       }
+    }
+  }
+
+  void _onDateChanged(DateTime date) {
+    _selectedDate = date;
+    widget.onDateChanged?.call(date);
+  }
+
+  void _onDateSelected(DateTime date) {
+    _selectedDate = date;
+    widget.onDateSelected?.call(date);
+
+    if (widget.dismissBehaviour.hasDateSelectDismiss) {
+      _closeOverlay();
     }
   }
 
@@ -192,42 +215,49 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
       }
     }
 
-    return Stack(
-      clipBehavior: Clip.none,
-      children: <Widget>[
-        Positioned.fill(
-          child: GestureDetector(
-            onTap: _onOutsideTap,
-            behavior: HitTestBehavior.translucent,
-            child: const ColoredBox(color: Colors.transparent),
-          ),
-        ),
-        Positioned(
-          top: top,
-          left: left,
-          right: right,
-          bottom: bottom,
-          child: Material(
-            color: Colors.transparent,
-            child: CupertinoCalendar(
-              onInitialized: _onInitialized,
-              weekdayDecoration: widget.weekdayDecoration,
-              monthPickerDecoration: widget.monthPickerDecoration,
-              containerDecoration: widget.containerDecoration,
-              headerDecoration: widget.headerDecoration,
-              minimumDate: widget.minimumDate,
-              initialDate: widget.initialDate,
-              currentDate: widget.currentDate,
-              maximumDate: widget.maximumDate,
-              onDateChanged: widget.onDateChanged,
-              onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
-              scaleAlignment: scaleAligment,
-              maxScale: maxScale,
-              mainColor: widget.mainColor,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) => _closeOverlay(),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: <Widget>[
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: widget.dismissBehaviour.hasOusideTapDismiss
+                  ? _onOutsideTap
+                  : null,
+              behavior: HitTestBehavior.translucent,
+              child: const ColoredBox(color: Colors.transparent),
             ),
           ),
-        ),
-      ],
+          Positioned(
+            top: top,
+            left: left,
+            right: right,
+            bottom: bottom,
+            child: Material(
+              color: Colors.transparent,
+              child: CupertinoCalendar(
+                onInitialized: _onInitialized,
+                weekdayDecoration: widget.weekdayDecoration,
+                monthPickerDecoration: widget.monthPickerDecoration,
+                containerDecoration: widget.containerDecoration,
+                headerDecoration: widget.headerDecoration,
+                minimumDate: widget.minimumDate,
+                initialDate: widget.initialDate,
+                currentDate: widget.currentDate,
+                maximumDate: widget.maximumDate,
+                onDateChanged: _onDateChanged,
+                onDateSelected: _onDateSelected,
+                onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
+                scaleAlignment: scaleAligment,
+                maxScale: maxScale,
+                mainColor: widget.mainColor,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
