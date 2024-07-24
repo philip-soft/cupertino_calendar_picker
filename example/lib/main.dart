@@ -59,7 +59,16 @@ class _ExampleAppState extends State<ExampleApp> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _ExampleWidget(selectedDate: _selectedDate),
+                    Builder(builder: (context) {
+                      final DateTime nowDate = DateTime.now();
+
+                      return TimePickerButton(
+                        selectedDate: _selectedDate,
+                        minimumDate: nowDate.subtract(const Duration(days: 15)),
+                        maximumDate: nowDate.add(const Duration(days: 360)),
+                      );
+                    })
+                    // _ExampleWidget(selectedDate: _selectedDate),
                   ],
                 ),
               );

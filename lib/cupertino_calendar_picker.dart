@@ -5,6 +5,7 @@ library cupertino_calendar_picker;
 export 'src/src.dart'
     show
         showCupertinoCalendarPicker,
+        showCupertinoTimePicker,
         CalendarContainerDecoration,
         CalendarHeaderDecoration,
         CalendarMonthPickerDayStyle,
@@ -17,4 +18,6 @@ export 'src/src.dart'
         CalendarMonthPickerDecoration,
         CalendarWeekdayDecoration,
         CalendarBackgroundType,
-        CalendarDismissBehavior;
+        CalendarDismissBehavior,
+        CalendarPickerButton,
+        TimePickerButton;

@@ -1,8 +1,8 @@
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
-class CupertinoCalendarOverlay extends StatefulWidget {
-  const CupertinoCalendarOverlay({
+class CupertinoTimeOverlay extends StatefulWidget {
+  const CupertinoTimeOverlay({
     required this.widgetRenderBox,
     required this.minimumDate,
     required this.maximumDate,
@@ -18,9 +18,6 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     super.key,
     this.onDisplayedMonthChanged,
     this.containerDecoration,
-    this.weekdayDecoration,
-    this.monthPickerDecoration,
-    this.headerDecoration,
   });
 
   final double horizontalSpacing;
@@ -35,18 +32,14 @@ class CupertinoCalendarOverlay extends StatefulWidget {
   final ValueChanged<DateTime>? onDateSelected;
   final ValueChanged<DateTime>? onDisplayedMonthChanged;
   final CalendarContainerDecoration? containerDecoration;
-  final CalendarWeekdayDecoration? weekdayDecoration;
-  final CalendarMonthPickerDecoration? monthPickerDecoration;
-  final CalendarHeaderDecoration? headerDecoration;
   final CalendarDismissBehavior dismissBehavior;
   final Color mainColor;
 
   @override
-  State<CupertinoCalendarOverlay> createState() =>
-      _CupertinoCalendarOverlayState();
+  State<CupertinoTimeOverlay> createState() => _CupertinoTimeOverlayState();
 }
 
-class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
+class _CupertinoTimeOverlayState extends State<CupertinoTimeOverlay> {
   AnimationController? _controller;
   DateTime? _selectedDate;
 
@@ -92,24 +85,20 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
       onInitialized: _onInitialized,
       containerDecoration: widget.containerDecoration,
       widgetRenderBox: widget.widgetRenderBox,
-      height: calendarHeight,
-      width: calendarWidth,
+      height: 203,
+      width: 231,
       horizontalSpacing: widget.horizontalSpacing,
       verticalSpacing: widget.verticalSpacing,
       offset: widget.offset,
       outsideTapDismissable: widget.dismissBehavior.hasOusideTapDismiss,
-      child: CupertinoCalendar(
-        weekdayDecoration: widget.weekdayDecoration,
-        monthPickerDecoration: widget.monthPickerDecoration,
-        headerDecoration: widget.headerDecoration,
-        minimumDate: widget.minimumDate,
-        initialDate: widget.initialDate,
-        currentDate: widget.currentDate,
-        maximumDate: widget.maximumDate,
-        onDateChanged: _onDateChanged,
-        onDateSelected: _onDateSelected,
-        onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
-        mainColor: widget.mainColor,
+      child: Center(
+        child: SizedBox(
+          height: 160,
+          child: CupertinoDatePicker(
+            mode: CupertinoDatePickerMode.time,
+            onDateTimeChanged: (_) {},
+          ),
+        ),
       ),
     );
   }

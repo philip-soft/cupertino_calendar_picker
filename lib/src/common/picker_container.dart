@@ -3,13 +3,15 @@ import 'dart:ui';
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 
-class CalendarContainer extends StatefulWidget {
-  const CalendarContainer({
+class PickerContainer extends StatefulWidget {
+  const PickerContainer({
     required this.child,
     required this.decoration,
     required this.scaleAlignment,
     required this.onInitialized,
     required this.maxScale,
+    required this.height,
+    required this.width,
     super.key,
   });
 
@@ -18,16 +20,18 @@ class CalendarContainer extends StatefulWidget {
   final Alignment scaleAlignment;
   final double maxScale;
   final void Function(AnimationController controller) onInitialized;
+  final double height;
+  final double width;
 
   @override
-  State<CalendarContainer> createState() => _CalendarContainerState();
+  State<PickerContainer> createState() => _PickerContainerState();
 }
 
-class _CalendarContainerState extends State<CalendarContainer>
+class _PickerContainerState extends State<PickerContainer>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> scale;
-  late Animation<double> height;
+  late Animation<double> _scale;
+  late Animation<double> _height;
 
   @override
   void initState() {
@@ -38,11 +42,11 @@ class _CalendarContainerState extends State<CalendarContainer>
       reverseDuration: calendarAnimationReverseDuration,
     );
 
-    scale = CalendarAnimations.scaleAnimation(
+    _scale = CalendarAnimations.scaleAnimation(
       maxScale: widget.maxScale,
     ).animate(_curvedAnimation);
-    height = CalendarAnimations.heightAnimation(
-      height: calendarHeight,
+    _height = CalendarAnimations.heightAnimation(
+      height: widget.height,
     ).animate(_curvedAnimation);
 
     widget.onInitialized(_controller);
@@ -56,11 +60,11 @@ class _CalendarContainerState extends State<CalendarContainer>
   }
 
   @override
-  void didUpdateWidget(covariant CalendarContainer oldWidget) {
+  void didUpdateWidget(covariant PickerContainer oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.maxScale != oldWidget.maxScale) {
-      scale = CalendarAnimations.scaleAnimation(
+      _scale = CalendarAnimations.scaleAnimation(
         maxScale: widget.maxScale,
       ).animate(_curvedAnimation);
     }
@@ -75,16 +79,16 @@ class _CalendarContainerState extends State<CalendarContainer>
         AnimatedBuilder(
           animation: _controller,
           child: SizedBox(
-            width: calendarWidth,
-            height: calendarHeight,
+            width: widget.width,
+            height: widget.height,
             child: Builder(
               builder: (BuildContext context) {
                 final FittedBox child = FittedBox(
                   alignment: Alignment.topCenter,
                   fit: BoxFit.none,
                   child: SizedBox(
-                    width: calendarWidth,
-                    height: calendarHeight,
+                    width: widget.width,
+                    height: widget.height,
                     child: widget.child,
                   ),
                 );
@@ -124,14 +128,14 @@ class _CalendarContainerState extends State<CalendarContainer>
           ),
           builder: (BuildContext context, Widget? child) {
             return Transform.scale(
-              scale: scale.value,
+              scale: _scale.value,
               alignment: widget.scaleAlignment,
               child: Container(
-                height: calendarHeight *
+                height: widget.height *
                     (CalendarAnimations.maxHeightPercentage / 100),
                 alignment: widget.scaleAlignment,
                 child: SizedBox(
-                  height: height.value,
+                  height: _height.value,
                   child: child,
                 ),
               ),

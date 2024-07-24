@@ -5,16 +5,12 @@ class CupertinoCalendar extends StatefulWidget {
   CupertinoCalendar({
     required DateTime minimumDate,
     required DateTime maximumDate,
-    required this.scaleAlignment,
-    required this.onInitialized,
     required this.mainColor,
-    required this.maxScale,
     this.onDateChanged,
     this.onDateSelected,
     DateTime? initialDate,
     DateTime? currentDate,
     this.onDisplayedMonthChanged,
-    this.containerDecoration,
     this.weekdayDecoration,
     this.monthPickerDecoration,
     this.headerDecoration,
@@ -44,14 +40,10 @@ class CupertinoCalendar extends StatefulWidget {
   final ValueChanged<DateTime>? onDateChanged;
   final ValueChanged<DateTime>? onDateSelected;
   final ValueChanged<DateTime>? onDisplayedMonthChanged;
-  final CalendarContainerDecoration? containerDecoration;
   final CalendarWeekdayDecoration? weekdayDecoration;
   final CalendarMonthPickerDecoration? monthPickerDecoration;
   final CalendarHeaderDecoration? headerDecoration;
   final Color mainColor;
-  final Alignment scaleAlignment;
-  final double maxScale;
-  final void Function(AnimationController controller) onInitialized;
 
   @override
   State<CupertinoCalendar> createState() => _CupertinoCalendarState();
@@ -135,35 +127,28 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return CalendarContainer(
-      onInitialized: widget.onInitialized,
-      scaleAlignment: widget.scaleAlignment,
-      maxScale: widget.maxScale,
-      decoration: widget.containerDecoration ??
-          CalendarContainerDecoration.withDynamicColor(context),
-      child: CalendarPicker(
-        initialMonth: _currentlyDisplayedMonthDate,
-        currentDate: widget.currentDate,
-        minimumDate: widget.minimumDate,
-        maximumDate: widget.maximumDate,
-        selectedDate: _selectedDate,
-        onChanged: _onChanged,
-        onDisplayedMonthChanged: _handleCalendarMonthChange,
-        onYearPickerChanged: _handleCalendarDateChange,
-        mainColor: widget.mainColor,
-        weekdayDecoration: widget.weekdayDecoration ??
-            CalendarWeekdayDecoration.withDynamicColor(context),
-        monthPickerDecoration: widget.monthPickerDecoration ??
-            CalendarMonthPickerDecoration.withDynamicColor(
-              context,
-              mainColor: widget.mainColor,
-            ),
-        headerDecoration: widget.headerDecoration ??
-            CalendarHeaderDecoration.withDynamicColor(
-              context,
-              mainColor: widget.mainColor,
-            ),
-      ),
+    return CalendarPicker(
+      initialMonth: _currentlyDisplayedMonthDate,
+      currentDate: widget.currentDate,
+      minimumDate: widget.minimumDate,
+      maximumDate: widget.maximumDate,
+      selectedDate: _selectedDate,
+      onChanged: _onChanged,
+      onDisplayedMonthChanged: _handleCalendarMonthChange,
+      onYearPickerChanged: _handleCalendarDateChange,
+      mainColor: widget.mainColor,
+      weekdayDecoration: widget.weekdayDecoration ??
+          CalendarWeekdayDecoration.withDynamicColor(context),
+      monthPickerDecoration: widget.monthPickerDecoration ??
+          CalendarMonthPickerDecoration.withDynamicColor(
+            context,
+            mainColor: widget.mainColor,
+          ),
+      headerDecoration: widget.headerDecoration ??
+          CalendarHeaderDecoration.withDynamicColor(
+            context,
+            mainColor: widget.mainColor,
+          ),
     );
   }
 }

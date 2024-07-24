@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-// APPEARANCE
+// UI
 
 const double calendarMonthPickerIconSize = 20.0;
 const double calendarMonthSwitcherIconSize = 26.5;
@@ -12,7 +12,9 @@ const double calendarMonthPickerHorizontalPadding = 11.0;
 const double calendarWeekdaysHorizontalPadding = 12.0;
 const double calendarWeekdaysHeight = 18.0;
 const double calendarWidth = 320.0;
+// const double calendarHeight = 332.0;
 const double calendarHeight = 332.0;
+const double calendarDateTimePickerHeight = 376.0;
 const double calendarBlurAmount = 40.0;
 const int calendarBluredLightBackgroundColorAlpha = 180;
 const int calendarBluredDarkBackgroundColorAlpha = 160;
@@ -31,3 +33,6 @@ const Duration calendarYearPickerDuration = Duration(milliseconds: 500);
 
 const String calendarPickerRouteName = 'CupertinoCalendarPicker';
 const String calendarPickerBarrierLabel = 'CupertinoCalendarPickerBarrier';
+
+const String timePickerRouteName = 'CupertinoTimePicker';
+const String timePickerBarrierLabel = 'CupertinoTimePickerBarrier';
