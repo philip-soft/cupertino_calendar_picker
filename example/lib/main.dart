@@ -62,12 +62,22 @@ class _ExampleAppState extends State<ExampleApp> {
                     Builder(builder: (context) {
                       final DateTime nowDate = DateTime.now();
 
+                      return CalendarPickerButton(
+                        selectedDate: _selectedDate,
+                        minimumDate: nowDate.subtract(const Duration(days: 15)),
+                        maximumDate: nowDate.add(const Duration(days: 360)),
+                      );
+                    }),
+                    const SizedBox(width: 5),
+                    Builder(builder: (context) {
+                      final DateTime nowDate = DateTime.now();
+
                       return TimePickerButton(
                         selectedDate: _selectedDate,
                         minimumDate: nowDate.subtract(const Duration(days: 15)),
                         maximumDate: nowDate.add(const Duration(days: 360)),
                       );
-                    })
+                    }),
                     // _ExampleWidget(selectedDate: _selectedDate),
                   ],
                 ),

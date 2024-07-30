@@ -219,7 +219,7 @@ class _TimePickerButtonState extends State<TimePickerButton>
         child: FadeTransition(
           opacity: _opacityAnimation,
           child: Text(
-            '$monthString $dayString, $yearString',
+            '10:08 PM',
             style: TextStyle(
               color: CupertinoDynamicColor.maybeResolve(
                 isCalendarOpened ? widget.mainColor : CupertinoColors.label,

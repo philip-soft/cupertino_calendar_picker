@@ -62,13 +62,14 @@ class _CalendarHeaderState extends State<CalendarHeader> {
             height: 44.0,
             child: Row(
               children: <Widget>[
-                Text(
-                  headerString,
+                AnimatedDefaultTextStyle(
+                  duration: calendarHeaderFadeDuration,
                   style: _showYearPicker
-                      ? _decoration.monthDateStyle?.copyWith(
+                      ? _decoration.monthDateStyle!.copyWith(
                           color: _decoration.monthDateArrowColor,
                         )
-                      : _decoration.monthDateStyle,
+                      : _decoration.monthDateStyle!,
+                  child: Text(headerString),
                 ),
                 const SizedBox(width: 5.0),
                 AnimatedRotation(

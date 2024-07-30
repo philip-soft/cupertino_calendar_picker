@@ -13,8 +13,8 @@ const double calendarWeekdaysHorizontalPadding = 12.0;
 const double calendarWeekdaysHeight = 18.0;
 const double calendarWidth = 320.0;
 // const double calendarHeight = 332.0;
-const double calendarHeight = 332.0;
-const double calendarDateTimePickerHeight = 376.0;
+const double calendarHeight = 378.0;
+const double calendarDateTimePickerHeight = 378.0;
 const double calendarBlurAmount = 40.0;
 const int calendarBluredLightBackgroundColorAlpha = 180;
 const int calendarBluredDarkBackgroundColorAlpha = 160;
@@ -26,7 +26,7 @@ const Duration calendarAnimationReverseDuration = Duration(milliseconds: 280);
 const Duration monthScrollDuration = Duration(milliseconds: 400);
 const Cubic calendarAnimationCurve = Curves.ease;
 const Duration calendarHeaderFadeDuration = Duration(milliseconds: 300);
-const Duration calendarYearPickerFadeDuration = Duration(milliseconds: 250);
+const Duration pickerFadeDuration = Duration(milliseconds: 250);
 const Duration calendarYearPickerDuration = Duration(milliseconds: 500);
 
 // Other

@@ -1,3 +1,4 @@
+import 'package:cupertino_calendar_picker/src/extensions/time_of_day_extension.dart';
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +67,16 @@ class CalendarPickerState extends State<CalendarPicker>
   late DateTime _currentMonth;
   late PageController _monthPageController;
   late AnimationController _animationController;
-  late bool _isYearPickerShowed;
+  late CalendarViewMode _previousViewMode;
+  late CalendarViewMode _viewMode;
+  late TimeOfDay _timeOfDay;
+  late GlobalKey<CustomCupertinoDatePickerDateTimeState> _timePickerKey;
+
+  CalendarViewMode get viewMode => _viewMode;
+  set viewMode(CalendarViewMode mode) {
+    _previousViewMode = viewMode;
+    _viewMode = mode;
+  }
 
   @override
   void initState() {
@@ -81,7 +91,10 @@ class CalendarPickerState extends State<CalendarPicker>
       vsync: this,
       duration: calendarYearPickerDuration,
     );
-    _isYearPickerShowed = _animationController.isCompleted;
+    _previousViewMode = CalendarViewMode.monthPicker;
+    _viewMode = CalendarViewMode.monthPicker;
+    _timeOfDay = TimeOfDay.now();
+    _timePickerKey = GlobalKey();
   }
 
   @override
@@ -163,7 +176,42 @@ class CalendarPickerState extends State<CalendarPicker>
       _animationController.isCompleted
           ? _animationController.reverse()
           : _animationController.forward();
-      _isYearPickerShowed = !_isYearPickerShowed;
+      viewMode = shouldShowYearPicker
+          ? CalendarViewMode.yearPicker
+          : _previousViewMode;
+    });
+  }
+
+  void _toggleTimePicker(bool shouldShowTimePicker) {
+    setState(() {
+      _animationController.isCompleted
+          ? _animationController.reverse()
+          : _animationController.forward();
+      viewMode = shouldShowTimePicker
+          ? CalendarViewMode.timePicker
+          : _previousViewMode;
+    });
+  }
+
+  void _onTimeChanged(DateTime dateTime) {
+    setState(() {
+      _timeOfDay = TimeOfDay.fromDateTime(dateTime);
+    });
+  }
+
+  void _onDayPeriodChanged(DayPeriod dayPeriod) {
+    setState(() {
+      final int newHour = dayPeriod == DayPeriod.pm ? 12 : -12;
+      final TimeOfDay newTimeOfDay = TimeOfDay(
+        hour: _timeOfDay.hour + newHour,
+        minute: _timeOfDay.minute,
+      );
+      _timePickerKey.currentState?.scrollToDate(
+        newTimeOfDay.toDateTime(),
+        _timeOfDay.toDateTime(),
+        false,
+      );
+      _timeOfDay = newTimeOfDay;
     });
   }
 
@@ -172,21 +220,26 @@ class CalendarPickerState extends State<CalendarPicker>
     return Column(
       children: <Widget>[
         const SizedBox(height: 13.0),
-        CalendarHeader(
-          currentMonth: _currentMonth,
-          onNextMonthIconTapped:
-              _isDisplayingLastMonth ? null : _handleNextMonth,
-          onPreviousMonthIconTapped:
-              _isDisplayingFirstMonth ? null : _handlePreviousMonth,
-          onYearPickerStateChanged: _toggleYearPicker,
-          decoration: widget.headerDecoration,
+        PickerAnimatedCrossFade(
+          firstChild: CalendarHeader(
+            currentMonth: _currentMonth,
+            onNextMonthIconTapped:
+                _isDisplayingLastMonth ? null : _handleNextMonth,
+            onPreviousMonthIconTapped:
+                _isDisplayingFirstMonth ? null : _handlePreviousMonth,
+            onYearPickerStateChanged: _toggleYearPicker,
+            decoration: widget.headerDecoration,
+          ),
+          crossFadeState: viewMode == CalendarViewMode.timePicker
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
         ),
         Expanded(
-          child: AnimatedCrossFade(
-            crossFadeState: _isYearPickerShowed
+          child: PickerAnimatedCrossFade(
+            crossFadeState: viewMode == CalendarViewMode.yearPicker ||
+                    viewMode == CalendarViewMode.timePicker
                 ? CrossFadeState.showSecond
                 : CrossFadeState.showFirst,
-            duration: calendarYearPickerFadeDuration,
             firstChild: Column(
               children: <Widget>[
                 const SizedBox(height: 11.0),
@@ -203,7 +256,6 @@ class CalendarPickerState extends State<CalendarPicker>
                   decoration: widget.monthPickerDecoration,
                   mainColor: widget.mainColor,
                 ),
-                // const CalendarTimePicker(),
               ],
             ),
             secondChild: Padding(
@@ -213,40 +265,41 @@ class CalendarPickerState extends State<CalendarPicker>
                 top: 10.0,
                 bottom: 38.0,
               ),
-              child: CupertinoDatePicker(
-                minimumDate: DateTime(
-                  widget.minimumDate.year,
-                  widget.minimumDate.month,
-                ),
-                maximumDate: DateTime(
-                  widget.maximumDate.year,
-                  widget.maximumDate.month,
-                ),
-                mode: CupertinoDatePickerMode.monthYear,
-                onDateTimeChanged: widget.onYearPickerChanged,
-                initialDateTime: _currentMonth,
-              ),
+              child: switch (viewMode) {
+                CalendarViewMode.yearPicker => CupertinoDatePicker(
+                    minimumDate: DateTime(
+                      widget.minimumDate.year,
+                      widget.minimumDate.month,
+                    ),
+                    maximumDate: DateTime(
+                      widget.maximumDate.year,
+                      widget.maximumDate.month,
+                    ),
+                    mode: CupertinoDatePickerMode.monthYear,
+                    onDateTimeChanged: widget.onYearPickerChanged,
+                    initialDateTime: _currentMonth,
+                  ),
+                CalendarViewMode.timePicker => CustomCupertinoDatePicker(
+                    key: _timePickerKey,
+                    onDateTimeChanged: _onTimeChanged,
+                    mode: CupertinoDatePickerMode.time,
+                    initialDateTime: _timeOfDay.toDateTime(),
+                    use24hFormat: MediaQuery.alwaysUse24HourFormatOf(context),
+                  ),
+                _ => const SizedBox(),
+              },
             ),
-            layoutBuilder: (
-              Widget topChild,
-              Key topChildKey,
-              Widget bottomChild,
-              Key bottomChildKey,
-            ) {
-              return Stack(
-                children: <Widget>[
-                  SizedBox(
-                    key: bottomChildKey,
-                    child: bottomChild,
-                  ),
-                  SizedBox(
-                    key: topChildKey,
-                    child: topChild,
-                  ),
-                ],
-              );
-            },
           ),
+        ),
+        PickerAnimatedCrossFade(
+          firstChild: CalendarTimeFooter(
+            time: _timeOfDay,
+            onTimePickerStateChanged: _toggleTimePicker,
+            onDayPeriodChanged: _onDayPeriodChanged,
+          ),
+          crossFadeState: viewMode == CalendarViewMode.yearPicker
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
         ),
       ],
     );

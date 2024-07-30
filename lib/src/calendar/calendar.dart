@@ -1,5 +1,6 @@
 export 'container/container.dart';
 export 'cupertino_calendar.dart';
+export 'date_picker/date_picker.dart';
 export 'header/header.dart';
 export 'month_picker/month_picker.dart';
 export 'overlay/overlay.dart';
