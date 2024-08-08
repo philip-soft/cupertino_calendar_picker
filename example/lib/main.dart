@@ -1,5 +1,6 @@
 import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
@@ -73,7 +74,7 @@ class _ExampleAppState extends State<ExampleApp> {
                       final DateTime nowDate = DateTime.now();
 
                       return TimePickerButton(
-                        selectedDate: _selectedDate,
+                        selectedTime: TimeOfDay.now(),
                         minimumDate: nowDate.subtract(const Duration(days: 15)),
                         maximumDate: nowDate.add(const Duration(days: 360)),
                       );

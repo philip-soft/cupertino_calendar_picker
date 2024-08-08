@@ -11,6 +11,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     required this.offset,
     required this.mainColor,
     required this.dismissBehavior,
+    required this.mode,
     this.onDateChanged,
     this.onDateSelected,
     this.currentDate,
@@ -40,6 +41,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
   final CalendarHeaderDecoration? headerDecoration;
   final CalendarDismissBehavior dismissBehavior;
   final Color mainColor;
+  final CalendarPickerMode mode;
 
   @override
   State<CupertinoCalendarOverlay> createState() =>
@@ -88,11 +90,16 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
 
   @override
   Widget build(BuildContext context) {
+    final double height = switch (widget.mode) {
+      CalendarPickerMode.date => calendarDatePickerHeight,
+      CalendarPickerMode.dateTime => calendarDateTimePickerHeight,
+    };
+
     return PickerOverlay(
       onInitialized: _onInitialized,
       containerDecoration: widget.containerDecoration,
       widgetRenderBox: widget.widgetRenderBox,
-      height: calendarHeight,
+      height: height,
       width: calendarWidth,
       horizontalSpacing: widget.horizontalSpacing,
       verticalSpacing: widget.verticalSpacing,
@@ -110,6 +117,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
         onDateSelected: _onDateSelected,
         onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
         mainColor: widget.mainColor,
+        mode: widget.mode,
       ),
     );
   }

@@ -65,6 +65,7 @@ Future<DateTime?> showCupertinoCalendarPicker(
   CalendarWeekdayDecoration? weekdayDecoration,
   CalendarMonthPickerDecoration? monthPickerDecoration,
   CalendarHeaderDecoration? headerDecoration,
+  CalendarPickerMode mode = CalendarPickerMode.date,
 }) {
   return showGeneralDialog<DateTime?>(
     context: context,
@@ -103,6 +104,7 @@ Future<DateTime?> showCupertinoCalendarPicker(
         monthPickerDecoration: monthPickerDecoration,
         headerDecoration: headerDecoration,
         dismissBehavior: dismissBehavior,
+        mode: mode,
       );
     },
   );
@@ -112,15 +114,15 @@ Future<DateTime?> showCupertinoCalendarPicker(
 ///
 /// Returns a [DateTime] if a date was selected. Returns `null` if calendar was dismissed without a selected date.
 ///
-/// It will display a grid of days for the [initialDate]'s month. The day
-/// indicated by [initialDate] will be selected.
+/// It will display a grid of days for the [initialTime]'s month. The day
+/// indicated by [initialTime] will be selected.
 ///
 /// The optional [onDisplayedMonthChanged] callback can be used to track
 /// the currently displayed month.
 ///
-/// [maximumDate] must be after or equal to [minimumDate].
+/// [maximumTime] must be after or equal to [minimumTime].
 ///
-/// [initialDate] must be between [minimumDate] and [maximumDate] or equal to
+/// [initialTime] must be between [minimumTime] and [maximumTime] or equal to
 /// one of them.
 ///
 /// [currentDate] represents the current day (i.e. today). This
@@ -129,31 +131,22 @@ Future<DateTime?> showCupertinoCalendarPicker(
 ///
 /// [dismissBehavior] represents how the calendar can be closed.
 /// Android back button always close the calendar.
-Future<DateTime?> showCupertinoTimePicker(
+Future<TimeOfDay?> showCupertinoTimePicker(
   BuildContext context, {
   /// The widget's render box around which the calendar will be displayed.
   required RenderBox? widgetRenderBox,
 
   /// The minimum selectable [DateTime].
-  required DateTime minimumDate,
+  TimeOfDay? minimumTime,
 
   /// The maximum selectable [DateTime].
-  required DateTime maximumDate,
+  TimeOfDay? maximumTime,
 
   /// Called on date changes in the picker.
-  ValueChanged<DateTime>? onDateChanged,
-
-  /// Called when the user selects a date in the picker.
-  ValueChanged<DateTime>? onDateSelected,
+  ValueChanged<TimeOfDay>? onTimeChanged,
 
   /// The initially selected [DateTime] that the calendar should display.
-  DateTime? initialDate,
-
-  /// The [DateTime] representing today. It will be highlighted in the day grid.
-  DateTime? currentDate,
-
-  /// Called when the user navigates to a new month in the picker.
-  ValueChanged<DateTime>? onDisplayedMonthChanged,
+  TimeOfDay? initialTime,
 
   /// The spacing from left and right side of the screen.
   double horizontalSpacing = 15.0,
@@ -165,11 +158,9 @@ Future<DateTime?> showCupertinoTimePicker(
   Offset offset = const Offset(0.0, 10.0),
   Color barrierColor = Colors.transparent,
   Color mainColor = CupertinoColors.systemRed,
-  CalendarDismissBehavior dismissBehavior =
-      CalendarDismissBehavior.onOutsideTap,
   CalendarContainerDecoration? containerDecoration,
 }) {
-  return showGeneralDialog<DateTime?>(
+  return showGeneralDialog<TimeOfDay?>(
     context: context,
     barrierLabel: timePickerBarrierLabel,
     barrierColor: barrierColor,
@@ -194,15 +185,11 @@ Future<DateTime?> showCupertinoTimePicker(
         verticalSpacing: verticalSpacing,
         offset: offset,
         widgetRenderBox: widgetRenderBox,
-        initialDate: initialDate,
-        minimumDate: minimumDate,
-        maximumDate: maximumDate,
-        currentDate: currentDate,
-        onDateChanged: onDateChanged,
-        onDateSelected: onDateSelected,
-        onDisplayedMonthChanged: onDisplayedMonthChanged,
+        initialTime: initialTime,
+        minimumTime: minimumTime,
+        maximumTime: maximumTime,
         containerDecoration: containerDecoration,
-        dismissBehavior: dismissBehavior,
+        onTimeChanged: onTimeChanged,
       );
     },
   );

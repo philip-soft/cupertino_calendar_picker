@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 
 class TimePickerButton extends StatefulWidget {
   const TimePickerButton({
-    required this.selectedDate,
+    required this.selectedTime,
     required this.minimumDate,
     required this.maximumDate,
     this.offset = const Offset(0.0, 10.0),
     this.barrierColor = Colors.transparent,
     this.mainColor = CupertinoColors.systemRed,
     super.key,
-    this.onDateChanged,
+    this.onTimeChanged,
     this.currentDate,
     this.onDisplayedMonthChanged,
     this.containerDecoration,
@@ -27,10 +27,10 @@ class TimePickerButton extends StatefulWidget {
   final DateTime maximumDate;
 
   /// Called when the user selects a date in the picker.
-  final ValueChanged<DateTime>? onDateChanged;
+  final ValueChanged<TimeOfDay>? onTimeChanged;
 
   /// The selected [DateTime] that the calendar should display.
-  final DateTime selectedDate;
+  final TimeOfDay selectedTime;
 
   /// The [DateTime] representing today. It will be highlighted in the day grid.
   final DateTime? currentDate;
@@ -57,178 +57,46 @@ class TimePickerButton extends StatefulWidget {
   State<TimePickerButton> createState() => _TimePickerButtonState();
 }
 
-class _TimePickerButtonState extends State<TimePickerButton>
-    with SingleTickerProviderStateMixin {
-  static const Duration kFadeOutDuration = Duration(milliseconds: 1000);
-  static const Duration kFadeInDuration = Duration(milliseconds: 800);
-  final Tween<double> _opacityTween = Tween<double>(begin: 1.0);
-
-  late AnimationController _animationController;
-  late Animation<double> _opacityAnimation;
-
-  late DateTime _selectedDate;
-
-  bool _isCalendarOpened = false;
-  bool get isCalendarOpened => _isCalendarOpened;
-  set isCalendarOpened(bool value) {
-    setState(() {
-      _isCalendarOpened = value;
-    });
-  }
+class _TimePickerButtonState extends State<TimePickerButton> {
+  late TimeOfDay _selectedTime;
 
   @override
   void initState() {
     super.initState();
-    _selectedDate = widget.selectedDate;
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      value: 0.0,
-      vsync: this,
-    );
-    _opacityAnimation = _animationController
-        .drive(CurveTween(curve: Curves.linear))
-        .drive(_opacityTween);
-    _setTween();
-  }
-
-  void _setTween() {
-    _opacityTween.end = 0.4;
+    _selectedTime = widget.selectedTime;
   }
 
   @override
   void didUpdateWidget(TimePickerButton oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.selectedDate != _selectedDate) {
-      _selectedDate = widget.selectedDate;
+    if (widget.selectedTime != _selectedTime) {
+      _selectedTime = widget.selectedTime;
     }
   }
 
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _onTap(BuildContext context) async {
-    final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
-
-    // isCalendarOpened = true;
-    await showCupertinoTimePicker(
-      context,
-      widgetRenderBox: renderBox,
-      minimumDate: widget.minimumDate,
-      initialDate: _selectedDate,
-      currentDate: widget.currentDate,
-      mainColor: widget.mainColor,
-      containerDecoration: widget.containerDecoration,
-      offset: widget.offset,
-      maximumDate: widget.maximumDate,
-      barrierColor: widget.barrierColor,
-      verticalSpacing: widget.verticalSpacing,
-      horizontalSpacing: widget.horizontalSpacing,
-      onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
-      onDateChanged: _onDateChanged,
-    );
-    // isCalendarOpened = false;
-  }
-
-  void _onDateChanged(DateTime date) {
+  void _onTimeChanged(TimeOfDay time) {
     setState(() {
-      _selectedDate = date;
-      widget.onDateChanged?.call(date);
-    });
-  }
-
-  bool _buttonHeldDown = false;
-
-  void _handleTapDown(TapDownDetails event) {
-    if (!_buttonHeldDown) {
-      _buttonHeldDown = true;
-      _animate();
-    }
-  }
-
-  void _handleTapUp(TapUpDetails event) {
-    if (_buttonHeldDown) {
-      _buttonHeldDown = false;
-      _animate();
-    }
-  }
-
-  void _handleTapCancel() {
-    if (_buttonHeldDown) {
-      _buttonHeldDown = false;
-      _animate();
-    }
-  }
-
-  void _animate() {
-    // if (_animationController.isAnimating) {
-    //   return;
-    // }
-
-    final bool wasHeldDown = _buttonHeldDown;
-    final TickerFuture ticker = _buttonHeldDown
-        ? _animationController.animateTo(
-            1.0,
-            duration: kFadeOutDuration,
-            curve: Curves.easeInOutCubicEmphasized,
-          )
-        : _animationController.animateTo(
-            0.0,
-            duration: kFadeInDuration,
-            curve: Curves.easeOutCubic,
-          );
-    // ignore: cascade_invocations
-    ticker.then<void>((void value) {
-      if (mounted && wasHeldDown != _buttonHeldDown) {
-        _animate();
-      }
+      _selectedTime = time;
+      widget.onTimeChanged?.call(time);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final CupertinoLocalizations localization =
-        CupertinoLocalizations.of(context);
-    final int day = _selectedDate.day;
-    final int month = _selectedDate.month;
-    final int year = _selectedDate.year;
-    final String fullMonthString = localization.datePickerMonth(month);
-    final String dayString = localization.datePickerDayOfMonth(day);
-    final String monthString = fullMonthString.substring(0, 3);
-    final String yearString = localization.datePickerYear(year);
-
-    return GestureDetector(
-      onTap: () => _onTap(context),
-      behavior: HitTestBehavior.opaque,
-      onTapDown: _handleTapDown,
-      onTapUp: _handleTapUp,
-      onTapCancel: _handleTapCancel,
-      child: Container(
-        decoration: BoxDecoration(
-          color: CupertinoColors.tertiarySystemFill.resolveFrom(context),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        alignment: Alignment.center,
-        height: 34.0,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12.0,
-        ),
-        child: FadeTransition(
-          opacity: _opacityAnimation,
-          child: Text(
-            '10:08 PM',
-            style: TextStyle(
-              color: CupertinoDynamicColor.maybeResolve(
-                isCalendarOpened ? widget.mainColor : CupertinoColors.label,
-                context,
-              ),
-              fontSize: 17.0,
-            ),
-          ),
-        ),
+    return CupertinoPickerButton<TimeOfDay?>(
+      title: _selectedTime.format(context),
+      mainColor: widget.mainColor,
+      showPickerFunction: (RenderBox? renderBox) => showCupertinoTimePicker(
+        context,
+        widgetRenderBox: renderBox,
+        mainColor: widget.mainColor,
+        containerDecoration: widget.containerDecoration,
+        offset: widget.offset,
+        barrierColor: widget.barrierColor,
+        verticalSpacing: widget.verticalSpacing,
+        horizontalSpacing: widget.horizontalSpacing,
+        onTimeChanged: _onTimeChanged,
       ),
     );
   }

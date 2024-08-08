@@ -6,6 +6,7 @@ class CupertinoCalendar extends StatefulWidget {
     required DateTime minimumDate,
     required DateTime maximumDate,
     required this.mainColor,
+    required this.mode,
     this.onDateChanged,
     this.onDateSelected,
     DateTime? initialDate,
@@ -44,6 +45,7 @@ class CupertinoCalendar extends StatefulWidget {
   final CalendarMonthPickerDecoration? monthPickerDecoration;
   final CalendarHeaderDecoration? headerDecoration;
   final Color mainColor;
+  final CalendarPickerMode mode;
 
   @override
   State<CupertinoCalendar> createState() => _CupertinoCalendarState();
@@ -149,6 +151,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
             context,
             mainColor: widget.mainColor,
           ),
+      mode: widget.mode,
     );
   }
 }

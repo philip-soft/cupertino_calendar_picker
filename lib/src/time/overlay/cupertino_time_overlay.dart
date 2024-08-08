@@ -1,39 +1,47 @@
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class CupertinoTimeOverlay extends StatefulWidget {
-  const CupertinoTimeOverlay({
+  CupertinoTimeOverlay({
     required this.widgetRenderBox,
-    required this.minimumDate,
-    required this.maximumDate,
     required this.horizontalSpacing,
     required this.verticalSpacing,
     required this.offset,
     required this.mainColor,
-    required this.dismissBehavior,
-    this.onDateChanged,
-    this.onDateSelected,
-    this.currentDate,
-    this.initialDate,
+    TimeOfDay? initialTime,
+    TimeOfDay? minimumTime,
+    TimeOfDay? maximumTime,
     super.key,
-    this.onDisplayedMonthChanged,
     this.containerDecoration,
-  });
+    this.onTimeChanged,
+  })  : initialTime = initialTime ?? TimeOfDay.now(),
+        minimumTime = minimumTime ?? const TimeOfDay(hour: 0, minute: -1),
+        maximumTime = maximumTime ?? const TimeOfDay(hour: 23, minute: 60) {
+    assert(
+      !this.maximumTime.isBefore(this.minimumTime),
+      'maximumTime ${this.maximumTime} must be on or after minimumTime ${this.minimumTime}.',
+    );
+    assert(
+      !this.initialTime.isBefore(this.minimumTime),
+      'initialTime ${this.initialTime} must be on or after minimumTime ${this.minimumTime}.',
+    );
+    assert(
+      !this.initialTime.isAfter(this.maximumTime),
+      'initialTime ${this.initialTime} must be on or before maximumTime ${this.maximumTime}.',
+    );
+  }
 
   final double horizontalSpacing;
   final double verticalSpacing;
   final Offset offset;
   final RenderBox? widgetRenderBox;
-  final DateTime? initialDate;
-  final DateTime minimumDate;
-  final DateTime maximumDate;
-  final DateTime? currentDate;
-  final ValueChanged<DateTime>? onDateChanged;
-  final ValueChanged<DateTime>? onDateSelected;
-  final ValueChanged<DateTime>? onDisplayedMonthChanged;
+  final TimeOfDay initialTime;
+  final TimeOfDay minimumTime;
+  final TimeOfDay maximumTime;
   final CalendarContainerDecoration? containerDecoration;
-  final CalendarDismissBehavior dismissBehavior;
   final Color mainColor;
+  final ValueChanged<TimeOfDay>? onTimeChanged;
 
   @override
   State<CupertinoTimeOverlay> createState() => _CupertinoTimeOverlayState();
@@ -41,7 +49,7 @@ class CupertinoTimeOverlay extends StatefulWidget {
 
 class _CupertinoTimeOverlayState extends State<CupertinoTimeOverlay> {
   AnimationController? _controller;
-  DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
 
   void _onInitialized(AnimationController animationController) {
     _controller = animationController;
@@ -51,32 +59,13 @@ class _CupertinoTimeOverlayState extends State<CupertinoTimeOverlay> {
 
   void _statusListener(AnimationStatus status) {
     if (status == AnimationStatus.dismissed) {
-      Navigator.of(context).pop(_selectedDate);
+      Navigator.of(context).pop(_selectedTime);
     }
   }
 
-  void _closeOverlay() {
-    if (_controller != null) {
-      final bool isReverseInProgress =
-          _controller!.status == AnimationStatus.reverse;
-      if (!isReverseInProgress) {
-        _controller?.reverse(from: 0.75);
-      }
-    }
-  }
-
-  void _onDateChanged(DateTime date) {
-    _selectedDate = date;
-    widget.onDateChanged?.call(date);
-  }
-
-  void _onDateSelected(DateTime date) {
-    _selectedDate = date;
-    widget.onDateSelected?.call(date);
-
-    if (widget.dismissBehavior.hasDateSelectDismiss) {
-      _closeOverlay();
-    }
+  void _onDateTimeChanged(DateTime dateTime) {
+    _selectedTime = TimeOfDay.fromDateTime(dateTime);
+    widget.onTimeChanged?.call(_selectedTime!);
   }
 
   @override
@@ -85,18 +74,21 @@ class _CupertinoTimeOverlayState extends State<CupertinoTimeOverlay> {
       onInitialized: _onInitialized,
       containerDecoration: widget.containerDecoration,
       widgetRenderBox: widget.widgetRenderBox,
-      height: 203,
-      width: 231,
+      height: timePickerHeight,
+      width: timePickerWidth,
       horizontalSpacing: widget.horizontalSpacing,
       verticalSpacing: widget.verticalSpacing,
       offset: widget.offset,
-      outsideTapDismissable: widget.dismissBehavior.hasOusideTapDismiss,
+      outsideTapDismissable: true,
       child: Center(
         child: SizedBox(
-          height: 160,
-          child: CupertinoDatePicker(
+          height: timePickerWheelHeight,
+          child: CustomCupertinoDatePicker(
             mode: CupertinoDatePickerMode.time,
-            onDateTimeChanged: (_) {},
+            initialDateTime: widget.initialTime.toNowDateTime(),
+            minimumDate: widget.minimumTime.toNowDateTime(),
+            maximumDate: widget.maximumTime.toNowDateTime(),
+            onDateTimeChanged: _onDateTimeChanged,
           ),
         ),
       ),
