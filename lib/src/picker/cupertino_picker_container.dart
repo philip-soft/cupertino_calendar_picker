@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 
-class PickerContainer extends StatefulWidget {
-  const PickerContainer({
+class CupertinoPickerContainer extends StatefulWidget {
+  const CupertinoPickerContainer({
     required this.child,
     required this.decoration,
     required this.scaleAlignment,
@@ -16,7 +16,7 @@ class PickerContainer extends StatefulWidget {
   });
 
   final Widget child;
-  final CalendarContainerDecoration decoration;
+  final PickerContainerDecoration decoration;
   final Alignment scaleAlignment;
   final double maxScale;
   final void Function(AnimationController controller) onInitialized;
@@ -24,10 +24,11 @@ class PickerContainer extends StatefulWidget {
   final double width;
 
   @override
-  State<PickerContainer> createState() => _PickerContainerState();
+  State<CupertinoPickerContainer> createState() =>
+      _CupertinoPickerContainerState();
 }
 
-class _PickerContainerState extends State<PickerContainer>
+class _CupertinoPickerContainerState extends State<CupertinoPickerContainer>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scale;
@@ -60,7 +61,7 @@ class _PickerContainerState extends State<PickerContainer>
   }
 
   @override
-  void didUpdateWidget(covariant PickerContainer oldWidget) {
+  void didUpdateWidget(covariant CupertinoPickerContainer oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.maxScale != oldWidget.maxScale) {
@@ -72,7 +73,7 @@ class _PickerContainerState extends State<PickerContainer>
 
   @override
   Widget build(BuildContext context) {
-    final CalendarContainerDecoration decoration = widget.decoration;
+    final PickerContainerDecoration decoration = widget.decoration;
 
     return Column(
       children: <Widget>[
@@ -94,7 +95,7 @@ class _PickerContainerState extends State<PickerContainer>
                 );
 
                 return switch (decoration.backgroundType) {
-                  CalendarBackgroundType.transparentAndBlured => DecoratedBox(
+                  PickerBackgroundType.transparentAndBlured => DecoratedBox(
                       decoration: BoxDecoration(
                         boxShadow: decoration.boxShadow,
                         borderRadius: decoration.borderRadius,
@@ -113,7 +114,7 @@ class _PickerContainerState extends State<PickerContainer>
                         ),
                       ),
                     ),
-                  CalendarBackgroundType.plainColor => Container(
+                  PickerBackgroundType.plainColor => Container(
                       decoration: BoxDecoration(
                         borderRadius: decoration.borderRadius,
                         color: decoration.backgroundColor,

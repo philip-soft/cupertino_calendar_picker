@@ -2,41 +2,31 @@ import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class TimePickerButton extends StatefulWidget {
-  const TimePickerButton({
-    required this.selectedTime,
-    required this.minimumDate,
-    required this.maximumDate,
+class CupertinoTimePickerButton extends StatefulWidget {
+  const CupertinoTimePickerButton({
+    this.selectedTime,
+    this.minimumTime,
+    this.maximumTime,
     this.offset = const Offset(0.0, 10.0),
     this.barrierColor = Colors.transparent,
     this.mainColor = CupertinoColors.systemRed,
     super.key,
     this.onTimeChanged,
-    this.currentDate,
-    this.onDisplayedMonthChanged,
     this.containerDecoration,
-    this.weekdayDecoration,
-    this.monthPickerDecoration,
-    this.headerDecoration,
+    this.decoration,
   });
 
-  /// The minimum selectable [DateTime].
-  final DateTime minimumDate;
+  /// The minimum selectable [TimeOfDay].
+  final TimeOfDay? minimumTime;
 
-  /// The maximum selectable [DateTime].
-  final DateTime maximumDate;
+  /// The maximum selectable [TimeOfDay].
+  final TimeOfDay? maximumTime;
 
-  /// Called when the user selects a date in the picker.
+  /// Called when the user selects a time in the picker.
   final ValueChanged<TimeOfDay>? onTimeChanged;
 
-  /// The selected [DateTime] that the calendar should display.
-  final TimeOfDay selectedTime;
-
-  /// The [DateTime] representing today. It will be highlighted in the day grid.
-  final DateTime? currentDate;
-
-  /// Called when the user navigates to a new month in the picker.
-  final ValueChanged<DateTime>? onDisplayedMonthChanged;
+  /// The selected [TimeOfDay] that the picker should display.
+  final TimeOfDay? selectedTime;
 
   /// The spacing from left and right side of the screen.
   final double horizontalSpacing = 15.0;
@@ -48,30 +38,29 @@ class TimePickerButton extends StatefulWidget {
   final Offset offset;
   final Color barrierColor;
   final Color mainColor;
-  final CalendarContainerDecoration? containerDecoration;
-  final CalendarWeekdayDecoration? weekdayDecoration;
-  final CalendarMonthPickerDecoration? monthPickerDecoration;
-  final CalendarHeaderDecoration? headerDecoration;
+  final PickerContainerDecoration? containerDecoration;
+  final PickerButtonDecoration? decoration;
 
   @override
-  State<TimePickerButton> createState() => _TimePickerButtonState();
+  State<CupertinoTimePickerButton> createState() =>
+      _CupertinoTimePickerButtonState();
 }
 
-class _TimePickerButtonState extends State<TimePickerButton> {
+class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
   late TimeOfDay _selectedTime;
 
   @override
   void initState() {
     super.initState();
-    _selectedTime = widget.selectedTime;
+    _selectedTime = widget.selectedTime ?? TimeOfDay.now();
   }
 
   @override
-  void didUpdateWidget(TimePickerButton oldWidget) {
+  void didUpdateWidget(CupertinoTimePickerButton oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.selectedTime != _selectedTime) {
-      _selectedTime = widget.selectedTime;
+      _selectedTime = widget.selectedTime ?? TimeOfDay.now();
     }
   }
 
@@ -91,6 +80,9 @@ class _TimePickerButtonState extends State<TimePickerButton> {
         context,
         widgetRenderBox: renderBox,
         mainColor: widget.mainColor,
+        initialTime: _selectedTime,
+        minimumTime: widget.minimumTime,
+        maximumTime: widget.maximumTime,
         containerDecoration: widget.containerDecoration,
         offset: widget.offset,
         barrierColor: widget.barrierColor,

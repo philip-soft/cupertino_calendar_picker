@@ -61,11 +61,11 @@ Future<DateTime?> showCupertinoCalendarPicker(
   Color mainColor = CupertinoColors.systemRed,
   CalendarDismissBehavior dismissBehavior =
       CalendarDismissBehavior.onOutsideTap,
-  CalendarContainerDecoration? containerDecoration,
+  PickerContainerDecoration? containerDecoration,
   CalendarWeekdayDecoration? weekdayDecoration,
   CalendarMonthPickerDecoration? monthPickerDecoration,
   CalendarHeaderDecoration? headerDecoration,
-  CalendarPickerMode mode = CalendarPickerMode.date,
+  CupertinoCalendarPickerMode mode = CupertinoCalendarPickerMode.date,
 }) {
   return showGeneralDialog<DateTime?>(
     context: context,
@@ -158,7 +158,7 @@ Future<TimeOfDay?> showCupertinoTimePicker(
   Offset offset = const Offset(0.0, 10.0),
   Color barrierColor = Colors.transparent,
   Color mainColor = CupertinoColors.systemRed,
-  CalendarContainerDecoration? containerDecoration,
+  PickerContainerDecoration? containerDecoration,
 }) {
   return showGeneralDialog<TimeOfDay?>(
     context: context,

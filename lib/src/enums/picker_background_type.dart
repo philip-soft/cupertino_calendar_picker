@@ -1,5 +1,5 @@
-/// A enum for the calendar background appearance.
-enum CalendarBackgroundType {
+/// A enum for the picker's background appearance.
+enum PickerBackgroundType {
   /// The provided color will be applied only.
   plainColor,
 

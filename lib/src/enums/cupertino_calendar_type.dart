@@ -1,0 +1,4 @@
+enum CupertinoCalendarType {
+  compact,
+  inline;
+}

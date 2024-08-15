@@ -1,4 +1,4 @@
-enum CalendarViewMode {
+enum CupertinoCalendarViewMode {
   monthPicker,
   yearPicker,
   timePicker;

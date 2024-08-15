@@ -1,3 +1,4 @@
+import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 
 class CupertinoPickerButton<T> extends StatefulWidget {
@@ -7,12 +8,14 @@ class CupertinoPickerButton<T> extends StatefulWidget {
     required this.showPickerFunction,
     super.key,
     this.onSelected,
+    this.decoration,
   });
 
   final String title;
   final Future<T> Function(RenderBox? renderBox) showPickerFunction;
   final ValueChanged<T?>? onSelected;
   final Color mainColor;
+  final PickerButtonDecoration? decoration;
 
   @override
   State<CupertinoPickerButton<T>> createState() =>
@@ -21,8 +24,8 @@ class CupertinoPickerButton<T> extends StatefulWidget {
 
 class _CupertinoPickerButtonState<T> extends State<CupertinoPickerButton<T>>
     with SingleTickerProviderStateMixin {
-  static const Duration kFadeOutDuration = Duration(milliseconds: 1000);
-  static const Duration kFadeInDuration = Duration(milliseconds: 800);
+  final Duration _fadeOutDuration = const Duration(milliseconds: 1000);
+  final Duration _fadeInDuration = const Duration(milliseconds: 800);
   final Tween<double> _opacityTween = Tween<double>(begin: 1.0);
   final Duration _fadeDuration = const Duration(milliseconds: 200);
 
@@ -93,12 +96,12 @@ class _CupertinoPickerButtonState<T> extends State<CupertinoPickerButton<T>>
     final TickerFuture ticker = _buttonHeldDown
         ? _animationController.animateTo(
             1.0,
-            duration: kFadeOutDuration,
+            duration: _fadeOutDuration,
             curve: Curves.easeInOutCubicEmphasized,
           )
         : _animationController.animateTo(
             0.0,
-            duration: kFadeInDuration,
+            duration: _fadeInDuration,
             curve: Curves.easeOutCubic,
           );
     // ignore: cascade_invocations
@@ -111,6 +114,8 @@ class _CupertinoPickerButtonState<T> extends State<CupertinoPickerButton<T>>
 
   @override
   Widget build(BuildContext context) {
+    final PickerButtonDecoration decoration =
+        widget.decoration ?? PickerButtonDecoration.withDynamicColor(context);
     return GestureDetector(
       onTap: () => _onTap(context),
       behavior: HitTestBehavior.opaque,
@@ -119,24 +124,20 @@ class _CupertinoPickerButtonState<T> extends State<CupertinoPickerButton<T>>
       onTapCancel: _handleTapCancel,
       child: Container(
         decoration: BoxDecoration(
-          color: CupertinoColors.tertiarySystemFill.resolveFrom(context),
+          color: decoration.backgroundColor,
           borderRadius: BorderRadius.circular(8.0),
         ),
         alignment: Alignment.center,
         height: 34.0,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12.0,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: FadeTransition(
           opacity: _opacityAnimation,
           child: AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 100),
-            style: TextStyle(
-              color: CupertinoDynamicColor.maybeResolve(
-                isCalendarOpened ? widget.mainColor : CupertinoColors.label,
-                context,
-              ),
-              fontSize: 17.0,
+            style: decoration.textStyle!.copyWith(
+              color: isCalendarOpened
+                  ? widget.mainColor
+                  : widget.decoration?.textStyle?.color,
             ),
             child: Text(widget.title),
           ),

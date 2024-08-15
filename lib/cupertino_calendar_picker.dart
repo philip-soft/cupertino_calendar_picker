@@ -6,7 +6,7 @@ export 'src/src.dart'
     show
         showCupertinoCalendarPicker,
         showCupertinoTimePicker,
-        CalendarContainerDecoration,
+        PickerContainerDecoration,
         CalendarHeaderDecoration,
         CalendarMonthPickerDayStyle,
         CalendarMonthPickerBackgroundCircledDayStyle,
@@ -16,8 +16,12 @@ export 'src/src.dart'
         CalendarMonthPickerSelectedCurrentDayStyle,
         CalendarMonthPickerCurrentDayStyle,
         CalendarMonthPickerDecoration,
+        PickerButtonDecoration,
         CalendarWeekdayDecoration,
-        CalendarBackgroundType,
+        PickerBackgroundType,
         CalendarDismissBehavior,
-        CalendarPickerButton,
-        TimePickerButton;
+        CupertinoCalendarPickerButton,
+        CupertinoCalendarPickerMode,
+        CupertinoCalendar,
+        CupertinoCalendarType,
+        CupertinoTimePickerButton;

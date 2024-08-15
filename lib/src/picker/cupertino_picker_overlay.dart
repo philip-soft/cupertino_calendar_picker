@@ -1,8 +1,8 @@
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/material.dart';
 
-class PickerOverlay extends StatefulWidget {
-  const PickerOverlay({
+class CupertinoPickerOverlay extends StatefulWidget {
+  const CupertinoPickerOverlay({
     required this.widgetRenderBox,
     required this.horizontalSpacing,
     required this.verticalSpacing,
@@ -23,15 +23,15 @@ class PickerOverlay extends StatefulWidget {
   final Offset offset;
   final RenderBox? widgetRenderBox;
   final bool outsideTapDismissable;
-  final CalendarContainerDecoration? containerDecoration;
+  final PickerContainerDecoration? containerDecoration;
   final void Function(AnimationController controller) onInitialized;
   final Widget child;
 
   @override
-  State<PickerOverlay> createState() => _PickerOverlayState();
+  State<CupertinoPickerOverlay> createState() => _CupertinoPickerOverlayState();
 }
 
-class _PickerOverlayState extends State<PickerOverlay> {
+class _CupertinoPickerOverlayState extends State<CupertinoPickerOverlay> {
   AnimationController? _controller;
   Offset? _widgetPosition;
 
@@ -182,7 +182,7 @@ class _PickerOverlayState extends State<PickerOverlay> {
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (_) => _closeOverlay(),
+      onPopInvokedWithResult: (_, __) => _closeOverlay(),
       child: Stack(
         clipBehavior: Clip.none,
         children: <Widget>[
@@ -200,12 +200,12 @@ class _PickerOverlayState extends State<PickerOverlay> {
             bottom: bottom,
             child: Material(
               color: Colors.transparent,
-              child: PickerContainer(
+              child: CupertinoPickerContainer(
                 height: height,
                 width: width,
                 onInitialized: _onInitialized,
                 decoration: widget.containerDecoration ??
-                    CalendarContainerDecoration.withDynamicColor(context),
+                    PickerContainerDecoration.withDynamicColor(context),
                 maxScale: maxScale,
                 scaleAlignment: scaleAligment,
                 child: widget.child,

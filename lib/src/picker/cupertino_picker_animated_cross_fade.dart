@@ -1,8 +1,8 @@
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 
-class PickerAnimatedCrossFade extends StatelessWidget {
-  const PickerAnimatedCrossFade({
+class CupertinoPickerAnimatedCrossFade extends StatelessWidget {
+  const CupertinoPickerAnimatedCrossFade({
     required this.firstChild,
     required this.crossFadeState,
     this.secondChild,

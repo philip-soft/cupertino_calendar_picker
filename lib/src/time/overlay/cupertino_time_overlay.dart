@@ -39,7 +39,7 @@ class CupertinoTimeOverlay extends StatefulWidget {
   final TimeOfDay initialTime;
   final TimeOfDay minimumTime;
   final TimeOfDay maximumTime;
-  final CalendarContainerDecoration? containerDecoration;
+  final PickerContainerDecoration? containerDecoration;
   final Color mainColor;
   final ValueChanged<TimeOfDay>? onTimeChanged;
 
@@ -70,7 +70,7 @@ class _CupertinoTimeOverlayState extends State<CupertinoTimeOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    return PickerOverlay(
+    return CupertinoPickerOverlay(
       onInitialized: _onInitialized,
       containerDecoration: widget.containerDecoration,
       widgetRenderBox: widget.widgetRenderBox,
@@ -89,6 +89,7 @@ class _CupertinoTimeOverlayState extends State<CupertinoTimeOverlay> {
             minimumDate: widget.minimumTime.toNowDateTime(),
             maximumDate: widget.maximumTime.toNowDateTime(),
             onDateTimeChanged: _onDateTimeChanged,
+            use24hFormat: MediaQuery.alwaysUse24HourFormatOf(context),
           ),
         ),
       ),

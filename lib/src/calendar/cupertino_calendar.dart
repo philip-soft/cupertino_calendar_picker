@@ -1,12 +1,16 @@
+// ignore_for_file: unnecessary_this
+
 import 'package:cupertino_calendar_picker/src/src.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CupertinoCalendar extends StatefulWidget {
   CupertinoCalendar({
-    required DateTime minimumDate,
-    required DateTime maximumDate,
-    required this.mainColor,
-    required this.mode,
+    required this.minimumDate,
+    required this.maximumDate,
+    this.mainColor = CupertinoColors.systemRed,
+    this.mode = CupertinoCalendarPickerMode.date,
+    this.type = CupertinoCalendarType.inline,
     this.onDateChanged,
     this.onDateSelected,
     DateTime? initialDate,
@@ -15,11 +19,10 @@ class CupertinoCalendar extends StatefulWidget {
     this.weekdayDecoration,
     this.monthPickerDecoration,
     this.headerDecoration,
+    this.maxWidth = double.infinity,
     super.key,
-  })  : initialDate = DateUtils.dateOnly(initialDate ?? DateTime.now()),
-        minimumDate = DateUtils.dateOnly(minimumDate),
-        maximumDate = DateUtils.dateOnly(maximumDate),
-        currentDate = DateUtils.dateOnly(currentDate ?? DateTime.now()) {
+  })  : initialDate = initialDate ?? DateTime.now(),
+        currentDate = currentDate ?? DateTime.now() {
     assert(
       !this.maximumDate.isBefore(this.minimumDate),
       'maximumDate ${this.maximumDate} must be on or after minimumDate ${this.minimumDate}.',
@@ -45,7 +48,9 @@ class CupertinoCalendar extends StatefulWidget {
   final CalendarMonthPickerDecoration? monthPickerDecoration;
   final CalendarHeaderDecoration? headerDecoration;
   final Color mainColor;
-  final CalendarPickerMode mode;
+  final CupertinoCalendarPickerMode mode;
+  final CupertinoCalendarType type;
+  final double maxWidth;
 
   @override
   State<CupertinoCalendar> createState() => _CupertinoCalendarState();
@@ -53,7 +58,7 @@ class CupertinoCalendar extends StatefulWidget {
 
 class _CupertinoCalendarState extends State<CupertinoCalendar> {
   late DateTime _currentlyDisplayedMonthDate;
-  late DateTime _selectedDate;
+  late DateTime _selectedDateTime;
 
   @override
   void initState() {
@@ -72,14 +77,14 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
   void _initializeInitialDate() {
     final DateTime initialDate = widget.initialDate;
     _currentlyDisplayedMonthDate = PackageDateUtils.monthDateOnly(initialDate);
-    _selectedDate = initialDate;
+    _selectedDateTime = initialDate;
   }
 
   void _handleCalendarDateChange(DateTime date) {
     final int year = date.year;
     final int month = date.month;
     final int daysInMonth = DateUtils.getDaysInMonth(year, month);
-    int selectedDay = _selectedDate.day;
+    int selectedDay = _selectedDateTime.day;
 
     if (daysInMonth < selectedDay) {
       selectedDay = daysInMonth;
@@ -98,27 +103,25 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
   }
 
   void _handleCalendarMonthChange(DateTime newMonthDate) {
-    setState(() {
-      final DateTime displayedMonth = PackageDateUtils.monthDateOnly(
-        _currentlyDisplayedMonthDate,
-      );
-      final bool monthChanged = !DateUtils.isSameMonth(
-        displayedMonth,
+    final DateTime displayedMonth = PackageDateUtils.monthDateOnly(
+      _currentlyDisplayedMonthDate,
+    );
+    final bool monthChanged = !DateUtils.isSameMonth(
+      displayedMonth,
+      newMonthDate,
+    );
+    if (monthChanged) {
+      _currentlyDisplayedMonthDate = PackageDateUtils.monthDateOnly(
         newMonthDate,
       );
-      if (monthChanged) {
-        _currentlyDisplayedMonthDate = PackageDateUtils.monthDateOnly(
-          newMonthDate,
-        );
-        widget.onDisplayedMonthChanged?.call(_currentlyDisplayedMonthDate);
-      }
-    });
+      widget.onDisplayedMonthChanged?.call(_currentlyDisplayedMonthDate);
+    }
   }
 
   void _handleCalendarDayChange(DateTime date) {
     setState(() {
-      _selectedDate = date;
-      widget.onDateChanged?.call(_selectedDate);
+      _selectedDateTime = date;
+      widget.onDateChanged?.call(_selectedDateTime);
     });
   }
 
@@ -129,29 +132,45 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return CalendarPicker(
-      initialMonth: _currentlyDisplayedMonthDate,
-      currentDate: widget.currentDate,
-      minimumDate: widget.minimumDate,
-      maximumDate: widget.maximumDate,
-      selectedDate: _selectedDate,
-      onChanged: _onChanged,
-      onDisplayedMonthChanged: _handleCalendarMonthChange,
-      onYearPickerChanged: _handleCalendarDateChange,
-      mainColor: widget.mainColor,
-      weekdayDecoration: widget.weekdayDecoration ??
-          CalendarWeekdayDecoration.withDynamicColor(context),
-      monthPickerDecoration: widget.monthPickerDecoration ??
-          CalendarMonthPickerDecoration.withDynamicColor(
-            context,
-            mainColor: widget.mainColor,
-          ),
-      headerDecoration: widget.headerDecoration ??
-          CalendarHeaderDecoration.withDynamicColor(
-            context,
-            mainColor: widget.mainColor,
-          ),
-      mode: widget.mode,
+    final double height = switch (widget.mode) {
+      CupertinoCalendarPickerMode.date => calendarDatePickerHeight,
+      CupertinoCalendarPickerMode.dateTime => calendarDateTimePickerHeight,
+    };
+    const double minWidth = calendarWidth;
+    final double maxWidth =
+        widget.maxWidth <= minWidth ? minWidth : widget.maxWidth;
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: height,
+        minWidth: calendarWidth,
+        maxWidth: maxWidth,
+      ),
+      child: CupertinoCalendarPicker(
+        initialMonth: _currentlyDisplayedMonthDate,
+        currentDate: widget.currentDate,
+        minimumDate: widget.minimumDate,
+        maximumDate: widget.maximumDate,
+        selectedDate: _selectedDateTime,
+        onDateTimeChanged: _onChanged,
+        onDisplayedMonthChanged: _handleCalendarMonthChange,
+        onYearPickerChanged: _handleCalendarDateChange,
+        mainColor: widget.mainColor,
+        weekdayDecoration: widget.weekdayDecoration ??
+            CalendarWeekdayDecoration.withDynamicColor(context),
+        monthPickerDecoration: widget.monthPickerDecoration ??
+            CalendarMonthPickerDecoration.withDynamicColor(
+              context,
+              mainColor: widget.mainColor,
+            ),
+        headerDecoration: widget.headerDecoration ??
+            CalendarHeaderDecoration.withDynamicColor(
+              context,
+              mainColor: widget.mainColor,
+            ),
+        mode: widget.mode,
+        type: widget.type,
+      ),
     );
   }
 }
