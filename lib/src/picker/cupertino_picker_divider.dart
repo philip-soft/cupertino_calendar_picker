@@ -11,7 +11,7 @@ class CupertinoPickerDivider extends StatelessWidget {
         horizontal: 16.0,
       ),
       child: Divider(
-        height: 1.0,
+        height: 0.3,
         color: CupertinoColors.separator.resolveFrom(context),
         thickness: 0.3,
       ),

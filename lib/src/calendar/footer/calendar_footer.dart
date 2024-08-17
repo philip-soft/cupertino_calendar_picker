@@ -2,12 +2,15 @@ import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CalendarTimeFooter extends StatefulWidget {
-  const CalendarTimeFooter({
+class CalendarFooter extends StatefulWidget {
+  const CalendarFooter({
     required this.time,
     required this.onTimePickerStateChanged,
     required this.onTimeChanged,
     required this.type,
+    required this.label,
+    required this.mainColor,
+    required this.decoration,
     super.key,
   });
 
@@ -15,12 +18,15 @@ class CalendarTimeFooter extends StatefulWidget {
   final ValueChanged<TimeOfDay> onTimeChanged;
   final ValueChanged<bool> onTimePickerStateChanged;
   final CupertinoCalendarType type;
+  final String? label;
+  final Color mainColor;
+  final CalendarFooterDecoration decoration;
 
   @override
-  State<CalendarTimeFooter> createState() => _CalendarTimeFooterState();
+  State<CalendarFooter> createState() => _CalendarFooterState();
 }
 
-class _CalendarTimeFooterState extends State<CalendarTimeFooter> {
+class _CalendarFooterState extends State<CalendarFooter> {
   late TimeOfDay _timeOfDay;
   bool _showTimePicker = false;
 
@@ -31,7 +37,7 @@ class _CalendarTimeFooterState extends State<CalendarTimeFooter> {
   }
 
   @override
-  void didUpdateWidget(covariant CalendarTimeFooter oldWidget) {
+  void didUpdateWidget(covariant CalendarFooter oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.time != oldWidget.time) {
@@ -72,8 +78,17 @@ class _CalendarTimeFooterState extends State<CalendarTimeFooter> {
         const SizedBox(height: 5.0),
         Row(
           children: <Widget>[
+            if (widget.label != null) ...<Widget>[
+              const SizedBox(width: 16.0),
+              Expanded(
+                child: Text(
+                  widget.label!,
+                  maxLines: 1,
+                  style: widget.decoration.timeLabelStyle,
+                ),
+              ),
+            ],
             const SizedBox(width: 16.0),
-            const Spacer(),
             GestureDetector(
               onTap: _handleTimePickerStateChange,
               behavior: HitTestBehavior.translucent,
@@ -86,13 +101,17 @@ class _CalendarTimeFooterState extends State<CalendarTimeFooter> {
                 ),
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(horizontal: 11.0),
-                child: Text(
-                  shouldShowSegments
-                      ? time.customFormat(context)
-                      : time.format(context),
-                  style: TextStyle(
-                    color: CupertinoColors.label.resolveFrom(context),
-                    fontSize: 17.0,
+                child: AnimatedDefaultTextStyle(
+                  duration: pickerFadeDuration,
+                  style: widget.decoration.timeStyle!.copyWith(
+                    color: _showTimePicker
+                        ? widget.mainColor
+                        : widget.decoration.timeStyle?.color,
+                  ),
+                  child: Text(
+                    shouldShowSegments
+                        ? time.customFormat(context)
+                        : time.format(context),
                   ),
                 ),
               ),
@@ -117,6 +136,7 @@ class _CalendarTimeFooterState extends State<CalendarTimeFooter> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 13.0,
+                            color: CupertinoColors.label.resolveFrom(context),
                             fontWeight:
                                 isActive ? FontWeight.w600 : FontWeight.w400,
                           ),

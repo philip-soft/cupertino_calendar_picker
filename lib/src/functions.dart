@@ -2,60 +2,126 @@ import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-/// Shows a cupertino calendar picker as an overlay above or below the widget.
+/// Displays a Cupertino-style calendar picker as an overlay above or below the widget.
 ///
-/// Returns a [DateTime] if a date was selected. Returns `null` if calendar was dismissed without a selected date.
+/// The picker allows users to select a date or a date-time depending on the specified mode.
+/// It can be positioned relative to the [widgetRenderBox] and supports customizations
+/// such as spacing, color, and decorations.
 ///
-/// It will display a grid of days for the [initialDate]'s month. The day
-/// indicated by [initialDate] will be selected.
+/// The method returns a [Future] that resolves to a [DateTime] if a date was selected,
+/// or `null` if the picker was dismissed without a selection.
 ///
-/// The optional [onDisplayedMonthChanged] callback can be used to track
-/// the currently displayed month.
+/// ## Parameters:
 ///
-/// [maximumDate] must be after or equal to [minimumDate].
+/// - [context]:
+///   The build context in which the picker will be displayed. This is required to show
+///   the overlay.
 ///
-/// [initialDate] must be between [minimumDate] and [maximumDate] or equal to
-/// one of them.
+/// - [widgetRenderBox]:
+///   The render box of the widget relative to which the calendar picker is displayed.
+///   This is required to correctly position the picker. If `null`, the picker
+///   might not display correctly.
 ///
-/// [currentDate] represents the current day (i.e. today). This
-/// date will be highlighted in the day grid. If null, the date of
-/// `DateTime.now()` will be used.
+/// - [minimumDateTime]:
+///   The earliest selectable [DateTime] in the picker.
 ///
-/// [dismissBehavior] represents how the calendar can be closed.
-/// Android back button always close the calendar.
+/// - [maximumDateTime]:
+///   The latest selectable [DateTime] in the picker.
+///   Must be after or equal to [minimumDateTime].
+///
+/// - [onDateTimeChanged]:
+///   A callback that is triggered whenever the selected [DateTime] changes in the picker.
+///
+/// - [onDateSelected]:
+///   A callback that is triggered when a date is selected by the user. This is useful
+///   for handling the final date selection action.
+///
+/// - [initialDateTime]:
+///   The initially selected [DateTime] that the calendar should display when it opens.
+///   This must be between [minimumDateTime] and [maximumDateTime], or equal to one of them.
+///   If not provided, the calendar will default to `DateTime.now()`.
+///
+/// - [currentDateTime]:
+///   The [DateTime] representing the current day (i.e., today). It will be highlighted
+///   in the day grid. If `null`, `DateTime.now()` will be used.
+///
+/// - [onDisplayedMonthChanged]:
+///   A callback that is triggered when the user navigates to a different month in the picker.
+///   Useful for tracking the month being displayed.
+///
+/// - [horizontalSpacing]:
+///   The horizontal spacing between the picker and the edges of the screen.
+///   Default is [15.0] pixels.
+///
+/// - [verticalSpacing]:
+///   The vertical spacing between the picker and the edges of the screen.
+///   Default is [15.0] pixels.
+///
+/// - [offset]:
+///   The offset from the top/bottom of the [widgetRenderBox] location.
+///   Default is `Offset(0.0, 10.0)`.
+///
+/// - [barrierColor]:
+///   The color of the barrier that darkens the rest of the screen when
+///   the picker is displayed.
+///   Default is [Colors.transparent], meaning no darkening occurs.
+///
+/// - [mainColor]:
+///   The primary color used in the calendar picker, typically for highlighting
+///   the selected date and other important elements.
+///   Default is [CupertinoColors.systemRed].
+///
+/// - [dismissBehavior]:
+///   Determines how the calendar can be dismissed. The default value is
+///   [CalendarDismissBehavior.onOutsideTap], allowing dismissal by tapping
+///   outside the calendar.
+///   The Android back button will always close the calendar.
+///
+/// - [containerDecoration]:
+///   Optional custom decoration for the picker container.
+///
+/// - [weekdayDecoration]:
+///   Optional custom decoration for the weekdays' row in the calendar.
+///
+/// - [monthPickerDecoration]:
+///   Optional custom decoration for the month picker view.
+///
+/// - [headerDecoration]:
+///   Optional custom decoration for the header of the picker.
+///
+/// - [mode]:
+///   The mode in which the picker operates. Default is [CupertinoCalendarMode.date].
+///   If [CupertinoCalendarMode.dateTime] is used, the picker will also
+///   allow selecting time.
+///
+/// - [timeLabel]:
+///   An optional label to be displayed when the calendar is in a mode that includes time selection.
+///   [CupertinoCalendarMode.dateTime] mode.
+///   This label typically indicates what the selected time is for or provides
+///   additional context.
+///
+/// - [minuteInterval]:
+///   The interval of minutes that the time picker should allow, applicable only in
+///   [CupertinoCalendarMode.dateTime] mode.
+///   The default value is 1 minute, meaning the user can select any minute of the hour.
+///
+/// ## Returns:
+///
+/// A [Future] that resolves to the selected [DateTime] if a date was chosen, or `null`
+/// if the picker was dismissed without a selection.
+
 Future<DateTime?> showCupertinoCalendarPicker(
   BuildContext context, {
-  /// The widget's render box around which the calendar will be displayed.
   required RenderBox? widgetRenderBox,
-
-  /// The minimum selectable [DateTime].
-  required DateTime minimumDate,
-
-  /// The maximum selectable [DateTime].
-  required DateTime maximumDate,
-
-  /// Called on date changes in the picker.
-  ValueChanged<DateTime>? onDateChanged,
-
-  /// Called when the user selects a date in the picker.
+  required DateTime minimumDateTime,
+  required DateTime maximumDateTime,
+  ValueChanged<DateTime>? onDateTimeChanged,
   ValueChanged<DateTime>? onDateSelected,
-
-  /// The initially selected [DateTime] that the calendar should display.
-  DateTime? initialDate,
-
-  /// The [DateTime] representing today. It will be highlighted in the day grid.
-  DateTime? currentDate,
-
-  /// Called when the user navigates to a new month in the picker.
+  DateTime? initialDateTime,
+  DateTime? currentDateTime,
   ValueChanged<DateTime>? onDisplayedMonthChanged,
-
-  /// The spacing from left and right side of the screen.
   double horizontalSpacing = 15.0,
-
-  /// The spacing from top and bottom side of the screen.
   double verticalSpacing = 15.0,
-
-  /// The offset from top/bottom of the [widgetRenderBox] location.
   Offset offset = const Offset(0.0, 10.0),
   Color barrierColor = Colors.transparent,
   Color mainColor = CupertinoColors.systemRed,
@@ -65,7 +131,9 @@ Future<DateTime?> showCupertinoCalendarPicker(
   CalendarWeekdayDecoration? weekdayDecoration,
   CalendarMonthPickerDecoration? monthPickerDecoration,
   CalendarHeaderDecoration? headerDecoration,
-  CupertinoCalendarPickerMode mode = CupertinoCalendarPickerMode.date,
+  CupertinoCalendarMode mode = CupertinoCalendarMode.date,
+  String? timeLabel,
+  int minuteInterval = 1,
 }) {
   return showGeneralDialog<DateTime?>(
     context: context,
@@ -92,11 +160,11 @@ Future<DateTime?> showCupertinoCalendarPicker(
         verticalSpacing: verticalSpacing,
         offset: offset,
         widgetRenderBox: widgetRenderBox,
-        initialDate: initialDate,
-        minimumDate: minimumDate,
-        maximumDate: maximumDate,
-        currentDate: currentDate,
-        onDateChanged: onDateChanged,
+        initialDateTime: initialDateTime,
+        minimumDateTime: minimumDateTime,
+        maximumDateTime: maximumDateTime,
+        currentDateTime: currentDateTime,
+        onDateTimeChanged: onDateTimeChanged,
         onDateSelected: onDateSelected,
         onDisplayedMonthChanged: onDisplayedMonthChanged,
         containerDecoration: containerDecoration,
@@ -105,60 +173,89 @@ Future<DateTime?> showCupertinoCalendarPicker(
         headerDecoration: headerDecoration,
         dismissBehavior: dismissBehavior,
         mode: mode,
+        timeLabel: timeLabel,
+        minuteInterval: minuteInterval,
       );
     },
   );
 }
 
-/// Shows a cupertino calendar picker as an overlay above or below the widget.
+/// Displays a Cupertino-style time picker as an overlay above or below the widget.
 ///
-/// Returns a [DateTime] if a date was selected. Returns `null` if calendar was dismissed without a selected date.
+/// The picker allows users to select a specific time of day, with optional restrictions
+/// on the minimum and maximum selectable times. The picker can be positioned relative
+/// to the [widgetRenderBox].
 ///
-/// It will display a grid of days for the [initialTime]'s month. The day
-/// indicated by [initialTime] will be selected.
+/// The method returns a [Future] that resolves to a [TimeOfDay] if a time was selected,
+/// or `null` if the picker was dismissed without a selection.
 ///
-/// The optional [onDisplayedMonthChanged] callback can be used to track
-/// the currently displayed month.
+/// ## Parameters:
 ///
-/// [maximumTime] must be after or equal to [minimumTime].
+/// - [context]:
+///   The build context in which the picker will be displayed. This is required to show
+///   the overlay.
 ///
-/// [initialTime] must be between [minimumTime] and [maximumTime] or equal to
-/// one of them.
+/// - [widgetRenderBox]:
+///   The render box of the widget relative to which the time picker is displayed.
+///   This is required to correctly position the picker. If `null`, the picker
+///   might not display correctly.
 ///
-/// [currentDate] represents the current day (i.e. today). This
-/// date will be highlighted in the day grid. If null, the date of
-/// `DateTime.now()` will be used.
+/// - [minimumTime]:
+///   The earliest selectable [TimeOfDay] in the picker. If provided, users will not be able
+///   to select a time earlier than this value.
 ///
-/// [dismissBehavior] represents how the calendar can be closed.
-/// Android back button always close the calendar.
+/// - [maximumTime]:
+///   The latest selectable [TimeOfDay] in the picker. If provided, users will not be able
+///   to select a time later than this value. This should be after or equal to [minimumTime].
+///
+/// - [onTimeChanged]:
+///   A callback that is triggered whenever the selected [TimeOfDay] changes in the picker.
+///
+/// - [initialTime]:
+///   The initially selected [TimeOfDay] that the time picker should display when it opens.
+///   If not provided, the `TimeOfDay.now()` will be used as the initial selection.
+///
+/// - [horizontalSpacing]:
+///   The horizontal spacing between the picker and the edges of the screen.
+///   Default is [15.0] pixels.
+///
+/// - [verticalSpacing]:
+///   The vertical spacing between the picker and the edges of the screen.
+///   Default is [15.0] pixels.
+///
+/// - [offset]:
+///   The offset from the top/bottom of the [widgetRenderBox] location.
+///   Default is `Offset(0.0, 10.0)`.
+///
+/// - [barrierColor]:
+///   The color of the barrier that darkens the rest of the screen when the picker is displayed.
+///   Default is [Colors.transparent], meaning no darkening occurs.
+///
+/// - [containerDecoration]:
+///   Optional custom decoration for the picker container.
+///
+/// - [minuteInterval]:
+///   The interval of minutes that the time picker should allow.
+///   The default value is 1 minute, meaning the user can select any minute of the hour.
+///
+/// ## Returns:
+///
+/// A [Future] that resolves to the selected [TimeOfDay] if a time was chosen, or `null`
+/// if the picker was dismissed without a selection.
+
 Future<TimeOfDay?> showCupertinoTimePicker(
   BuildContext context, {
-  /// The widget's render box around which the calendar will be displayed.
   required RenderBox? widgetRenderBox,
-
-  /// The minimum selectable [DateTime].
   TimeOfDay? minimumTime,
-
-  /// The maximum selectable [DateTime].
   TimeOfDay? maximumTime,
-
-  /// Called on date changes in the picker.
   ValueChanged<TimeOfDay>? onTimeChanged,
-
-  /// The initially selected [DateTime] that the calendar should display.
   TimeOfDay? initialTime,
-
-  /// The spacing from left and right side of the screen.
   double horizontalSpacing = 15.0,
-
-  /// The spacing from top and bottom side of the screen.
   double verticalSpacing = 15.0,
-
-  /// The offset from top/bottom of the [widgetRenderBox] location.
   Offset offset = const Offset(0.0, 10.0),
   Color barrierColor = Colors.transparent,
-  Color mainColor = CupertinoColors.systemRed,
   PickerContainerDecoration? containerDecoration,
+  int minuteInterval = 1,
 }) {
   return showGeneralDialog<TimeOfDay?>(
     context: context,
@@ -180,7 +277,6 @@ Future<TimeOfDay?> showCupertinoTimePicker(
       Animation<double> ___,
     ) {
       return CupertinoTimeOverlay(
-        mainColor: mainColor,
         horizontalSpacing: horizontalSpacing,
         verticalSpacing: verticalSpacing,
         offset: offset,
@@ -190,6 +286,7 @@ Future<TimeOfDay?> showCupertinoTimePicker(
         maximumTime: maximumTime,
         containerDecoration: containerDecoration,
         onTimeChanged: onTimeChanged,
+        minuteInterval: minuteInterval,
       );
     },
   );

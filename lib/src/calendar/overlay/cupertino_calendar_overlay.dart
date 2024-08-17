@@ -4,35 +4,37 @@ import 'package:flutter/material.dart';
 class CupertinoCalendarOverlay extends StatefulWidget {
   const CupertinoCalendarOverlay({
     required this.widgetRenderBox,
-    required this.minimumDate,
-    required this.maximumDate,
+    required this.minimumDateTime,
+    required this.maximumDateTime,
     required this.horizontalSpacing,
     required this.verticalSpacing,
     required this.offset,
     required this.mainColor,
     required this.dismissBehavior,
     required this.mode,
-    this.onDateChanged,
+    required this.minuteInterval,
+    this.onDateTimeChanged,
     this.onDateSelected,
-    this.currentDate,
-    this.initialDate,
+    this.currentDateTime,
+    this.initialDateTime,
     super.key,
     this.onDisplayedMonthChanged,
     this.containerDecoration,
     this.weekdayDecoration,
     this.monthPickerDecoration,
     this.headerDecoration,
+    this.timeLabel,
   });
 
   final double horizontalSpacing;
   final double verticalSpacing;
   final Offset offset;
   final RenderBox? widgetRenderBox;
-  final DateTime? initialDate;
-  final DateTime minimumDate;
-  final DateTime maximumDate;
-  final DateTime? currentDate;
-  final ValueChanged<DateTime>? onDateChanged;
+  final DateTime? initialDateTime;
+  final DateTime minimumDateTime;
+  final DateTime maximumDateTime;
+  final DateTime? currentDateTime;
+  final ValueChanged<DateTime>? onDateTimeChanged;
   final ValueChanged<DateTime>? onDateSelected;
   final ValueChanged<DateTime>? onDisplayedMonthChanged;
   final PickerContainerDecoration? containerDecoration;
@@ -41,7 +43,9 @@ class CupertinoCalendarOverlay extends StatefulWidget {
   final CalendarHeaderDecoration? headerDecoration;
   final CalendarDismissBehavior dismissBehavior;
   final Color mainColor;
-  final CupertinoCalendarPickerMode mode;
+  final CupertinoCalendarMode mode;
+  final String? timeLabel;
+  final int minuteInterval;
 
   @override
   State<CupertinoCalendarOverlay> createState() =>
@@ -50,7 +54,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
 
 class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
   AnimationController? _controller;
-  DateTime? _selectedDate;
+  DateTime? _selectedDateTime;
 
   void _onInitialized(AnimationController animationController) {
     _controller = animationController;
@@ -60,7 +64,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
 
   void _statusListener(AnimationStatus status) {
     if (status == AnimationStatus.dismissed) {
-      Navigator.of(context).pop(_selectedDate);
+      Navigator.of(context).pop(_selectedDateTime);
     }
   }
 
@@ -74,13 +78,13 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
     }
   }
 
-  void _onDateChanged(DateTime date) {
-    _selectedDate = date;
-    widget.onDateChanged?.call(date);
+  void _onDateTimeChanged(DateTime date) {
+    _selectedDateTime = date;
+    widget.onDateTimeChanged?.call(date);
   }
 
   void _onDateSelected(DateTime date) {
-    _selectedDate = date;
+    _selectedDateTime = date;
     widget.onDateSelected?.call(date);
 
     if (widget.dismissBehavior.hasDateSelectDismiss) {
@@ -91,8 +95,8 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
   @override
   Widget build(BuildContext context) {
     final double height = switch (widget.mode) {
-      CupertinoCalendarPickerMode.date => calendarDatePickerHeight,
-      CupertinoCalendarPickerMode.dateTime => calendarDateTimePickerHeight,
+      CupertinoCalendarMode.date => calendarDatePickerHeight,
+      CupertinoCalendarMode.dateTime => calendarDateTimePickerHeight,
     };
 
     return CupertinoPickerOverlay(
@@ -109,16 +113,18 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
         weekdayDecoration: widget.weekdayDecoration,
         monthPickerDecoration: widget.monthPickerDecoration,
         headerDecoration: widget.headerDecoration,
-        minimumDate: widget.minimumDate,
-        initialDate: widget.initialDate,
-        currentDate: widget.currentDate,
-        maximumDate: widget.maximumDate,
-        onDateChanged: _onDateChanged,
+        minimumDateTime: widget.minimumDateTime,
+        initialDateTime: widget.initialDateTime,
+        currentDateTime: widget.currentDateTime,
+        maximumDateTime: widget.maximumDateTime,
+        onDateTimeChanged: _onDateTimeChanged,
         onDateSelected: _onDateSelected,
         onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
         mainColor: widget.mainColor,
         mode: widget.mode,
+        timeLabel: widget.timeLabel,
         type: CupertinoCalendarType.compact,
+        minuteInterval: widget.minuteInterval,
       ),
     );
   }

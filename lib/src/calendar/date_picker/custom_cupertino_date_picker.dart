@@ -17,7 +17,7 @@ const double _kPickerWidth = 320.0;
 const double _kPickerHeight = 216.0;
 const bool _kUseMagnifier = true;
 const double _kMagnification = 2.35 / 2.1;
-const double _kDatePickerPadSize = 12.0;
+const double _kDatePickerPadSize = 16.0;
 // The density of a date picker is different from a generic picker.
 // Eyeballed from iOS.
 const double _kSqueeze = 1.25;

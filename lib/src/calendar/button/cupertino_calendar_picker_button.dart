@@ -2,7 +2,7 @@ import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-typedef CupertinoCalendarFormatterCallback = String Function(DateTime dateTime);
+typedef CupertinoCalendarFormatter = String Function(DateTime dateTime);
 
 /// A customizable Cupertino-style button that displays a calendar picker
 /// when tapped.
@@ -23,7 +23,8 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
     this.monthPickerDecoration,
     this.headerDecoration,
     this.buttonDecoration,
-    this.mode = CupertinoCalendarPickerMode.date,
+    this.timeLabel,
+    this.mode = CupertinoCalendarMode.date,
     this.formatter,
   });
 
@@ -90,10 +91,17 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
 
   /// The mode of the calendar picker, determining whether it operates in [date]
   /// or [dateTime] selection mode.
-  final CupertinoCalendarPickerMode mode;
+  final CupertinoCalendarMode mode;
 
   /// The custom formatter of the calendar picker button.
-  final CupertinoCalendarFormatterCallback? formatter;
+  final CupertinoCalendarFormatter? formatter;
+
+  /// An optional label to be displayed when the calendar is in a mode that
+  /// includes time selection.
+  ///
+  /// This label typically indicates what the selected time is for or provides
+  /// additional context.
+  final String? timeLabel;
 
   @override
   State<CupertinoCalendarPickerButton> createState() =>
@@ -130,7 +138,7 @@ class _CupertinoCalendarPickerButtonState
   Widget build(BuildContext context) {
     late String formattedString;
 
-    final CupertinoCalendarFormatterCallback? formatter = widget.formatter;
+    final CupertinoCalendarFormatter? formatter = widget.formatter;
 
     if (formatter != null) {
       formattedString = formatter(_selectedDateTime);
@@ -144,7 +152,7 @@ class _CupertinoCalendarPickerButtonState
       );
 
       String timeString = '';
-      if (widget.mode == CupertinoCalendarPickerMode.dateTime) {
+      if (widget.mode == CupertinoCalendarMode.dateTime) {
         timeString = ' ';
         timeString += time.format(context);
       }
@@ -165,22 +173,23 @@ class _CupertinoCalendarPickerButtonState
       showPickerFunction: (RenderBox? renderBox) => showCupertinoCalendarPicker(
         context,
         widgetRenderBox: renderBox,
-        minimumDate: widget.minimumDateTime,
-        initialDate: _selectedDateTime,
-        currentDate: widget.currentDateTime,
+        minimumDateTime: widget.minimumDateTime,
+        initialDateTime: _selectedDateTime,
+        currentDateTime: widget.currentDateTime,
         mainColor: widget.mainColor,
         headerDecoration: widget.headerDecoration,
         containerDecoration: widget.containerDecoration,
         monthPickerDecoration: widget.monthPickerDecoration,
         weekdayDecoration: widget.weekdayDecoration,
         offset: widget.offset,
-        maximumDate: widget.maximumDateTime,
+        maximumDateTime: widget.maximumDateTime,
         barrierColor: widget.barrierColor,
         verticalSpacing: widget.verticalSpacing,
         horizontalSpacing: widget.horizontalSpacing,
         onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
         mode: widget.mode,
-        onDateChanged: _onDateChanged,
+        onDateTimeChanged: _onDateChanged,
+        timeLabel: widget.timeLabel,
       ),
     );
   }

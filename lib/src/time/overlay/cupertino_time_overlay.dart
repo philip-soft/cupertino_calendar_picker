@@ -1,5 +1,4 @@
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CupertinoTimeOverlay extends StatefulWidget {
@@ -8,7 +7,7 @@ class CupertinoTimeOverlay extends StatefulWidget {
     required this.horizontalSpacing,
     required this.verticalSpacing,
     required this.offset,
-    required this.mainColor,
+    required this.minuteInterval,
     TimeOfDay? initialTime,
     TimeOfDay? minimumTime,
     TimeOfDay? maximumTime,
@@ -40,8 +39,8 @@ class CupertinoTimeOverlay extends StatefulWidget {
   final TimeOfDay minimumTime;
   final TimeOfDay maximumTime;
   final PickerContainerDecoration? containerDecoration;
-  final Color mainColor;
   final ValueChanged<TimeOfDay>? onTimeChanged;
+  final int minuteInterval;
 
   @override
   State<CupertinoTimeOverlay> createState() => _CupertinoTimeOverlayState();
@@ -80,18 +79,12 @@ class _CupertinoTimeOverlayState extends State<CupertinoTimeOverlay> {
       verticalSpacing: widget.verticalSpacing,
       offset: widget.offset,
       outsideTapDismissable: true,
-      child: Center(
-        child: SizedBox(
-          height: timePickerWheelHeight,
-          child: CustomCupertinoDatePicker(
-            mode: CupertinoDatePickerMode.time,
-            initialDateTime: widget.initialTime.toNowDateTime(),
-            minimumDate: widget.minimumTime.toNowDateTime(),
-            maximumDate: widget.maximumTime.toNowDateTime(),
-            onDateTimeChanged: _onDateTimeChanged,
-            use24hFormat: MediaQuery.alwaysUse24HourFormatOf(context),
-          ),
-        ),
+      child: CupertinoTimePicker(
+        initialTime: widget.initialTime,
+        minimumTime: widget.minimumTime,
+        maximumTime: widget.maximumTime,
+        onTimeChanged: _onDateTimeChanged,
+        minuteInterval: widget.minuteInterval,
       ),
     );
   }

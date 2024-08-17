@@ -6,10 +6,10 @@ class CupertinoCalendarPicker extends StatefulWidget {
   /// Creates a calendar's picker.
   CupertinoCalendarPicker({
     required this.initialMonth,
-    required this.currentDate,
-    required this.minimumDate,
-    required this.maximumDate,
-    required this.selectedDate,
+    required this.currentDateTime,
+    required this.minimumDateTime,
+    required this.maximumDateTime,
+    required this.selectedDateTime,
     required this.onDateTimeChanged,
     required this.onDisplayedMonthChanged,
     required this.onYearPickerChanged,
@@ -19,10 +19,13 @@ class CupertinoCalendarPicker extends StatefulWidget {
     required this.mainColor,
     required this.mode,
     required this.type,
+    required this.timeLabel,
+    required this.footerDecoration,
+    required this.minuteInterval,
     super.key,
-  })  : assert(!minimumDate.isAfter(maximumDate)),
-        assert(!currentDate.isBefore(minimumDate)),
-        assert(!currentDate.isAfter(maximumDate));
+  })  : assert(!minimumDateTime.isAfter(maximumDateTime)),
+        assert(!currentDateTime.isBefore(minimumDateTime)),
+        assert(!currentDateTime.isAfter(maximumDateTime));
 
   /// The initial month to display.
   final DateTime initialMonth;
@@ -30,22 +33,22 @@ class CupertinoCalendarPicker extends StatefulWidget {
   /// The current date.
   ///
   /// This date is subtly highlighted in the picker.
-  final DateTime currentDate;
+  final DateTime currentDateTime;
 
   /// The earliest date the user is permitted to pick.
   ///
-  /// This date must be on or before the [maximumDate].
-  final DateTime minimumDate;
+  /// This date must be on or before the [maximumDateTime].
+  final DateTime minimumDateTime;
 
   /// The latest date the user is permitted to pick.
   ///
-  /// This date must be on or after the [minimumDate].
-  final DateTime maximumDate;
+  /// This date must be on or after the [minimumDateTime].
+  final DateTime maximumDateTime;
 
   /// The currently selected date.
   ///
   /// This date is highlighted in the picker.
-  final DateTime selectedDate;
+  final DateTime selectedDateTime;
 
   /// Called when the user picks a day or selects time.
   final ValueChanged<DateTime> onDateTimeChanged;
@@ -57,9 +60,12 @@ class CupertinoCalendarPicker extends StatefulWidget {
   final CalendarWeekdayDecoration weekdayDecoration;
   final CalendarMonthPickerDecoration monthPickerDecoration;
   final CalendarHeaderDecoration headerDecoration;
+  final CalendarFooterDecoration footerDecoration;
   final Color mainColor;
-  final CupertinoCalendarPickerMode mode;
+  final CupertinoCalendarMode mode;
   final CupertinoCalendarType type;
+  final String? timeLabel;
+  final int minuteInterval;
 
   @override
   CupertinoCalendarPickerState createState() => CupertinoCalendarPickerState();
@@ -86,7 +92,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
     super.initState();
     _currentMonth = widget.initialMonth;
     final int monthDelta = DateUtils.monthDelta(
-      widget.minimumDate,
+      widget.minimumDateTime,
       _currentMonth,
     );
     _monthPageController = PageController(initialPage: monthDelta);
@@ -96,7 +102,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
     );
     _previousViewMode = CupertinoCalendarViewMode.monthPicker;
     _viewMode = CupertinoCalendarViewMode.monthPicker;
-    _selectedDateTime = widget.selectedDate;
+    _selectedDateTime = widget.selectedDateTime;
     _timePickerKey = GlobalKey();
   }
 
@@ -115,7 +121,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
 
   /// Earliest allowable month.
   bool get _isDisplayingFirstMonth {
-    final DateTime minimumDate = widget.minimumDate;
+    final DateTime minimumDate = widget.minimumDateTime;
     return !_currentMonth.isAfter(
       DateTime(minimumDate.year, minimumDate.month),
     );
@@ -123,7 +129,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
 
   /// Latest allowable month.
   bool get _isDisplayingLastMonth {
-    final DateTime maximumDate = widget.maximumDate;
+    final DateTime maximumDate = widget.maximumDateTime;
     return !_currentMonth.isBefore(
       DateTime(maximumDate.year, maximumDate.month),
     );
@@ -131,7 +137,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
 
   void _handleMonthPageChanged(int monthPage) {
     setState(() {
-      final DateTime minimumDate = widget.minimumDate;
+      final DateTime minimumDate = widget.minimumDateTime;
       final DateTime monthDate =
           DateUtils.addMonthsToMonthDate(minimumDate, monthPage);
       final bool isCurrentMonth =
@@ -162,7 +168,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
   }
 
   void _showMonth(DateTime month, {bool jump = false}) {
-    final int monthPage = DateUtils.monthDelta(widget.minimumDate, month);
+    final int monthPage = DateUtils.monthDelta(widget.minimumDateTime, month);
     if (jump) {
       _monthPageController.jumpToPage(monthPage);
     } else {
@@ -259,11 +265,11 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
                 CalendarMonthPicker(
                   monthPageController: _monthPageController,
                   onMonthPageChanged: _handleMonthPageChanged,
-                  currentDate: widget.currentDate,
+                  currentDate: widget.currentDateTime,
                   displayedMonth: _currentMonth,
-                  minimumDate: widget.minimumDate,
-                  maximumDate: widget.maximumDate,
-                  selectedDate: widget.selectedDate,
+                  minimumDate: widget.minimumDateTime,
+                  maximumDate: widget.maximumDateTime,
+                  selectedDate: widget.selectedDateTime,
                   onChanged: _onDateChanged,
                   decoration: widget.monthPickerDecoration,
                   mainColor: widget.mainColor,
@@ -280,12 +286,12 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
               child: switch (viewMode) {
                 CupertinoCalendarViewMode.yearPicker => CupertinoDatePicker(
                     minimumDate: DateTime(
-                      widget.minimumDate.year,
-                      widget.minimumDate.month,
+                      widget.minimumDateTime.year,
+                      widget.minimumDateTime.month,
                     ),
                     maximumDate: DateTime(
-                      widget.maximumDate.year,
-                      widget.maximumDate.month,
+                      widget.maximumDateTime.year,
+                      widget.maximumDateTime.month,
                     ),
                     mode: CupertinoDatePickerMode.monthYear,
                     onDateTimeChanged: widget.onYearPickerChanged,
@@ -296,7 +302,10 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
                     key: _timePickerKey,
                     onDateTimeChanged: _onTimeChanged,
                     mode: CupertinoDatePickerMode.time,
+                    minimumDate: widget.minimumDateTime,
+                    maximumDate: widget.maximumDateTime,
                     initialDateTime: _selectedDateTime,
+                    minuteInterval: widget.minuteInterval,
                     use24hFormat: MediaQuery.alwaysUse24HourFormatOf(context),
                   ),
                 _ => const SizedBox(),
@@ -304,10 +313,13 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
             ),
           ),
         ),
-        if (widget.mode == CupertinoCalendarPickerMode.dateTime)
+        if (widget.mode == CupertinoCalendarMode.dateTime)
           CupertinoPickerAnimatedCrossFade(
-            firstChild: CalendarTimeFooter(
+            firstChild: CalendarFooter(
+              decoration: widget.footerDecoration,
+              label: widget.timeLabel,
               type: widget.type,
+              mainColor: widget.mainColor,
               time: TimeOfDay.fromDateTime(_selectedDateTime),
               onTimePickerStateChanged: _toggleTimePicker,
               onTimeChanged: _onDayPeriodChanged,

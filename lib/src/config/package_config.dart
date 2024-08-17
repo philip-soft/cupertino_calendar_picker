@@ -23,6 +23,12 @@ const double timePickerWidth = 231.0;
 const double timePickerHeight = 203.0;
 const double timePickerWheelHeight = 160.0;
 
+// BUTTON
+const Duration pickerButtonFadeOutDuration = Duration(milliseconds: 1000);
+const Duration pickerButtonFadeInDuration = Duration(milliseconds: 800);
+const Duration pickerButtonFadeDuration = Duration(milliseconds: 200);
+const Duration pickerButtonTextStyleDuration = Duration(milliseconds: 100);
+
 // ANIMATION
 
 const Duration calendarAnimationDuration = Duration(milliseconds: 430);

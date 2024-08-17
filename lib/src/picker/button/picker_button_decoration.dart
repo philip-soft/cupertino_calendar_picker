@@ -45,7 +45,10 @@ class PickerButtonDecoration {
           context,
         ),
       ),
-      backgroundColor: backgroundColor ?? pickerButtonBackgroundColor,
+      backgroundColor: CupertinoDynamicColor.resolve(
+        backgroundColor ?? pickerButtonBackgroundColor,
+        context,
+      ),
     );
   }
 

@@ -1,6 +1,5 @@
 import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
@@ -15,6 +14,7 @@ class ExampleApp extends StatefulWidget {
 }
 
 class _ExampleAppState extends State<ExampleApp> {
+  final DateTime nowDateTime = DateTime.now();
   DateTime _selectedDate = DateTime.now();
 
   /// The context comes from the `Builder` above the widget tree.
@@ -25,10 +25,10 @@ class _ExampleAppState extends State<ExampleApp> {
     return showCupertinoCalendarPicker(
       context,
       widgetRenderBox: renderBox,
-      minimumDate: nowDate.subtract(const Duration(days: 15)),
-      initialDate: _selectedDate,
-      maximumDate: nowDate.add(const Duration(days: 360)),
-      onDateChanged: _onDateChanged,
+      minimumDateTime: nowDate.subtract(const Duration(days: 15)),
+      initialDateTime: _selectedDate,
+      maximumDateTime: nowDate.add(const Duration(days: 360)),
+      onDateTimeChanged: _onDateChanged,
     );
   }
 
@@ -40,7 +40,8 @@ class _ExampleAppState extends State<ExampleApp> {
 
   @override
   Widget build(BuildContext context) {
-    final DateTime nowDate = DateTime.now();
+    final minimumDateTime = nowDateTime.subtract(const Duration(days: 15));
+    final maximumDateTime = nowDateTime.add(const Duration(days: 360));
 
     return CupertinoApp(
       title: 'Cupertino Calendar Example',
@@ -50,53 +51,48 @@ class _ExampleAppState extends State<ExampleApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      builder: (context, child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            alwaysUse24HourFormat: true,
-          ),
-          child: child!,
-        );
-      },
       home: CupertinoPageScaffold(
-        backgroundColor: Colors.white,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 100),
-            // CupertinoCalendar(
-            //   mode: CupertinoCalendarPickerMode.dateTime,
-            //   type: CupertinoCalendarType.inline,
-            //   minimumDate: nowDate.subtract(const Duration(days: 15)),
-            //   maximumDate: nowDate.add(const Duration(days: 360)),
-            // ),
-            const SizedBox(height: 100),
-            Align(
-              alignment: const Alignment(0.0, 0.2),
-              child: Builder(
-                builder: (context) {
-                  return GestureDetector(
-                    /// Passing exactly this `BuildContext` is mandatory to get
-                    /// the `RenderBox` of the appropriate widget.
-                    onTap: () => onTap(context),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CupertinoCalendarPickerButton(
-                          selectedDateTime: _selectedDate,
-                          mode: CupertinoCalendarPickerMode.dateTime,
-                          minimumDateTime:
-                              nowDate.subtract(const Duration(days: 15)),
-                          maximumDateTime:
-                              nowDate.add(const Duration(days: 360)),
-                        ),
-                        const SizedBox(width: 5),
-                        const CupertinoTimePickerButton(),
-                      ],
-                    ),
-                  );
-                },
-              ),
+            const Row(),
+            const Spacer(flex: 2),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CupertinoCalendarPickerButton(
+                  selectedDateTime: _selectedDate,
+                  mode: CupertinoCalendarMode.dateTime,
+                  minimumDateTime: minimumDateTime,
+                  maximumDateTime: maximumDateTime,
+                  timeLabel: 'Ends',
+                ),
+                const SizedBox(width: 5),
+                const CupertinoTimePickerButton(),
+              ],
             ),
+            const SizedBox(height: 15),
+            Builder(
+              builder: (context) {
+                return GestureDetector(
+                  /// Passing exactly this `BuildContext` is mandatory to get
+                  /// the `RenderBox` of the appropriate widget.
+                  onTap: () => onTap(context),
+                  child: Container(
+                    height: 40,
+                    width: 120,
+                    decoration: BoxDecoration(
+                      color: CupertinoColors.tertiarySystemFill
+                          .resolveFrom(context),
+                    ),
+                    alignment: Alignment.center,
+                    child: const Text('My widget'),
+                  ),
+                );
+              },
+            ),
+            const Spacer(),
           ],
         ),
       ),

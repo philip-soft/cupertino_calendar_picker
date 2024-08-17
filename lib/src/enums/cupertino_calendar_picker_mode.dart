@@ -1,4 +1,0 @@
-enum CupertinoCalendarPickerMode {
-  date,
-  dateTime;
-}
