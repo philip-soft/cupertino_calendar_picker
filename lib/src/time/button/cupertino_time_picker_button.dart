@@ -1,10 +1,11 @@
 import 'package:cupertino_calendar_picker/src/src.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 /// A button widget that triggers a Cupertino-style time picker when pressed.
 class CupertinoTimePickerButton extends StatefulWidget {
   const CupertinoTimePickerButton({
-    this.selectedTime,
+    this.initialTime,
     this.minimumTime,
     this.maximumTime,
     this.offset = const Offset(0.0, 10.0),
@@ -12,7 +13,8 @@ class CupertinoTimePickerButton extends StatefulWidget {
     super.key,
     this.onTimeChanged,
     this.containerDecoration,
-    this.decoration,
+    this.mainColor = CupertinoColors.systemRed,
+    this.buttonDecoration,
     this.minuteInterval = 1,
   });
 
@@ -31,11 +33,9 @@ class CupertinoTimePickerButton extends StatefulWidget {
   /// Called when the user selects a time in the picker.
   final ValueChanged<TimeOfDay>? onTimeChanged;
 
-  /// The selected [TimeOfDay] that the picker should display.
-  ///
-  /// This is the initial time shown when the picker is opened. If `null`,
+  /// The initial [TimeOfDay] that the picker should display. If `null`,
   /// `TimeOfDay.now()` will be used instead.
-  final TimeOfDay? selectedTime;
+  final TimeOfDay? initialTime;
 
   /// The spacing from the left and right sides of the screen.
   /// Default is [15.0].
@@ -62,11 +62,14 @@ class CupertinoTimePickerButton extends StatefulWidget {
   final PickerContainerDecoration? containerDecoration;
 
   /// Custom decoration for the picker button.
-  final PickerButtonDecoration? decoration;
+  final PickerButtonDecoration? buttonDecoration;
 
   ///   The interval of minutes that the time picker should allow.
   ///   The default value is 1 minute, meaning the user can select any minute of the hour.
   final int minuteInterval;
+
+  /// The primary color used within the button widget.
+  final Color mainColor;
 
   @override
   State<CupertinoTimePickerButton> createState() =>
@@ -79,15 +82,15 @@ class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
   @override
   void initState() {
     super.initState();
-    _selectedTime = widget.selectedTime ?? TimeOfDay.now();
+    _selectedTime = widget.initialTime ?? TimeOfDay.now();
   }
 
   @override
   void didUpdateWidget(CupertinoTimePickerButton oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.selectedTime != _selectedTime) {
-      _selectedTime = widget.selectedTime ?? TimeOfDay.now();
+    if (widget.initialTime != _selectedTime) {
+      _selectedTime = widget.initialTime ?? TimeOfDay.now();
     }
   }
 
@@ -102,6 +105,8 @@ class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
   Widget build(BuildContext context) {
     return CupertinoPickerButton<TimeOfDay?>(
       title: _selectedTime.format(context),
+      decoration: widget.buttonDecoration,
+      mainColor: widget.mainColor,
       showPickerFunction: (RenderBox? renderBox) => showCupertinoTimePicker(
         context,
         widgetRenderBox: renderBox,

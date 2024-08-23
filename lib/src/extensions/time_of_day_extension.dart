@@ -1,3 +1,4 @@
+import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/material.dart';
 
 extension TimeOfDayExtension on TimeOfDay {
@@ -6,10 +7,7 @@ extension TimeOfDayExtension on TimeOfDay {
   }
 
   DateTime toNowDateTime() {
-    return DateTime.now().copyWith(
-      hour: hour,
-      minute: minute,
-    );
+    return DateTime.now().truncateToMinutes(newHour: hour, newMinute: minute);
   }
 
   bool isBefore(TimeOfDay other) {

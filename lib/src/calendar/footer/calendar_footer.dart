@@ -87,7 +87,8 @@ class _CalendarFooterState extends State<CalendarFooter> {
                   style: widget.decoration.timeLabelStyle,
                 ),
               ),
-            ],
+            ] else
+              const Spacer(),
             const SizedBox(width: 16.0),
             GestureDetector(
               onTap: _handleTimePickerStateChange,
@@ -116,8 +117,8 @@ class _CalendarFooterState extends State<CalendarFooter> {
                 ),
               ),
             ),
-            const SizedBox(width: 8.0),
-            if (shouldShowSegments)
+            if (shouldShowSegments) ...<Widget>[
+              const SizedBox(width: 8.0),
               CupertinoSlidingSegmentedControl<DayPeriod>(
                 onValueChanged: _onDayPeriodChanged,
                 groupValue: time.period,
@@ -146,6 +147,7 @@ class _CalendarFooterState extends State<CalendarFooter> {
                   );
                 }),
               ),
+            ],
             const SizedBox(width: 16.0),
           ],
         ),

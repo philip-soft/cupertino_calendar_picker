@@ -6,7 +6,7 @@ const TextStyle calendarTimeStyle = TextStyle(
   color: calendarTimeColor,
   fontSize: 17.0,
 );
-const TextStyle calendarFootertimeLabelStyle = TextStyle(
+const TextStyle calendarFooterTimeLabelStyle = TextStyle(
   color: calendarFooterTitleColor,
   fontSize: 17.0,
 );
@@ -22,8 +22,8 @@ class CalendarFooterDecoration {
     TextStyle? timeStyle,
   }) {
     return CalendarFooterDecoration._(
-      timeLabelStyle: timeLabelStyle,
-      timeStyle: timeStyle,
+      timeLabelStyle: timeLabelStyle ?? calendarFooterTimeLabelStyle,
+      timeStyle: timeStyle ?? calendarTimeStyle,
     );
   }
 
@@ -41,9 +41,9 @@ class CalendarFooterDecoration {
     TextStyle? timeLabelStyle,
     TextStyle? timeStyle,
   }) {
-    final TextStyle timeTextStyle = timeStyle ?? calendarFootertimeLabelStyle;
+    final TextStyle timeTextStyle = timeStyle ?? calendarFooterTimeLabelStyle;
     final TextStyle titleTextStyle =
-        timeLabelStyle ?? calendarFootertimeLabelStyle;
+        timeLabelStyle ?? calendarFooterTimeLabelStyle;
     return CalendarFooterDecoration(
       timeLabelStyle: titleTextStyle.copyWith(
         color: CupertinoDynamicColor.resolve(

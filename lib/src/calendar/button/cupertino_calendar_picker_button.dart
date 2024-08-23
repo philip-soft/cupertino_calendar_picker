@@ -10,12 +10,13 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   const CupertinoCalendarPickerButton({
     required this.minimumDateTime,
     required this.maximumDateTime,
-    this.selectedDateTime,
+    this.initialDateTime,
     this.offset = const Offset(0.0, 10.0),
     this.barrierColor = Colors.transparent,
     this.mainColor = CupertinoColors.systemRed,
     super.key,
     this.onDateTimeChanged,
+    this.onDateSelected,
     this.currentDateTime,
     this.onDisplayedMonthChanged,
     this.containerDecoration,
@@ -23,9 +24,11 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
     this.monthPickerDecoration,
     this.headerDecoration,
     this.buttonDecoration,
+    this.footerDecoration,
     this.timeLabel,
     this.mode = CupertinoCalendarMode.date,
     this.formatter,
+    this.minuteInterval = 1,
   });
 
   /// Specifies the earliest date that can be selected by the user
@@ -40,8 +43,14 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   /// from the calendar picker.
   final ValueChanged<DateTime>? onDateTimeChanged;
 
-  /// The date currently selected and displayed by the calendar picker.
-  final DateTime? selectedDateTime;
+  /// A callback that is triggered when the user selects a date in the calendar.
+  final ValueChanged<DateTime>? onDateSelected;
+
+  /// The initially selected [DateTime] that the calendar should display.
+  ///
+  /// This date is highlighted in the picker and the default date when the picker
+  /// is first displayed.
+  final DateTime? initialDateTime;
 
   /// The [DateTime] value representing today's date, which will be
   /// highlighted within the calendar.
@@ -89,6 +98,11 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   /// The decoration for the button.
   final PickerButtonDecoration? buttonDecoration;
 
+  /// The decoration for the footer of the calendar.
+  ///
+  /// Applied for the [dateTime] mode only.
+  final CalendarFooterDecoration? footerDecoration;
+
   /// The mode of the calendar picker, determining whether it operates in [date]
   /// or [dateTime] selection mode.
   final CupertinoCalendarMode mode;
@@ -103,6 +117,12 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   /// additional context.
   final String? timeLabel;
 
+  /// The interval of minutes that the time picker should allow, applicable
+  /// when the calendar is in a mode that includes time selection.
+  ///
+  /// The default value is 1 minute, meaning the user can select any minute of the hour.
+  final int minuteInterval;
+
   @override
   State<CupertinoCalendarPickerButton> createState() =>
       _CupertinoCalendarPickerButtonState();
@@ -115,19 +135,19 @@ class _CupertinoCalendarPickerButtonState
   @override
   void initState() {
     super.initState();
-    _selectedDateTime = widget.selectedDateTime ?? DateTime.now();
+    _selectedDateTime = widget.initialDateTime ?? DateTime.now();
   }
 
   @override
   void didUpdateWidget(CupertinoCalendarPickerButton oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.selectedDateTime != _selectedDateTime) {
-      _selectedDateTime = widget.selectedDateTime ?? DateTime.now();
+    if (widget.initialDateTime != _selectedDateTime) {
+      _selectedDateTime = widget.initialDateTime ?? DateTime.now();
     }
   }
 
-  void _onDateChanged(DateTime dateTime) {
+  void _onDateTimeChanged(DateTime dateTime) {
     setState(() {
       _selectedDateTime = dateTime;
       widget.onDateTimeChanged?.call(dateTime);
@@ -170,6 +190,7 @@ class _CupertinoCalendarPickerButtonState
     return CupertinoPickerButton<DateTime?>(
       title: formattedString,
       mainColor: widget.mainColor,
+      decoration: widget.buttonDecoration,
       showPickerFunction: (RenderBox? renderBox) => showCupertinoCalendarPicker(
         context,
         widgetRenderBox: renderBox,
@@ -181,6 +202,7 @@ class _CupertinoCalendarPickerButtonState
         containerDecoration: widget.containerDecoration,
         monthPickerDecoration: widget.monthPickerDecoration,
         weekdayDecoration: widget.weekdayDecoration,
+        footerDecoration: widget.footerDecoration,
         offset: widget.offset,
         maximumDateTime: widget.maximumDateTime,
         barrierColor: widget.barrierColor,
@@ -188,8 +210,10 @@ class _CupertinoCalendarPickerButtonState
         horizontalSpacing: widget.horizontalSpacing,
         onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
         mode: widget.mode,
-        onDateTimeChanged: _onDateChanged,
+        onDateTimeChanged: _onDateTimeChanged,
+        onDateSelected: widget.onDateSelected,
         timeLabel: widget.timeLabel,
+        minuteInterval: widget.minuteInterval,
       ),
     );
   }

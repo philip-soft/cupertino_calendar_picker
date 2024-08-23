@@ -15,8 +15,8 @@ class CupertinoCalendar extends StatefulWidget {
     this.type = CupertinoCalendarType.inline,
     this.onDateTimeChanged,
     this.onDateSelected,
-    DateTime? initialDateTime,
-    DateTime? currentDateTime,
+    this.initialDateTime,
+    this.currentDateTime,
     this.onDisplayedMonthChanged,
     this.weekdayDecoration,
     this.monthPickerDecoration,
@@ -26,28 +26,29 @@ class CupertinoCalendar extends StatefulWidget {
     this.minuteInterval = 1,
     this.maxWidth = double.infinity,
     super.key,
-  })  : initialDateTime = initialDateTime ?? DateTime.now(),
-        currentDateTime = currentDateTime ?? DateTime.now() {
+  }) {
     // ignore: prefer_asserts_in_initializer_lists
     assert(
       !maximumDateTime.isBefore(minimumDateTime),
       'maximumDateTime $maximumDateTime must be on or after minimumDateTime $minimumDateTime.',
     );
-    assert(
-      !this.initialDateTime.isBefore(minimumDateTime),
-      'initialDateTime ${this.initialDateTime} must be on or after minimumDateTime $minimumDateTime.',
-    );
-    assert(
-      !this.initialDateTime.isAfter(maximumDateTime),
-      'initialDateTime ${this.initialDateTime} must be on or before maximumDateTime $maximumDateTime.',
-    );
+    if (initialDateTime != null) {
+      assert(
+        !initialDateTime!.isBefore(minimumDateTime),
+        'initialDateTime $initialDateTime must be on or after minimumDateTime $minimumDateTime.',
+      );
+      assert(
+        !initialDateTime!.isAfter(maximumDateTime),
+        'initialDateTime $initialDateTime must be on or before maximumDateTime $maximumDateTime.',
+      );
+    }
   }
 
   /// The initially selected [DateTime] that the calendar should display.
   ///
   /// This date is highlighted in the picker and the default date when the picker
   /// is first displayed.
-  final DateTime initialDateTime;
+  final DateTime? initialDateTime;
 
   /// The earliest selectable [DateTime] in the picker.
   ///
@@ -60,7 +61,7 @@ class CupertinoCalendar extends StatefulWidget {
   final DateTime maximumDateTime;
 
   /// The current date (i.e., today's date).
-  final DateTime currentDateTime;
+  final DateTime? currentDateTime;
 
   /// A callback that is triggered whenever the selected [DateTime] changes in the calendar.
   final ValueChanged<DateTime>? onDateTimeChanged;
@@ -81,6 +82,8 @@ class CupertinoCalendar extends StatefulWidget {
   final CalendarHeaderDecoration? headerDecoration;
 
   /// Custom decoration for the footer of the calendar.
+  /// 
+  /// Applied only for the [dateTime] mode.
   final CalendarFooterDecoration? footerDecoration;
 
   /// The primary color used in the calendar picker, typically for highlighting
@@ -101,7 +104,9 @@ class CupertinoCalendar extends StatefulWidget {
   /// The maximum width of the calendar widget.
   ///
   /// The default value is [double.infinity], meaning the widget can expand
-  /// to fill available space.
+  /// to fill available space. 
+  /// 
+  /// minWidth is [320].
   final double maxWidth;
 
   /// An optional label to be displayed when the calendar is in a mode that includes time selection.
@@ -138,7 +143,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
   }
 
   void _initializeInitialDate() {
-    final DateTime initialDateTime = widget.initialDateTime;
+    final DateTime initialDateTime = widget.initialDateTime ?? DateTime.now();
     _currentlyDisplayedMonthDate =
         PackageDateUtils.monthDateOnly(initialDateTime);
     _selectedDateTime = initialDateTime;
@@ -189,9 +194,13 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
     });
   }
 
-  void _onDateTimeChanged(DateTime date) {
-    _handleCalendarDayChange(date);
-    widget.onDateSelected?.call(date);
+  void _onDateChanged(DateTime dateTime) {
+    _handleCalendarDayChange(dateTime);
+    widget.onDateSelected?.call(dateTime);
+  }
+
+  void _onTimeChanged(DateTime dateTime) {
+    _handleCalendarDayChange(dateTime);
   }
 
   @override
@@ -212,11 +221,12 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
       ),
       child: CupertinoCalendarPicker(
         initialMonth: _currentlyDisplayedMonthDate,
-        currentDateTime: widget.currentDateTime,
+        currentDateTime: widget.currentDateTime ?? DateTime.now(),
         minimumDateTime: widget.minimumDateTime,
         maximumDateTime: widget.maximumDateTime,
         selectedDateTime: _selectedDateTime,
-        onDateTimeChanged: _onDateTimeChanged,
+        onDateChanged: _onDateChanged,
+        onTimeChanged: _onTimeChanged,
         onDisplayedMonthChanged: _handleCalendarMonthChange,
         onYearPickerChanged: _handleCalendarDateChange,
         mainColor: widget.mainColor,

@@ -10,7 +10,8 @@ class CupertinoCalendarPicker extends StatefulWidget {
     required this.minimumDateTime,
     required this.maximumDateTime,
     required this.selectedDateTime,
-    required this.onDateTimeChanged,
+    required this.onDateChanged,
+    required this.onTimeChanged,
     required this.onDisplayedMonthChanged,
     required this.onYearPickerChanged,
     required this.weekdayDecoration,
@@ -49,13 +50,11 @@ class CupertinoCalendarPicker extends StatefulWidget {
   ///
   /// This date is highlighted in the picker.
   final DateTime selectedDateTime;
-
-  /// Called when the user picks a day or selects time.
-  final ValueChanged<DateTime> onDateTimeChanged;
+  final ValueChanged<DateTime> onDateChanged;
+  final ValueChanged<DateTime> onTimeChanged;
 
   /// Called when the user navigates to a new month.
   final ValueChanged<DateTime> onDisplayedMonthChanged;
-
   final ValueChanged<DateTime> onYearPickerChanged;
   final CalendarWeekdayDecoration weekdayDecoration;
   final CalendarMonthPickerDecoration monthPickerDecoration;
@@ -202,12 +201,21 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
     });
   }
 
+  void _onDateChanged(DateTime dateTime) {
+    _selectedDateTime = _selectedDateTime.copyWith(
+      year: dateTime.year,
+      month: dateTime.month,
+      day: dateTime.day,
+    );
+    widget.onDateChanged(_selectedDateTime);
+  }
+
   void _onTimeChanged(DateTime dateTime) {
     _selectedDateTime = _selectedDateTime.copyWith(
       hour: dateTime.hour,
       minute: dateTime.minute,
     );
-    widget.onDateTimeChanged(_selectedDateTime);
+    widget.onTimeChanged(_selectedDateTime);
   }
 
   void _onDayPeriodChanged(TimeOfDay newTime) {
@@ -221,16 +229,10 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
       false,
     );
     _selectedDateTime = newDateTime;
-    widget.onDateTimeChanged(_selectedDateTime);
-  }
 
-  void _onDateChanged(DateTime dateTime) {
-    _selectedDateTime = _selectedDateTime.copyWith(
-      year: dateTime.year,
-      month: dateTime.month,
-      day: dateTime.day,
-    );
-    widget.onDateTimeChanged(_selectedDateTime);
+    if (viewMode != CupertinoCalendarViewMode.timePicker) {
+      widget.onTimeChanged(_selectedDateTime);
+    }
   }
 
   @override
@@ -298,15 +300,13 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
                     initialDateTime: _currentMonth,
                   ),
                 CupertinoCalendarViewMode.timePicker =>
-                  CustomCupertinoDatePicker(
+                  CupertinoTimePickerWheel(
                     key: _timePickerKey,
-                    onDateTimeChanged: _onTimeChanged,
-                    mode: CupertinoDatePickerMode.time,
-                    minimumDate: widget.minimumDateTime,
-                    maximumDate: widget.maximumDateTime,
-                    initialDateTime: _selectedDateTime,
+                    onTimeChanged: _onTimeChanged,
+                    minimumDateTime: widget.minimumDateTime.truncateToMinutes(),
+                    maximumDateTime: widget.maximumDateTime.truncateToMinutes(),
+                    initialDateTime: _selectedDateTime.truncateToMinutes(),
                     minuteInterval: widget.minuteInterval,
-                    use24hFormat: MediaQuery.alwaysUse24HourFormatOf(context),
                   ),
                 _ => const SizedBox(),
               },

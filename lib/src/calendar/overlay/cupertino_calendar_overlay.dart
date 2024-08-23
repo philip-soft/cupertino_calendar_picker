@@ -23,6 +23,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     this.weekdayDecoration,
     this.monthPickerDecoration,
     this.headerDecoration,
+    this.footerDecoration,
     this.timeLabel,
   });
 
@@ -41,6 +42,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
   final CalendarWeekdayDecoration? weekdayDecoration;
   final CalendarMonthPickerDecoration? monthPickerDecoration;
   final CalendarHeaderDecoration? headerDecoration;
+  final CalendarFooterDecoration? footerDecoration;
   final CalendarDismissBehavior dismissBehavior;
   final Color mainColor;
   final CupertinoCalendarMode mode;
@@ -112,6 +114,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
       child: CupertinoCalendar(
         weekdayDecoration: widget.weekdayDecoration,
         monthPickerDecoration: widget.monthPickerDecoration,
+        footerDecoration: widget.footerDecoration,
         headerDecoration: widget.headerDecoration,
         minimumDateTime: widget.minimumDateTime,
         initialDateTime: widget.initialDateTime,

@@ -89,6 +89,10 @@ import 'package:flutter/material.dart';
 /// - [headerDecoration]:
 ///   Optional custom decoration for the header of the picker.
 ///
+/// - [footerDecoration]:
+///   Optional custom decoration for the footer of the picker.
+///   Applied for the [dateTime] mode only.
+///
 /// - [mode]:
 ///   The mode in which the picker operates. Default is [CupertinoCalendarMode.date].
 ///   If [CupertinoCalendarMode.dateTime] is used, the picker will also
@@ -131,6 +135,7 @@ Future<DateTime?> showCupertinoCalendarPicker(
   CalendarWeekdayDecoration? weekdayDecoration,
   CalendarMonthPickerDecoration? monthPickerDecoration,
   CalendarHeaderDecoration? headerDecoration,
+  CalendarFooterDecoration? footerDecoration,
   CupertinoCalendarMode mode = CupertinoCalendarMode.date,
   String? timeLabel,
   int minuteInterval = 1,
@@ -171,6 +176,7 @@ Future<DateTime?> showCupertinoCalendarPicker(
         weekdayDecoration: weekdayDecoration,
         monthPickerDecoration: monthPickerDecoration,
         headerDecoration: headerDecoration,
+        footerDecoration: footerDecoration,
         dismissBehavior: dismissBehavior,
         mode: mode,
         timeLabel: timeLabel,

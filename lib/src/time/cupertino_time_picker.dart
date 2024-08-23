@@ -1,5 +1,4 @@
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CupertinoTimePicker extends StatelessWidget {
@@ -25,13 +24,11 @@ class CupertinoTimePicker extends StatelessWidget {
         height: timePickerWheelHeight,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 7.5),
-          child: CustomCupertinoDatePicker(
-            mode: CupertinoDatePickerMode.time,
+          child: CupertinoTimePickerWheel(
             initialDateTime: initialTime.toNowDateTime(),
-            minimumDate: minimumTime.toNowDateTime(),
-            maximumDate: maximumTime.toNowDateTime(),
-            onDateTimeChanged: onTimeChanged,
-            use24hFormat: MediaQuery.alwaysUse24HourFormatOf(context),
+            minimumDateTime: minimumTime.toNowDateTime(),
+            maximumDateTime: maximumTime.toNowDateTime(),
+            onTimeChanged: onTimeChanged,
             minuteInterval: minuteInterval,
           ),
         ),

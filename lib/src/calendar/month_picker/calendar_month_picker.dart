@@ -23,10 +23,7 @@ class CalendarMonthPicker extends StatefulWidget {
         maximumDate = DateUtils.dateOnly(maximumDate),
         currentDate = DateUtils.dateOnly(currentDate),
         selectedDate = DateUtils.dateOnly(selectedDate),
-        displayedMonth = DateUtils.dateOnly(displayedMonth),
-        assert(!minimumDate.isAfter(maximumDate)),
-        assert(!selectedDate.isBefore(minimumDate)),
-        assert(!selectedDate.isAfter(maximumDate));
+        displayedMonth = DateUtils.dateOnly(displayedMonth);
 
   final PageController monthPageController;
   final ValueChanged<int> onMonthPageChanged;

@@ -1,5 +1,6 @@
 import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
@@ -14,21 +15,32 @@ class ExampleApp extends StatefulWidget {
 }
 
 class _ExampleAppState extends State<ExampleApp> {
-  final DateTime nowDateTime = DateTime.now();
-  DateTime _selectedDate = DateTime.now();
+  late DateTime _selectedDate;
+  late DateTime _now;
+  late DateTime _minimumDateTime;
+  late DateTime _maximumDateTime;
+
+  @override
+  void initState() {
+    super.initState();
+    _now = DateTime.now();
+    _selectedDate = _now;
+    _minimumDateTime = _now.subtract(const Duration(days: 15));
+    _maximumDateTime = _now.add(const Duration(days: 365));
+  }
 
   /// The context comes from the `Builder` above the widget tree.
   Future<DateTime?> onTap(BuildContext context) async {
     final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
-    final DateTime nowDate = DateTime.now();
 
     return showCupertinoCalendarPicker(
       context,
       widgetRenderBox: renderBox,
-      minimumDateTime: nowDate.subtract(const Duration(days: 15)),
+      minimumDateTime: _minimumDateTime,
+      maximumDateTime: _maximumDateTime,
       initialDateTime: _selectedDate,
-      maximumDateTime: nowDate.add(const Duration(days: 360)),
-      onDateTimeChanged: _onDateChanged,
+      timeLabel: 'Ends',
+      onDateSelected: _onDateChanged,
     );
   }
 
@@ -40,9 +52,6 @@ class _ExampleAppState extends State<ExampleApp> {
 
   @override
   Widget build(BuildContext context) {
-    final minimumDateTime = nowDateTime.subtract(const Duration(days: 15));
-    final maximumDateTime = nowDateTime.add(const Duration(days: 360));
-
     return CupertinoApp(
       title: 'Cupertino Calendar Example',
       debugShowCheckedModeBanner: false,
@@ -56,20 +65,30 @@ class _ExampleAppState extends State<ExampleApp> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Row(),
             const Spacer(flex: 2),
+            CupertinoCalendar(
+              minimumDateTime: _minimumDateTime,
+              maximumDateTime: _maximumDateTime,
+              timeLabel: 'Ends',
+              type: CupertinoCalendarType.inline,
+              mode: CupertinoCalendarMode.dateTime,
+            ),
+            const Spacer(),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 CupertinoCalendarPickerButton(
-                  selectedDateTime: _selectedDate,
+                  minimumDateTime: _minimumDateTime,
+                  maximumDateTime: _maximumDateTime,
+                  initialDateTime: _selectedDate,
                   mode: CupertinoCalendarMode.dateTime,
-                  minimumDateTime: minimumDateTime,
-                  maximumDateTime: maximumDateTime,
                   timeLabel: 'Ends',
+                  onDateSelected: _onDateChanged,
                 ),
                 const SizedBox(width: 5),
-                const CupertinoTimePickerButton(),
+                const CupertinoTimePickerButton(
+                  initialTime: TimeOfDay(hour: 16, minute: 30),
+                ),
               ],
             ),
             const SizedBox(height: 15),
@@ -92,7 +111,7 @@ class _ExampleAppState extends State<ExampleApp> {
                 );
               },
             ),
-            const Spacer(),
+            const Spacer(flex: 3),
           ],
         ),
       ),
