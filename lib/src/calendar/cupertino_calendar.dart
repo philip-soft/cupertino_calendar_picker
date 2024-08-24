@@ -82,7 +82,7 @@ class CupertinoCalendar extends StatefulWidget {
   final CalendarHeaderDecoration? headerDecoration;
 
   /// Custom decoration for the footer of the calendar.
-  /// 
+  ///
   /// Applied only for the [dateTime] mode.
   final CalendarFooterDecoration? footerDecoration;
 
@@ -104,8 +104,8 @@ class CupertinoCalendar extends StatefulWidget {
   /// The maximum width of the calendar widget.
   ///
   /// The default value is [double.infinity], meaning the widget can expand
-  /// to fill available space. 
-  /// 
+  /// to fill available space.
+  ///
   /// minWidth is [320].
   final double maxWidth;
 
@@ -210,8 +210,12 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
       CupertinoCalendarMode.dateTime => calendarDateTimePickerHeight,
     };
     const double minWidth = calendarWidth;
-    final double maxWidth =
-        widget.maxWidth <= minWidth ? minWidth : widget.maxWidth;
+    double maxWidth = 0;
+    if (widget.maxWidth <= minWidth) {
+      maxWidth = minWidth;
+    } else {
+      maxWidth = widget.maxWidth;
+    }
 
     return ConstrainedBox(
       constraints: BoxConstraints(

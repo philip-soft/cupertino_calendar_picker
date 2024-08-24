@@ -8,9 +8,11 @@ class CupertinoTimePickerWheel extends StatelessWidget {
     required this.maximumDateTime,
     required this.onTimeChanged,
     required this.minuteInterval,
+    this.pickerKey,
     super.key,
   });
 
+  final GlobalKey<CustomCupertinoDatePickerDateTimeState>? pickerKey;
   final DateTime initialDateTime;
   final DateTime minimumDateTime;
   final DateTime maximumDateTime;
@@ -20,6 +22,7 @@ class CupertinoTimePickerWheel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCupertinoDatePicker(
+      key: pickerKey,
       mode: CupertinoDatePickerMode.time,
       initialDateTime: initialDateTime,
       minimumDate: minimumDateTime,

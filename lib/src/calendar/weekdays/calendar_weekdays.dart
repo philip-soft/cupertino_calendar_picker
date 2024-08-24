@@ -28,9 +28,12 @@ class CalendarWeekdays extends StatelessWidget {
       final DateTime date = firstDayOfWeekDate.addDays(index);
       final String mediumDateString = localization.datePickerMediumDate(date);
       final String weekday = mediumDateString.substring(0, 3);
-      return CalendarWeekday(
-        weekday: weekday.toUpperCase(),
-        decoration: decoration,
+
+      return Expanded(
+        child: CalendarWeekday(
+          weekday: weekday.toUpperCase(),
+          decoration: decoration,
+        ),
       );
     });
   }
@@ -43,7 +46,6 @@ class CalendarWeekdays extends StatelessWidget {
         horizontal: calendarWeekdaysHorizontalPadding,
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: _weekdays(context),
       ),
     );

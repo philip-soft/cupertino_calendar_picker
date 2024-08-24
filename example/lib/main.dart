@@ -15,7 +15,8 @@ class ExampleApp extends StatefulWidget {
 }
 
 class _ExampleAppState extends State<ExampleApp> {
-  late DateTime _selectedDate;
+  late DateTime _selectedDateTime;
+  late TimeOfDay _selectedTime;
   late DateTime _now;
   late DateTime _minimumDateTime;
   late DateTime _maximumDateTime;
@@ -24,13 +25,14 @@ class _ExampleAppState extends State<ExampleApp> {
   void initState() {
     super.initState();
     _now = DateTime.now();
-    _selectedDate = _now;
+    _selectedDateTime = _now;
+    _selectedTime = TimeOfDay.fromDateTime(_now);
     _minimumDateTime = _now.subtract(const Duration(days: 15));
     _maximumDateTime = _now.add(const Duration(days: 365));
   }
 
   /// The context comes from the `Builder` above the widget tree.
-  Future<DateTime?> onTap(BuildContext context) async {
+  Future<DateTime?> onCalendarWidgetTap(BuildContext context) async {
     final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
 
     return showCupertinoCalendarPicker(
@@ -38,15 +40,33 @@ class _ExampleAppState extends State<ExampleApp> {
       widgetRenderBox: renderBox,
       minimumDateTime: _minimumDateTime,
       maximumDateTime: _maximumDateTime,
-      initialDateTime: _selectedDate,
+      initialDateTime: _selectedDateTime,
       timeLabel: 'Ends',
       onDateSelected: _onDateChanged,
     );
   }
 
+  /// The context comes from the `Builder` above the widget tree.
+  Future<TimeOfDay?> onTimeWidgetTap(BuildContext context) async {
+    final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+
+    return showCupertinoTimePicker(
+      context,
+      widgetRenderBox: renderBox,
+      initialTime: _selectedTime,
+      onTimeChanged: _onTimeChanged,
+    );
+  }
+
+  void _onTimeChanged(TimeOfDay time) {
+    setState(() {
+      _selectedTime = time;
+    });
+  }
+
   void _onDateChanged(DateTime newDate) {
     setState(() {
-      _selectedDate = newDate;
+      _selectedDateTime = newDate;
     });
   }
 
@@ -80,7 +100,7 @@ class _ExampleAppState extends State<ExampleApp> {
                 CupertinoCalendarPickerButton(
                   minimumDateTime: _minimumDateTime,
                   maximumDateTime: _maximumDateTime,
-                  initialDateTime: _selectedDate,
+                  initialDateTime: _selectedDateTime,
                   mode: CupertinoCalendarMode.dateTime,
                   timeLabel: 'Ends',
                   onDateSelected: _onDateChanged,
@@ -92,27 +112,56 @@ class _ExampleAppState extends State<ExampleApp> {
               ],
             ),
             const SizedBox(height: 15),
-            Builder(
-              builder: (context) {
-                return GestureDetector(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _MyWidget(
                   /// Passing exactly this `BuildContext` is mandatory to get
                   /// the `RenderBox` of the appropriate widget.
-                  onTap: () => onTap(context),
-                  child: Container(
-                    height: 40,
-                    width: 120,
-                    decoration: BoxDecoration(
-                      color: CupertinoColors.tertiarySystemFill
-                          .resolveFrom(context),
-                    ),
-                    alignment: Alignment.center,
-                    child: const Text('My widget'),
-                  ),
-                );
-              },
+                  onTap: (context) => onCalendarWidgetTap(context),
+                  title: 'My calendar widget',
+                ),
+                const SizedBox(width: 10),
+                _MyWidget(
+                  /// Passing exactly this `BuildContext` is mandatory to get
+                  /// the `RenderBox` of the appropriate widget.
+                  onTap: (context) => onTimeWidgetTap(context),
+                  title: 'My time widget',
+                ),
+              ],
             ),
             const Spacer(flex: 3),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MyWidget extends StatelessWidget {
+  const _MyWidget({
+    required this.title,
+    required this.onTap,
+  });
+
+  final String title;
+  final void Function(BuildContext) onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      /// Passing exactly this `BuildContext` is mandatory to get
+      /// the `RenderBox` of the appropriate widget.
+      onTap: () => onTap(context),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: CupertinoColors.tertiarySystemFill.resolveFrom(context),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          title,
+          textAlign: TextAlign.center,
         ),
       ),
     );

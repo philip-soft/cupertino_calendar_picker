@@ -69,7 +69,7 @@ class _CalendarFooterState extends State<CalendarFooter> {
   Widget build(BuildContext context) {
     final TimeOfDay time = _timeOfDay;
     final bool use24HoursFormat = MediaQuery.alwaysUse24HourFormatOf(context);
-    final bool shouldShowSegments =
+    final bool shouldShowDayPeriodSwitcher =
         !use24HoursFormat && widget.type == CupertinoCalendarType.compact;
 
     return Column(
@@ -110,14 +110,14 @@ class _CalendarFooterState extends State<CalendarFooter> {
                         : widget.decoration.timeStyle?.color,
                   ),
                   child: Text(
-                    shouldShowSegments
+                    shouldShowDayPeriodSwitcher
                         ? time.customFormat(context)
                         : time.format(context),
                   ),
                 ),
               ),
             ),
-            if (shouldShowSegments) ...<Widget>[
+            if (shouldShowDayPeriodSwitcher) ...<Widget>[
               const SizedBox(width: 8.0),
               CupertinoSlidingSegmentedControl<DayPeriod>(
                 onValueChanged: _onDayPeriodChanged,

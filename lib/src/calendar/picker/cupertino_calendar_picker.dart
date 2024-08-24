@@ -301,7 +301,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
                   ),
                 CupertinoCalendarViewMode.timePicker =>
                   CupertinoTimePickerWheel(
-                    key: _timePickerKey,
+                    pickerKey: _timePickerKey,
                     onTimeChanged: _onTimeChanged,
                     minimumDateTime: widget.minimumDateTime.truncateToMinutes(),
                     maximumDateTime: widget.maximumDateTime.truncateToMinutes(),
