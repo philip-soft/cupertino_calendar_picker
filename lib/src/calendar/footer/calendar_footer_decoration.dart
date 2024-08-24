@@ -19,8 +19,6 @@ const TextStyle calendarFooterTimeLabelStyle = TextStyle(
 class CalendarFooterDecoration {
   /// Creates a calendar's footer decoration class with default values
   /// for non-provided parameters.
-  ///
-  /// [mainColor] is used only if any other color is not provided.
   factory CalendarFooterDecoration({
     TextStyle? timeLabelStyle,
     TextStyle? timeStyle,

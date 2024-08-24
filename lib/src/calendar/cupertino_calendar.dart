@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 /// This widget provides a calendar interface that allows users to select dates or date-time
 /// combinations, depending on the mode.
 class CupertinoCalendar extends StatefulWidget {
+  /// Creates a `CupertinoCalendar` widget.
   CupertinoCalendar({
     required this.minimumDateTime,
     required this.maximumDateTime,
@@ -67,7 +68,8 @@ class CupertinoCalendar extends StatefulWidget {
   /// The current date (i.e., today's date).
   final DateTime? currentDateTime;
 
-  /// A callback that is triggered whenever the selected [DateTime] changes in the calendar.
+  /// A callback that is triggered whenever the selected [DateTime] changes
+  /// in the calendar.
   final ValueChanged<DateTime>? onDateTimeChanged;
 
   /// A callback that is triggered when the user selects a date in the calendar.
@@ -87,7 +89,7 @@ class CupertinoCalendar extends StatefulWidget {
 
   /// Custom decoration for the footer of the calendar.
   ///
-  /// Applied only for the [dateTime] mode.
+  /// Applied for the [dateTime] mode only.
   final CalendarFooterDecoration? footerDecoration;
 
   /// The primary color used in the calendar picker, typically for highlighting
@@ -102,7 +104,7 @@ class CupertinoCalendar extends StatefulWidget {
   final CupertinoCalendarMode mode;
 
   /// The type of the calendar, which may define specific behaviors or appearances.
-  ///  The default type is [CupertinoCalendarType.inline].
+  /// The default type is [CupertinoCalendarType.inline].
   final CupertinoCalendarType type;
 
   /// The maximum width of the calendar widget.
@@ -120,8 +122,6 @@ class CupertinoCalendar extends StatefulWidget {
 
   /// The interval of minutes that the time picker should allow, applicable
   /// when the calendar is in a mode that includes time selection.
-  ///
-  /// The default value is 1 minute, meaning the user can select any minute of the hour.
   final int minuteInterval;
 
   @override
@@ -154,21 +154,25 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
   }
 
   void _handleCalendarDateChange(DateTime date) {
-    final int year = date.year;
-    final int month = date.month;
+    final DateTime dateTime = date.copyWith(
+      hour: _selectedDateTime.hour,
+      minute: _selectedDateTime.minute,
+    );
+    final int year = dateTime.year;
+    final int month = dateTime.month;
     final int daysInMonth = DateUtils.getDaysInMonth(year, month);
     int selectedDay = _selectedDateTime.day;
 
     if (daysInMonth < selectedDay) {
       selectedDay = daysInMonth;
     }
-    DateTime newDate = date.copyWith(day: selectedDay);
+    DateTime newDate = dateTime.copyWith(day: selectedDay);
 
-    final bool exceedMinimumDate = newDate.isBefore(widget.minimumDateTime);
-    final bool exceedMaximumDate = newDate.isAfter(widget.maximumDateTime);
-    if (exceedMinimumDate) {
+    final bool exceedMinimumDateTime = newDate.isBefore(widget.minimumDateTime);
+    final bool exceedMaximumDateTime = newDate.isAfter(widget.maximumDateTime);
+    if (exceedMinimumDateTime) {
       newDate = widget.minimumDateTime;
-    } else if (exceedMaximumDate) {
+    } else if (exceedMaximumDateTime) {
       newDate = widget.maximumDateTime;
     }
     _handleCalendarMonthChange(newDate);
@@ -223,6 +227,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
 
     return ConstrainedBox(
       constraints: BoxConstraints(
+        minHeight: height,
         maxHeight: height,
         minWidth: calendarWidth,
         maxWidth: maxWidth,

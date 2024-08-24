@@ -1,5 +1,5 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
-// Use of this source code is governed by a MIT-style license that can be
+// Copyright 2014 The Flutter Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
@@ -9,6 +9,7 @@ class CupertinoPickerButton<T> extends StatefulWidget {
   const CupertinoPickerButton({
     required this.title,
     required this.showPickerFunction,
+    required this.onPressed,
     this.mainColor,
     super.key,
     this.onSelected,
@@ -20,6 +21,7 @@ class CupertinoPickerButton<T> extends StatefulWidget {
   final ValueChanged<T?>? onSelected;
   final Color? mainColor;
   final PickerButtonDecoration? decoration;
+  final VoidCallback? onPressed;
 
   @override
   State<CupertinoPickerButton<T>> createState() =>
@@ -62,6 +64,8 @@ class _CupertinoPickerButtonState<T> extends State<CupertinoPickerButton<T>>
   }
 
   Future<void> _onTap(BuildContext context) async {
+    widget.onPressed?.call();
+
     final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
     isCalendarOpened = true;
 

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 /// A button widget that triggers a Cupertino-style time picker when pressed.
 class CupertinoTimePickerButton extends StatefulWidget {
+  /// Creates a `CupertinoTimePickerButton` widget.
   const CupertinoTimePickerButton({
     this.initialTime,
     this.minimumTime,
@@ -20,6 +21,7 @@ class CupertinoTimePickerButton extends StatefulWidget {
     this.mainColor = CupertinoColors.systemRed,
     this.buttonDecoration,
     this.minuteInterval = 1,
+    this.onPressed,
   });
 
   /// The minimum selectable [TimeOfDay].
@@ -75,6 +77,9 @@ class CupertinoTimePickerButton extends StatefulWidget {
   /// The primary color used within the button widget.
   final Color mainColor;
 
+  /// A callback function triggered when the button is pressed.
+  final VoidCallback? onPressed;
+
   @override
   State<CupertinoTimePickerButton> createState() =>
       _CupertinoTimePickerButtonState();
@@ -93,7 +98,7 @@ class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
   void didUpdateWidget(CupertinoTimePickerButton oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.initialTime != _selectedTime) {
+    if (widget.initialTime != oldWidget.initialTime) {
       _selectedTime = widget.initialTime ?? TimeOfDay.now();
     }
   }
@@ -111,6 +116,7 @@ class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
       title: _selectedTime.format(context),
       decoration: widget.buttonDecoration,
       mainColor: widget.mainColor,
+      onPressed: widget.onPressed,
       showPickerFunction: (RenderBox? renderBox) => showCupertinoTimePicker(
         context,
         widgetRenderBox: renderBox,

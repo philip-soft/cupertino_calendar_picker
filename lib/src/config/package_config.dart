@@ -40,7 +40,7 @@ const Duration calendarAnimationReverseDuration = Duration(milliseconds: 280);
 const Duration monthScrollDuration = Duration(milliseconds: 400);
 const Cubic calendarAnimationCurve = Curves.ease;
 const Duration calendarHeaderFadeDuration = Duration(milliseconds: 300);
-const Duration pickerFadeDuration = Duration(milliseconds: 250);
+const Duration innerPickerFadeDuration = Duration(milliseconds: 250);
 const Duration calendarYearPickerDuration = Duration(milliseconds: 500);
 
 // Other

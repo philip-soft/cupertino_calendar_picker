@@ -107,7 +107,7 @@ class _CalendarFooterState extends State<CalendarFooter> {
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(horizontal: 11.0),
                 child: AnimatedDefaultTextStyle(
-                  duration: pickerFadeDuration,
+                  duration: innerPickerFadeDuration,
                   style: widget.decoration.timeStyle!.copyWith(
                     color: _showTimePicker
                         ? widget.mainColor

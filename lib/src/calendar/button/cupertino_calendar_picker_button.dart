@@ -6,11 +6,12 @@ import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-typedef CupertinoCalendarFormatter = String Function(DateTime dateTime);
+typedef CalendarButtonFormatter = String Function(DateTime dateTime);
 
 /// A customizable Cupertino-style button that displays a calendar picker
 /// when tapped.
 class CupertinoCalendarPickerButton extends StatefulWidget {
+  /// Creates a `CupertinoCalendarPickerButton` widget.
   const CupertinoCalendarPickerButton({
     required this.minimumDateTime,
     required this.maximumDateTime,
@@ -33,6 +34,7 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
     this.mode = CupertinoCalendarMode.date,
     this.formatter,
     this.minuteInterval = 1,
+    this.onPressed,
   });
 
   /// Specifies the earliest date that can be selected by the user
@@ -43,8 +45,8 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   /// calendar picker.
   final DateTime maximumDateTime;
 
-  /// A callback function triggered when the user selects a date
-  /// from the calendar picker.
+  /// A callback that is triggered whenever the selected [DateTime] changes
+  /// in the calendar.
   final ValueChanged<DateTime>? onDateTimeChanged;
 
   /// A callback that is triggered when the user selects a date in the calendar.
@@ -65,10 +67,10 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   /// for the first day of the month.
   final ValueChanged<DateTime>? onDisplayedMonthChanged;
 
-  /// Defines the spacing on the left and right sides of the calendar widget.
+  /// Defines the spacing on the left and right sides of the calendar picker.
   final double horizontalSpacing = 15.0;
 
-  /// Defines the spacing on the top and bottom sides of the calendar widget.
+  /// Defines the spacing on the top and bottom sides of the calendar picker.
   final double verticalSpacing = 15.0;
 
   /// The position offset applied to the widget from its top and bottom edges
@@ -112,7 +114,7 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   final CupertinoCalendarMode mode;
 
   /// The custom formatter of the calendar picker button.
-  final CupertinoCalendarFormatter? formatter;
+  final CalendarButtonFormatter? formatter;
 
   /// An optional label to be displayed when the calendar is in a mode that
   /// includes time selection.
@@ -123,9 +125,10 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
 
   /// The interval of minutes that the time picker should allow, applicable
   /// when the calendar is in a mode that includes time selection.
-  ///
-  /// The default value is 1 minute, meaning the user can select any minute of the hour.
   final int minuteInterval;
+
+  /// A callback function triggered when the button is pressed.
+  final VoidCallback? onPressed;
 
   @override
   State<CupertinoCalendarPickerButton> createState() =>
@@ -146,7 +149,7 @@ class _CupertinoCalendarPickerButtonState
   void didUpdateWidget(CupertinoCalendarPickerButton oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.initialDateTime != _selectedDateTime) {
+    if (widget.initialDateTime != oldWidget.initialDateTime) {
       _selectedDateTime = widget.initialDateTime ?? DateTime.now();
     }
   }
@@ -162,7 +165,7 @@ class _CupertinoCalendarPickerButtonState
   Widget build(BuildContext context) {
     late String formattedString;
 
-    final CupertinoCalendarFormatter? formatter = widget.formatter;
+    final CalendarButtonFormatter? formatter = widget.formatter;
 
     if (formatter != null) {
       formattedString = formatter(_selectedDateTime);
@@ -195,6 +198,7 @@ class _CupertinoCalendarPickerButtonState
       title: formattedString,
       mainColor: widget.mainColor,
       decoration: widget.buttonDecoration,
+      onPressed: widget.onPressed,
       showPickerFunction: (RenderBox? renderBox) => showCupertinoCalendarPicker(
         context,
         widgetRenderBox: renderBox,

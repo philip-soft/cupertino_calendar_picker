@@ -1,3 +1,27 @@
+## 2.0.0
+
+**MAJOR UPDATES**:
+  * New `showCupertinoTimePicker` function which can be used for time selection.
+  * New `CupertinoCalendarPickerButton` widget.
+  * New `CupertinoTimePickerButton` widget.
+  * New `CupertinoCalendar` widget. Which is now can be used as `inline` calendar.
+  * New `CupertinoCalendarMode` parameter with `date` and `dateTime` options, enabling the calendar to select both date and time within the picker.
+
+**MINOR UPDATES**:
+  * The `CupertinoCalendarPicker` updates:
+  * * The `monthDateStyle` is now animated when switching between the month/year picker and month picker modes.
+  * * Weekdays are now aligned more accurately.
+
+**BREAKING CHANGES**:
+  * `CalendarContainerDecoration` has been renamed to `PickerContainerDecoration`.
+  * `CalendarBackgroundType` has been renamed to `PickerBackgroundType`.
+  * `dismissBehaviour` has been renamed to `dismissBehavior`.
+  * `minimumDate` has been renamed to `minimumDateTime`.
+  * `maximumDate` has been renamed to `maximumDateTime`.
+  * `initialDate` has been renamed to `initialDateTime`.
+  * `currentDate` has been renamed to `currentDateTime`.
+  * `onDateChanged` has been renamed to `onDateTimeChanged`.
+
 ## 1.1.2
 
 * The `CalendarDismissBehavior` enum was added to specify different dismiss behaviors.

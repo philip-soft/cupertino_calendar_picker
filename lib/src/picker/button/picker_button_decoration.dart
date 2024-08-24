@@ -56,10 +56,10 @@ class PickerButtonDecoration {
     );
   }
 
-  /// The [TextStyle] of the cupertino picker button.
+  /// The [TextStyle] of the picker button.
   final TextStyle? textStyle;
 
-  /// The background [Color] of the cupertino picker button.
+  /// The background [Color] of the picker button.
   final Color? backgroundColor;
 
   /// Creates a copy of the class with the provided parameters.

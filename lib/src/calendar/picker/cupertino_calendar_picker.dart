@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CupertinoCalendarPicker extends StatefulWidget {
-  /// Creates a calendar's picker.
   CupertinoCalendarPicker({
     required this.initialMonth,
     required this.currentDateTime,
@@ -32,32 +31,13 @@ class CupertinoCalendarPicker extends StatefulWidget {
         assert(!currentDateTime.isBefore(minimumDateTime)),
         assert(!currentDateTime.isAfter(maximumDateTime));
 
-  /// The initial month to display.
   final DateTime initialMonth;
-
-  /// The current date.
-  ///
-  /// This date is subtly highlighted in the picker.
   final DateTime currentDateTime;
-
-  /// The earliest date the user is permitted to pick.
-  ///
-  /// This date must be on or before the [maximumDateTime].
   final DateTime minimumDateTime;
-
-  /// The latest date the user is permitted to pick.
-  ///
-  /// This date must be on or after the [minimumDateTime].
   final DateTime maximumDateTime;
-
-  /// The currently selected date.
-  ///
-  /// This date is highlighted in the picker.
   final DateTime selectedDateTime;
   final ValueChanged<DateTime> onDateChanged;
   final ValueChanged<DateTime> onTimeChanged;
-
-  /// Called when the user navigates to a new month.
   final ValueChanged<DateTime> onDisplayedMonthChanged;
   final ValueChanged<DateTime> onYearPickerChanged;
   final CalendarWeekdayDecoration weekdayDecoration;
@@ -205,7 +185,15 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
     });
   }
 
-  void _onDateChanged(DateTime dateTime) {
+  void _onYearPickerChanged(DateTime date) {
+    _selectedDateTime = _selectedDateTime.copyWith(
+      year: date.year,
+      month: date.month,
+    );
+    widget.onYearPickerChanged(date);
+  }
+
+  void _onMonthDateChanged(DateTime dateTime) {
     _selectedDateTime = _selectedDateTime.copyWith(
       year: dateTime.year,
       month: dateTime.month,
@@ -276,7 +264,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
                   minimumDate: widget.minimumDateTime,
                   maximumDate: widget.maximumDateTime,
                   selectedDate: widget.selectedDateTime,
-                  onChanged: _onDateChanged,
+                  onChanged: _onMonthDateChanged,
                   decoration: widget.monthPickerDecoration,
                   mainColor: widget.mainColor,
                 ),
@@ -300,7 +288,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
                       widget.maximumDateTime.month,
                     ),
                     mode: CupertinoDatePickerMode.monthYear,
-                    onDateTimeChanged: widget.onYearPickerChanged,
+                    onDateTimeChanged: _onYearPickerChanged,
                     initialDateTime: _currentMonth,
                   ),
                 CupertinoCalendarViewMode.timePicker =>
