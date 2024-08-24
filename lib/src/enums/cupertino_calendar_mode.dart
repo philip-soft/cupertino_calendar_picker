@@ -1,3 +1,7 @@
+// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Use of this source code is governed by a MIT-style license that can be
+// found in the LICENSE file.
+
 /// Specifies the mode of the Cupertino calendar.
 ///
 /// This enum defines whether the calendar allows selection of just the date
