@@ -20,6 +20,13 @@ dev_dependencies:
 
 screenshots:
   - description: "The cupertino calendar picker in light theme."
-    path: doc/calendar_light_preview.png
+    path: doc/cupertino_calendar_light_preview.png
   - description: "The cupertino calendar picker in dark theme."
-    path: doc/calendar_dark_preview.png
+    path: doc/cupertino_calendar_dark_preview.png
+
+topics:
+  - cupertinoub
+  - calendar-picker
+  - ios
+  - time-picker
+  - widget

@@ -94,7 +94,6 @@ class _ExampleAppState extends State<ExampleApp> {
                 maximumDateTime: _maximumDateTime,
                 initialDateTime: _selectedDateTime,
                 timeLabel: 'Ends',
-                type: CupertinoCalendarType.inline,
                 mode: CupertinoCalendarMode.dateTime,
               ),
             ),

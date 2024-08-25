@@ -47,7 +47,7 @@ This package offers three convenient widgets for integrating pickers directly in
 
 ### `CupertinoCalendar` Widget.
 
-You can use this widget as an inline version of the calendar, right on your screen.
+The `CupertinoCalendar` widget provides an inline calendar that can be displayed directly within your screen.
 
 <p>
   <img src="doc/cupertino_inline_calendar_light.png"
@@ -56,6 +56,22 @@ You can use this widget as an inline version of the calendar, right on your scre
   <img src="doc/cupertino_inline_calendar_dark.png"
     alt="Cupertino Inline Calendar Dark" width="320"/>
 </p>
+
+#### Usage Example
+
+```dart
+SizedBox(
+  width: 350,
+  child: CupertinoCalendar(
+    minimumDateTime: DateTime(2024, 7, 10),
+    maximumDateTime: DateTime(2025, 7, 10),
+    initialDateTime: DateTime(2024, 8, 15, 9, 41),
+    currentDateTime: DateTime(2024, 8, 15),
+    timeLabel: 'Ends',
+    mode: CupertinoCalendarMode.dateTime,
+  ),
+),
+```
 
 ### `CupertinoCalendarPickerButton` Widget.
 
@@ -69,6 +85,7 @@ The `CupertinoCalendarPickerButton` widget allows users to open a cupertino cale
     alt="Cupertino Time Picker Button Dark" width="320"/>
 </p>
 
+#### Usage Example
 
 ```dart
 CupertinoCalendarPickerButton(
@@ -94,7 +111,7 @@ The `CupertinoTimePickerButton` widget lets users select a time via the calendar
     alt="Cupertino Time Picker Button Dark" width="320"/>
 </p>
 
-#### Example Usage
+#### Usage Example
 
 ```dart
 CupertinoTimePickerButton(
@@ -112,7 +129,7 @@ This package also includes two functions for displaying pickers from your widget
 The `showCupertinoCalendarPicker` function displays a calendar picker around your widget.
 - From version 2.0.0, you can specify the `CupertinoCalendarMode` to allow selection of both date and time.
 
-#### Example Usage
+#### Usage Example
 
 ```dart
 Future<DateTime?> onCalendarWidgetTap(BuildContext context) async {
@@ -135,6 +152,8 @@ Future<DateTime?> onCalendarWidgetTap(BuildContext context) async {
 ### `showCupertinoTimePicker` function.
 
 The showCupertinoTimePicker function shows a time picker around your widget.
+
+#### Usage Example
 
 ```dart
 Future<TimeOfDay?> onTimeWidgetTap(BuildContext context) async {
