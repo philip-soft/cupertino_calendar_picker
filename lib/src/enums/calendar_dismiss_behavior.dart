@@ -1,3 +1,7 @@
+// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Use of this source code is governed by a MIT-style license that can be
+// found in the LICENSE file.
+
 /// A enum that represents how the calendar can be closed.
 enum CalendarDismissBehavior {
   /// The calendar will close when a tap occurs outside of it.

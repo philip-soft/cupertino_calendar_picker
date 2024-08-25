@@ -1,33 +1,42 @@
+// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Use of this source code is governed by a MIT-style license that can be
+// found in the LICENSE file.
+
 import 'dart:ui';
 
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 
-class CalendarContainer extends StatefulWidget {
-  const CalendarContainer({
+class CupertinoPickerContainer extends StatefulWidget {
+  const CupertinoPickerContainer({
     required this.child,
     required this.decoration,
     required this.scaleAlignment,
     required this.onInitialized,
     required this.maxScale,
+    required this.height,
+    required this.width,
     super.key,
   });
 
   final Widget child;
-  final CalendarContainerDecoration decoration;
+  final PickerContainerDecoration decoration;
   final Alignment scaleAlignment;
   final double maxScale;
   final void Function(AnimationController controller) onInitialized;
+  final double height;
+  final double width;
 
   @override
-  State<CalendarContainer> createState() => _CalendarContainerState();
+  State<CupertinoPickerContainer> createState() =>
+      _CupertinoPickerContainerState();
 }
 
-class _CalendarContainerState extends State<CalendarContainer>
+class _CupertinoPickerContainerState extends State<CupertinoPickerContainer>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> scale;
-  late Animation<double> height;
+  late Animation<double> _scale;
+  late Animation<double> _height;
 
   @override
   void initState() {
@@ -38,11 +47,11 @@ class _CalendarContainerState extends State<CalendarContainer>
       reverseDuration: calendarAnimationReverseDuration,
     );
 
-    scale = CalendarAnimations.scaleAnimation(
+    _scale = CalendarAnimations.scaleAnimation(
       maxScale: widget.maxScale,
     ).animate(_curvedAnimation);
-    height = CalendarAnimations.heightAnimation(
-      height: calendarHeight,
+    _height = CalendarAnimations.heightAnimation(
+      height: widget.height,
     ).animate(_curvedAnimation);
 
     widget.onInitialized(_controller);
@@ -56,11 +65,11 @@ class _CalendarContainerState extends State<CalendarContainer>
   }
 
   @override
-  void didUpdateWidget(covariant CalendarContainer oldWidget) {
+  void didUpdateWidget(covariant CupertinoPickerContainer oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.maxScale != oldWidget.maxScale) {
-      scale = CalendarAnimations.scaleAnimation(
+      _scale = CalendarAnimations.scaleAnimation(
         maxScale: widget.maxScale,
       ).animate(_curvedAnimation);
     }
@@ -68,29 +77,29 @@ class _CalendarContainerState extends State<CalendarContainer>
 
   @override
   Widget build(BuildContext context) {
-    final CalendarContainerDecoration decoration = widget.decoration;
+    final PickerContainerDecoration decoration = widget.decoration;
 
     return Column(
       children: <Widget>[
         AnimatedBuilder(
           animation: _controller,
           child: SizedBox(
-            width: calendarWidth,
-            height: calendarHeight,
+            width: widget.width,
+            height: widget.height,
             child: Builder(
               builder: (BuildContext context) {
                 final FittedBox child = FittedBox(
                   alignment: Alignment.topCenter,
                   fit: BoxFit.none,
                   child: SizedBox(
-                    width: calendarWidth,
-                    height: calendarHeight,
+                    width: widget.width,
+                    height: widget.height,
                     child: widget.child,
                   ),
                 );
 
                 return switch (decoration.backgroundType) {
-                  CalendarBackgroundType.transparentAndBlured => DecoratedBox(
+                  PickerBackgroundType.transparentAndBlured => DecoratedBox(
                       decoration: BoxDecoration(
                         boxShadow: decoration.boxShadow,
                         borderRadius: decoration.borderRadius,
@@ -109,7 +118,7 @@ class _CalendarContainerState extends State<CalendarContainer>
                         ),
                       ),
                     ),
-                  CalendarBackgroundType.plainColor => Container(
+                  PickerBackgroundType.plainColor => Container(
                       decoration: BoxDecoration(
                         borderRadius: decoration.borderRadius,
                         color: decoration.backgroundColor,
@@ -124,14 +133,14 @@ class _CalendarContainerState extends State<CalendarContainer>
           ),
           builder: (BuildContext context, Widget? child) {
             return Transform.scale(
-              scale: scale.value,
+              scale: _scale.value,
               alignment: widget.scaleAlignment,
               child: Container(
-                height: calendarHeight *
+                height: widget.height *
                     (CalendarAnimations.maxHeightPercentage / 100),
                 alignment: widget.scaleAlignment,
                 child: SizedBox(
-                  height: height.value,
+                  height: _height.value,
                   child: child,
                 ),
               ),

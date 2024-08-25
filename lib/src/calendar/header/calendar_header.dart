@@ -1,3 +1,7 @@
+// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Use of this source code is governed by a MIT-style license that can be
+// found in the LICENSE file.
+
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -62,17 +66,18 @@ class _CalendarHeaderState extends State<CalendarHeader> {
             height: 44.0,
             child: Row(
               children: <Widget>[
-                Text(
-                  headerString,
+                AnimatedDefaultTextStyle(
+                  duration: innerPickersFadeDuration,
                   style: _showYearPicker
-                      ? _decoration.monthDateStyle?.copyWith(
+                      ? _decoration.monthDateStyle!.copyWith(
                           color: _decoration.monthDateArrowColor,
                         )
-                      : _decoration.monthDateStyle,
+                      : _decoration.monthDateStyle!,
+                  child: Text(headerString),
                 ),
                 const SizedBox(width: 5.0),
                 AnimatedRotation(
-                  duration: calendarHeaderFadeDuration,
+                  duration: innerPickersFadeDuration,
                   curve: Curves.easeInOut,
                   turns: _showYearPicker ? 1.25 : 1.0,
                   child: SizedBox(
@@ -131,7 +136,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
           crossFadeState: _showYearPicker
               ? CrossFadeState.showFirst
               : CrossFadeState.showSecond,
-          duration: calendarHeaderFadeDuration,
+          duration: innerPickersFadeDuration,
           layoutBuilder: (
             Widget topChild,
             Key topChildKey,

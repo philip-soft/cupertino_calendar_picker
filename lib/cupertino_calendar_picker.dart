@@ -1,11 +1,12 @@
-/// The package contains an iOS-style calendar picker with the capability
-/// to display it around your widget.
+// This package includes a suite of Cupertino-style components that make date
+// and time selection seamless and visually consistent with iOS design principles.
 library cupertino_calendar_picker;
 
 export 'src/src.dart'
     show
         showCupertinoCalendarPicker,
-        CalendarContainerDecoration,
+        showCupertinoTimePicker,
+        PickerContainerDecoration,
         CalendarHeaderDecoration,
         CalendarMonthPickerDayStyle,
         CalendarMonthPickerBackgroundCircledDayStyle,
@@ -15,6 +16,13 @@ export 'src/src.dart'
         CalendarMonthPickerSelectedCurrentDayStyle,
         CalendarMonthPickerCurrentDayStyle,
         CalendarMonthPickerDecoration,
+        CalendarFooterDecoration,
+        PickerButtonDecoration,
         CalendarWeekdayDecoration,
-        CalendarBackgroundType,
-        CalendarDismissBehavior;
+        PickerBackgroundType,
+        CupertinoCalendarMode,
+        CalendarDismissBehavior,
+        CupertinoCalendarPickerButton,
+        CupertinoTimePickerButton,
+        CupertinoCalendar,
+        CupertinoCalendarType;

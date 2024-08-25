@@ -1,3 +1,7 @@
+// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Use of this source code is governed by a MIT-style license that can be
+// found in the LICENSE file.
+
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,9 +32,12 @@ class CalendarWeekdays extends StatelessWidget {
       final DateTime date = firstDayOfWeekDate.addDays(index);
       final String mediumDateString = localization.datePickerMediumDate(date);
       final String weekday = mediumDateString.substring(0, 3);
-      return CalendarWeekday(
-        weekday: weekday.toUpperCase(),
-        decoration: decoration,
+
+      return Expanded(
+        child: CalendarWeekday(
+          weekday: weekday.toUpperCase(),
+          decoration: decoration,
+        ),
       );
     });
   }
@@ -43,7 +50,6 @@ class CalendarWeekdays extends StatelessWidget {
         horizontal: calendarWeekdaysHorizontalPadding,
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: _weekdays(context),
       ),
     );

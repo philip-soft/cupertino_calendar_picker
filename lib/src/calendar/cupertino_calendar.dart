@@ -1,57 +1,128 @@
+// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Use of this source code is governed by a MIT-style license that can be
+// found in the LICENSE file.
+
 import 'package:cupertino_calendar_picker/src/src.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+/// A widget that displays an inline Cupertino-style calendar.
+///
+/// This widget provides a calendar interface that allows users to select dates or date-time
+/// combinations, depending on the mode.
 class CupertinoCalendar extends StatefulWidget {
+  /// Creates a `CupertinoCalendar` widget.
   CupertinoCalendar({
-    required DateTime minimumDate,
-    required DateTime maximumDate,
-    required this.scaleAlignment,
-    required this.onInitialized,
-    required this.mainColor,
-    required this.maxScale,
-    this.onDateChanged,
+    required this.minimumDateTime,
+    required this.maximumDateTime,
+    this.mainColor = CupertinoColors.systemRed,
+    this.mode = CupertinoCalendarMode.date,
+    this.type = CupertinoCalendarType.inline,
+    this.onDateTimeChanged,
     this.onDateSelected,
-    DateTime? initialDate,
-    DateTime? currentDate,
+    this.initialDateTime,
+    this.currentDateTime,
     this.onDisplayedMonthChanged,
-    this.containerDecoration,
     this.weekdayDecoration,
     this.monthPickerDecoration,
     this.headerDecoration,
+    this.footerDecoration,
+    this.timeLabel,
+    this.minuteInterval = 1,
+    this.maxWidth = double.infinity,
     super.key,
-  })  : initialDate = DateUtils.dateOnly(initialDate ?? DateTime.now()),
-        minimumDate = DateUtils.dateOnly(minimumDate),
-        maximumDate = DateUtils.dateOnly(maximumDate),
-        currentDate = DateUtils.dateOnly(currentDate ?? DateTime.now()) {
+  }) {
+    // ignore: prefer_asserts_in_initializer_lists
     assert(
-      !this.maximumDate.isBefore(this.minimumDate),
-      'maximumDate ${this.maximumDate} must be on or after minimumDate ${this.minimumDate}.',
+      !maximumDateTime.isBefore(minimumDateTime),
+      'maximumDateTime $maximumDateTime must be on or after minimumDateTime $minimumDateTime.',
     );
-    assert(
-      !this.initialDate.isBefore(this.minimumDate),
-      'initialDate ${this.initialDate} must be on or after minimumDate ${this.minimumDate}.',
-    );
-    assert(
-      !this.initialDate.isAfter(this.maximumDate),
-      'initialDate ${this.initialDate} must be on or before maximumDate ${this.maximumDate}.',
-    );
+    if (initialDateTime != null) {
+      assert(
+        !initialDateTime!.isBefore(minimumDateTime),
+        'initialDateTime $initialDateTime must be on or after minimumDateTime $minimumDateTime.',
+      );
+      assert(
+        !initialDateTime!.isAfter(maximumDateTime),
+        'initialDateTime $initialDateTime must be on or before maximumDateTime $maximumDateTime.',
+      );
+    }
   }
 
-  final DateTime initialDate;
-  final DateTime minimumDate;
-  final DateTime maximumDate;
-  final DateTime currentDate;
-  final ValueChanged<DateTime>? onDateChanged;
+  /// The initially selected [DateTime] that the calendar should display.
+  ///
+  /// This date is highlighted in the picker and the default date when the picker
+  /// is first displayed.
+  final DateTime? initialDateTime;
+
+  /// The earliest selectable [DateTime] in the picker.
+  ///
+  /// This date must be on or before the [maximumDateTime].
+  final DateTime minimumDateTime;
+
+  /// The latest selectable [DateTime] in the picker.
+  ///
+  /// This date must be on or after the [minimumDateTime].
+  final DateTime maximumDateTime;
+
+  /// The current date (i.e., today's date).
+  final DateTime? currentDateTime;
+
+  /// A callback that is triggered whenever the selected [DateTime] changes
+  /// in the calendar.
+  final ValueChanged<DateTime>? onDateTimeChanged;
+
+  /// A callback that is triggered when the user selects a date in the calendar.
   final ValueChanged<DateTime>? onDateSelected;
+
+  /// A callback that is triggered when the user navigates to a different month in the calendar.
   final ValueChanged<DateTime>? onDisplayedMonthChanged;
-  final CalendarContainerDecoration? containerDecoration;
+
+  /// Custom decoration for the weekdays' row in the calendar.
   final CalendarWeekdayDecoration? weekdayDecoration;
+
+  /// Custom decoration for the month picker view.
   final CalendarMonthPickerDecoration? monthPickerDecoration;
+
+  /// Custom decoration for the header of the calendar.
   final CalendarHeaderDecoration? headerDecoration;
+
+  /// Custom decoration for the footer of the calendar.
+  ///
+  /// Applied for the [dateTime] mode only.
+  final CalendarFooterDecoration? footerDecoration;
+
+  /// The primary color used in the calendar picker, typically for highlighting
+  /// the selected date and other important elements.
+  ///
+  /// The default color is [CupertinoColors.systemRed].
   final Color mainColor;
-  final Alignment scaleAlignment;
-  final double maxScale;
-  final void Function(AnimationController controller) onInitialized;
+
+  /// The mode in which the picker operates.
+  ///
+  /// This defines whether the picker allows selection of just the date or both date and time.
+  final CupertinoCalendarMode mode;
+
+  /// The type of the calendar, which may define specific behaviors or appearances.
+  /// The default type is [CupertinoCalendarType.inline].
+  final CupertinoCalendarType type;
+
+  /// The maximum width of the calendar widget.
+  ///
+  /// The default value is [double.infinity], meaning the widget can expand
+  /// to fill available space.
+  ///
+  /// minWidth is [320].
+  final double maxWidth;
+
+  /// An optional label to be displayed when the calendar is in a mode that includes time selection.
+  ///
+  /// This label typically indicates what the selected time is for or provides additional context.
+  final String? timeLabel;
+
+  /// The interval of minutes that the time picker should allow, applicable
+  /// when the calendar is in a mode that includes time selection.
+  final int minuteInterval;
 
   @override
   State<CupertinoCalendar> createState() => _CupertinoCalendarState();
@@ -59,7 +130,7 @@ class CupertinoCalendar extends StatefulWidget {
 
 class _CupertinoCalendarState extends State<CupertinoCalendar> {
   late DateTime _currentlyDisplayedMonthDate;
-  late DateTime _selectedDate;
+  late DateTime _selectedDateTime;
 
   @override
   void initState() {
@@ -70,84 +141,105 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
   @override
   void didUpdateWidget(CupertinoCalendar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.initialDate != widget.initialDate) {
+    if (oldWidget.initialDateTime != widget.initialDateTime) {
       _initializeInitialDate();
     }
   }
 
   void _initializeInitialDate() {
-    final DateTime initialDate = widget.initialDate;
-    _currentlyDisplayedMonthDate = PackageDateUtils.monthDateOnly(initialDate);
-    _selectedDate = initialDate;
+    final DateTime initialDateTime = widget.initialDateTime ?? DateTime.now();
+    _currentlyDisplayedMonthDate =
+        PackageDateUtils.monthDateOnly(initialDateTime);
+    _selectedDateTime = initialDateTime;
   }
 
   void _handleCalendarDateChange(DateTime date) {
-    final int year = date.year;
-    final int month = date.month;
+    final DateTime dateTime = date.copyWith(
+      hour: _selectedDateTime.hour,
+      minute: _selectedDateTime.minute,
+    );
+    final int year = dateTime.year;
+    final int month = dateTime.month;
     final int daysInMonth = DateUtils.getDaysInMonth(year, month);
-    int selectedDay = _selectedDate.day;
+    int selectedDay = _selectedDateTime.day;
 
     if (daysInMonth < selectedDay) {
       selectedDay = daysInMonth;
     }
-    DateTime newDate = date.copyWith(day: selectedDay);
+    DateTime newDate = dateTime.copyWith(day: selectedDay);
 
-    final bool exceedMinimumDate = newDate.isBefore(widget.minimumDate);
-    final bool exceedMaximumDate = newDate.isAfter(widget.maximumDate);
-    if (exceedMinimumDate) {
-      newDate = widget.minimumDate;
-    } else if (exceedMaximumDate) {
-      newDate = widget.maximumDate;
+    final bool exceedMinimumDateTime = newDate.isBefore(widget.minimumDateTime);
+    final bool exceedMaximumDateTime = newDate.isAfter(widget.maximumDateTime);
+    if (exceedMinimumDateTime) {
+      newDate = widget.minimumDateTime;
+    } else if (exceedMaximumDateTime) {
+      newDate = widget.maximumDateTime;
     }
     _handleCalendarMonthChange(newDate);
     _handleCalendarDayChange(newDate);
   }
 
   void _handleCalendarMonthChange(DateTime newMonthDate) {
-    setState(() {
-      final DateTime displayedMonth = PackageDateUtils.monthDateOnly(
-        _currentlyDisplayedMonthDate,
-      );
-      final bool monthChanged = !DateUtils.isSameMonth(
-        displayedMonth,
+    final DateTime displayedMonth = PackageDateUtils.monthDateOnly(
+      _currentlyDisplayedMonthDate,
+    );
+    final bool monthChanged = !DateUtils.isSameMonth(
+      displayedMonth,
+      newMonthDate,
+    );
+    if (monthChanged) {
+      _currentlyDisplayedMonthDate = PackageDateUtils.monthDateOnly(
         newMonthDate,
       );
-      if (monthChanged) {
-        _currentlyDisplayedMonthDate = PackageDateUtils.monthDateOnly(
-          newMonthDate,
-        );
-        widget.onDisplayedMonthChanged?.call(_currentlyDisplayedMonthDate);
-      }
-    });
+      widget.onDisplayedMonthChanged?.call(_currentlyDisplayedMonthDate);
+    }
   }
 
   void _handleCalendarDayChange(DateTime date) {
     setState(() {
-      _selectedDate = date;
-      widget.onDateChanged?.call(_selectedDate);
+      _selectedDateTime = date;
+      widget.onDateTimeChanged?.call(_selectedDateTime);
     });
   }
 
-  void _onChanged(DateTime date) {
-    _handleCalendarDayChange(date);
-    widget.onDateSelected?.call(date);
+  void _onDateChanged(DateTime dateTime) {
+    _handleCalendarDayChange(dateTime);
+    widget.onDateSelected?.call(dateTime);
+  }
+
+  void _onTimeChanged(DateTime dateTime) {
+    _handleCalendarDayChange(dateTime);
   }
 
   @override
   Widget build(BuildContext context) {
-    return CalendarContainer(
-      onInitialized: widget.onInitialized,
-      scaleAlignment: widget.scaleAlignment,
-      maxScale: widget.maxScale,
-      decoration: widget.containerDecoration ??
-          CalendarContainerDecoration.withDynamicColor(context),
-      child: CalendarPicker(
+    final double height = switch (widget.mode) {
+      CupertinoCalendarMode.date => calendarDatePickerHeight,
+      CupertinoCalendarMode.dateTime => calendarDateTimePickerHeight,
+    };
+    const double minWidth = calendarWidth;
+    double maxWidth = 0;
+    if (widget.maxWidth <= minWidth) {
+      maxWidth = minWidth;
+    } else {
+      maxWidth = widget.maxWidth;
+    }
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: height,
+        maxHeight: height,
+        minWidth: calendarWidth,
+        maxWidth: maxWidth,
+      ),
+      child: CupertinoCalendarPicker(
         initialMonth: _currentlyDisplayedMonthDate,
-        currentDate: widget.currentDate,
-        minimumDate: widget.minimumDate,
-        maximumDate: widget.maximumDate,
-        selectedDate: _selectedDate,
-        onChanged: _onChanged,
+        currentDateTime: widget.currentDateTime ?? DateTime.now(),
+        minimumDateTime: widget.minimumDateTime,
+        maximumDateTime: widget.maximumDateTime,
+        selectedDateTime: _selectedDateTime,
+        onDateChanged: _onDateChanged,
+        onTimeChanged: _onTimeChanged,
         onDisplayedMonthChanged: _handleCalendarMonthChange,
         onYearPickerChanged: _handleCalendarDateChange,
         mainColor: widget.mainColor,
@@ -163,6 +255,12 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
               context,
               mainColor: widget.mainColor,
             ),
+        footerDecoration: widget.footerDecoration ??
+            CalendarFooterDecoration.withDynamicColor(context),
+        mode: widget.mode,
+        type: widget.type,
+        timeLabel: widget.timeLabel,
+        minuteInterval: widget.minuteInterval,
       ),
     );
   }

@@ -1,3 +1,7 @@
+// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Use of this source code is governed by a MIT-style license that can be
+// found in the LICENSE file.
+
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/material.dart';
 
@@ -10,18 +14,20 @@ class CalendarMonthPicker extends StatefulWidget {
   CalendarMonthPicker({
     required this.monthPageController,
     required this.onMonthPageChanged,
-    required this.currentDate,
-    required this.displayedMonth,
-    required this.minimumDate,
-    required this.maximumDate,
-    required this.selectedDate,
+    required DateTime displayedMonth,
+    required DateTime currentDate,
+    required DateTime minimumDate,
+    required DateTime maximumDate,
+    required DateTime selectedDate,
     required this.onChanged,
     required this.decoration,
     required this.mainColor,
     super.key,
-  })  : assert(!minimumDate.isAfter(maximumDate)),
-        assert(!selectedDate.isBefore(minimumDate)),
-        assert(!selectedDate.isAfter(maximumDate));
+  })  : minimumDate = DateUtils.dateOnly(minimumDate),
+        maximumDate = DateUtils.dateOnly(maximumDate),
+        currentDate = DateUtils.dateOnly(currentDate),
+        selectedDate = DateUtils.dateOnly(selectedDate),
+        displayedMonth = DateUtils.dateOnly(displayedMonth);
 
   final PageController monthPageController;
   final ValueChanged<int> onMonthPageChanged;
