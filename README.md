@@ -1,10 +1,10 @@
-This package includes a suite of Cupertino-style components that make date and time selection seamless and visually consistent with iOS design principles.
+The package provides a sleek and stylish cupertino calendar widgets designed to mimic the aesthetics of iOS. With smooth animations and intuitive user interactions, it seamlessly integrates into your Flutter app to deliver a delightful user experience.
 
 <p>
-   <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/calendar_months_switches.gif?raw=true"
+   <img src="doc/cupertino_calendar_picker.gif"
     alt="Calendar months switches" width="320"/>
   &nbsp; &nbsp;
-   <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/calendar_year_picker.gif?raw=true"
+   <img src="doc/cupertino_time_picker.gif"
     alt="Calendar year picker" width="320"/>
 </p>
 
@@ -20,7 +20,7 @@ This package includes a suite of Cupertino-style components that make date and t
 In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
-  cupertino_calendar_picker: ^2.0.0
+  cupertino_calendar_picker: ^2.0.0-dev.1
 ```
 
 Import it:
