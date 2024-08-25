@@ -50,8 +50,7 @@ This package offers three convenient widgets for integrating pickers directly in
 The `CupertinoCalendar` widget provides an inline calendar that can be displayed directly within your screen.
 
 <p>
-  <img src="
-  https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_inline_calendar_light.png?raw=true"
+  <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_inline_calendar_light.png?raw=true"
     alt="Cupertino Inline Calendar Light" width="320"/>
   &nbsp; &nbsp;
   <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_inline_calendar_dark.png?raw=true"
@@ -79,12 +78,10 @@ SizedBox(
 The `CupertinoCalendarPickerButton` widget allows users to open a cupertino calendar picker when the button is pressed.
 
 <p>
-  <img src="
-  https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_calendar_picker_button_light.png?raw=true"
+  <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_calendar_picker_button_light.png?raw=true"
     alt="Cupertino Time Picker Button Light" width="320"/>
   &nbsp; &nbsp;
-  <img src="
-  https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_calendar_picker_button_dark.png?raw=true"
+  <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_calendar_picker_button_dark.png?raw=true"
     alt="Cupertino Time Picker Button Dark" width="320"/>
 </p>
 
@@ -107,12 +104,10 @@ CupertinoCalendarPickerButton(
 The `CupertinoTimePickerButton` widget lets users select a time via the calendar time picker that appears when the button is pressed.
 
 <p>
-  <img src="
-  https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_time_picker_button_light.png?raw=true"
+  <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_time_picker_button_light.png?raw=true"
     alt="Cupertino Time Picker Button Light" width="320"/>
   &nbsp; &nbsp;
-  <img src="
-    https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_time_picker_button_dark.png?raw=true"
+  <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_time_picker_button_dark.png?raw=true"
     alt="Cupertino Time Picker Button Dark" width="320"/>
 </p>
 
