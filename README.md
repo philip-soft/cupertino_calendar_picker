@@ -2,10 +2,10 @@ The package provides a sleek and stylish cupertino calendar widgets designed to 
 
 <p>
    <img src="doc/cupertino_calendar_picker.gif"
-    alt="Calendar months switches" width="320"/>
+    alt="Cupertino Calendar Picker" width="320"/>
   &nbsp; &nbsp;
    <img src="doc/cupertino_time_picker.gif"
-    alt="Calendar year picker" width="320"/>
+    alt="Cupertino Time Picker" width="320"/>
 </p>
 
 ## Features
@@ -20,7 +20,7 @@ The package provides a sleek and stylish cupertino calendar widgets designed to 
 In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
-  cupertino_calendar_picker: ^2.0.0-dev.1
+  cupertino_calendar_picker: ^2.0.0
 ```
 
 Import it:
@@ -41,7 +41,114 @@ CupertinoApp(
 );
 ```
 
-## Usage Example
+## Widgets
+
+This package offers three convenient widgets for integrating pickers directly into your app.
+
+### `CupertinoCalendar` Widget.
+
+You can use this widget as an inline version of the calendar, right on your screen.
+
+<p>
+  <img src="doc/cupertino_inline_calendar_light.png"
+    alt="Cupertino Inline Calendar Light" width="320"/>
+  &nbsp; &nbsp;
+  <img src="doc/cupertino_inline_calendar_dark.png"
+    alt="Cupertino Inline Calendar Dark" width="320"/>
+</p>
+
+### `CupertinoCalendarPickerButton` Widget.
+
+The `CupertinoCalendarPickerButton` widget allows users to open a cupertino calendar picker when the button is pressed.
+
+<p>
+  <img src="doc/cupertino_calendar_picker_button_light.png"
+    alt="Cupertino Time Picker Button Light" width="320"/>
+  &nbsp; &nbsp;
+  <img src="doc/cupertino_calendar_picker_button_dark.png"
+    alt="Cupertino Time Picker Button Dark" width="320"/>
+</p>
+
+
+```dart
+CupertinoCalendarPickerButton(
+  minimumDateTime: DateTime(2024, 7, 10),
+  maximumDateTime: DateTime(2025, 7, 10),
+  initialDateTime: DateTime(2024, 8, 15, 9, 41),
+  currentDateTime: DateTime(2024, 8, 15),
+  mode: CupertinoCalendarMode.dateTime,
+  timeLabel: 'Ends',
+  onDateTimeChanged: (date) {},
+),
+```
+
+### `CupertinoTimePickerButton` Widget.
+
+The `CupertinoTimePickerButton` widget lets users select a time via the calendar time picker that appears when the button is pressed.
+
+<p>
+  <img src="doc/cupertino_time_picker_button_light.png"
+    alt="Cupertino Time Picker Button Light" width="320"/>
+  &nbsp; &nbsp;
+  <img src="doc/cupertino_time_picker_button_dark.png"
+    alt="Cupertino Time Picker Button Dark" width="320"/>
+</p>
+
+#### Example Usage
+
+```dart
+CupertinoTimePickerButton(
+  initialTime: const TimeOfDay(hour: 9, minute: 41),
+  onTimeChanged: (time) {},
+),
+```
+
+## Functions
+
+This package also includes two functions for displaying pickers from your widgets.
+
+### `showCupertinoCalendarPicker` function.
+
+The `showCupertinoCalendarPicker` function displays a calendar picker around your widget.
+- From version 2.0.0, you can specify the `CupertinoCalendarMode` to allow selection of both date and time.
+
+#### Example Usage
+
+```dart
+Future<DateTime?> onCalendarWidgetTap(BuildContext context) async {
+  final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+  final nowDate = DateTime.now();
+
+  return showCupertinoCalendarPicker(
+    context,
+    widgetRenderBox: renderBox,
+    minimumDateTime: nowDate.subtract(const Duration(days: 15)),
+    initialDateTime: nowDate,
+    maximumDateTime: nowDate.add(const Duration(days: 360)),
+    mode: CupertinoCalendarMode.dateTime,
+    timeLabel: 'Ends',
+    onDateTimeChanged: (dateTime) {},
+  );
+}
+```
+
+### `showCupertinoTimePicker` function.
+
+The showCupertinoTimePicker function shows a time picker around your widget.
+
+```dart
+Future<TimeOfDay?> onTimeWidgetTap(BuildContext context) async {
+  final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+
+  return showCupertinoTimePicker(
+    context,
+    widgetRenderBox: renderBox,
+    onTimeChanged: (time) {},
+  );
+}
+```
+
+## Functions Usage Example
 
 Call the `showCupertinoCalendarPicker` passing date constrains and widget's `RenderBox` of the widget above/below which you wish to display the calendar.
 
@@ -84,7 +191,7 @@ Future<void> onTap(BuildContext context) {
 ```
 
 ## How to get a `RenderBox`?
-There are 3 simple ways of how you can get the widget's render box to pass it to the `showCupertinoCalendarPicker` function.
+There are 3 simple ways of how you can get the widget's render box to pass it to the `showCupertinoCalendarPicker` or `showCupertinoTimePicker` function.
 
 You can choose **any** of these.
 
