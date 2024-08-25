@@ -20,7 +20,7 @@ class CupertinoPickerAnimatedCrossFade extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedCrossFade(
-      duration: innerPickerFadeDuration,
+      duration: innerPickersFadeDuration,
       firstChild: firstChild,
       secondChild: secondChild ?? const SizedBox(),
       crossFadeState: crossFadeState,

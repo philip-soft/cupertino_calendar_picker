@@ -54,12 +54,10 @@ class CupertinoCalendarPicker extends StatefulWidget {
   CupertinoCalendarPickerState createState() => CupertinoCalendarPickerState();
 }
 
-class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
-    with SingleTickerProviderStateMixin {
+class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
   late DateTime _currentMonth;
   late DateTime _selectedDateTime;
   late PageController _monthPageController;
-  late AnimationController _animationController;
   late CupertinoCalendarViewMode _previousViewMode;
   late CupertinoCalendarViewMode _viewMode;
   late GlobalKey<CustomCupertinoDatePickerDateTimeState> _timePickerKey;
@@ -79,10 +77,6 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
       _currentMonth,
     );
     _monthPageController = PageController(initialPage: monthDelta);
-    _animationController = AnimationController(
-      vsync: this,
-      duration: calendarYearPickerDuration,
-    );
     _previousViewMode = CupertinoCalendarViewMode.monthPicker;
     _viewMode = CupertinoCalendarViewMode.monthPicker;
     _selectedDateTime = widget.selectedDateTime;
@@ -99,6 +93,10 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
       WidgetsBinding.instance.addPostFrameCallback(
         (Duration timeStamp) => _showMonth(widget.initialMonth, jump: true),
       );
+    }
+
+    if (widget.selectedDateTime != oldWidget.selectedDateTime) {
+      _selectedDateTime = widget.selectedDateTime;
     }
   }
 
@@ -165,9 +163,6 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
 
   void _toggleYearPicker(bool shouldShowYearPicker) {
     setState(() {
-      _animationController.isCompleted
-          ? _animationController.reverse()
-          : _animationController.forward();
       viewMode = shouldShowYearPicker
           ? CupertinoCalendarViewMode.yearPicker
           : _previousViewMode;
@@ -176,9 +171,6 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
 
   void _toggleTimePicker(bool shouldShowTimePicker) {
     setState(() {
-      _animationController.isCompleted
-          ? _animationController.reverse()
-          : _animationController.forward();
       viewMode = shouldShowTimePicker
           ? CupertinoCalendarViewMode.timePicker
           : _previousViewMode;
@@ -327,7 +319,6 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker>
   @override
   void dispose() {
     _monthPageController.dispose();
-    _animationController.dispose();
     super.dispose();
   }
 }

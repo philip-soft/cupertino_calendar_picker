@@ -67,7 +67,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
             child: Row(
               children: <Widget>[
                 AnimatedDefaultTextStyle(
-                  duration: calendarHeaderFadeDuration,
+                  duration: innerPickersFadeDuration,
                   style: _showYearPicker
                       ? _decoration.monthDateStyle!.copyWith(
                           color: _decoration.monthDateArrowColor,
@@ -77,7 +77,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
                 ),
                 const SizedBox(width: 5.0),
                 AnimatedRotation(
-                  duration: calendarHeaderFadeDuration,
+                  duration: innerPickersFadeDuration,
                   curve: Curves.easeInOut,
                   turns: _showYearPicker ? 1.25 : 1.0,
                   child: SizedBox(
@@ -136,7 +136,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
           crossFadeState: _showYearPicker
               ? CrossFadeState.showFirst
               : CrossFadeState.showSecond,
-          duration: calendarHeaderFadeDuration,
+          duration: innerPickersFadeDuration,
           layoutBuilder: (
             Widget topChild,
             Key topChildKey,

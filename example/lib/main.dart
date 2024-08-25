@@ -95,6 +95,7 @@ class _ExampleAppState extends State<ExampleApp> {
                 initialDateTime: _selectedDateTime,
                 timeLabel: 'Ends',
                 mode: CupertinoCalendarMode.dateTime,
+                onDateTimeChanged: _onDateTimeChanged,
               ),
             ),
             const Spacer(),

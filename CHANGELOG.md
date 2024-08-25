@@ -11,6 +11,7 @@
   * The `CupertinoCalendarPicker` updates:
   * * The `monthDateStyle` is now animated when switching between the month/year picker and month picker modes.
   * * Weekdays are now aligned more accurately.
+  * * The month/year picker mode switching animation has been updated. 
 
 **Breaking Changes**:
   * `CalendarContainerDecoration` has been renamed to `PickerContainerDecoration`.
