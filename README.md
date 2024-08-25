@@ -1,10 +1,10 @@
 The package provides a sleek and stylish cupertino calendar widgets designed to mimic the aesthetics of iOS. With smooth animations and intuitive user interactions, it seamlessly integrates into your Flutter app to deliver a delightful user experience.
 
 <p>
-   <img src="doc/cupertino_calendar_picker.gif"
+   <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_calendar_picker.gif?raw=true"
     alt="Cupertino Calendar Picker" width="320"/>
   &nbsp; &nbsp;
-   <img src="doc/cupertino_time_picker.gif"
+   <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_time_picker.gif?raw=true"
     alt="Cupertino Time Picker" width="320"/>
 </p>
 
@@ -20,7 +20,7 @@ The package provides a sleek and stylish cupertino calendar widgets designed to 
 In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
-  cupertino_calendar_picker: ^2.0.0
+  cupertino_calendar_picker: ^2.0.0+1
 ```
 
 Import it:
@@ -50,10 +50,10 @@ This package offers three convenient widgets for integrating pickers directly in
 The `CupertinoCalendar` widget provides an inline calendar that can be displayed directly within your screen.
 
 <p>
-  <img src="doc/cupertino_inline_calendar_light.png"
+  <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_inline_calendar_light.png?raw=true"
     alt="Cupertino Inline Calendar Light" width="320"/>
   &nbsp; &nbsp;
-  <img src="doc/cupertino_inline_calendar_dark.png"
+  <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_inline_calendar_dark.png?raw=true"
     alt="Cupertino Inline Calendar Dark" width="320"/>
 </p>
 
@@ -78,10 +78,10 @@ SizedBox(
 The `CupertinoCalendarPickerButton` widget allows users to open a cupertino calendar picker when the button is pressed.
 
 <p>
-  <img src="doc/cupertino_calendar_picker_button_light.png"
+  <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_calendar_picker_button_light.png?raw=true"
     alt="Cupertino Time Picker Button Light" width="320"/>
   &nbsp; &nbsp;
-  <img src="doc/cupertino_calendar_picker_button_dark.png"
+  <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_calendar_picker_button_dark.png?raw=true"
     alt="Cupertino Time Picker Button Dark" width="320"/>
 </p>
 
@@ -104,10 +104,10 @@ CupertinoCalendarPickerButton(
 The `CupertinoTimePickerButton` widget lets users select a time via the calendar time picker that appears when the button is pressed.
 
 <p>
-  <img src="doc/cupertino_time_picker_button_light.png"
+  <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_time_picker_button_light.png?raw=true"
     alt="Cupertino Time Picker Button Light" width="320"/>
   &nbsp; &nbsp;
-  <img src="doc/cupertino_time_picker_button_dark.png"
+  <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_time_picker_button_dark.png?raw=true"
     alt="Cupertino Time Picker Button Dark" width="320"/>
 </p>
 
