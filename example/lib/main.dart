@@ -48,7 +48,7 @@ class _ExampleAppState extends State<ExampleApp> {
   }
 
   /// The context comes from the `Builder` above the widget tree.
-  Future<TimeOfDay?> onTimeWidgetTap(BuildContext context) async {
+  Future<TimeOfDay?> onTimeWidgetTap(BuildContext context, [bool? use24hFormat]) async {
     final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
 
     return showCupertinoTimePicker(
@@ -56,6 +56,7 @@ class _ExampleAppState extends State<ExampleApp> {
       widgetRenderBox: renderBox,
       initialTime: _selectedTime,
       onTimeChanged: _onTimeChanged,
+      use24hFormat: use24hFormat,
     );
   }
 
@@ -134,6 +135,25 @@ class _ExampleAppState extends State<ExampleApp> {
                   onTap: (context) => onTimeWidgetTap(context),
                   title: 'My time widget',
                 ),
+              ],
+            ),
+            const SizedBox(height: 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _MyWidget(
+                  /// Passing exactly this `BuildContext` is mandatory to get
+                  /// the `RenderBox` of the appropriate widget.
+                  onTap: (context) => onTimeWidgetTap(context, true),
+                  title: 'Time widget 24h on',
+                ),
+                const SizedBox(width: 10),
+                _MyWidget(
+                  /// Passing exactly this `BuildContext` is mandatory to get
+                  /// the `RenderBox` of the appropriate widget.
+                  onTap: (context) => onTimeWidgetTap(context, false),
+                  title: 'Time widget 24h off',
+                )
               ],
             ),
             const Spacer(flex: 3),

@@ -12,6 +12,7 @@ class CupertinoTimePicker extends StatelessWidget {
     required this.maximumTime,
     required this.onTimeChanged,
     required this.minuteInterval,
+    this.use24hFormat,
     super.key,
   });
 
@@ -20,6 +21,7 @@ class CupertinoTimePicker extends StatelessWidget {
   final TimeOfDay maximumTime;
   final ValueChanged<DateTime> onTimeChanged;
   final int minuteInterval;
+  final bool? use24hFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,7 @@ class CupertinoTimePicker extends StatelessWidget {
             maximumDateTime: maximumTime.toNowDateTime(),
             onTimeChanged: onTimeChanged,
             minuteInterval: minuteInterval,
+            use24hFormat: use24hFormat,
           ),
         ),
       ),
