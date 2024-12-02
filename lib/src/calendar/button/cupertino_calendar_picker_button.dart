@@ -15,6 +15,7 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   const CupertinoCalendarPickerButton({
     required this.minimumDateTime,
     required this.maximumDateTime,
+    this.dismissBehavior = CalendarDismissBehavior.onOutsideTap,
     this.initialDateTime,
     this.offset = const Offset(0.0, 10.0),
     this.barrierColor = Colors.transparent,
@@ -35,6 +36,7 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
     this.formatter,
     this.minuteInterval = 1,
     this.onPressed,
+    this.use24hFormat,
   });
 
   /// Specifies the earliest date that can be selected by the user
@@ -130,6 +132,19 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   /// A callback function triggered when the button is pressed.
   final VoidCallback? onPressed;
 
+  /// Determines how the calendar can be dismissed.
+  /// The default value is [CalendarDismissBehavior.onOutsideTap],
+  /// allowing dismissal by tapping outside the calendar.
+  /// The Android back button will always close the calendar.
+  final CalendarDismissBehavior dismissBehavior;
+
+  /// For 24h format being used or not, results in AM/PM being shown or hidden in the widget.
+  /// Setting to `true` or `false` will force 24h format to be on or off.
+  /// The default value is null, which calls [MediaQuery.alwaysUse24HourFormatOf].
+  ///
+  /// Displayed only when the calendar is in a mode that includes time selection.
+  final bool? use24hFormat;
+
   @override
   State<CupertinoCalendarPickerButton> createState() =>
       _CupertinoCalendarPickerButtonState();
@@ -166,6 +181,10 @@ class _CupertinoCalendarPickerButtonState
     late String formattedString;
 
     final CalendarButtonFormatter? formatter = widget.formatter;
+    final MaterialLocalizations materialLocalizations =
+        context.materialLocalization;
+    final CupertinoLocalizations cupertinoLocalizations =
+        context.cupertinoLocalization;
 
     if (formatter != null) {
       formattedString = formatter(_selectedDateTime);
@@ -181,15 +200,18 @@ class _CupertinoCalendarPickerButtonState
       String timeString = '';
       if (widget.mode == CupertinoCalendarMode.dateTime) {
         timeString = ' ';
-        timeString += time.format(context);
+        timeString += materialLocalizations.formatTimeOfDay(
+          time,
+          alwaysUse24HourFormat:
+              widget.use24hFormat ?? context.alwaysUse24hFormat,
+        );
       }
 
-      final CupertinoLocalizations localization =
-          CupertinoLocalizations.of(context);
-      final String fullMonthString = localization.datePickerMonth(month);
-      final String dayString = localization.datePickerDayOfMonth(day);
+      final String fullMonthString =
+          cupertinoLocalizations.datePickerMonth(month);
+      final String dayString = cupertinoLocalizations.datePickerDayOfMonth(day);
       final String monthString = fullMonthString.substring(0, 3);
-      final String yearString = localization.datePickerYear(year);
+      final String yearString = cupertinoLocalizations.datePickerYear(year);
 
       formattedString = '$monthString $dayString, $yearString$timeString';
     }
@@ -222,6 +244,8 @@ class _CupertinoCalendarPickerButtonState
         onDateSelected: widget.onDateSelected,
         timeLabel: widget.timeLabel,
         minuteInterval: widget.minuteInterval,
+        dismissBehavior: widget.dismissBehavior,
+        use24hFormat: widget.use24hFormat,
       ),
     );
   }

@@ -29,6 +29,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     this.headerDecoration,
     this.footerDecoration,
     this.timeLabel,
+    this.use24hFormat,
   });
 
   final double horizontalSpacing;
@@ -52,6 +53,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
   final CupertinoCalendarMode mode;
   final String? timeLabel;
   final int minuteInterval;
+  final bool? use24hFormat;
 
   @override
   State<CupertinoCalendarOverlay> createState() =>
@@ -132,6 +134,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
         timeLabel: widget.timeLabel,
         type: CupertinoCalendarType.compact,
         minuteInterval: widget.minuteInterval,
+        use24hFormat: widget.use24hFormat,
       ),
     );
   }

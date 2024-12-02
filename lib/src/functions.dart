@@ -113,6 +113,11 @@ import 'package:flutter/material.dart';
 ///   [CupertinoCalendarMode.dateTime] mode.
 ///   The default value is 1 minute, meaning the user can select any minute of the hour.
 ///
+/// - [use24hFormat]:
+///   For 24h format being used or not, results in AM/PM being shown or hidden in the widget.
+///   Setting to `true` or `false` will force 24h format to be on or off.
+///   The default value is null, which calls [MediaQuery.alwaysUse24HourFormatOf].
+///
 /// ## Returns:
 ///
 /// A [Future] that resolves to the selected [DateTime] if a date was chosen, or `null`
@@ -143,6 +148,7 @@ Future<DateTime?> showCupertinoCalendarPicker(
   CupertinoCalendarMode mode = CupertinoCalendarMode.date,
   String? timeLabel,
   int minuteInterval = 1,
+  bool? use24hFormat,
 }) {
   return showGeneralDialog<DateTime?>(
     context: context,
@@ -185,6 +191,7 @@ Future<DateTime?> showCupertinoCalendarPicker(
         mode: mode,
         timeLabel: timeLabel,
         minuteInterval: minuteInterval,
+        use24hFormat: use24hFormat,
       );
     },
   );
@@ -247,11 +254,11 @@ Future<DateTime?> showCupertinoCalendarPicker(
 /// - [minuteInterval]:
 ///   The interval of minutes that the time picker should allow.
 ///   The default value is 1 minute, meaning the user can select any minute of the hour.
-/// 
+///
 /// - [use24hFormat]:
 ///   For 24h format being used or not, results in AM/PM being shown or hidden in the widget.
-///   Setting to true or false will force 24h format to be on or off.
-///   Can be used as a type of duration picker (limited to 23 hours) when set to true.
+///   Setting to `true` or `false` will force 24h format to be on or off.
+///   Can be used as a type of duration picker (limited to 23 hours) when set to `true`.
 ///   The default value is null, which calls [MediaQuery.alwaysUse24HourFormatOf].
 ///
 /// ## Returns:
@@ -304,7 +311,7 @@ Future<TimeOfDay?> showCupertinoTimePicker(
         containerDecoration: containerDecoration,
         onTimeChanged: onTimeChanged,
         minuteInterval: minuteInterval,
-        use24hFormat: use24hFormat
+        use24hFormat: use24hFormat,
       );
     },
   );

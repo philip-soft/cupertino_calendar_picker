@@ -30,6 +30,7 @@ class CupertinoCalendar extends StatefulWidget {
     this.timeLabel,
     this.minuteInterval = 1,
     this.maxWidth = double.infinity,
+    this.use24hFormat,
     super.key,
   }) {
     // ignore: prefer_asserts_in_initializer_lists
@@ -123,6 +124,13 @@ class CupertinoCalendar extends StatefulWidget {
   /// The interval of minutes that the time picker should allow, applicable
   /// when the calendar is in a mode that includes time selection.
   final int minuteInterval;
+
+  /// For 24h format being used or not, results in AM/PM being shown or hidden in the widget.
+  /// Setting to `true` or `false` will force 24h format to be on or off.
+  /// The default value is null, which calls [MediaQuery.alwaysUse24HourFormatOf].
+  ///
+  /// Displayed only when the calendar is in a mode that includes time selection.
+  final bool? use24hFormat;
 
   @override
   State<CupertinoCalendar> createState() => _CupertinoCalendarState();
@@ -261,6 +269,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
         type: widget.type,
         timeLabel: widget.timeLabel,
         minuteInterval: widget.minuteInterval,
+        use24hFormat: widget.use24hFormat,
       ),
     );
   }

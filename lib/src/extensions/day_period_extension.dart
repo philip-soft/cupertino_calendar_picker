@@ -2,16 +2,14 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/material.dart';
 
 extension DayPeriodExtension on DayPeriod {
   String localizedString(BuildContext context) {
     return switch (this) {
-      DayPeriod.am =>
-        CupertinoLocalizations.of(context).anteMeridiemAbbreviation,
-      DayPeriod.pm =>
-        CupertinoLocalizations.of(context).postMeridiemAbbreviation,
+      DayPeriod.am => context.cupertinoLocalization.anteMeridiemAbbreviation,
+      DayPeriod.pm => context.cupertinoLocalization.postMeridiemAbbreviation,
     };
   }
 }

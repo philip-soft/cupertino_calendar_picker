@@ -1,3 +1,8 @@
+## 2.0.1
+
+* `use24hFormat` param has been added to all widgets.
+* `dismissBehavior` param has been added to the `CupertinoCalendarPickerButton` widget.
+
 ## 2.0.0+1
 
 * `README` update.

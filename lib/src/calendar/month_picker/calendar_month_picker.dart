@@ -83,14 +83,12 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
     BuildContext context, {
     required DateTime monthDate,
   }) {
-    assert(debugCheckHasMaterialLocalizations(context));
-
     final int year = monthDate.year;
     final int month = monthDate.month;
     final int dayOffset = DateUtils.firstDayOffset(
       year,
       month,
-      MaterialLocalizations.of(context),
+      context.materialLocalization,
     );
     return dayOffset;
   }

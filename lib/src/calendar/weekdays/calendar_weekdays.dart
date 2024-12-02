@@ -12,19 +12,15 @@ class CalendarWeekdays extends StatelessWidget {
   final CalendarWeekdayDecoration decoration;
 
   List<Widget> _weekdays(BuildContext context) {
-    assert(debugCheckHasCupertinoLocalizations(context));
-    assert(debugCheckHasMaterialLocalizations(context));
-
     final DateTime nowDate = DateTime.now();
     final int year = nowDate.year;
     final int month = nowDate.month;
     final int firstDayOffset = DateUtils.firstDayOffset(
       year,
       month,
-      MaterialLocalizations.of(context),
+      context.materialLocalization,
     );
-    final CupertinoLocalizations localization =
-        CupertinoLocalizations.of(context);
+    final CupertinoLocalizations localization = context.cupertinoLocalization;
     final DateTime firstDayOfWeekDate = DateTime(year, month).subtract(
       Duration(days: firstDayOffset),
     );

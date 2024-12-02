@@ -34,14 +34,22 @@ extension TimeOfDayExtension on TimeOfDay {
     }
   }
 
-  String customFormat(BuildContext context) {
-    final bool use24HoursFormat = MediaQuery.alwaysUse24HourFormatOf(context);
-    final String formattedTime = format(context);
-    if (use24HoursFormat) {
-      return formattedTime;
-    } else {
-      final int spaceIndex = formattedTime.indexOf(' ');
-      return formattedTime.replaceRange(spaceIndex, null, '');
-    }
+  String timeWithDayPeriodFormat(BuildContext context) {
+    final MaterialLocalizations localizations = context.materialLocalization;
+    final String formattedTime = localizations.formatTimeOfDay(this);
+    final int spaceIndex = formattedTime.indexOf(' ');
+    return formattedTime.replaceRange(spaceIndex, null, '');
+  }
+
+  String timeFormat(
+    BuildContext context, {
+    required bool? use24hFormat,
+  }) {
+    final MaterialLocalizations localizations = context.materialLocalization;
+    final bool use24HoursFormat = use24hFormat ?? context.alwaysUse24hFormat;
+    return localizations.formatTimeOfDay(
+      this,
+      alwaysUse24HourFormat: use24HoursFormat,
+    );
   }
 }
