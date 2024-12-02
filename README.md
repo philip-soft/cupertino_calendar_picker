@@ -20,7 +20,7 @@ The package provides a sleek and stylish cupertino calendar widgets designed to 
 In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
-  cupertino_calendar_picker: ^2.0.0+1
+  cupertino_calendar_picker: ^2.0.1
 ```
 
 Import it:
@@ -151,7 +151,7 @@ Future<DateTime?> onCalendarWidgetTap(BuildContext context) async {
 
 ### `showCupertinoTimePicker` function.
 
-The showCupertinoTimePicker function shows a time picker around your widget.
+The `showCupertinoTimePicker` function shows a time picker around your widget.
 
 #### Usage Example
 

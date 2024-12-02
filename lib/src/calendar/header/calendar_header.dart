@@ -43,10 +43,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
 
   @override
   Widget build(BuildContext context) {
-    assert(debugCheckHasCupertinoLocalizations(context));
-
-    final CupertinoLocalizations localization =
-        CupertinoLocalizations.of(context);
+    final CupertinoLocalizations localization = context.cupertinoLocalization;
     final DateTime date = widget.currentMonth;
     final String monthString = localization.datePickerStandaloneMonth(
       date.month,

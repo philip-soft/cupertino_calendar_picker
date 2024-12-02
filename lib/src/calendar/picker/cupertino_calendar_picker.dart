@@ -26,6 +26,7 @@ class CupertinoCalendarPicker extends StatefulWidget {
     required this.timeLabel,
     required this.footerDecoration,
     required this.minuteInterval,
+    required this.use24hFormat,
     super.key,
   })  : assert(!minimumDateTime.isAfter(maximumDateTime)),
         assert(!currentDateTime.isBefore(minimumDateTime)),
@@ -49,6 +50,7 @@ class CupertinoCalendarPicker extends StatefulWidget {
   final CupertinoCalendarType type;
   final String? timeLabel;
   final int minuteInterval;
+  final bool? use24hFormat;
 
   @override
   CupertinoCalendarPickerState createState() => CupertinoCalendarPickerState();
@@ -291,6 +293,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
                     maximumDateTime: widget.maximumDateTime.truncateToMinutes(),
                     initialDateTime: _selectedDateTime.truncateToMinutes(),
                     minuteInterval: widget.minuteInterval,
+                    use24hFormat: widget.use24hFormat,
                   ),
                 _ => const SizedBox(),
               },
@@ -307,6 +310,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
               time: TimeOfDay.fromDateTime(_selectedDateTime),
               onTimePickerStateChanged: _toggleTimePicker,
               onTimeChanged: _onDayPeriodChanged,
+              use24hFormat: widget.use24hFormat,
             ),
             crossFadeState: viewMode == CupertinoCalendarViewMode.yearPicker
                 ? CrossFadeState.showSecond

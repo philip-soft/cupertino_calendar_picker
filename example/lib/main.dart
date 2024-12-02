@@ -48,7 +48,10 @@ class _ExampleAppState extends State<ExampleApp> {
   }
 
   /// The context comes from the `Builder` above the widget tree.
-  Future<TimeOfDay?> onTimeWidgetTap(BuildContext context, [bool? use24hFormat]) async {
+  Future<TimeOfDay?> onTimeWidgetTap(
+    BuildContext context, [
+    bool? use24hFormat,
+  ]) async {
     final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
 
     return showCupertinoTimePicker(

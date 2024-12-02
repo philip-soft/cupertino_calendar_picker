@@ -22,6 +22,7 @@ class CupertinoTimePickerButton extends StatefulWidget {
     this.buttonDecoration,
     this.minuteInterval = 1,
     this.onPressed,
+    this.use24hFormat,
   });
 
   /// The minimum selectable [TimeOfDay].
@@ -80,6 +81,12 @@ class CupertinoTimePickerButton extends StatefulWidget {
   /// A callback function triggered when the button is pressed.
   final VoidCallback? onPressed;
 
+  /// For 24h format being used or not, results in AM/PM being shown or hidden in the widget.
+  /// Setting to `true` or `false` will force 24h format to be on or off.
+  /// Can be used as a type of duration picker (limited to 23 hours) when set to `true`.
+  /// The default value is null, which calls [MediaQuery.alwaysUse24HourFormatOf].
+  final bool? use24hFormat;
+
   @override
   State<CupertinoTimePickerButton> createState() =>
       _CupertinoTimePickerButtonState();
@@ -113,7 +120,10 @@ class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPickerButton<TimeOfDay?>(
-      title: _selectedTime.format(context),
+      title: _selectedTime.customFormat(
+        context,
+        use24hFormat: widget.use24hFormat,
+      ),
       decoration: widget.buttonDecoration,
       mainColor: widget.mainColor,
       onPressed: widget.onPressed,
@@ -130,6 +140,7 @@ class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
         horizontalSpacing: widget.horizontalSpacing,
         onTimeChanged: _onTimeChanged,
         minuteInterval: widget.minuteInterval,
+        use24hFormat: widget.use24hFormat,
       ),
     );
   }
