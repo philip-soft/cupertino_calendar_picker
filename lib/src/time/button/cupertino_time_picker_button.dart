@@ -120,7 +120,7 @@ class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPickerButton<TimeOfDay?>(
-      title: _selectedTime.customFormat(
+      title: _selectedTime.timeFormat(
         context,
         use24hFormat: widget.use24hFormat,
       ),

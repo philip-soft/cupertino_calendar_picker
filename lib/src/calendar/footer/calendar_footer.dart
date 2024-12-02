@@ -75,7 +75,7 @@ class _CalendarFooterState extends State<CalendarFooter> {
   Widget build(BuildContext context) {
     final TimeOfDay time = _timeOfDay;
     final bool use24HoursFormat =
-        widget.use24hFormat ?? MediaQuery.alwaysUse24HourFormatOf(context);
+        widget.use24hFormat ?? context.alwaysUse24hFormat;
     final bool shouldShowDayPeriodSwitcher =
         !use24HoursFormat && widget.type == CupertinoCalendarType.compact;
 
@@ -117,12 +117,12 @@ class _CalendarFooterState extends State<CalendarFooter> {
                         : widget.decoration.timeStyle?.color,
                   ),
                   child: Text(
-                    time.customFormat(
-                      context,
-                      use24hFormat: shouldShowDayPeriodSwitcher
-                          ? true
-                          : widget.use24hFormat,
-                    ),
+                    shouldShowDayPeriodSwitcher
+                        ? time.timeWithDayPeriodFormat(context)
+                        : time.timeFormat(
+                            context,
+                            use24hFormat: widget.use24hFormat,
+                          ),
                   ),
                 ),
               ),

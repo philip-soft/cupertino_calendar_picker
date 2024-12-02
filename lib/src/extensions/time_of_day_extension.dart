@@ -34,7 +34,14 @@ extension TimeOfDayExtension on TimeOfDay {
     }
   }
 
-  String customFormat(
+  String timeWithDayPeriodFormat(BuildContext context) {
+    final MaterialLocalizations localizations = context.materialLocalization;
+    final String formattedTime = localizations.formatTimeOfDay(this);
+    final int spaceIndex = formattedTime.indexOf(' ');
+    return formattedTime.replaceRange(spaceIndex, null, '');
+  }
+
+  String timeFormat(
     BuildContext context, {
     required bool? use24hFormat,
   }) {
