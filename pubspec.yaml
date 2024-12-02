@@ -2,7 +2,7 @@ name: cupertino_calendar_picker
 description: This package includes a suite of Cupertino-style components that
   make date and time selection seamless and visually consistent with iOS design
   principles.
-version: 2.0.1+1
+version: 2.0.1
 repository: https://github.com/philip-soft/cupertino_calendar_picker
 
 environment:
@@ -31,4 +31,4 @@ topics:
   - calendar-picker
   - ios
   - time-picker
-  - widget
+  - widgets

@@ -132,15 +132,16 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   /// A callback function triggered when the button is pressed.
   final VoidCallback? onPressed;
 
-  /// Determines how the calendar can be dismissed. The default value is
-  /// [CalendarDismissBehavior.onOutsideTap], allowing dismissal by tapping
-  /// outside the calendar.
+  /// Determines how the calendar can be dismissed.
+  /// The default value is [CalendarDismissBehavior.onOutsideTap],
+  /// allowing dismissal by tapping outside the calendar.
   /// The Android back button will always close the calendar.
   final CalendarDismissBehavior dismissBehavior;
 
   /// For 24h format being used or not, results in AM/PM being shown or hidden in the widget.
   /// Setting to `true` or `false` will force 24h format to be on or off.
   /// The default value is null, which calls [MediaQuery.alwaysUse24HourFormatOf].
+  ///
   /// Displayed only when the calendar is in a mode that includes time selection.
   final bool? use24hFormat;
 
