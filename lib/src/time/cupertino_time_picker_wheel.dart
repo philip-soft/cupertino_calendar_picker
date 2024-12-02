@@ -12,6 +12,7 @@ class CupertinoTimePickerWheel extends StatelessWidget {
     required this.maximumDateTime,
     required this.onTimeChanged,
     required this.minuteInterval,
+    this.use24hFormat,
     this.pickerKey,
     super.key,
   });
@@ -22,6 +23,7 @@ class CupertinoTimePickerWheel extends StatelessWidget {
   final DateTime maximumDateTime;
   final ValueChanged<DateTime> onTimeChanged;
   final int minuteInterval;
+  final bool? use24hFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class CupertinoTimePickerWheel extends StatelessWidget {
       minimumDate: minimumDateTime,
       maximumDate: maximumDateTime,
       onDateTimeChanged: onTimeChanged,
-      use24hFormat: MediaQuery.alwaysUse24HourFormatOf(context),
+      use24hFormat: use24hFormat ?? MediaQuery.alwaysUse24HourFormatOf(context),
       minuteInterval: minuteInterval,
     );
   }

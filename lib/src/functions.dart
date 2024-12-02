@@ -247,6 +247,12 @@ Future<DateTime?> showCupertinoCalendarPicker(
 /// - [minuteInterval]:
 ///   The interval of minutes that the time picker should allow.
 ///   The default value is 1 minute, meaning the user can select any minute of the hour.
+/// 
+/// - [use24hFormat]:
+///   For 24h format being used or not, results in AM/PM being shown or hidden in the widget.
+///   Setting to true or false will force 24h format to be on or off.
+///   Can be used as a type of duration picker (limited to 23 hours) when set to true.
+///   The default value is null, which calls [MediaQuery.alwaysUse24HourFormatOf].
 ///
 /// ## Returns:
 ///
@@ -266,6 +272,7 @@ Future<TimeOfDay?> showCupertinoTimePicker(
   Color barrierColor = Colors.transparent,
   PickerContainerDecoration? containerDecoration,
   int minuteInterval = 1,
+  bool? use24hFormat,
 }) {
   return showGeneralDialog<TimeOfDay?>(
     context: context,
@@ -297,6 +304,7 @@ Future<TimeOfDay?> showCupertinoTimePicker(
         containerDecoration: containerDecoration,
         onTimeChanged: onTimeChanged,
         minuteInterval: minuteInterval,
+        use24hFormat: use24hFormat
       );
     },
   );
