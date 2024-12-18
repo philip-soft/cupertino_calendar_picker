@@ -59,12 +59,6 @@ class _CupertinoPickerButtonState<T> extends State<CupertinoPickerButton<T>>
     _setTween();
   }
 
-  @override
-  void didUpdateWidget(covariant CupertinoPickerButton<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _setTween();
-  }
-
   void _setTween() {
     _opacityTween.end = 0.4;
   }
