@@ -4,6 +4,7 @@
 
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 
 typedef YearPickerCallback = void Function(bool showYearPicker);
 
@@ -43,15 +44,10 @@ class _CalendarHeaderState extends State<CalendarHeader> {
 
   @override
   Widget build(BuildContext context) {
-    final CupertinoLocalizations localization = context.cupertinoLocalization;
     final DateTime date = widget.currentMonth;
-    final String monthString = localization.datePickerStandaloneMonth(
-      date.month,
+    final String headerString = DateFormat.yMMMM(context.localeString).format(
+      date,
     );
-    final String yearString = localization.datePickerYear(
-      date.year,
-    );
-    final String headerString = '$monthString $yearString';
 
     return Row(
       children: <Widget>[

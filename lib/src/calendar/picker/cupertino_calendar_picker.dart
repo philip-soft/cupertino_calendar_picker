@@ -50,7 +50,7 @@ class CupertinoCalendarPicker extends StatefulWidget {
   final CupertinoCalendarType type;
   final String? timeLabel;
   final int minuteInterval;
-  final bool? use24hFormat;
+  final bool use24hFormat;
 
   @override
   CupertinoCalendarPickerState createState() => CupertinoCalendarPickerState();

@@ -191,7 +191,7 @@ Future<DateTime?> showCupertinoCalendarPicker(
         mode: mode,
         timeLabel: timeLabel,
         minuteInterval: minuteInterval,
-        use24hFormat: use24hFormat,
+        use24hFormat: use24hFormat ?? context.alwaysUse24hFormat,
       );
     },
   );
@@ -311,7 +311,7 @@ Future<TimeOfDay?> showCupertinoTimePicker(
         containerDecoration: containerDecoration,
         onTimeChanged: onTimeChanged,
         minuteInterval: minuteInterval,
-        use24hFormat: use24hFormat,
+        use24hFormat: use24hFormat ?? context.alwaysUse24hFormat,
       );
     },
   );

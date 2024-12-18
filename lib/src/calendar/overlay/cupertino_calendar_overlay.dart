@@ -17,6 +17,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     required this.dismissBehavior,
     required this.mode,
     required this.minuteInterval,
+    required this.use24hFormat,
     this.onDateTimeChanged,
     this.onDateSelected,
     this.currentDateTime,
@@ -29,7 +30,6 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     this.headerDecoration,
     this.footerDecoration,
     this.timeLabel,
-    this.use24hFormat,
   });
 
   final double horizontalSpacing;
@@ -53,7 +53,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
   final CupertinoCalendarMode mode;
   final String? timeLabel;
   final int minuteInterval;
-  final bool? use24hFormat;
+  final bool use24hFormat;
 
   @override
   State<CupertinoCalendarOverlay> createState() =>

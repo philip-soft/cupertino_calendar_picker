@@ -54,7 +54,7 @@ class _CupertinoPickerButtonState<T> extends State<CupertinoPickerButton<T>>
       vsync: this,
     );
     _opacityAnimation = _animationController
-        .drive(CurveTween(curve: Curves.linear))
+        .drive(CurveTween(curve: Curves.decelerate))
         .drive(_opacityTween);
     _setTween();
   }

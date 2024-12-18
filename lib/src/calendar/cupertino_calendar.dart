@@ -269,7 +269,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
         type: widget.type,
         timeLabel: widget.timeLabel,
         minuteInterval: widget.minuteInterval,
-        use24hFormat: widget.use24hFormat,
+        use24hFormat: widget.use24hFormat ?? context.alwaysUse24hFormat,
       ),
     );
   }

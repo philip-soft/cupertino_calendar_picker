@@ -5,6 +5,7 @@
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 typedef CalendarButtonFormatter = String Function(DateTime dateTime);
 
@@ -180,40 +181,29 @@ class _CupertinoCalendarPickerButtonState
   Widget build(BuildContext context) {
     late String formattedString;
 
+    final DateTime date = _selectedDateTime;
     final CalendarButtonFormatter? formatter = widget.formatter;
-    final MaterialLocalizations materialLocalizations =
-        context.materialLocalization;
-    final CupertinoLocalizations cupertinoLocalizations =
-        context.cupertinoLocalization;
 
     if (formatter != null) {
-      formattedString = formatter(_selectedDateTime);
+      formattedString = formatter(date);
     } else {
-      final int day = _selectedDateTime.day;
-      final int month = _selectedDateTime.month;
-      final int year = _selectedDateTime.year;
       final TimeOfDay time = TimeOfDay(
-        hour: _selectedDateTime.hour,
-        minute: _selectedDateTime.minute,
+        hour: date.hour,
+        minute: date.minute,
       );
 
       String timeString = '';
       if (widget.mode == CupertinoCalendarMode.dateTime) {
         timeString = ' ';
-        timeString += materialLocalizations.formatTimeOfDay(
-          time,
-          alwaysUse24HourFormat:
-              widget.use24hFormat ?? context.alwaysUse24hFormat,
+        timeString += time.timeFormat(
+          context,
+          use24hFormat: widget.use24hFormat ?? context.alwaysUse24hFormat,
         );
       }
 
-      final String fullMonthString =
-          cupertinoLocalizations.datePickerMonth(month);
-      final String dayString = cupertinoLocalizations.datePickerDayOfMonth(day);
-      final String monthString = fullMonthString.substring(0, 3);
-      final String yearString = cupertinoLocalizations.datePickerYear(year);
-
-      formattedString = '$monthString $dayString, $yearString$timeString';
+      final String dateString =
+          DateFormat.yMMMd(context.localeString).format(date);
+      formattedString = dateString + timeString;
     }
 
     return CupertinoPickerButton<DateTime?>(
@@ -225,7 +215,7 @@ class _CupertinoCalendarPickerButtonState
         context,
         widgetRenderBox: renderBox,
         minimumDateTime: widget.minimumDateTime,
-        initialDateTime: _selectedDateTime,
+        initialDateTime: date,
         currentDateTime: widget.currentDateTime,
         mainColor: widget.mainColor,
         headerDecoration: widget.headerDecoration,

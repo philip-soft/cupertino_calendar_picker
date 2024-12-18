@@ -34,7 +34,7 @@ class PickerContainerDecoration {
     Color color = backgroundColor ?? pickerBackgroundColor;
 
     if (backgroundType == PickerBackgroundType.transparentAndBlured) {
-      color = color.alpha > calendarBluredLightBackgroundColorAlpha
+      color = color.a > calendarBluredLightBackgroundColorAlpha
           ? color.withAlpha(calendarBluredLightBackgroundColorAlpha)
           : color;
     }

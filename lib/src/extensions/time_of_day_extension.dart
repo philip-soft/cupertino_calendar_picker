@@ -4,6 +4,7 @@
 
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 extension TimeOfDayExtension on TimeOfDay {
   DateTime toDateTime() {
@@ -35,8 +36,8 @@ extension TimeOfDayExtension on TimeOfDay {
   }
 
   String timeWithDayPeriodFormat(BuildContext context) {
-    final MaterialLocalizations localizations = context.materialLocalization;
-    final String formattedTime = localizations.formatTimeOfDay(this);
+    const String formatString = DateFormat.HOUR_MINUTE;
+    final String formattedTime = DateFormat(formatString).format(toDateTime());
     final int spaceIndex = formattedTime.indexOf(' ');
     return formattedTime.replaceRange(spaceIndex, null, '');
   }
@@ -45,11 +46,9 @@ extension TimeOfDayExtension on TimeOfDay {
     BuildContext context, {
     required bool? use24hFormat,
   }) {
-    final MaterialLocalizations localizations = context.materialLocalization;
     final bool use24HoursFormat = use24hFormat ?? context.alwaysUse24hFormat;
-    return localizations.formatTimeOfDay(
-      this,
-      alwaysUse24HourFormat: use24HoursFormat,
-    );
+    final String timeFormatString =
+        use24HoursFormat ? DateFormat.HOUR24_MINUTE : DateFormat.HOUR_MINUTE;
+    return DateFormat(timeFormatString).format(toDateTime());
   }
 }

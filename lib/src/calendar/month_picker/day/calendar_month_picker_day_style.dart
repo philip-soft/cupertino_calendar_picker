@@ -166,8 +166,7 @@ class CalendarMonthPickerSelectedDayStyle
     return CalendarMonthPickerSelectedDayStyle._(
       textStyle: textStyle ??
           calendarMonthPickerSelectedDayStyle.copyWith(color: mainColor),
-      backgroundCircleColor:
-          backgroundCircleColor ?? mainColor?.withOpacity(0.12),
+      backgroundCircleColor: backgroundCircleColor ?? mainColor?.withAlpha(30),
     );
   }
 
@@ -195,7 +194,7 @@ class CalendarMonthPickerSelectedDayStyle
             color: CupertinoDynamicColor.maybeResolve(mainColor, context),
           ),
       backgroundCircleColor: CupertinoDynamicColor.maybeResolve(
-        backgroundCircleColor ?? mainColor?.withOpacity(0.12),
+        backgroundCircleColor ?? mainColor?.withAlpha(30),
         context,
       ),
     );
