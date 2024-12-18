@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class CalendarWeekdays extends StatelessWidget {
   const CalendarWeekdays({required this.decoration, super.key});
@@ -20,14 +20,12 @@ class CalendarWeekdays extends StatelessWidget {
       month,
       context.materialLocalization,
     );
-    final CupertinoLocalizations localization = context.cupertinoLocalization;
     final DateTime firstDayOfWeekDate = DateTime(year, month).subtract(
       Duration(days: firstDayOffset),
     );
     return List<Widget>.generate(DateTime.daysPerWeek, (int index) {
       final DateTime date = firstDayOfWeekDate.addDays(index);
-      final String mediumDateString = localization.datePickerMediumDate(date);
-      final String weekday = mediumDateString.substring(0, 3);
+      final String weekday = DateFormat.E(context.localeString).format(date);
 
       return Expanded(
         child: CalendarWeekday(

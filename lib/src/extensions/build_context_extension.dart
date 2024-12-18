@@ -19,4 +19,18 @@ extension PackageBuildContextExtension on BuildContext {
     assert(debugCheckHasCupertinoLocalizations(this));
     return CupertinoLocalizations.of(this);
   }
+
+  Locale get locale {
+    return Localizations.localeOf(this);
+  }
+
+  String get localeString {
+    String localeString = locale.languageCode;
+
+    final String? countryCode = locale.countryCode;
+    if (countryCode != null) {
+      localeString += '_$countryCode';
+    }
+    return localeString;
+  }
 }

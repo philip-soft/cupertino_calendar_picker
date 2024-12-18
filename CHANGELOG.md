@@ -1,6 +1,11 @@
+## 2.1.0
+
+* `intl` package is now being used for date and time formatting.
+* `withOpacity` method was replaced by `withAlpha` due to deprecation.
+
 ## 2.0.1
 
-* `use24hFormat` param has been added to all widgets.
+* `use24hFormat` param has been added to all widgets. (Thanks to @sargntpi)
 * `dismissBehavior` param has been added to the `CupertinoCalendarPickerButton` widget.
 
 ## 2.0.0+1
