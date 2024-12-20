@@ -1,3 +1,8 @@
+## 2.1.1
+
+* `CustomCupertinoDatePicker` was updated to use the version introduced in Flutter `3.27.0`
+* `a` getter was replaced by `alpha` to maintain compatibility with the current minimum SDK version.
+
 ## 2.1.0
 
 * `intl` package is now being used for date and time formatting.
