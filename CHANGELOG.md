@@ -1,3 +1,7 @@
+## 2.1.2
+
+* Removed redundant assertions for `currentDateTime`. (Thanks to @danielshuk)
+
 ## 2.1.1
 
 * `CustomCupertinoDatePicker` was updated to use the version introduced in Flutter `3.27.0`

@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CupertinoCalendarPicker extends StatefulWidget {
-  CupertinoCalendarPicker({
+  const CupertinoCalendarPicker({
     required this.initialMonth,
     required this.currentDateTime,
     required this.minimumDateTime,
@@ -28,9 +28,7 @@ class CupertinoCalendarPicker extends StatefulWidget {
     required this.minuteInterval,
     required this.use24hFormat,
     super.key,
-  })  : assert(!minimumDateTime.isAfter(maximumDateTime)),
-        assert(!currentDateTime.isBefore(minimumDateTime)),
-        assert(!currentDateTime.isAfter(maximumDateTime));
+  });
 
   final DateTime initialMonth;
   final DateTime currentDateTime;
