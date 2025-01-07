@@ -3,3 +3,4 @@
 // found in the LICENSE file.
 
 export 'package_date_utils.dart';
+export 'scroll_utils.dart';

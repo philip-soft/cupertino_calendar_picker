@@ -7,6 +7,7 @@ library;
 
 import 'dart:math' as math;
 
+import 'package:cupertino_calendar_picker/src/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -810,49 +811,52 @@ class CustomCupertinoDatePickerDateTimeState
 
         return false;
       },
-      child: CupertinoPicker.builder(
+      child: CupertinoFixedItemMouseScrolling(
         scrollController: dateController,
-        offAxisFraction: offAxisFraction,
-        itemExtent: widget.itemExtent,
-        useMagnifier: _kUseMagnifier,
-        magnification: _kMagnification,
-        backgroundColor: widget.backgroundColor,
-        squeeze: _kSqueeze,
-        onSelectedItemChanged: _onSelectedItemChange,
-        itemBuilder: (BuildContext context, int index) {
-          final DateTime rangeStart = DateTime(
-            initialDateTime.year,
-            initialDateTime.month,
-            initialDateTime.day + index,
-          );
+        child: CupertinoPicker.builder(
+          scrollController: dateController,
+          offAxisFraction: offAxisFraction,
+          itemExtent: widget.itemExtent,
+          useMagnifier: _kUseMagnifier,
+          magnification: _kMagnification,
+          backgroundColor: widget.backgroundColor,
+          squeeze: _kSqueeze,
+          onSelectedItemChanged: _onSelectedItemChange,
+          itemBuilder: (BuildContext context, int index) {
+            final DateTime rangeStart = DateTime(
+              initialDateTime.year,
+              initialDateTime.month,
+              initialDateTime.day + index,
+            );
 
-          // Exclusive.
-          final DateTime rangeEnd = DateTime(
-            initialDateTime.year,
-            initialDateTime.month,
-            initialDateTime.day + index + 1,
-          );
+            // Exclusive.
+            final DateTime rangeEnd = DateTime(
+              initialDateTime.year,
+              initialDateTime.month,
+              initialDateTime.day + index + 1,
+            );
 
-          final DateTime now = DateTime.now();
+            final DateTime now = DateTime.now();
 
-          if (widget.minimumDate?.isBefore(rangeEnd) == false) {
-            return null;
-          }
-          if (widget.maximumDate?.isAfter(rangeStart) == false) {
-            return null;
-          }
+            if (widget.minimumDate?.isBefore(rangeEnd) == false) {
+              return null;
+            }
+            if (widget.maximumDate?.isAfter(rangeStart) == false) {
+              return null;
+            }
 
-          final String dateText =
-              rangeStart == DateTime(now.year, now.month, now.day)
-                  ? localizations.todayLabel
-                  : localizations.datePickerMediumDate(rangeStart);
+            final String dateText =
+                rangeStart == DateTime(now.year, now.month, now.day)
+                    ? localizations.todayLabel
+                    : localizations.datePickerMediumDate(rangeStart);
 
-          return itemPositioningBuilder(
-            context,
-            Text(dateText, style: _themeTextStyle(context)),
-          );
-        },
-        selectionOverlay: selectionOverlay,
+            return itemPositioningBuilder(
+              context,
+              Text(dateText, style: _themeTextStyle(context)),
+            );
+          },
+          selectionOverlay: selectionOverlay,
+        ),
       ),
     );
   }
@@ -891,60 +895,63 @@ class CustomCupertinoDatePickerDateTimeState
 
         return false;
       },
-      child: CupertinoPicker(
+      child: CupertinoFixedItemMouseScrolling(
         scrollController: hourController,
-        offAxisFraction: offAxisFraction,
-        itemExtent: widget.itemExtent,
-        useMagnifier: _kUseMagnifier,
-        magnification: _kMagnification,
-        backgroundColor: widget.backgroundColor,
-        squeeze: _kSqueeze,
-        onSelectedItemChanged: (int index) {
-          final bool regionChanged = meridiemRegion != index ~/ 12;
-          final bool debugIsFlipped = isHourRegionFlipped;
+        child: CupertinoPicker(
+          scrollController: hourController,
+          offAxisFraction: offAxisFraction,
+          itemExtent: widget.itemExtent,
+          useMagnifier: _kUseMagnifier,
+          magnification: _kMagnification,
+          backgroundColor: widget.backgroundColor,
+          squeeze: _kSqueeze,
+          onSelectedItemChanged: (int index) {
+            final bool regionChanged = meridiemRegion != index ~/ 12;
+            final bool debugIsFlipped = isHourRegionFlipped;
 
-          if (regionChanged) {
-            meridiemRegion = index ~/ 12;
-            selectedAmPm = 1 - selectedAmPm;
-          }
+            if (regionChanged) {
+              meridiemRegion = index ~/ 12;
+              selectedAmPm = 1 - selectedAmPm;
+            }
 
-          if (!widget.use24hFormat && regionChanged) {
-            // Scroll the meridiem column to adjust AM/PM.
-            //
-            // _onSelectedItemChanged will be called when the animation finishes.
-            //
-            // Animation values obtained by comparing with iOS version.
-            meridiemController.animateToItem(
-              selectedAmPm,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
-          } else {
-            _onSelectedItemChange(index);
-          }
+            if (!widget.use24hFormat && regionChanged) {
+              // Scroll the meridiem column to adjust AM/PM.
+              //
+              // _onSelectedItemChanged will be called when the animation finishes.
+              //
+              // Animation values obtained by comparing with iOS version.
+              meridiemController.animateToItem(
+                selectedAmPm,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
+            } else {
+              _onSelectedItemChange(index);
+            }
 
-          assert(debugIsFlipped == isHourRegionFlipped);
-        },
-        looping: true,
-        selectionOverlay: selectionOverlay,
-        children: List<Widget>.generate(24, (int index) {
-          final int hour = isHourRegionFlipped ? (index + 12) % 24 : index;
-          final int displayHour =
-              widget.use24hFormat ? hour : (hour + 11) % 12 + 1;
+            assert(debugIsFlipped == isHourRegionFlipped);
+          },
+          looping: true,
+          selectionOverlay: selectionOverlay,
+          children: List<Widget>.generate(24, (int index) {
+            final int hour = isHourRegionFlipped ? (index + 12) % 24 : index;
+            final int displayHour =
+                widget.use24hFormat ? hour : (hour + 11) % 12 + 1;
 
-          return itemPositioningBuilder(
-            context,
-            Text(
-              localizations.datePickerHour(displayHour),
-              semanticsLabel:
-                  localizations.datePickerHourSemanticsLabel(displayHour),
-              style: _themeTextStyle(
-                context,
-                isValid: _isValidHour(selectedAmPm, index),
+            return itemPositioningBuilder(
+              context,
+              Text(
+                localizations.datePickerHour(displayHour),
+                semanticsLabel:
+                    localizations.datePickerHourSemanticsLabel(displayHour),
+                style: _themeTextStyle(
+                  context,
+                  isValid: _isValidHour(selectedAmPm, index),
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          }),
+        ),
       ),
     );
   }
@@ -965,43 +972,46 @@ class CustomCupertinoDatePickerDateTimeState
 
         return false;
       },
-      child: CupertinoPicker(
+      child: CupertinoFixedItemMouseScrolling(
         scrollController: minuteController,
-        offAxisFraction: offAxisFraction,
-        itemExtent: widget.itemExtent,
-        useMagnifier: _kUseMagnifier,
-        magnification: _kMagnification,
-        backgroundColor: widget.backgroundColor,
-        squeeze: _kSqueeze,
-        onSelectedItemChanged: _onSelectedItemChange,
-        looping: true,
-        selectionOverlay: selectionOverlay,
-        children:
-            List<Widget>.generate(60 ~/ widget.minuteInterval, (int index) {
-          final int minute = index * widget.minuteInterval;
+        child: CupertinoPicker(
+          scrollController: minuteController,
+          offAxisFraction: offAxisFraction,
+          itemExtent: widget.itemExtent,
+          useMagnifier: _kUseMagnifier,
+          magnification: _kMagnification,
+          backgroundColor: widget.backgroundColor,
+          squeeze: _kSqueeze,
+          onSelectedItemChanged: _onSelectedItemChange,
+          looping: true,
+          selectionOverlay: selectionOverlay,
+          children:
+              List<Widget>.generate(60 ~/ widget.minuteInterval, (int index) {
+            final int minute = index * widget.minuteInterval;
 
-          final DateTime date = DateTime(
-            initialDateTime.year,
-            initialDateTime.month,
-            initialDateTime.day + selectedDayFromInitial,
-            selectedHour,
-            minute,
-          );
+            final DateTime date = DateTime(
+              initialDateTime.year,
+              initialDateTime.month,
+              initialDateTime.day + selectedDayFromInitial,
+              selectedHour,
+              minute,
+            );
 
-          final bool isInvalidMinute =
-              (widget.minimumDate?.isAfter(date) ?? false) ||
-                  (widget.maximumDate?.isBefore(date) ?? false);
+            final bool isInvalidMinute =
+                (widget.minimumDate?.isAfter(date) ?? false) ||
+                    (widget.maximumDate?.isBefore(date) ?? false);
 
-          return itemPositioningBuilder(
-            context,
-            Text(
-              localizations.datePickerMinute(minute),
-              semanticsLabel:
-                  localizations.datePickerMinuteSemanticsLabel(minute),
-              style: _themeTextStyle(context, isValid: !isInvalidMinute),
-            ),
-          );
-        }),
+            return itemPositioningBuilder(
+              context,
+              Text(
+                localizations.datePickerMinute(minute),
+                semanticsLabel:
+                    localizations.datePickerMinuteSemanticsLabel(minute),
+                style: _themeTextStyle(context, isValid: !isInvalidMinute),
+              ),
+            );
+          }),
+        ),
       ),
     );
   }
@@ -1022,34 +1032,37 @@ class CustomCupertinoDatePickerDateTimeState
 
         return false;
       },
-      child: CupertinoPicker(
+      child: CupertinoFixedItemMouseScrolling(
         scrollController: meridiemController,
-        offAxisFraction: offAxisFraction,
-        itemExtent: widget.itemExtent,
-        useMagnifier: _kUseMagnifier,
-        magnification: _kMagnification,
-        backgroundColor: widget.backgroundColor,
-        squeeze: _kSqueeze,
-        onSelectedItemChanged: (int index) {
-          selectedAmPm = index;
-          assert(selectedAmPm == 0 || selectedAmPm == 1);
-          _onSelectedItemChange(index);
-        },
-        selectionOverlay: selectionOverlay,
-        children: List<Widget>.generate(2, (int index) {
-          return itemPositioningBuilder(
-            context,
-            Text(
-              index == 0
-                  ? localizations.anteMeridiemAbbreviation
-                  : localizations.postMeridiemAbbreviation,
-              style: _themeTextStyle(
-                context,
-                isValid: _isValidHour(index, _selectedHourIndex),
+        child: CupertinoPicker(
+          scrollController: meridiemController,
+          offAxisFraction: offAxisFraction,
+          itemExtent: widget.itemExtent,
+          useMagnifier: _kUseMagnifier,
+          magnification: _kMagnification,
+          backgroundColor: widget.backgroundColor,
+          squeeze: _kSqueeze,
+          onSelectedItemChanged: (int index) {
+            selectedAmPm = index;
+            assert(selectedAmPm == 0 || selectedAmPm == 1);
+            _onSelectedItemChange(index);
+          },
+          selectionOverlay: selectionOverlay,
+          children: List<Widget>.generate(2, (int index) {
+            return itemPositioningBuilder(
+              context,
+              Text(
+                index == 0
+                    ? localizations.anteMeridiemAbbreviation
+                    : localizations.postMeridiemAbbreviation,
+                style: _themeTextStyle(
+                  context,
+                  isValid: _isValidHour(index, _selectedHourIndex),
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          }),
+        ),
       ),
     );
   }
@@ -1387,44 +1400,47 @@ class _CustomCupertinoDatePickerDateState
 
         return false;
       },
-      child: CupertinoPicker(
+      child: CupertinoFixedItemMouseScrolling(
         scrollController: dayController,
-        offAxisFraction: offAxisFraction,
-        itemExtent: widget.itemExtent,
-        useMagnifier: _kUseMagnifier,
-        magnification: _kMagnification,
-        backgroundColor: widget.backgroundColor,
-        squeeze: _kSqueeze,
-        onSelectedItemChanged: (int index) {
-          selectedDay = index + 1;
-          if (_isCurrentDateValid) {
-            widget.onDateTimeChanged(
-              DateTime(selectedYear, selectedMonth, selectedDay),
+        child: CupertinoPicker(
+          scrollController: dayController,
+          offAxisFraction: offAxisFraction,
+          itemExtent: widget.itemExtent,
+          useMagnifier: _kUseMagnifier,
+          magnification: _kMagnification,
+          backgroundColor: widget.backgroundColor,
+          squeeze: _kSqueeze,
+          onSelectedItemChanged: (int index) {
+            selectedDay = index + 1;
+            if (_isCurrentDateValid) {
+              widget.onDateTimeChanged(
+                DateTime(selectedYear, selectedMonth, selectedDay),
+              );
+            }
+          },
+          looping: true,
+          selectionOverlay: selectionOverlay,
+          children: List<Widget>.generate(31, (int index) {
+            final int day = index + 1;
+            final int? dayOfWeek = widget.showDayOfWeek
+                ? DateTime(selectedYear, selectedMonth, day).weekday
+                : null;
+            final bool isInvalidDay = (day > daysInCurrentMonth) ||
+                (widget.minimumDate?.year == selectedYear &&
+                    widget.minimumDate!.month == selectedMonth &&
+                    widget.minimumDate!.day > day) ||
+                (widget.maximumDate?.year == selectedYear &&
+                    widget.maximumDate!.month == selectedMonth &&
+                    widget.maximumDate!.day < day);
+            return itemPositioningBuilder(
+              context,
+              Text(
+                localizations.datePickerDayOfMonth(day, dayOfWeek),
+                style: _themeTextStyle(context, isValid: !isInvalidDay),
+              ),
             );
-          }
-        },
-        looping: true,
-        selectionOverlay: selectionOverlay,
-        children: List<Widget>.generate(31, (int index) {
-          final int day = index + 1;
-          final int? dayOfWeek = widget.showDayOfWeek
-              ? DateTime(selectedYear, selectedMonth, day).weekday
-              : null;
-          final bool isInvalidDay = (day > daysInCurrentMonth) ||
-              (widget.minimumDate?.year == selectedYear &&
-                  widget.minimumDate!.month == selectedMonth &&
-                  widget.minimumDate!.day > day) ||
-              (widget.maximumDate?.year == selectedYear &&
-                  widget.maximumDate!.month == selectedMonth &&
-                  widget.maximumDate!.day < day);
-          return itemPositioningBuilder(
-            context,
-            Text(
-              localizations.datePickerDayOfMonth(day, dayOfWeek),
-              style: _themeTextStyle(context, isValid: !isInvalidDay),
-            ),
-          );
-        }),
+          }),
+        ),
       ),
     );
   }
@@ -1445,44 +1461,47 @@ class _CustomCupertinoDatePickerDateState
 
         return false;
       },
-      child: CupertinoPicker(
+      child: CupertinoFixedItemMouseScrolling(
         scrollController: monthController,
-        offAxisFraction: offAxisFraction,
-        itemExtent: widget.itemExtent,
-        useMagnifier: _kUseMagnifier,
-        magnification: _kMagnification,
-        backgroundColor: widget.backgroundColor,
-        squeeze: _kSqueeze,
-        onSelectedItemChanged: (int index) {
-          selectedMonth = index + 1;
-          if (_isCurrentDateValid) {
-            widget.onDateTimeChanged(
-              DateTime(selectedYear, selectedMonth, selectedDay),
-            );
-          }
-        },
-        looping: true,
-        selectionOverlay: selectionOverlay,
-        children: List<Widget>.generate(12, (int index) {
-          final int month = index + 1;
-          final bool isInvalidMonth =
-              (widget.minimumDate?.year == selectedYear &&
-                      widget.minimumDate!.month > month) ||
-                  (widget.maximumDate?.year == selectedYear &&
-                      widget.maximumDate!.month < month);
-          final String monthName =
-              (widget.mode == CupertinoDatePickerMode.monthYear)
-                  ? localizations.datePickerStandaloneMonth(month)
-                  : localizations.datePickerMonth(month);
+        child: CupertinoPicker(
+          scrollController: monthController,
+          offAxisFraction: offAxisFraction,
+          itemExtent: widget.itemExtent,
+          useMagnifier: _kUseMagnifier,
+          magnification: _kMagnification,
+          backgroundColor: widget.backgroundColor,
+          squeeze: _kSqueeze,
+          onSelectedItemChanged: (int index) {
+            selectedMonth = index + 1;
+            if (_isCurrentDateValid) {
+              widget.onDateTimeChanged(
+                DateTime(selectedYear, selectedMonth, selectedDay),
+              );
+            }
+          },
+          looping: true,
+          selectionOverlay: selectionOverlay,
+          children: List<Widget>.generate(12, (int index) {
+            final int month = index + 1;
+            final bool isInvalidMonth =
+                (widget.minimumDate?.year == selectedYear &&
+                        widget.minimumDate!.month > month) ||
+                    (widget.maximumDate?.year == selectedYear &&
+                        widget.maximumDate!.month < month);
+            final String monthName =
+                (widget.mode == CupertinoDatePickerMode.monthYear)
+                    ? localizations.datePickerStandaloneMonth(month)
+                    : localizations.datePickerMonth(month);
 
-          return itemPositioningBuilder(
-            context,
-            Text(
-              monthName,
-              style: _themeTextStyle(context, isValid: !isInvalidMonth),
-            ),
-          );
-        }),
+            return itemPositioningBuilder(
+              context,
+              Text(
+                monthName,
+                style: _themeTextStyle(context, isValid: !isInvalidMonth),
+              ),
+            );
+          }),
+        ),
       ),
     );
   }
@@ -1503,43 +1522,47 @@ class _CustomCupertinoDatePickerDateState
 
         return false;
       },
-      child: CupertinoPicker.builder(
+      child: CupertinoFixedItemMouseScrolling(
         scrollController: yearController,
-        itemExtent: widget.itemExtent,
-        offAxisFraction: offAxisFraction,
-        useMagnifier: _kUseMagnifier,
-        magnification: _kMagnification,
-        backgroundColor: widget.backgroundColor,
-        onSelectedItemChanged: (int index) {
-          selectedYear = index;
-          if (_isCurrentDateValid) {
-            widget.onDateTimeChanged(
-              DateTime(selectedYear, selectedMonth, selectedDay),
+        child: CupertinoPicker.builder(
+          scrollController: yearController,
+          itemExtent: widget.itemExtent,
+          offAxisFraction: offAxisFraction,
+          useMagnifier: _kUseMagnifier,
+          magnification: _kMagnification,
+          backgroundColor: widget.backgroundColor,
+          onSelectedItemChanged: (int index) {
+            selectedYear = index;
+            if (_isCurrentDateValid) {
+              widget.onDateTimeChanged(
+                DateTime(selectedYear, selectedMonth, selectedDay),
+              );
+            }
+          },
+          itemBuilder: (BuildContext context, int year) {
+            if (year < widget.minimumYear) {
+              return null;
+            }
+
+            if (widget.maximumYear != null && year > widget.maximumYear!) {
+              return null;
+            }
+
+            final bool isValidYear = (widget.minimumDate == null ||
+                    widget.minimumDate!.year <= year) &&
+                (widget.maximumDate == null ||
+                    widget.maximumDate!.year >= year);
+
+            return itemPositioningBuilder(
+              context,
+              Text(
+                localizations.datePickerYear(year),
+                style: _themeTextStyle(context, isValid: isValidYear),
+              ),
             );
-          }
-        },
-        itemBuilder: (BuildContext context, int year) {
-          if (year < widget.minimumYear) {
-            return null;
-          }
-
-          if (widget.maximumYear != null && year > widget.maximumYear!) {
-            return null;
-          }
-
-          final bool isValidYear = (widget.minimumDate == null ||
-                  widget.minimumDate!.year <= year) &&
-              (widget.maximumDate == null || widget.maximumDate!.year >= year);
-
-          return itemPositioningBuilder(
-            context,
-            Text(
-              localizations.datePickerYear(year),
-              style: _themeTextStyle(context, isValid: isValidYear),
-            ),
-          );
-        },
-        selectionOverlay: selectionOverlay,
+          },
+          selectionOverlay: selectionOverlay,
+        ),
       ),
     );
   }
@@ -1856,42 +1879,45 @@ class _CustomCupertinoDatePickerMonthYearState
 
         return false;
       },
-      child: CupertinoPicker(
+      child: CupertinoFixedItemMouseScrolling(
         scrollController: monthController,
-        offAxisFraction: offAxisFraction,
-        itemExtent: _kItemExtent,
-        useMagnifier: _kUseMagnifier,
-        magnification: _kMagnification,
-        backgroundColor: widget.backgroundColor,
-        squeeze: _kSqueeze,
-        onSelectedItemChanged: (int index) {
-          selectedMonth = index + 1;
-          if (_isCurrentDateValid) {
-            widget.onDateTimeChanged(DateTime(selectedYear, selectedMonth));
-          }
-        },
-        looping: true,
-        selectionOverlay: selectionOverlay,
-        children: List<Widget>.generate(12, (int index) {
-          final int month = index + 1;
-          final bool isInvalidMonth =
-              (widget.minimumDate?.year == selectedYear &&
-                      widget.minimumDate!.month > month) ||
-                  (widget.maximumDate?.year == selectedYear &&
-                      widget.maximumDate!.month < month);
-          final String monthName =
-              (widget.mode == CupertinoDatePickerMode.monthYear)
-                  ? localizations.datePickerStandaloneMonth(month)
-                  : localizations.datePickerMonth(month);
+        child: CupertinoPicker(
+          scrollController: monthController,
+          offAxisFraction: offAxisFraction,
+          itemExtent: _kItemExtent,
+          useMagnifier: _kUseMagnifier,
+          magnification: _kMagnification,
+          backgroundColor: widget.backgroundColor,
+          squeeze: _kSqueeze,
+          onSelectedItemChanged: (int index) {
+            selectedMonth = index + 1;
+            if (_isCurrentDateValid) {
+              widget.onDateTimeChanged(DateTime(selectedYear, selectedMonth));
+            }
+          },
+          looping: true,
+          selectionOverlay: selectionOverlay,
+          children: List<Widget>.generate(12, (int index) {
+            final int month = index + 1;
+            final bool isInvalidMonth =
+                (widget.minimumDate?.year == selectedYear &&
+                        widget.minimumDate!.month > month) ||
+                    (widget.maximumDate?.year == selectedYear &&
+                        widget.maximumDate!.month < month);
+            final String monthName =
+                (widget.mode == CupertinoDatePickerMode.monthYear)
+                    ? localizations.datePickerStandaloneMonth(month)
+                    : localizations.datePickerMonth(month);
 
-          return itemPositioningBuilder(
-            context,
-            Text(
-              monthName,
-              style: _themeTextStyle(context, isValid: !isInvalidMonth),
-            ),
-          );
-        }),
+            return itemPositioningBuilder(
+              context,
+              Text(
+                monthName,
+                style: _themeTextStyle(context, isValid: !isInvalidMonth),
+              ),
+            );
+          }),
+        ),
       ),
     );
   }
@@ -1912,41 +1938,45 @@ class _CustomCupertinoDatePickerMonthYearState
 
         return false;
       },
-      child: CupertinoPicker.builder(
+      child: CupertinoFixedItemMouseScrolling(
         scrollController: yearController,
-        itemExtent: _kItemExtent,
-        offAxisFraction: offAxisFraction,
-        useMagnifier: _kUseMagnifier,
-        magnification: _kMagnification,
-        backgroundColor: widget.backgroundColor,
-        onSelectedItemChanged: (int index) {
-          selectedYear = index;
-          if (_isCurrentDateValid) {
-            widget.onDateTimeChanged(DateTime(selectedYear, selectedMonth));
-          }
-        },
-        itemBuilder: (BuildContext context, int year) {
-          if (year < widget.minimumYear) {
-            return null;
-          }
+        child: CupertinoPicker.builder(
+          scrollController: yearController,
+          itemExtent: _kItemExtent,
+          offAxisFraction: offAxisFraction,
+          useMagnifier: _kUseMagnifier,
+          magnification: _kMagnification,
+          backgroundColor: widget.backgroundColor,
+          onSelectedItemChanged: (int index) {
+            selectedYear = index;
+            if (_isCurrentDateValid) {
+              widget.onDateTimeChanged(DateTime(selectedYear, selectedMonth));
+            }
+          },
+          itemBuilder: (BuildContext context, int year) {
+            if (year < widget.minimumYear) {
+              return null;
+            }
 
-          if (widget.maximumYear != null && year > widget.maximumYear!) {
-            return null;
-          }
+            if (widget.maximumYear != null && year > widget.maximumYear!) {
+              return null;
+            }
 
-          final bool isValidYear = (widget.minimumDate == null ||
-                  widget.minimumDate!.year <= year) &&
-              (widget.maximumDate == null || widget.maximumDate!.year >= year);
+            final bool isValidYear = (widget.minimumDate == null ||
+                    widget.minimumDate!.year <= year) &&
+                (widget.maximumDate == null ||
+                    widget.maximumDate!.year >= year);
 
-          return itemPositioningBuilder(
-            context,
-            Text(
-              localizations.datePickerYear(year),
-              style: _themeTextStyle(context, isValid: isValidYear),
-            ),
-          );
-        },
-        selectionOverlay: selectionOverlay,
+            return itemPositioningBuilder(
+              context,
+              Text(
+                localizations.datePickerYear(year),
+                style: _themeTextStyle(context, isValid: isValidYear),
+              ),
+            );
+          },
+          selectionOverlay: selectionOverlay,
+        ),
       ),
     );
   }
@@ -2530,41 +2560,44 @@ class _CupertinoTimerPickerState extends State<CupertinoTimerPicker> {
     _hourScrollController ??= FixedExtentScrollController(
       initialItem: selectedHour!,
     );
-    return CupertinoPicker(
+    return CupertinoFixedItemMouseScrolling(
       scrollController: _hourScrollController,
-      magnification: _kMagnification,
-      offAxisFraction: _calculateOffAxisFraction(additionalPadding.start, 0),
-      itemExtent: widget.itemExtent,
-      backgroundColor: widget.backgroundColor,
-      squeeze: _kSqueeze,
-      onSelectedItemChanged: (int index) {
-        setState(() {
-          selectedHour = index;
-          widget.onTimerDurationChanged(
-            Duration(
-              hours: selectedHour!,
-              minutes: selectedMinute,
-              seconds: selectedSecond ?? 0,
+      child: CupertinoPicker(
+        scrollController: _hourScrollController,
+        magnification: _kMagnification,
+        offAxisFraction: _calculateOffAxisFraction(additionalPadding.start, 0),
+        itemExtent: widget.itemExtent,
+        backgroundColor: widget.backgroundColor,
+        squeeze: _kSqueeze,
+        onSelectedItemChanged: (int index) {
+          setState(() {
+            selectedHour = index;
+            widget.onTimerDurationChanged(
+              Duration(
+                hours: selectedHour!,
+                minutes: selectedMinute,
+                seconds: selectedSecond ?? 0,
+              ),
+            );
+          });
+        },
+        selectionOverlay: selectionOverlay,
+        children: List<Widget>.generate(24, (int index) {
+          final String label = localizations.timerPickerHourLabel(index) ?? '';
+          final String semanticsLabel = textDirectionFactor == 1
+              ? localizations.timerPickerHour(index) + label
+              : label + localizations.timerPickerHour(index);
+
+          return Semantics(
+            label: semanticsLabel,
+            excludeSemantics: true,
+            child: _buildPickerNumberLabel(
+              localizations.timerPickerHour(index),
+              additionalPadding,
             ),
           );
-        });
-      },
-      selectionOverlay: selectionOverlay,
-      children: List<Widget>.generate(24, (int index) {
-        final String label = localizations.timerPickerHourLabel(index) ?? '';
-        final String semanticsLabel = textDirectionFactor == 1
-            ? localizations.timerPickerHour(index) + label
-            : label + localizations.timerPickerHour(index);
-
-        return Semantics(
-          label: semanticsLabel,
-          excludeSemantics: true,
-          child: _buildPickerNumberLabel(
-            localizations.timerPickerHour(index),
-            additionalPadding,
-          ),
-        );
-      }),
+        }),
+      ),
     );
   }
 
@@ -2605,46 +2638,51 @@ class _CupertinoTimerPickerState extends State<CupertinoTimerPicker> {
     _minuteScrollController ??= FixedExtentScrollController(
       initialItem: selectedMinute ~/ widget.minuteInterval,
     );
-    return CupertinoPicker(
+    return CupertinoFixedItemMouseScrolling(
       scrollController: _minuteScrollController,
-      magnification: _kMagnification,
-      offAxisFraction: _calculateOffAxisFraction(
-        additionalPadding.start,
-        widget.mode == CupertinoTimerPickerMode.ms ? 0 : 1,
-      ),
-      itemExtent: widget.itemExtent,
-      backgroundColor: widget.backgroundColor,
-      squeeze: _kSqueeze,
-      looping: true,
-      onSelectedItemChanged: (int index) {
-        setState(() {
-          selectedMinute = index * widget.minuteInterval;
-          widget.onTimerDurationChanged(
-            Duration(
-              hours: selectedHour ?? 0,
-              minutes: selectedMinute,
-              seconds: selectedSecond ?? 0,
+      child: CupertinoPicker(
+        scrollController: _minuteScrollController,
+        magnification: _kMagnification,
+        offAxisFraction: _calculateOffAxisFraction(
+          additionalPadding.start,
+          widget.mode == CupertinoTimerPickerMode.ms ? 0 : 1,
+        ),
+        itemExtent: widget.itemExtent,
+        backgroundColor: widget.backgroundColor,
+        squeeze: _kSqueeze,
+        looping: true,
+        onSelectedItemChanged: (int index) {
+          setState(() {
+            selectedMinute = index * widget.minuteInterval;
+            widget.onTimerDurationChanged(
+              Duration(
+                hours: selectedHour ?? 0,
+                minutes: selectedMinute,
+                seconds: selectedSecond ?? 0,
+              ),
+            );
+          });
+        },
+        selectionOverlay: selectionOverlay,
+        children:
+            List<Widget>.generate(60 ~/ widget.minuteInterval, (int index) {
+          final int minute = index * widget.minuteInterval;
+          final String label =
+              localizations.timerPickerMinuteLabel(minute) ?? '';
+          final String semanticsLabel = textDirectionFactor == 1
+              ? localizations.timerPickerMinute(minute) + label
+              : label + localizations.timerPickerMinute(minute);
+
+          return Semantics(
+            label: semanticsLabel,
+            excludeSemantics: true,
+            child: _buildPickerNumberLabel(
+              localizations.timerPickerMinute(minute),
+              additionalPadding,
             ),
           );
-        });
-      },
-      selectionOverlay: selectionOverlay,
-      children: List<Widget>.generate(60 ~/ widget.minuteInterval, (int index) {
-        final int minute = index * widget.minuteInterval;
-        final String label = localizations.timerPickerMinuteLabel(minute) ?? '';
-        final String semanticsLabel = textDirectionFactor == 1
-            ? localizations.timerPickerMinute(minute) + label
-            : label + localizations.timerPickerMinute(minute);
-
-        return Semantics(
-          label: semanticsLabel,
-          excludeSemantics: true,
-          child: _buildPickerNumberLabel(
-            localizations.timerPickerMinute(minute),
-            additionalPadding,
-          ),
-        );
-      }),
+        }),
+      ),
     );
   }
 
@@ -2686,46 +2724,51 @@ class _CupertinoTimerPickerState extends State<CupertinoTimerPicker> {
     _secondScrollController ??= FixedExtentScrollController(
       initialItem: selectedSecond! ~/ widget.secondInterval,
     );
-    return CupertinoPicker(
+    return CupertinoFixedItemMouseScrolling(
       scrollController: _secondScrollController,
-      magnification: _kMagnification,
-      offAxisFraction: _calculateOffAxisFraction(
-        additionalPadding.start,
-        widget.mode == CupertinoTimerPickerMode.ms ? 1 : 2,
-      ),
-      itemExtent: widget.itemExtent,
-      backgroundColor: widget.backgroundColor,
-      squeeze: _kSqueeze,
-      looping: true,
-      onSelectedItemChanged: (int index) {
-        setState(() {
-          selectedSecond = index * widget.secondInterval;
-          widget.onTimerDurationChanged(
-            Duration(
-              hours: selectedHour ?? 0,
-              minutes: selectedMinute,
-              seconds: selectedSecond!,
+      child: CupertinoPicker(
+        scrollController: _secondScrollController,
+        magnification: _kMagnification,
+        offAxisFraction: _calculateOffAxisFraction(
+          additionalPadding.start,
+          widget.mode == CupertinoTimerPickerMode.ms ? 1 : 2,
+        ),
+        itemExtent: widget.itemExtent,
+        backgroundColor: widget.backgroundColor,
+        squeeze: _kSqueeze,
+        looping: true,
+        onSelectedItemChanged: (int index) {
+          setState(() {
+            selectedSecond = index * widget.secondInterval;
+            widget.onTimerDurationChanged(
+              Duration(
+                hours: selectedHour ?? 0,
+                minutes: selectedMinute,
+                seconds: selectedSecond!,
+              ),
+            );
+          });
+        },
+        selectionOverlay: selectionOverlay,
+        children:
+            List<Widget>.generate(60 ~/ widget.secondInterval, (int index) {
+          final int second = index * widget.secondInterval;
+          final String label =
+              localizations.timerPickerSecondLabel(second) ?? '';
+          final String semanticsLabel = textDirectionFactor == 1
+              ? localizations.timerPickerSecond(second) + label
+              : label + localizations.timerPickerSecond(second);
+
+          return Semantics(
+            label: semanticsLabel,
+            excludeSemantics: true,
+            child: _buildPickerNumberLabel(
+              localizations.timerPickerSecond(second),
+              additionalPadding,
             ),
           );
-        });
-      },
-      selectionOverlay: selectionOverlay,
-      children: List<Widget>.generate(60 ~/ widget.secondInterval, (int index) {
-        final int second = index * widget.secondInterval;
-        final String label = localizations.timerPickerSecondLabel(second) ?? '';
-        final String semanticsLabel = textDirectionFactor == 1
-            ? localizations.timerPickerSecond(second) + label
-            : label + localizations.timerPickerSecond(second);
-
-        return Semantics(
-          label: semanticsLabel,
-          excludeSemantics: true,
-          child: _buildPickerNumberLabel(
-            localizations.timerPickerSecond(second),
-            additionalPadding,
-          ),
-        );
-      }),
+        }),
+      ),
     );
   }
 
