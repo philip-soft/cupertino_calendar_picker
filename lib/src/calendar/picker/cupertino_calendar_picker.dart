@@ -270,7 +270,8 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
                 bottom: 38.0,
               ),
               child: switch (viewMode) {
-                CupertinoCalendarViewMode.yearPicker => CupertinoDatePicker(
+                CupertinoCalendarViewMode.yearPicker =>
+                  CustomCupertinoDatePicker(
                     minimumDate: DateTime(
                       widget.minimumDateTime.year,
                       widget.minimumDateTime.month,
