@@ -10,6 +10,7 @@ import 'package:flutter/scheduler.dart';
 /// any device, including the mouse.
 class CupertinoAnyDeviceScrollBehavior extends CupertinoScrollBehavior {
   const CupertinoAnyDeviceScrollBehavior();
+
   @override
   Set<PointerDeviceKind> get dragDevices => <PointerDeviceKind>{
         ...PointerDeviceKind.values,
@@ -24,6 +25,7 @@ class CupertinoFixedItemMouseScrolling extends StatelessWidget {
     required this.child,
     super.key,
   });
+
   final FixedExtentScrollController? scrollController;
   final Widget child;
 

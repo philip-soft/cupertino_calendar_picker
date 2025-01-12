@@ -1,3 +1,7 @@
+## 2.1.3
+
+* Fixed scrolling behavior in Date/Time pickers when using a mouse on Desktop and Web platforms. (Thanks to @klondikedragon)
+
 ## 2.1.2
 
 * Removed redundant assertions for `currentDateTime`. (Thanks to @danielshuk)
