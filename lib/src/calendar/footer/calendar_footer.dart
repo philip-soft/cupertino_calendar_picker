@@ -61,9 +61,10 @@ class _CalendarFooterState extends State<CalendarFooter> {
   void _onDayPeriodChanged(DayPeriod? dayPeriod) {
     if (dayPeriod != null) {
       setState(() {
-        final int newHour = dayPeriod == DayPeriod.pm ? 12 : -12;
+        final int newHour =
+            _timeOfDay.hour % 12 + (dayPeriod == DayPeriod.pm ? 12 : 0);
         _timeOfDay = TimeOfDay(
-          hour: _timeOfDay.hour + newHour,
+          hour: newHour,
           minute: _timeOfDay.minute,
         );
         widget.onTimeChanged(_timeOfDay);
