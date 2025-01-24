@@ -140,8 +140,8 @@ class _CalendarFooterState extends State<CalendarFooter> {
                   return MapEntry<DayPeriod, Widget>(
                     period,
                     SizedBox(
-                      width: 32.0,
-                      height: 32.0,
+                      width: 30.0,
+                      height: 30.0,
                       child: Center(
                         child: Text(
                           period.localizedString(context),

@@ -15,7 +15,6 @@ const TextStyle calendarFooterTimeLabelStyle = TextStyle(
   fontSize: 17.0,
 );
 const TextStyle calendarDayPeriodTextStyle = TextStyle(
-  // Nuevo estilo base
   fontSize: 13.0,
   color: CupertinoColors.label,
 );
@@ -86,7 +85,7 @@ class CalendarFooterDecoration {
   /// The [TextStyle] of the calendar's time.
   final TextStyle? timeStyle;
 
-  /// The [TextStyle] of the AM/PM switcher text. // Nuevo campo
+  /// The [TextStyle] of the AM/PM switcher text.
   final TextStyle? dayPeriodTextStyle;
 
   /// Creates a copy of the class with the provided parameters.
