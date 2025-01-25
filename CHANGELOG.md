@@ -1,3 +1,9 @@
+## 2.1.4
+
+* Thanks to @desarrolladorits2 for the following changes:
+  * Fixed a bug that caused an exception during time parsing in certain localizations.
+  * `dayPeriodTextStyle` property has been added to the `CalendarFooterDecoration` class.
+
 ## 2.1.3
 
 * Fixed scrolling behavior in Date/Time pickers when using a mouse on Desktop and Web platforms. (Thanks to @klondikedragon)
