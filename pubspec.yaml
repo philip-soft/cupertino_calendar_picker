@@ -4,6 +4,7 @@ description: This package includes a suite of Cupertino-style components that
   principles.
 version: 2.1.4
 repository: https://github.com/philip-soft/cupertino_calendar_picker
+issue_tracker: https://github.com/philip-soft/cupertino_calendar_picker/issues
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
