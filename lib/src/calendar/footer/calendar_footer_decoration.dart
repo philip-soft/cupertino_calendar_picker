@@ -14,6 +14,10 @@ const TextStyle calendarFooterTimeLabelStyle = TextStyle(
   color: calendarFooterTitleColor,
   fontSize: 17.0,
 );
+const TextStyle calendarDayPeriodTextStyle = TextStyle(
+  fontSize: 13.0,
+  color: CupertinoColors.label,
+);
 
 /// A decoration class for the calendar's footer.
 class CalendarFooterDecoration {
@@ -22,16 +26,19 @@ class CalendarFooterDecoration {
   factory CalendarFooterDecoration({
     TextStyle? timeLabelStyle,
     TextStyle? timeStyle,
+    TextStyle? dayPeriodTextStyle,
   }) {
     return CalendarFooterDecoration._(
       timeLabelStyle: timeLabelStyle ?? calendarFooterTimeLabelStyle,
       timeStyle: timeStyle ?? calendarTimeStyle,
+      dayPeriodTextStyle: dayPeriodTextStyle ?? calendarDayPeriodTextStyle,
     );
   }
 
   const CalendarFooterDecoration._({
     this.timeLabelStyle,
     this.timeStyle,
+    this.dayPeriodTextStyle,
   });
 
   /// Creates a calendar's footer decoration class with default values
@@ -42,10 +49,14 @@ class CalendarFooterDecoration {
     BuildContext context, {
     TextStyle? timeLabelStyle,
     TextStyle? timeStyle,
+    TextStyle? dayPeriodTextStyle,
   }) {
     final TextStyle timeTextStyle = timeStyle ?? calendarFooterTimeLabelStyle;
     final TextStyle titleTextStyle =
         timeLabelStyle ?? calendarFooterTimeLabelStyle;
+    final TextStyle periodTextStyle =
+        dayPeriodTextStyle ?? calendarDayPeriodTextStyle;
+
     return CalendarFooterDecoration(
       timeLabelStyle: titleTextStyle.copyWith(
         color: CupertinoDynamicColor.resolve(
@@ -59,6 +70,12 @@ class CalendarFooterDecoration {
           context,
         ),
       ),
+      dayPeriodTextStyle: periodTextStyle.copyWith(
+        color: CupertinoDynamicColor.resolve(
+          periodTextStyle.color ?? CupertinoColors.label,
+          context,
+        ),
+      ),
     );
   }
 
@@ -68,14 +85,19 @@ class CalendarFooterDecoration {
   /// The [TextStyle] of the calendar's time.
   final TextStyle? timeStyle;
 
+  /// The [TextStyle] of the AM/PM switcher text.
+  final TextStyle? dayPeriodTextStyle;
+
   /// Creates a copy of the class with the provided parameters.
   CalendarFooterDecoration copyWith({
     TextStyle? timeLabelStyle,
     TextStyle? timeStyle,
+    TextStyle? dayPeriodTextStyle,
   }) {
     return CalendarFooterDecoration(
       timeLabelStyle: timeLabelStyle ?? this.timeLabelStyle,
       timeStyle: timeStyle ?? this.timeStyle,
+      dayPeriodTextStyle: dayPeriodTextStyle ?? this.dayPeriodTextStyle,
     );
   }
 }

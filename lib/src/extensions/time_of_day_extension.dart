@@ -36,10 +36,7 @@ extension TimeOfDayExtension on TimeOfDay {
   }
 
   String timeWithDayPeriodFormat(BuildContext context) {
-    const String formatString = DateFormat.HOUR_MINUTE;
-    final String formattedTime = DateFormat(formatString).format(toDateTime());
-    final int spaceIndex = formattedTime.indexOf(' ');
-    return formattedTime.replaceRange(spaceIndex, null, '');
+    return DateFormat('h:mm').format(toDateTime());
   }
 
   String timeFormat(
@@ -47,8 +44,7 @@ extension TimeOfDayExtension on TimeOfDay {
     required bool? use24hFormat,
   }) {
     final bool use24HoursFormat = use24hFormat ?? context.alwaysUse24hFormat;
-    final String timeFormatString =
-        use24HoursFormat ? DateFormat.HOUR24_MINUTE : DateFormat.HOUR_MINUTE;
-    return DateFormat(timeFormatString).format(toDateTime());
+    final String pattern = use24HoursFormat ? 'HH:mm' : 'h:mm a';
+    return DateFormat(pattern).format(toDateTime());
   }
 }
