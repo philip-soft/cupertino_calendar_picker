@@ -1,3 +1,7 @@
+## 2.1.5
+
+* Updated the `scaleAlignment` calculation for the X-axis.
+
 ## 2.1.4
 
 * Thanks to @desarrolladorits2 for the following changes:
