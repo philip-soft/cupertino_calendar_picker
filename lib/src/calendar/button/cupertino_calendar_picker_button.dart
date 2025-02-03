@@ -24,6 +24,7 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
     super.key,
     this.onDateTimeChanged,
     this.onDateSelected,
+    this.onCompleted,
     this.currentDateTime,
     this.onDisplayedMonthChanged,
     this.containerDecoration,
@@ -54,6 +55,9 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
 
   /// A callback that is triggered when the user selects a date in the calendar.
   final ValueChanged<DateTime>? onDateSelected;
+
+  /// A callback that is triggered when the user completes the selection.
+  final ValueChanged<DateTime>? onCompleted;
 
   /// The initially selected [DateTime] that the calendar should display.
   ///
@@ -211,32 +215,38 @@ class _CupertinoCalendarPickerButtonState
       mainColor: widget.mainColor,
       decoration: widget.buttonDecoration,
       onPressed: widget.onPressed,
-      showPickerFunction: (RenderBox? renderBox) => showCupertinoCalendarPicker(
-        context,
-        widgetRenderBox: renderBox,
-        minimumDateTime: widget.minimumDateTime,
-        initialDateTime: date,
-        currentDateTime: widget.currentDateTime,
-        mainColor: widget.mainColor,
-        headerDecoration: widget.headerDecoration,
-        containerDecoration: widget.containerDecoration,
-        monthPickerDecoration: widget.monthPickerDecoration,
-        weekdayDecoration: widget.weekdayDecoration,
-        footerDecoration: widget.footerDecoration,
-        offset: widget.offset,
-        maximumDateTime: widget.maximumDateTime,
-        barrierColor: widget.barrierColor,
-        verticalSpacing: widget.verticalSpacing,
-        horizontalSpacing: widget.horizontalSpacing,
-        onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
-        mode: widget.mode,
-        onDateTimeChanged: _onDateTimeChanged,
-        onDateSelected: widget.onDateSelected,
-        timeLabel: widget.timeLabel,
-        minuteInterval: widget.minuteInterval,
-        dismissBehavior: widget.dismissBehavior,
-        use24hFormat: widget.use24hFormat,
-      ),
+      showPickerFunction: (RenderBox? renderBox) async {
+        final DateTime? val = await showCupertinoCalendarPicker(
+          context,
+          widgetRenderBox: renderBox,
+          minimumDateTime: widget.minimumDateTime,
+          initialDateTime: date,
+          currentDateTime: widget.currentDateTime,
+          mainColor: widget.mainColor,
+          headerDecoration: widget.headerDecoration,
+          containerDecoration: widget.containerDecoration,
+          monthPickerDecoration: widget.monthPickerDecoration,
+          weekdayDecoration: widget.weekdayDecoration,
+          footerDecoration: widget.footerDecoration,
+          offset: widget.offset,
+          maximumDateTime: widget.maximumDateTime,
+          barrierColor: widget.barrierColor,
+          verticalSpacing: widget.verticalSpacing,
+          horizontalSpacing: widget.horizontalSpacing,
+          onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
+          mode: widget.mode,
+          onDateTimeChanged: _onDateTimeChanged,
+          onDateSelected: widget.onDateSelected,
+          timeLabel: widget.timeLabel,
+          minuteInterval: widget.minuteInterval,
+          dismissBehavior: widget.dismissBehavior,
+          use24hFormat: widget.use24hFormat,
+        );
+        if (val != null) {
+          widget.onCompleted?.call(val);
+        }
+        return val;
+      },
     );
   }
 }
