@@ -20,7 +20,7 @@ The package provides a sleek and stylish cupertino calendar widgets designed to 
 In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
-  cupertino_calendar_picker: ^2.1.5
+  cupertino_calendar_picker: ^2.1.6
 ```
 
 Import it:

@@ -1,6 +1,7 @@
 ## 2.1.6
 
-* Added `onCompleted` callback to `CupertinoCalendarPickerButton`. (Thanks to [@MrLightful](https://github.com/mrlightful))
+* Added `onCompleted` callback to `CupertinoCalendarPickerButton` and `CupertinoTimePickerButton`. (Thanks to [@MrLightful](https://github.com/philip-soft/cupertino_calendar_picker/pull/29))
+* Minimum required flutter sdk is set to `v3.24.0`.
 
 ## 2.1.5
 
@@ -8,17 +9,17 @@
 
 ## 2.1.4
 
-* Thanks to @desarrolladorits2 for the following changes:
+* Thanks to [@desarrolladorits2](https://github.com/philip-soft/cupertino_calendar_picker/pull/26) for the following changes:
   * Fixed a bug that caused an exception during time parsing in certain localizations.
   * `dayPeriodTextStyle` property has been added to the `CalendarFooterDecoration` class.
 
 ## 2.1.3
 
-* Fixed scrolling behavior in Date/Time pickers when using a mouse on Desktop and Web platforms. (Thanks to @klondikedragon)
+* Fixed scrolling behavior in Date/Time pickers when using a mouse on Desktop and Web platforms. (Thanks to [@klondikedragon](https://github.com/philip-soft/cupertino_calendar_picker/pull/22))
 
 ## 2.1.2
 
-* Removed redundant assertions for `currentDateTime`. (Thanks to @danielshuk)
+* Removed redundant assertions for `currentDateTime`. (Thanks to [@danielshuk](https://github.com/philip-soft/cupertino_calendar_picker/issues/19))
 
 ## 2.1.1
 
@@ -32,7 +33,7 @@
 
 ## 2.0.1
 
-* `use24hFormat` param has been added to all widgets. (Thanks to @sargntpi)
+* `use24hFormat` param has been added to all widgets. (Thanks to [@sargntpi](https://github.com/philip-soft/cupertino_calendar_picker/pull/12))
 * `dismissBehavior` param has been added to the `CupertinoCalendarPickerButton` widget.
 
 ## 2.0.0+1
@@ -69,7 +70,7 @@
 * The `CalendarDismissBehavior` enum was added to specify different dismiss behaviors.
 * The `onDateSelected` parameter was added.
 * The `showCupertinoCalendarPicker` function now returns a `DateTime`.
-* Fixed an issue where the calendar closed without animation when the Android back button was tapped. (Thanks to @JCKodel)
+* Fixed an issue where the calendar closed without animation when the Android back button was tapped. (Thanks to [@JCKodel](https://github.com/philip-soft/cupertino_calendar_picker/issues/3))
 
 ## 1.1.1
 

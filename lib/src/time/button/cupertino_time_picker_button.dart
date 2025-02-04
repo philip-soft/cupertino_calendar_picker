@@ -17,6 +17,7 @@ class CupertinoTimePickerButton extends StatefulWidget {
     this.barrierColor = Colors.transparent,
     super.key,
     this.onTimeChanged,
+    this.onCompleted,
     this.containerDecoration,
     this.mainColor = CupertinoColors.systemRed,
     this.buttonDecoration,
@@ -39,6 +40,9 @@ class CupertinoTimePickerButton extends StatefulWidget {
 
   /// Called when the user selects a time in the picker.
   final ValueChanged<TimeOfDay>? onTimeChanged;
+
+  /// A callback that is triggered when the user completes the selection.
+  final ValueChanged<TimeOfDay?>? onCompleted;
 
   /// The initial [TimeOfDay] that the picker should display. If `null`,
   /// `TimeOfDay.now()` will be used instead.
@@ -117,6 +121,26 @@ class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
     });
   }
 
+  Future<TimeOfDay?> _showPickerFunction(RenderBox? renderBox) async {
+    final TimeOfDay? val = await showCupertinoTimePicker(
+      context,
+      widgetRenderBox: renderBox,
+      initialTime: _selectedTime,
+      minimumTime: widget.minimumTime,
+      maximumTime: widget.maximumTime,
+      containerDecoration: widget.containerDecoration,
+      offset: widget.offset,
+      barrierColor: widget.barrierColor,
+      verticalSpacing: widget.verticalSpacing,
+      horizontalSpacing: widget.horizontalSpacing,
+      onTimeChanged: _onTimeChanged,
+      minuteInterval: widget.minuteInterval,
+      use24hFormat: widget.use24hFormat,
+    );
+    widget.onCompleted?.call(val);
+    return val;
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPickerButton<TimeOfDay?>(
@@ -127,21 +151,7 @@ class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
       decoration: widget.buttonDecoration,
       mainColor: widget.mainColor,
       onPressed: widget.onPressed,
-      showPickerFunction: (RenderBox? renderBox) => showCupertinoTimePicker(
-        context,
-        widgetRenderBox: renderBox,
-        initialTime: _selectedTime,
-        minimumTime: widget.minimumTime,
-        maximumTime: widget.maximumTime,
-        containerDecoration: widget.containerDecoration,
-        offset: widget.offset,
-        barrierColor: widget.barrierColor,
-        verticalSpacing: widget.verticalSpacing,
-        horizontalSpacing: widget.horizontalSpacing,
-        onTimeChanged: _onTimeChanged,
-        minuteInterval: widget.minuteInterval,
-        use24hFormat: widget.use24hFormat,
-      ),
+      showPickerFunction: _showPickerFunction,
     );
   }
 }
