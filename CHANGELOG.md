@@ -1,3 +1,7 @@
+## 2.1.6
+
+* Added `onCompleted` callback to `CupertinoCalendarPickerButton`. (Thanks to [@MrLightful](https://github.com/mrlightful))
+
 ## 2.1.5
 
 * Updated the `scaleAlignment` calculation for the X-axis.
