@@ -1,7 +1,8 @@
 ## 2.1.6
 
 * Added `onCompleted` callback to `CupertinoCalendarPickerButton` and `CupertinoTimePickerButton`. (Thanks to [@MrLightful](https://github.com/philip-soft/cupertino_calendar_picker/pull/29))
-* Minimum required flutter sdk is set to `v3.24.0`.
+* The minimum required Flutter SDK is set to `v3.24.0`.
+* The minimum required Dart SDK is set to `v3.2.0`.
 
 ## 2.1.5
 
