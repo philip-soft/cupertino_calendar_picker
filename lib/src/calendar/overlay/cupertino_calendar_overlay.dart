@@ -10,6 +10,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     required this.widgetRenderBox,
     required this.minimumDateTime,
     required this.maximumDateTime,
+    required this.firstDayOfWeekIndex,
     required this.horizontalSpacing,
     required this.verticalSpacing,
     required this.offset,
@@ -54,6 +55,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
   final String? timeLabel;
   final int minuteInterval;
   final bool use24hFormat;
+  final int? firstDayOfWeekIndex;
 
   @override
   State<CupertinoCalendarOverlay> createState() =>
@@ -135,6 +137,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
         type: CupertinoCalendarType.compact,
         minuteInterval: widget.minuteInterval,
         use24hFormat: widget.use24hFormat,
+        firstDayOfWeekIndex: widget.firstDayOfWeekIndex,
       ),
     );
   }

@@ -39,6 +39,7 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
     this.minuteInterval = 1,
     this.onPressed,
     this.use24hFormat,
+    this.firstDayOfWeekIndex,
   });
 
   /// Specifies the earliest date that can be selected by the user
@@ -150,6 +151,11 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   /// Displayed only when the calendar is in a mode that includes time selection.
   final bool? use24hFormat;
 
+  /// The index of the first day of the week, where 0 represents Sunday.
+  ///
+  /// The default value is based on the locale.
+  final int? firstDayOfWeekIndex;
+
   @override
   State<CupertinoCalendarPickerButton> createState() =>
       _CupertinoCalendarPickerButtonState();
@@ -200,6 +206,7 @@ class _CupertinoCalendarPickerButtonState
       minuteInterval: widget.minuteInterval,
       dismissBehavior: widget.dismissBehavior,
       use24hFormat: widget.use24hFormat,
+      firstDayOfWeekIndex: widget.firstDayOfWeekIndex,
     );
     widget.onCompleted?.call(val);
     return val;

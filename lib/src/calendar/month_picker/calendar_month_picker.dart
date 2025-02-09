@@ -22,6 +22,7 @@ class CalendarMonthPicker extends StatefulWidget {
     required this.onChanged,
     required this.decoration,
     required this.mainColor,
+    required this.firstDayOfWeekIndex,
     super.key,
   })  : minimumDate = DateUtils.dateOnly(minimumDate),
         maximumDate = DateUtils.dateOnly(maximumDate),
@@ -62,6 +63,11 @@ class CalendarMonthPicker extends StatefulWidget {
   /// The main color of the month picker.
   final Color mainColor;
 
+  /// The index of the first day of the week, where 0 represents Sunday.
+  ///
+  /// The default value is based on the locale.
+  final int? firstDayOfWeekIndex;
+
   @override
   State<CalendarMonthPicker> createState() => CalendarMonthPickerState();
 }
@@ -85,10 +91,11 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
   }) {
     final int year = monthDate.year;
     final int month = monthDate.month;
-    final int dayOffset = DateUtils.firstDayOffset(
+    final int dayOffset = PackageDateUtils.firstDayOffset(
       year,
       month,
-      context.materialLocalization,
+      widget.firstDayOfWeekIndex ??
+          context.materialLocalization.firstDayOfWeekIndex,
     );
     return dayOffset;
   }

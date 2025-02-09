@@ -13,6 +13,7 @@ class CupertinoCalendarPicker extends StatefulWidget {
     required this.minimumDateTime,
     required this.maximumDateTime,
     required this.selectedDateTime,
+    required this.firstDayOfWeekIndex,
     required this.onDateChanged,
     required this.onTimeChanged,
     required this.onDisplayedMonthChanged,
@@ -49,6 +50,7 @@ class CupertinoCalendarPicker extends StatefulWidget {
   final String? timeLabel;
   final int minuteInterval;
   final bool use24hFormat;
+  final int? firstDayOfWeekIndex;
 
   @override
   CupertinoCalendarPickerState createState() => CupertinoCalendarPickerState();
@@ -247,7 +249,10 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
             firstChild: Column(
               children: <Widget>[
                 const SizedBox(height: 11.0),
-                CalendarWeekdays(decoration: widget.weekdayDecoration),
+                CalendarWeekdays(
+                  decoration: widget.weekdayDecoration,
+                  firstDayOfWeekIndex: widget.firstDayOfWeekIndex,
+                ),
                 CalendarMonthPicker(
                   monthPageController: _monthPageController,
                   onMonthPageChanged: _handleMonthPageChanged,
@@ -259,6 +264,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
                   onChanged: _onMonthDateChanged,
                   decoration: widget.monthPickerDecoration,
                   mainColor: widget.mainColor,
+                  firstDayOfWeekIndex: widget.firstDayOfWeekIndex,
                 ),
               ],
             ),

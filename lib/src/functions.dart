@@ -118,6 +118,10 @@ import 'package:flutter/material.dart';
 ///   Setting to `true` or `false` will force 24h format to be on or off.
 ///   The default value is null, which calls [MediaQuery.alwaysUse24HourFormatOf].
 ///
+/// - [firstDayOfWeekIndex]:
+///   The index of the first day of the week, where 0 represents Sunday.
+///   The default value is based on the locale.
+///
 /// ## Returns:
 ///
 /// A [Future] that resolves to the selected [DateTime] if a date was chosen, or `null`
@@ -149,6 +153,7 @@ Future<DateTime?> showCupertinoCalendarPicker(
   String? timeLabel,
   int minuteInterval = 1,
   bool? use24hFormat,
+  int? firstDayOfWeekIndex,
 }) {
   return showGeneralDialog<DateTime?>(
     context: context,
@@ -192,6 +197,7 @@ Future<DateTime?> showCupertinoCalendarPicker(
         timeLabel: timeLabel,
         minuteInterval: minuteInterval,
         use24hFormat: use24hFormat ?? context.alwaysUse24hFormat,
+        firstDayOfWeekIndex: firstDayOfWeekIndex,
       );
     },
   );

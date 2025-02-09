@@ -1,3 +1,7 @@
+## 2.1.7
+
+* Added `firstDayOfWeekIndex` parameter to calendar widgets, allowing customization of the starting day of the week. If not specified, the locale's default value is used.
+
 ## 2.1.6
 
 * Added `onCompleted` callback to `CupertinoCalendarPickerButton` and `CupertinoTimePickerButton`. (Thanks to [@MrLightful](https://github.com/philip-soft/cupertino_calendar_picker/pull/29))

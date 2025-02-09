@@ -31,6 +31,7 @@ class CupertinoCalendar extends StatefulWidget {
     this.minuteInterval = 1,
     this.maxWidth = double.infinity,
     this.use24hFormat,
+    this.firstDayOfWeekIndex,
     super.key,
   }) {
     // ignore: prefer_asserts_in_initializer_lists
@@ -131,6 +132,11 @@ class CupertinoCalendar extends StatefulWidget {
   ///
   /// Displayed only when the calendar is in a mode that includes time selection.
   final bool? use24hFormat;
+
+  /// The index of the first day of the week, where 0 represents Sunday.
+  ///
+  /// The default value is based on the locale.
+  final int? firstDayOfWeekIndex;
 
   @override
   State<CupertinoCalendar> createState() => _CupertinoCalendarState();
@@ -246,6 +252,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
         minimumDateTime: widget.minimumDateTime,
         maximumDateTime: widget.maximumDateTime,
         selectedDateTime: _selectedDateTime,
+        firstDayOfWeekIndex: widget.firstDayOfWeekIndex,
         onDateChanged: _onDateChanged,
         onTimeChanged: _onTimeChanged,
         onDisplayedMonthChanged: _handleCalendarMonthChange,
