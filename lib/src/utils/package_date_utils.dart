@@ -17,10 +17,10 @@ abstract final class PackageDateUtils {
 
     // firstDayOfWeekIndex recomputed to be Monday-based, in order to compare with
     // weekdayFromMonday.
-    final int newfirstDayOfWeekIndex = (firstDayOfWeekIndex - 1) % 7;
+    final int newFirstDayOfWeekIndex = (firstDayOfWeekIndex - 1) % 7;
 
     // Number of days between the first day of week appearing on the calendar,
     // and the day corresponding to the first of the month.
-    return (weekdayFromMonday - newfirstDayOfWeekIndex) % 7;
+    return (weekdayFromMonday - newFirstDayOfWeekIndex) % 7;
   }
 }
