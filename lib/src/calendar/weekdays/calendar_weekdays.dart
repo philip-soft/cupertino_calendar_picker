@@ -7,18 +7,23 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class CalendarWeekdays extends StatelessWidget {
-  const CalendarWeekdays({required this.decoration, super.key});
+  const CalendarWeekdays({
+    required this.decoration,
+    required this.firstDayOfWeekIndex,
+    super.key,
+  });
 
   final CalendarWeekdayDecoration decoration;
+  final int? firstDayOfWeekIndex;
 
   List<Widget> _weekdays(BuildContext context) {
     final DateTime nowDate = DateTime.now();
     final int year = nowDate.year;
     final int month = nowDate.month;
-    final int firstDayOffset = DateUtils.firstDayOffset(
+    final int firstDayOffset = PackageDateUtils.firstDayOffset(
       year,
       month,
-      context.materialLocalization,
+      firstDayOfWeekIndex ?? context.materialLocalization.firstDayOfWeekIndex,
     );
     final DateTime firstDayOfWeekDate = DateTime(year, month).subtract(
       Duration(days: firstDayOffset),
