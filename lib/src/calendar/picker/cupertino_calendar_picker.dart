@@ -28,6 +28,7 @@ class CupertinoCalendarPicker extends StatefulWidget {
     required this.footerDecoration,
     required this.minuteInterval,
     required this.use24hFormat,
+    required this.actions,
     super.key,
   });
 
@@ -51,6 +52,7 @@ class CupertinoCalendarPicker extends StatefulWidget {
   final int minuteInterval;
   final bool use24hFormat;
   final int? firstDayOfWeekIndex;
+  final List<CupertinoCalendarAction>? actions;
 
   @override
   CupertinoCalendarPickerState createState() => CupertinoCalendarPickerState();
@@ -221,8 +223,24 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
     }
   }
 
+  void _onActionPressed(CupertinoCalendarAction action) {
+    switch (action) {
+      case final ConfirmCupertinoCalendarAction _:
+        action.onPressed?.call(_selectedDateTime);
+        Navigator.of(context).maybePop();
+        break;
+      case final CancelCupertinoCalendarAction _:
+        action.onPressed?.call();
+        Navigator.of(context).maybePop();
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bool withActions =
+        widget.actions != null && widget.actions!.isNotEmpty;
+
     return Column(
       children: <Widget>[
         const SizedBox(height: 13.0),
@@ -321,6 +339,14 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
                 ? CrossFadeState.showSecond
                 : CrossFadeState.showFirst,
           ),
+        if (widget.type == CupertinoCalendarType.compact &&
+            withActions) ...<Widget>[
+          const CupertinoPickerDivider(horizontalIndent: 0.0),
+          CalendarActions(
+            actions: widget.actions,
+            onPressed: _onActionPressed,
+          ),
+        ],
       ],
     );
   }

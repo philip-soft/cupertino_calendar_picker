@@ -19,6 +19,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     required this.mode,
     required this.minuteInterval,
     required this.use24hFormat,
+    required this.actions,
     this.onDateTimeChanged,
     this.onDateSelected,
     this.currentDateTime,
@@ -56,6 +57,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
   final int minuteInterval;
   final bool use24hFormat;
   final int? firstDayOfWeekIndex;
+  final List<CupertinoCalendarAction>? actions;
 
   @override
   State<CupertinoCalendarOverlay> createState() =>
@@ -104,10 +106,15 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = switch (widget.mode) {
+    double height = switch (widget.mode) {
       CupertinoCalendarMode.date => calendarDatePickerHeight,
       CupertinoCalendarMode.dateTime => calendarDateTimePickerHeight,
     };
+    final bool withActions =
+        widget.actions != null && widget.actions!.isNotEmpty;
+    if (withActions) {
+      height += calendarActionsHeight;
+    }
 
     return CupertinoPickerOverlay(
       onInitialized: _onInitialized,
@@ -138,6 +145,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
         minuteInterval: widget.minuteInterval,
         use24hFormat: widget.use24hFormat,
         firstDayOfWeekIndex: widget.firstDayOfWeekIndex,
+        actions: widget.actions,
       ),
     );
   }

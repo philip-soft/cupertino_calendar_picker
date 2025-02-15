@@ -144,19 +144,18 @@ class _ExampleAppState extends State<ExampleApp> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _MyWidget(
-                  /// Passing exactly this `BuildContext` is mandatory to get
-                  /// the `RenderBox` of the appropriate widget.
-                  onTap: (context) => onTimeWidgetTap(context, true),
-                  title: 'Time widget 24h on',
+                CupertinoCalendarPickerButton(
+                  minimumDateTime: _minimumDateTime,
+                  maximumDateTime: _maximumDateTime,
+                  initialDateTime: _selectedDateTime,
+                  dismissBehavior: CalendarDismissBehavior.onActionTap,
+                  mode: CupertinoCalendarMode.date,
+                  onDateTimeChanged: _onDateTimeChanged,
+                  actions: const [
+                    CancelCupertinoCalendarAction(),
+                    ConfirmCupertinoCalendarAction(),
+                  ],
                 ),
-                const SizedBox(width: 10),
-                _MyWidget(
-                  /// Passing exactly this `BuildContext` is mandatory to get
-                  /// the `RenderBox` of the appropriate widget.
-                  onTap: (context) => onTimeWidgetTap(context, false),
-                  title: 'Time widget 24h off',
-                )
               ],
             ),
             const Spacer(flex: 3),

@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 
 const CupertinoDynamicColor calendarFooterTitleColor = CupertinoColors.label;
 const CupertinoDynamicColor calendarTimeColor = CupertinoColors.label;
+const CupertinoDynamicColor calendarDayPeriodColor = CupertinoColors.label;
 const TextStyle calendarTimeStyle = TextStyle(
   color: calendarTimeColor,
   fontSize: 17.0,
@@ -72,7 +73,7 @@ class CalendarFooterDecoration {
       ),
       dayPeriodTextStyle: periodTextStyle.copyWith(
         color: CupertinoDynamicColor.resolve(
-          periodTextStyle.color ?? CupertinoColors.label,
+          periodTextStyle.color ?? calendarDayPeriodColor,
           context,
         ),
       ),

@@ -182,7 +182,9 @@ class _CupertinoPickerOverlayState extends State<CupertinoPickerOverlay> {
 
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (_, __) => _closeOverlay(),
+      onPopInvokedWithResult: (_, __) {
+        _closeOverlay();
+      },
       child: Stack(
         clipBehavior: Clip.none,
         children: <Widget>[
