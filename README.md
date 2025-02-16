@@ -20,7 +20,7 @@ The package provides a sleek and stylish cupertino calendar widgets designed to 
 In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
-  cupertino_calendar_picker: ^2.1.7
+  cupertino_calendar_picker: ^2.2.0
 ```
 
 Import it:
@@ -148,6 +148,51 @@ Future<DateTime?> onCalendarWidgetTap(BuildContext context) async {
   );
 }
 ```
+
+### Actions
+
+You can add actions to the calendar picker by passing a list of `CupertinoCalendarAction` objects.
+The package provides two built-in actions: `CancelCupertinoCalendarAction` and `ConfirmCupertinoCalendarAction`.
+
+<p>
+  <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_calendar_picker_with_actions_light.png?raw=true"
+    alt="Cupertino Calendar Picker With Actions Light" width="320"/>
+  &nbsp; &nbsp;
+  <img src="https://github.com/philip-soft/cupertino_calendar_picker/blob/master/doc/cupertino_calendar_picker_with_actions_dark.png?raw=true"
+    alt="Cupertino Calendar Picker With Actions Dark" width="320"/>
+</p>
+
+#### Usage Example
+
+```dart
+Future<DateTime?> onCalendarWidgetTap(BuildContext context) async {
+  final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+  final nowDate = DateTime.now();
+
+  return showCupertinoCalendarPicker(
+    context,
+    widgetRenderBox: renderBox,
+    minimumDateTime: nowDate.subtract(const Duration(days: 15)),
+    initialDateTime: nowDate,
+    maximumDateTime: nowDate.add(const Duration(days: 360)),
+    timeLabel: 'Ends',
+    actions: [
+      CancelCupertinoCalendarAction(
+        label: 'Cancel',
+        onPressed: () {},
+      ),
+      ConfirmCupertinoCalendarAction(
+        label: 'Done',
+        isDefaultAction: true,
+        onPressed: (dateTime) {},
+      ),
+    ],
+  );
+}
+```
+
+> [!NOTE]
+> Works only when the calendar is in the `CupertinoCalendarType.compact` mode.
 
 ### `showCupertinoTimePicker` function.
 

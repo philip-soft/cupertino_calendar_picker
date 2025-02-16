@@ -2,6 +2,8 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
+import 'dart:math';
+
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +34,7 @@ class CupertinoCalendar extends StatefulWidget {
     this.maxWidth = double.infinity,
     this.use24hFormat,
     this.firstDayOfWeekIndex,
+    this.actions,
     super.key,
   }) {
     // ignore: prefer_asserts_in_initializer_lists
@@ -47,6 +50,20 @@ class CupertinoCalendar extends StatefulWidget {
       assert(
         !initialDateTime!.isAfter(maximumDateTime),
         'initialDateTime $initialDateTime must be on or before maximumDateTime $maximumDateTime.',
+      );
+    }
+    if (actions != null) {
+      assert(
+        actions!.isNotEmpty,
+        'The actions list must not be empty.',
+      );
+      assert(
+        actions!.length <= 2,
+        'The actions list must contain at most two actions.',
+      );
+      assert(
+        type == CupertinoCalendarType.compact,
+        'Actions are only available in the compact calendar type.',
       );
     }
   }
@@ -138,6 +155,13 @@ class CupertinoCalendar extends StatefulWidget {
   /// The default value is based on the locale.
   final int? firstDayOfWeekIndex;
 
+  /// A list of actions that will be displayed at the bottom of the calendar picker.
+  ///
+  /// Available actions are [CancelCupertinoCalendarAction], [ConfirmCupertinoCalendarAction].
+  ///
+  /// Displayed only when the calendar is in the [CupertinoCalendarType.compact] mode.
+  final List<CupertinoCalendarAction>? actions;
+
   @override
   State<CupertinoCalendar> createState() => _CupertinoCalendarState();
 }
@@ -227,17 +251,18 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = switch (widget.mode) {
+    double height = switch (widget.mode) {
       CupertinoCalendarMode.date => calendarDatePickerHeight,
       CupertinoCalendarMode.dateTime => calendarDateTimePickerHeight,
     };
-    const double minWidth = calendarWidth;
-    double maxWidth = 0;
-    if (widget.maxWidth <= minWidth) {
-      maxWidth = minWidth;
-    } else {
-      maxWidth = widget.maxWidth;
+    final List<CupertinoCalendarAction>? actions = widget.actions;
+    final bool withActions = actions != null && actions.isNotEmpty;
+    if (withActions) {
+      height += calendarActionsHeight;
     }
+
+    const double minWidth = calendarWidth;
+    final double maxWidth = max(widget.maxWidth, minWidth);
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -277,6 +302,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
         timeLabel: widget.timeLabel,
         minuteInterval: widget.minuteInterval,
         use24hFormat: widget.use24hFormat ?? context.alwaysUse24hFormat,
+        actions: widget.actions,
       ),
     );
   }

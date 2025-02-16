@@ -122,6 +122,11 @@ import 'package:flutter/material.dart';
 ///   The index of the first day of the week, where 0 represents Sunday.
 ///   The default value is based on the locale.
 ///
+/// - [actions]:
+///   A list of actions that will be displayed at the bottom of the calendar picker.
+///   Available actions are [CancelCupertinoCalendarAction], [ConfirmCupertinoCalendarAction].
+///   Displayed only when the calendar is in the [CupertinoCalendarType.compact] mode.
+///
 /// ## Returns:
 ///
 /// A [Future] that resolves to the selected [DateTime] if a date was chosen, or `null`
@@ -154,6 +159,7 @@ Future<DateTime?> showCupertinoCalendarPicker(
   int minuteInterval = 1,
   bool? use24hFormat,
   int? firstDayOfWeekIndex,
+  List<CupertinoCalendarAction>? actions,
 }) {
   return showGeneralDialog<DateTime?>(
     context: context,
@@ -198,6 +204,7 @@ Future<DateTime?> showCupertinoCalendarPicker(
         minuteInterval: minuteInterval,
         use24hFormat: use24hFormat ?? context.alwaysUse24hFormat,
         firstDayOfWeekIndex: firstDayOfWeekIndex,
+        actions: actions,
       );
     },
   );

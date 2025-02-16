@@ -40,6 +40,7 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
     this.onPressed,
     this.use24hFormat,
     this.firstDayOfWeekIndex,
+    this.actions,
   });
 
   /// Specifies the earliest date that can be selected by the user
@@ -156,6 +157,16 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   /// The default value is based on the locale.
   final int? firstDayOfWeekIndex;
 
+  /// A list of actions that will be displayed at the bottom of the calendar picker.
+  ///
+  /// Available actions are [CancelCupertinoCalendarAction], [ConfirmCupertinoCalendarAction].
+  ///
+  /// Displayed only when the calendar is in the [CupertinoCalendarType.compact] mode.
+  ///
+  /// If the list contains a [ConfirmCupertinoCalendarAction],
+  /// the [_selectedDateTime] inside the button will not be updated.
+  final List<CupertinoCalendarAction>? actions;
+
   @override
   State<CupertinoCalendarPickerButton> createState() =>
       _CupertinoCalendarPickerButtonState();
@@ -207,21 +218,31 @@ class _CupertinoCalendarPickerButtonState
       dismissBehavior: widget.dismissBehavior,
       use24hFormat: widget.use24hFormat,
       firstDayOfWeekIndex: widget.firstDayOfWeekIndex,
+      actions: widget.actions,
     );
     widget.onCompleted?.call(val);
     return val;
   }
 
   void _onDateTimeChanged(DateTime dateTime) {
+    widget.onDateTimeChanged?.call(dateTime);
+
+    final List<CupertinoCalendarAction> actions =
+        widget.actions ?? <CupertinoCalendarAction>[];
+    final bool containsConfirmAction = actions.any(
+      (CupertinoCalendarAction action) =>
+          action is ConfirmCupertinoCalendarAction,
+    );
+    if (containsConfirmAction) return;
+
     setState(() {
       _selectedDateTime = dateTime;
-      widget.onDateTimeChanged?.call(dateTime);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    late String formattedString;
+    String formattedString;
 
     final DateTime date = _selectedDateTime;
     final CalendarButtonFormatter? formatter = widget.formatter;

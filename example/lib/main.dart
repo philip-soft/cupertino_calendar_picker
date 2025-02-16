@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -75,6 +77,16 @@ class _ExampleAppState extends State<ExampleApp> {
     });
   }
 
+  void _onCanceled() {
+    log('Canceled');
+  }
+
+  void _onDone(DateTime newDate) {
+    setState(() {
+      _selectedDateTime = newDate;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
@@ -144,19 +156,24 @@ class _ExampleAppState extends State<ExampleApp> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _MyWidget(
-                  /// Passing exactly this `BuildContext` is mandatory to get
-                  /// the `RenderBox` of the appropriate widget.
-                  onTap: (context) => onTimeWidgetTap(context, true),
-                  title: 'Time widget 24h on',
+                CupertinoCalendarPickerButton(
+                  minimumDateTime: _minimumDateTime,
+                  maximumDateTime: _maximumDateTime,
+                  initialDateTime: _selectedDateTime,
+                  dismissBehavior: CalendarDismissBehavior.onActionTap,
+                  mode: CupertinoCalendarMode.date,
+                  actions: [
+                    CancelCupertinoCalendarAction(
+                      label: 'Cancel',
+                      onPressed: _onCanceled,
+                    ),
+                    ConfirmCupertinoCalendarAction(
+                      label: 'Done',
+                      isDefaultAction: true,
+                      onPressed: _onDone,
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 10),
-                _MyWidget(
-                  /// Passing exactly this `BuildContext` is mandatory to get
-                  /// the `RenderBox` of the appropriate widget.
-                  onTap: (context) => onTimeWidgetTap(context, false),
-                  title: 'Time widget 24h off',
-                )
               ],
             ),
             const Spacer(flex: 3),

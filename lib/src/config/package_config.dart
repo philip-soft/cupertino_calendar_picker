@@ -21,6 +21,10 @@ const double calendarDateTimePickerHeight = 378.0;
 const double calendarBlurAmount = 40.0;
 const int calendarBluredLightBackgroundColorAlpha = 180;
 const int calendarBluredDarkBackgroundColorAlpha = 160;
+const double calendarActionsHeight = 44.0;
+
+// PICKER CONTAINER
+const double pickerContainerBlur = 40.0;
 
 // TIME PICKER
 const double timePickerWidth = 231.0;

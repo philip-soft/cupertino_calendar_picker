@@ -108,8 +108,8 @@ class _CupertinoPickerContainerState extends State<CupertinoPickerContainer>
                         borderRadius: decoration.borderRadius,
                         child: BackdropFilter(
                           filter: ImageFilter.blur(
-                            sigmaX: calendarBlurAmount,
-                            sigmaY: calendarBlurAmount,
+                            sigmaX: pickerContainerBlur,
+                            sigmaY: pickerContainerBlur,
                           ),
                           child: ColoredBox(
                             color: decoration.backgroundColor,

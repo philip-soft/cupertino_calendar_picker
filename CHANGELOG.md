@@ -1,3 +1,8 @@
+## 2.2.0
+
+* Added `CupertinoCalendarAction` list to the `CupertinoCalendar` widget, allowing to display actions at the bottom of the calendar.
+* Added `CalendarDismissBehavior.onActionTap` allowing to dismiss the calendar only when an action is tapped.
+
 ## 2.1.7
 
 * Added `firstDayOfWeekIndex` parameter to calendar widgets, allowing customization of the starting day of the week. If not specified, the locale's default value is used.
