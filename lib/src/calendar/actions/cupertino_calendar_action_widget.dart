@@ -56,8 +56,8 @@ class _CupertinoCalendarActionWidgetState
     final CalendarActionDecoration decoration =
         action.decoration ?? CalendarActionDecoration.withDynamicColor(context);
     final TextStyle? style = action.isDefaultAction
-        ? decoration.style?.copyWith(fontWeight: FontWeight.w600)
-        : decoration.style;
+        ? decoration.labelStyle?.copyWith(fontWeight: FontWeight.w600)
+        : decoration.labelStyle;
 
     return Expanded(
       child: GestureDetector(

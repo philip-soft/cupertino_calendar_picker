@@ -162,7 +162,6 @@ The package provides two built-in actions: `CancelCupertinoCalendarAction` and `
     alt="Cupertino Calendar Picker With Actions Dark" width="320"/>
 </p>
 
-
 #### Usage Example
 
 ```dart
@@ -176,9 +175,7 @@ Future<DateTime?> onCalendarWidgetTap(BuildContext context) async {
     minimumDateTime: nowDate.subtract(const Duration(days: 15)),
     initialDateTime: nowDate,
     maximumDateTime: nowDate.add(const Duration(days: 360)),
-    mode: CupertinoCalendarMode.dateTime,
     timeLabel: 'Ends',
-    onDateTimeChanged: (dateTime) {},
     actions: [
       CancelCupertinoCalendarAction(
         label: 'Cancel',

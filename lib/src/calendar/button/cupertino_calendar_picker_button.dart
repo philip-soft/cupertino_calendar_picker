@@ -162,6 +162,9 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   /// Available actions are [CancelCupertinoCalendarAction], [ConfirmCupertinoCalendarAction].
   ///
   /// Displayed only when the calendar is in the [CupertinoCalendarType.compact] mode.
+  ///
+  /// If the list contains a [ConfirmCupertinoCalendarAction],
+  /// the [_selectedDateTime] inside the button will not be updated.
   final List<CupertinoCalendarAction>? actions;
 
   @override
@@ -222,6 +225,8 @@ class _CupertinoCalendarPickerButtonState
   }
 
   void _onDateTimeChanged(DateTime dateTime) {
+    widget.onDateTimeChanged?.call(dateTime);
+
     final List<CupertinoCalendarAction> actions =
         widget.actions ?? <CupertinoCalendarAction>[];
     final bool containsConfirmAction = actions.any(
@@ -232,7 +237,6 @@ class _CupertinoCalendarPickerButtonState
 
     setState(() {
       _selectedDateTime = dateTime;
-      widget.onDateTimeChanged?.call(dateTime);
     });
   }
 

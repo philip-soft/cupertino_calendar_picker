@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 const CupertinoDynamicColor calendarActionPressedColor =
     CupertinoColors.tertiarySystemFill;
 const CupertinoDynamicColor calendarActionTextColor = CupertinoColors.label;
-const TextStyle calendarActionTextStyle = TextStyle(
+const TextStyle calendarActionLabelStyle = TextStyle(
   fontSize: 17.0,
   fontWeight: FontWeight.w400,
   color: calendarActionTextColor,
@@ -18,11 +18,11 @@ class CalendarActionDecoration {
   /// Creates a calendar's action decoration class with default values
   /// for non-provided parameters.
   factory CalendarActionDecoration({
-    TextStyle? style,
+    TextStyle? labelStyle,
     Color? pressedColor,
   }) {
     return CalendarActionDecoration._(
-      style: style ?? calendarActionTextStyle,
+      labelStyle: labelStyle ?? calendarActionLabelStyle,
       pressedColor: pressedColor ?? calendarActionPressedColor,
     );
   }
@@ -33,13 +33,13 @@ class CalendarActionDecoration {
   /// Applies the [CupertinoDynamicColor.resolve] method for colors.
   factory CalendarActionDecoration.withDynamicColor(
     BuildContext context, {
-    TextStyle? style,
+    TextStyle? labelStyle,
     Color? pressedColor,
   }) {
-    final TextStyle textStyle = style ?? calendarActionTextStyle;
+    final TextStyle textStyle = labelStyle ?? calendarActionLabelStyle;
 
     return CalendarActionDecoration(
-      style: textStyle.copyWith(
+      labelStyle: textStyle.copyWith(
         color: CupertinoDynamicColor.resolve(
           textStyle.color ?? calendarActionTextColor,
           context,
@@ -54,23 +54,23 @@ class CalendarActionDecoration {
   }
 
   const CalendarActionDecoration._({
-    required this.style,
+    required this.labelStyle,
     required this.pressedColor,
   });
 
-  /// The `TextStyle` of the calendar's action.
-  final TextStyle? style;
+  /// The `TextStyle` of the calendar's action label.
+  final TextStyle? labelStyle;
 
   /// The `Color` of the calendar's action when pressed.
   final Color pressedColor;
 
   /// Creates a copy of the class with the provided parameters.
   CalendarActionDecoration copyWith({
-    TextStyle? style,
+    TextStyle? labelStyle,
     Color? pressedColor,
   }) {
     return CalendarActionDecoration(
-      style: style ?? this.style,
+      labelStyle: labelStyle ?? this.labelStyle,
       pressedColor: pressedColor ?? this.pressedColor,
     );
   }

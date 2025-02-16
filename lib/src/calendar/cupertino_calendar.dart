@@ -54,6 +54,10 @@ class CupertinoCalendar extends StatefulWidget {
     }
     if (actions != null) {
       assert(
+        actions!.isNotEmpty,
+        'The actions list must not be empty.',
+      );
+      assert(
         actions!.length <= 2,
         'The actions list must contain at most two actions.',
       );
@@ -251,8 +255,8 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
       CupertinoCalendarMode.date => calendarDatePickerHeight,
       CupertinoCalendarMode.dateTime => calendarDateTimePickerHeight,
     };
-    final bool withActions =
-        widget.actions != null && widget.actions!.isNotEmpty;
+    final List<CupertinoCalendarAction>? actions = widget.actions;
+    final bool withActions = actions != null && actions.isNotEmpty;
     if (withActions) {
       height += calendarActionsHeight;
     }

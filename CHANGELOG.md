@@ -1,6 +1,6 @@
 ## 2.2.0
 
-* Added `CupertinoCalendarAction`s to the `CupertinoCalendar` widget, allowing to display actions at the bottom of the calendar.
+* Added `CupertinoCalendarAction` list to the `CupertinoCalendar` widget, allowing to display actions at the bottom of the calendar.
 * Added `CalendarDismissBehavior.onActionTap` allowing to dismiss the calendar only when an action is tapped.
 
 ## 2.1.7
