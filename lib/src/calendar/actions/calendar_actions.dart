@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 class CalendarActions extends StatelessWidget {
   const CalendarActions({
     required this.onPressed,
-    this.actions,
+    required this.actions,
     super.key,
   });
 
-  final List<CupertinoCalendarAction>? actions;
+  final List<CupertinoCalendarAction> actions;
   final CalendarActionCallback onPressed;
 
   @override
@@ -20,14 +20,13 @@ class CalendarActions extends StatelessWidget {
     return SizedBox(
       height: calendarActionsHeight,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          for (final CupertinoCalendarAction action in actions!) ...<Widget>[
+          for (final CupertinoCalendarAction action in actions) ...<Widget>[
             CupertinoCalendarActionWidget(
               action: action,
               onPressed: onPressed,
             ),
-            if (action != actions!.last) const CupertinoPickerVerticalDivider(),
+            if (action != actions.last) const CupertinoPickerVerticalDivider(),
           ],
         ],
       ),

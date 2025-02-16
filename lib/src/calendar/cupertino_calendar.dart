@@ -2,6 +2,8 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
+import 'dart:math';
+
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -153,7 +155,7 @@ class CupertinoCalendar extends StatefulWidget {
   ///
   /// Available actions are [CancelCupertinoCalendarAction], [ConfirmCupertinoCalendarAction].
   ///
-  /// Displayed only when the calendar is in the `compact` mode.
+  /// Displayed only when the calendar is in the [CupertinoCalendarType.compact] mode.
   final List<CupertinoCalendarAction>? actions;
 
   @override
@@ -256,12 +258,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
     }
 
     const double minWidth = calendarWidth;
-    double maxWidth = 0;
-    if (widget.maxWidth <= minWidth) {
-      maxWidth = minWidth;
-    } else {
-      maxWidth = widget.maxWidth;
-    }
+    final double maxWidth = max(widget.maxWidth, minWidth);
 
     return ConstrainedBox(
       constraints: BoxConstraints(

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -70,6 +72,16 @@ class _ExampleAppState extends State<ExampleApp> {
   }
 
   void _onDateTimeChanged(DateTime newDate) {
+    setState(() {
+      _selectedDateTime = newDate;
+    });
+  }
+
+  void _onCanceled() {
+    log('Canceled');
+  }
+
+  void _onDone(DateTime newDate) {
     setState(() {
       _selectedDateTime = newDate;
     });
@@ -150,10 +162,16 @@ class _ExampleAppState extends State<ExampleApp> {
                   initialDateTime: _selectedDateTime,
                   dismissBehavior: CalendarDismissBehavior.onActionTap,
                   mode: CupertinoCalendarMode.date,
-                  onDateTimeChanged: _onDateTimeChanged,
-                  actions: const [
-                    CancelCupertinoCalendarAction(),
-                    ConfirmCupertinoCalendarAction(),
+                  actions: [
+                    CancelCupertinoCalendarAction(
+                      label: 'Cancel',
+                      onPressed: _onCanceled,
+                    ),
+                    ConfirmCupertinoCalendarAction(
+                      label: 'Done',
+                      isDefaultAction: true,
+                      onPressed: _onDone,
+                    ),
                   ],
                 ),
               ],

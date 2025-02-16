@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 typedef CalendarActionCallback = void Function(CupertinoCalendarAction action);
@@ -20,10 +19,10 @@ class CupertinoCalendarActionWidget extends StatefulWidget {
 
   @override
   State<CupertinoCalendarActionWidget> createState() =>
-      _CupertinoContextMenuActionState();
+      _CupertinoCalendarActionWidgetState();
 }
 
-class _CupertinoContextMenuActionState
+class _CupertinoCalendarActionWidgetState
     extends State<CupertinoCalendarActionWidget> {
   bool _isPressed = false;
   bool get isPressed => _isPressed;
@@ -61,26 +60,21 @@ class _CupertinoContextMenuActionState
         : decoration.style;
 
     return Expanded(
-      child: MouseRegion(
-        cursor: action.onPressed != null && kIsWeb
-            ? SystemMouseCursors.click
-            : MouseCursor.defer,
-        child: GestureDetector(
-          onTapDown: _onTapDown,
-          onTapUp: _onTapUp,
-          onTapCancel: _onTapCancel,
-          onTap: _onTap,
-          behavior: HitTestBehavior.opaque,
-          child: ColoredBox(
-            color: isPressed ? decoration.pressedColor : Colors.transparent,
-            child: Center(
-              child: Text(
-                action.label,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: style,
-              ),
+      child: GestureDetector(
+        onTapDown: _onTapDown,
+        onTapUp: _onTapUp,
+        onTapCancel: _onTapCancel,
+        onTap: _onTap,
+        behavior: HitTestBehavior.opaque,
+        child: ColoredBox(
+          color: isPressed ? decoration.pressedColor : Colors.transparent,
+          child: Center(
+            child: Text(
+              action.label,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: style,
             ),
           ),
         ),

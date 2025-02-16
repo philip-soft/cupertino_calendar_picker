@@ -125,7 +125,7 @@ import 'package:flutter/material.dart';
 /// - [actions]:
 ///   A list of actions that will be displayed at the bottom of the calendar picker.
 ///   Available actions are [CancelCupertinoCalendarAction], [ConfirmCupertinoCalendarAction].
-///   Displayed only when the calendar is in the `compact` mode.
+///   Displayed only when the calendar is in the [CupertinoCalendarType.compact] mode.
 ///
 /// ## Returns:
 ///

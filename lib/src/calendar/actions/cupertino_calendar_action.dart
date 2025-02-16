@@ -45,7 +45,7 @@ sealed class CupertinoCalendarAction {
 ///
 /// See also:
 /// - [CupertinoCalendarAction], the base class for calendar actions.
-class CancelCupertinoCalendarAction extends CupertinoCalendarAction {
+final class CancelCupertinoCalendarAction extends CupertinoCalendarAction {
   /// Creates a cancel action class.
   const CancelCupertinoCalendarAction({
     super.label = 'Cancel',
@@ -62,7 +62,7 @@ class CancelCupertinoCalendarAction extends CupertinoCalendarAction {
 ///
 /// See also:
 /// - [CupertinoCalendarAction], the base class for calendar actions.
-class ConfirmCupertinoCalendarAction extends CupertinoCalendarAction {
+final class ConfirmCupertinoCalendarAction extends CupertinoCalendarAction {
   /// Creates a confirm action class.
   const ConfirmCupertinoCalendarAction({
     super.label = 'Done',

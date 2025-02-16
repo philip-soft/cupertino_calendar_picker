@@ -238,8 +238,8 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
 
   @override
   Widget build(BuildContext context) {
-    final bool withActions =
-        widget.actions != null && widget.actions!.isNotEmpty;
+    final List<CupertinoCalendarAction>? actions = widget.actions;
+    final bool withActions = actions != null && actions.isNotEmpty;
 
     return Column(
       children: <Widget>[
@@ -343,7 +343,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
             withActions) ...<Widget>[
           const CupertinoPickerDivider(horizontalIndent: 0.0),
           CalendarActions(
-            actions: widget.actions,
+            actions: actions,
             onPressed: _onActionPressed,
           ),
         ],

@@ -157,6 +157,11 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   /// The default value is based on the locale.
   final int? firstDayOfWeekIndex;
 
+  /// A list of actions that will be displayed at the bottom of the calendar picker.
+  ///
+  /// Available actions are [CancelCupertinoCalendarAction], [ConfirmCupertinoCalendarAction].
+  ///
+  /// Displayed only when the calendar is in the [CupertinoCalendarType.compact] mode.
   final List<CupertinoCalendarAction>? actions;
 
   @override
@@ -217,6 +222,14 @@ class _CupertinoCalendarPickerButtonState
   }
 
   void _onDateTimeChanged(DateTime dateTime) {
+    final List<CupertinoCalendarAction> actions =
+        widget.actions ?? <CupertinoCalendarAction>[];
+    final bool containsConfirmAction = actions.any(
+      (CupertinoCalendarAction action) =>
+          action is ConfirmCupertinoCalendarAction,
+    );
+    if (containsConfirmAction) return;
+
     setState(() {
       _selectedDateTime = dateTime;
       widget.onDateTimeChanged?.call(dateTime);
@@ -225,7 +238,7 @@ class _CupertinoCalendarPickerButtonState
 
   @override
   Widget build(BuildContext context) {
-    late String formattedString;
+    String formattedString;
 
     final DateTime date = _selectedDateTime;
     final CalendarButtonFormatter? formatter = widget.formatter;

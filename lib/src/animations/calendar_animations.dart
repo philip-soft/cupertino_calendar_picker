@@ -9,7 +9,7 @@ abstract final class CalendarAnimations {
     required double height,
   }) {
     return TweenSequence<double>(
-      generateHeighAnimation(
+      generateHeightAnimation(
         height: height,
         percentageList: _heightPercentages,
       ).toList(),
@@ -37,9 +37,9 @@ abstract final class CalendarAnimations {
     100.0,
   ];
 
-  static double maxHeightPercentage = 100.90361445783131;
+  static const double maxHeightPercentage = 100.90361445783131;
 
-  static Iterable<TweenSequenceItem<double>> generateHeighAnimation({
+  static Iterable<TweenSequenceItem<double>> generateHeightAnimation({
     required double height,
     required List<double> percentageList,
   }) sync* {
