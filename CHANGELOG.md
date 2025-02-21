@@ -1,6 +1,6 @@
 ## 2.2.1
 
-* The `intl` package version constraint has been updated to the range `>=0.19.0 <0.21.0`.
+* The `intl` package version constraint has been updated to the range `>=0.19.0 <0.21.0`. (Thanks to [@KoheiKanagu](https://github.com/philip-soft/cupertino_calendar_picker/pull/37))
 
 ## 2.2.0
 
