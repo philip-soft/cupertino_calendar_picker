@@ -1,3 +1,7 @@
+## 2.2.1
+
+* The `intl` package version constraint has been updated to the range `>=0.19.0 <0.21.0`.
+
 ## 2.2.0
 
 * Added `CupertinoCalendarAction` list to the `CupertinoCalendar` widget, allowing to display actions at the bottom of the calendar.
