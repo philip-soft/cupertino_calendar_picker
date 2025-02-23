@@ -1,3 +1,7 @@
+## 2.2.2
+
+* Fixed an issue when `setState` was called after the `CupertinoPickerButton` was disposed. (Thanks to [@nightmre789](https://github.com/philip-soft/cupertino_calendar_picker/pull/40))
+
 ## 2.2.1
 
 * The `intl` package version constraint has been updated to the range `>=0.19.0 <0.21.0`.
