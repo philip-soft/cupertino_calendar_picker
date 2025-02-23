@@ -40,6 +40,7 @@ class _CupertinoPickerButtonState<T> extends State<CupertinoPickerButton<T>>
   bool _isCalendarOpened = false;
   bool get isCalendarOpened => _isCalendarOpened;
   set isCalendarOpened(bool value) {
+    if (!mounted) return;
     setState(() {
       _isCalendarOpened = value;
     });
