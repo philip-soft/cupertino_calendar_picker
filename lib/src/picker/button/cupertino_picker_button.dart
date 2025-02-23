@@ -14,6 +14,7 @@ class CupertinoPickerButton<T> extends StatefulWidget {
     super.key,
     this.onSelected,
     this.decoration,
+    this.icon,
   });
 
   final String title;
@@ -22,6 +23,7 @@ class CupertinoPickerButton<T> extends StatefulWidget {
   final Color? mainColor;
   final PickerButtonDecoration? decoration;
   final VoidCallback? onPressed;
+  final Widget? icon;
 
   @override
   State<CupertinoPickerButton<T>> createState() =>
@@ -137,18 +139,29 @@ class _CupertinoPickerButtonState<T> extends State<CupertinoPickerButton<T>>
         ),
         alignment: Alignment.center,
         height: 34.0,
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-        child: FadeTransition(
-          opacity: _opacityAnimation,
-          child: AnimatedDefaultTextStyle(
-            duration: pickerButtonTextStyleDuration,
-            style: decoration.textStyle!.copyWith(
-              color: isCalendarOpened
-                  ? widget.mainColor
-                  : widget.decoration?.textStyle?.color,
+        padding: EdgeInsets.only(
+          left: 12.0,
+          right: widget.icon == null ? 12.0 : 0.0,
+        ),
+        child: Row(
+          children: <Widget>[
+            FadeTransition(
+              opacity: _opacityAnimation,
+              child: AnimatedDefaultTextStyle(
+                duration: pickerButtonTextStyleDuration,
+                style: decoration.textStyle!.copyWith(
+                  color: isCalendarOpened
+                      ? widget.mainColor
+                      : widget.decoration?.textStyle?.color,
+                ),
+                child: Text(widget.title),
+              ),
             ),
-            child: Text(widget.title),
-          ),
+            FadeTransition(
+              opacity: _opacityAnimation,
+              child: widget.icon,
+            ),
+          ],
         ),
       ),
     );
