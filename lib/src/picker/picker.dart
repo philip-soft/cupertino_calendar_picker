@@ -6,5 +6,6 @@ export 'button/button.dart';
 export 'container/container.dart';
 export 'cupertino_picker_animated_cross_fade.dart';
 export 'cupertino_picker_container.dart';
+export 'cupertino_picker_media_query.dart';
 export 'cupertino_picker_overlay.dart';
 export 'dividers/dividers.dart';

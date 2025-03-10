@@ -23,12 +23,12 @@ const TextStyle calendarMonthPickerDefaultDayStyle = TextStyle(
 );
 
 const TextStyle calendarMonthPickerSelectedDayStyle = TextStyle(
-  fontSize: 22.0,
+  fontSize: 20.0,
   fontWeight: FontWeight.w500,
 );
 
 final TextStyle calendarMonthPickerSelectedCurrentDayStyle = TextStyle(
-  fontSize: 22.0,
+  fontSize: 20.0,
   color: CupertinoDynamicColor.withBrightness(
     color: CupertinoColors.label.darkColor,
     darkColor: CupertinoColors.label.darkColor,

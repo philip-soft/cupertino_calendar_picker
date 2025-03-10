@@ -31,6 +31,7 @@ class CalendarMonthPickerDay extends StatelessWidget {
       child: CustomPaint(
         painter: CalendarMonthPickerDayPainter(
           day: '${dayDate.day}',
+          textScaler: context.textScaler,
           style: style.textStyle,
           backgroundCircleColor:
               dayStyle is CalendarMonthPickerBackgroundCircledDayStyle
@@ -46,11 +47,13 @@ class CalendarMonthPickerDay extends StatelessWidget {
 class CalendarMonthPickerDayPainter extends CustomPainter {
   const CalendarMonthPickerDayPainter({
     required this.day,
+    required this.textScaler,
     required this.style,
     required this.backgroundCircleSize,
     this.backgroundCircleColor,
   });
 
+  final TextScaler textScaler;
   final String day;
   final TextStyle style;
   final Color? backgroundCircleColor;
@@ -61,7 +64,7 @@ class CalendarMonthPickerDayPainter extends CustomPainter {
     final ParagraphBuilder paragraphBuilder = ParagraphBuilder(
       style.getParagraphStyle(textAlign: TextAlign.center),
     )
-      ..pushStyle(style.getTextStyle())
+      ..pushStyle(style.getTextStyle(textScaler: textScaler))
       ..addText(day);
 
     final Paragraph dayPragrapth = paragraphBuilder.build()
@@ -92,7 +95,10 @@ class CalendarMonthPickerDayPainter extends CustomPainter {
     final CalendarMonthPickerDayPainter oldPainter =
         oldDelegate as CalendarMonthPickerDayPainter;
     return style != oldPainter.style ||
-        backgroundCircleColor != oldPainter.backgroundCircleColor;
+        backgroundCircleColor != oldPainter.backgroundCircleColor ||
+        day != oldPainter.day ||
+        backgroundCircleSize != oldPainter.backgroundCircleSize ||
+        textScaler != oldPainter.textScaler;
   }
 
   void _drawDayParagraph(Canvas canvas, Offset offset, Paragraph day) {

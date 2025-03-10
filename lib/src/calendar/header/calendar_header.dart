@@ -55,36 +55,33 @@ class _CalendarHeaderState extends State<CalendarHeader> {
         GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: _handleYearPickerStateChange,
-          child: SizedBox(
-            height: 44.0,
-            child: Row(
-              children: <Widget>[
-                AnimatedDefaultTextStyle(
-                  duration: innerPickersFadeDuration,
-                  style: _showYearPicker
-                      ? _decoration.monthDateStyle!.copyWith(
-                          color: _decoration.monthDateArrowColor,
-                        )
-                      : _decoration.monthDateStyle!,
-                  child: Text(headerString),
-                ),
-                const SizedBox(width: 5.0),
-                AnimatedRotation(
-                  duration: innerPickersFadeDuration,
-                  curve: Curves.easeInOut,
-                  turns: _showYearPicker ? 1.25 : 1.0,
-                  child: SizedBox(
-                    width: 11.0,
-                    height: 22.0,
-                    child: Icon(
-                      CupertinoIcons.chevron_forward,
-                      color: _decoration.monthDateArrowColor,
-                      size: calendarMonthPickerIconSize,
-                    ),
+          child: Row(
+            children: <Widget>[
+              AnimatedDefaultTextStyle(
+                duration: innerPickersFadeDuration,
+                style: _showYearPicker
+                    ? _decoration.monthDateStyle!.copyWith(
+                        color: _decoration.monthDateArrowColor,
+                      )
+                    : _decoration.monthDateStyle!,
+                child: Text(headerString),
+              ),
+              SizedBox(width: 5.0.scale(context)),
+              AnimatedRotation(
+                duration: innerPickersFadeDuration,
+                curve: Curves.easeInOut,
+                turns: _showYearPicker ? 1.25 : 1.0,
+                child: SizedBox(
+                  width: 11.0.scale(context),
+                  height: 22.0.scale(context),
+                  child: Icon(
+                    CupertinoIcons.chevron_forward,
+                    color: _decoration.monthDateArrowColor,
+                    size: calendarMonthPickerIconSize.scale(context),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         const Spacer(),
@@ -104,11 +101,11 @@ class _CalendarHeaderState extends State<CalendarHeader> {
                     color: _isBackwardDisabled
                         ? _decoration.backwardDisabledButtonColor
                         : _decoration.backwardButtonColor,
-                    size: calendarMonthSwitcherIconSize,
+                    size: calendarMonthSwitcherIconSize.scale(context),
                   ),
                 ),
               ),
-              const SizedBox(width: 2.0),
+              SizedBox(width: 2.0.scale(context)),
               GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onTap: widget.onNextMonthIconTapped,
@@ -120,7 +117,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
                     color: _isForwardDisabled
                         ? _decoration.forwardDisabledButtonColor
                         : _decoration.forwardButtonColor,
-                    size: calendarMonthSwitcherIconSize,
+                    size: calendarMonthSwitcherIconSize.scale(context),
                   ),
                 ),
               ),

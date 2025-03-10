@@ -135,7 +135,7 @@ class _CupertinoPickerButtonState<T> extends State<CupertinoPickerButton<T>>
           borderRadius: BorderRadius.circular(8.0),
         ),
         alignment: Alignment.center,
-        height: 34.0,
+        height: 34.0.scale(context),
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: FadeTransition(
           opacity: _opacityAnimation,

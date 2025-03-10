@@ -139,7 +139,9 @@ class _CupertinoPickerOverlayState extends State<CupertinoPickerOverlay> {
 
     double xAlignment;
 
-    if (!fitsOnRight) {
+    if (!fitsOnRight && !fitsOnLeft) {
+      xAlignment = 0.0;
+    } else if (!fitsOnRight) {
       final double offsetOnRight = neededSpaceOnRight - spaceOnRight;
       xAlignment = offsetOnRight / halfWidth;
     } else if (!fitsOnLeft) {

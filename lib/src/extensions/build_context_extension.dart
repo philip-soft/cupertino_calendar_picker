@@ -33,4 +33,12 @@ extension PackageBuildContextExtension on BuildContext {
     }
     return localeString;
   }
+
+  TextScaler get textScaler {
+    return MediaQuery.textScalerOf(this);
+  }
+
+  double get textScaleFactor {
+    return textScaler.scale(1.0);
+  }
 }
