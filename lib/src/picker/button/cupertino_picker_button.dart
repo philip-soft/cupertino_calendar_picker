@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:cupertino_calendar_picker/src/extensions/double_extension.dart';
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -135,7 +136,7 @@ class _CupertinoPickerButtonState<T> extends State<CupertinoPickerButton<T>>
           borderRadius: BorderRadius.circular(8.0),
         ),
         alignment: Alignment.center,
-        height: 34.0,
+        height: 34.0.scale(context),
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: FadeTransition(
           opacity: _opacityAnimation,

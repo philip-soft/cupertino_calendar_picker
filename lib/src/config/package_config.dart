@@ -22,6 +22,8 @@ const double calendarBlurAmount = 40.0;
 const int calendarBluredLightBackgroundColorAlpha = 180;
 const int calendarBluredDarkBackgroundColorAlpha = 160;
 const double calendarActionsHeight = 44.0;
+const double calendarMaxTextScaleFactor = 1.3;
+const double calendarFormatChangeTextScaleFactor = 1.24;
 
 // PICKER CONTAINER
 const double pickerContainerBlur = 40.0;

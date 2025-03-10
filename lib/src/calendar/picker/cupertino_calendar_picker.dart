@@ -241,113 +241,118 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
     final List<CupertinoCalendarAction>? actions = widget.actions;
     final bool withActions = actions != null && actions.isNotEmpty;
 
-    return Column(
-      children: <Widget>[
-        const SizedBox(height: 13.0),
-        CupertinoPickerAnimatedCrossFade(
-          firstChild: CalendarHeader(
-            currentMonth: _currentMonth,
-            onNextMonthIconTapped:
-                _isDisplayingLastMonth ? null : _handleNextMonth,
-            onPreviousMonthIconTapped:
-                _isDisplayingFirstMonth ? null : _handlePreviousMonth,
-            onYearPickerStateChanged: _toggleYearPicker,
-            decoration: widget.headerDecoration,
-          ),
-          crossFadeState: viewMode == CupertinoCalendarViewMode.timePicker
-              ? CrossFadeState.showSecond
-              : CrossFadeState.showFirst,
-        ),
-        Expanded(
-          child: CupertinoPickerAnimatedCrossFade(
-            crossFadeState: viewMode == CupertinoCalendarViewMode.yearPicker ||
-                    viewMode == CupertinoCalendarViewMode.timePicker
-                ? CrossFadeState.showSecond
-                : CrossFadeState.showFirst,
-            firstChild: Column(
-              children: <Widget>[
-                const SizedBox(height: 11.0),
-                CalendarWeekdays(
-                  decoration: widget.weekdayDecoration,
-                  firstDayOfWeekIndex: widget.firstDayOfWeekIndex,
-                ),
-                CalendarMonthPicker(
-                  monthPageController: _monthPageController,
-                  onMonthPageChanged: _handleMonthPageChanged,
-                  currentDate: widget.currentDateTime,
-                  displayedMonth: _currentMonth,
-                  minimumDate: widget.minimumDateTime,
-                  maximumDate: widget.maximumDateTime,
-                  selectedDate: widget.selectedDateTime,
-                  onChanged: _onMonthDateChanged,
-                  decoration: widget.monthPickerDecoration,
-                  mainColor: widget.mainColor,
-                  firstDayOfWeekIndex: widget.firstDayOfWeekIndex,
-                ),
-              ],
-            ),
-            secondChild: Padding(
-              padding: const EdgeInsets.only(
-                left: 7.0,
-                right: 7.0,
-                top: 10.0,
-                bottom: 38.0,
-              ),
-              child: switch (viewMode) {
-                CupertinoCalendarViewMode.yearPicker =>
-                  CustomCupertinoDatePicker(
-                    minimumDate: DateTime(
-                      widget.minimumDateTime.year,
-                      widget.minimumDateTime.month,
-                    ),
-                    maximumDate: DateTime(
-                      widget.maximumDateTime.year,
-                      widget.maximumDateTime.month,
-                    ),
-                    mode: CupertinoDatePickerMode.monthYear,
-                    onDateTimeChanged: _onYearPickerChanged,
-                    initialDateTime: _currentMonth,
-                  ),
-                CupertinoCalendarViewMode.timePicker =>
-                  CupertinoTimePickerWheel(
-                    pickerKey: _timePickerKey,
-                    onTimeChanged: _onTimeChanged,
-                    minimumDateTime: widget.minimumDateTime.truncateToMinutes(),
-                    maximumDateTime: widget.maximumDateTime.truncateToMinutes(),
-                    initialDateTime: _selectedDateTime.truncateToMinutes(),
-                    minuteInterval: widget.minuteInterval,
-                    use24hFormat: widget.use24hFormat,
-                  ),
-                _ => const SizedBox(),
-              },
-            ),
-          ),
-        ),
-        if (widget.mode == CupertinoCalendarMode.dateTime)
+    return CupertinoPickerMediaQuery(
+      child: Column(
+        children: <Widget>[
+          const SizedBox(height: 13.0),
           CupertinoPickerAnimatedCrossFade(
-            firstChild: CalendarFooter(
-              decoration: widget.footerDecoration,
-              label: widget.timeLabel,
-              type: widget.type,
-              mainColor: widget.mainColor,
-              time: TimeOfDay.fromDateTime(_selectedDateTime),
-              onTimePickerStateChanged: _toggleTimePicker,
-              onTimeChanged: _onDayPeriodChanged,
-              use24hFormat: widget.use24hFormat,
+            firstChild: CalendarHeader(
+              currentMonth: _currentMonth,
+              onNextMonthIconTapped:
+                  _isDisplayingLastMonth ? null : _handleNextMonth,
+              onPreviousMonthIconTapped:
+                  _isDisplayingFirstMonth ? null : _handlePreviousMonth,
+              onYearPickerStateChanged: _toggleYearPicker,
+              decoration: widget.headerDecoration,
             ),
-            crossFadeState: viewMode == CupertinoCalendarViewMode.yearPicker
+            crossFadeState: viewMode == CupertinoCalendarViewMode.timePicker
                 ? CrossFadeState.showSecond
                 : CrossFadeState.showFirst,
           ),
-        if (widget.type == CupertinoCalendarType.compact &&
-            withActions) ...<Widget>[
-          const CupertinoPickerDivider(horizontalIndent: 0.0),
-          CalendarActions(
-            actions: actions,
-            onPressed: _onActionPressed,
+          Expanded(
+            child: CupertinoPickerAnimatedCrossFade(
+              crossFadeState:
+                  viewMode == CupertinoCalendarViewMode.yearPicker ||
+                          viewMode == CupertinoCalendarViewMode.timePicker
+                      ? CrossFadeState.showSecond
+                      : CrossFadeState.showFirst,
+              firstChild: Column(
+                children: <Widget>[
+                  const SizedBox(height: 11.0),
+                  CalendarWeekdays(
+                    decoration: widget.weekdayDecoration,
+                    firstDayOfWeekIndex: widget.firstDayOfWeekIndex,
+                  ),
+                  CalendarMonthPicker(
+                    monthPageController: _monthPageController,
+                    onMonthPageChanged: _handleMonthPageChanged,
+                    currentDate: widget.currentDateTime,
+                    displayedMonth: _currentMonth,
+                    minimumDate: widget.minimumDateTime,
+                    maximumDate: widget.maximumDateTime,
+                    selectedDate: widget.selectedDateTime,
+                    onChanged: _onMonthDateChanged,
+                    decoration: widget.monthPickerDecoration,
+                    mainColor: widget.mainColor,
+                    firstDayOfWeekIndex: widget.firstDayOfWeekIndex,
+                  ),
+                ],
+              ),
+              secondChild: Padding(
+                padding: const EdgeInsets.only(
+                  left: 7.0,
+                  right: 7.0,
+                  top: 10.0,
+                  bottom: 38.0,
+                ),
+                child: switch (viewMode) {
+                  CupertinoCalendarViewMode.yearPicker =>
+                    CustomCupertinoDatePicker(
+                      minimumDate: DateTime(
+                        widget.minimumDateTime.year,
+                        widget.minimumDateTime.month,
+                      ),
+                      maximumDate: DateTime(
+                        widget.maximumDateTime.year,
+                        widget.maximumDateTime.month,
+                      ),
+                      mode: CupertinoDatePickerMode.monthYear,
+                      onDateTimeChanged: _onYearPickerChanged,
+                      initialDateTime: _currentMonth,
+                    ),
+                  CupertinoCalendarViewMode.timePicker =>
+                    CupertinoTimePickerWheel(
+                      pickerKey: _timePickerKey,
+                      onTimeChanged: _onTimeChanged,
+                      minimumDateTime:
+                          widget.minimumDateTime.truncateToMinutes(),
+                      maximumDateTime:
+                          widget.maximumDateTime.truncateToMinutes(),
+                      initialDateTime: _selectedDateTime.truncateToMinutes(),
+                      minuteInterval: widget.minuteInterval,
+                      use24hFormat: widget.use24hFormat,
+                    ),
+                  _ => const SizedBox(),
+                },
+              ),
+            ),
           ),
+          if (widget.mode == CupertinoCalendarMode.dateTime)
+            CupertinoPickerAnimatedCrossFade(
+              firstChild: CalendarFooter(
+                decoration: widget.footerDecoration,
+                label: widget.timeLabel,
+                type: widget.type,
+                mainColor: widget.mainColor,
+                time: TimeOfDay.fromDateTime(_selectedDateTime),
+                onTimePickerStateChanged: _toggleTimePicker,
+                onTimeChanged: _onDayPeriodChanged,
+                use24hFormat: widget.use24hFormat,
+              ),
+              crossFadeState: viewMode == CupertinoCalendarViewMode.yearPicker
+                  ? CrossFadeState.showSecond
+                  : CrossFadeState.showFirst,
+            ),
+          if (widget.type == CupertinoCalendarType.compact &&
+              withActions) ...<Widget>[
+            const CupertinoPickerDivider(horizontalIndent: 0.0),
+            CalendarActions(
+              actions: actions,
+              onPressed: _onActionPressed,
+            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 

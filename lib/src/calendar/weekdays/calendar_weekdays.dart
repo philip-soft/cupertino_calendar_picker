@@ -28,13 +28,17 @@ class CalendarWeekdays extends StatelessWidget {
     final DateTime firstDayOfWeekDate = DateTime(year, month).subtract(
       Duration(days: firstDayOffset),
     );
+    final bool isOneLetterWeekdayFormat =
+        context.textScaleFactor > calendarFormatChangeTextScaleFactor;
     return List<Widget>.generate(DateTime.daysPerWeek, (int index) {
       final DateTime date = firstDayOfWeekDate.addDays(index);
       final String weekday = DateFormat.E(context.localeString).format(date);
+      final String formattedWeekday =
+          isOneLetterWeekdayFormat ? weekday.characters.first : weekday;
 
       return Expanded(
         child: CalendarWeekday(
-          weekday: weekday.toUpperCase(),
+          weekday: formattedWeekday.toUpperCase(),
           decoration: decoration,
         ),
       );
