@@ -25,8 +25,10 @@ class CalendarWeekdays extends StatelessWidget {
       month,
       firstDayOfWeekIndex ?? context.materialLocalization.firstDayOfWeekIndex,
     );
-    final DateTime firstDayOfWeekDate = DateTime(year, month).subtract(
-      Duration(days: firstDayOffset),
+    final DateTime firstDayOfWeekDate = DateTime.utc(
+      year,
+      month,
+      1 - firstDayOffset,
     );
     final bool isOneLetterWeekdayFormat =
         context.textScaleFactor > calendarFormatChangeTextScaleFactor;
