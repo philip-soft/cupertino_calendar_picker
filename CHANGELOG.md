@@ -1,3 +1,7 @@
+## 2.2.4
+
+* Fixed an issue with wrong weekday generation caused by daylight saving time differences. (Thanks to [@vixez](https://github.com/philip-soft/cupertino_calendar_picker/issues/49))
+
 ## 2.2.3
 
 * Fixed an issue where `xAlignment` was calculated incorrectly when the `CupertinoCalendarPicker` downscaled because of the lack of space. (Thanks to [maxfrees](https://github.com/philip-soft/cupertino_calendar_picker/issues/45))
