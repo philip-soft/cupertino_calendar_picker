@@ -4,7 +4,7 @@
 
 ## 2.2.3
 
-* Fixed an issue where `xAlignment` was calculated incorrectly when the `CupertinoCalendarPicker` downscaled because of the lack of space. (Thanks to [maxfrees](https://github.com/philip-soft/cupertino_calendar_picker/issues/45))
+* Fixed an issue where `xAlignment` was calculated incorrectly when the `CupertinoCalendarPicker` downscaled because of the lack of space. (Thanks to [@maxfrees](https://github.com/philip-soft/cupertino_calendar_picker/issues/45))
 * Added accessibility text scaling to the `CupertinoCalendarPicker` and `CupertinoPickerButton` widgets. (Thanks to [@ervindobri](https://github.com/philip-soft/cupertino_calendar_picker/issues/44))
 * Default `fontSize` for `CalendarMonthPickerSelectedDay` and `CalendarMonthPickerSelectedCurrentDay` has been decreased from `22.0` to `20.0`.
 
@@ -14,7 +14,7 @@
 
 ## 2.2.1
 
-* The `intl` package version constraint has been updated to the range `>=0.19.0 <0.21.0`.
+* The `intl` package version constraint has been updated to the range `>=0.19.0 <0.21.0`. (Thanks to [@KoheiKanagu](https://github.com/philip-soft/cupertino_calendar_picker/pull/37))
 
 ## 2.2.0
 
