@@ -28,4 +28,5 @@ export 'src/src.dart'
         CupertinoCalendarType,
         CancelCupertinoCalendarAction,
         ConfirmCupertinoCalendarAction,
-        CalendarActionDecoration;
+        CalendarActionDecoration,
+        CalendarHeaderMode;

@@ -18,14 +18,17 @@ class CalendarWeekdayDecoration {
   /// for non-provided parameters.
   factory CalendarWeekdayDecoration({
     TextStyle? textStyle,
+    bool useUppercase = false,
   }) {
     return CalendarWeekdayDecoration._(
       textStyle: textStyle ?? calendarWeekdayStyle,
+      useUppercase: useUppercase,
     );
   }
 
   const CalendarWeekdayDecoration._({
     required this.textStyle,
+    this.useUppercase = false,
   });
 
   /// Creates a calendar's weekday decoration class with default values
@@ -47,12 +50,17 @@ class CalendarWeekdayDecoration {
   /// The [TextStyle] of the calendar's weekday.
   final TextStyle textStyle;
 
+  /// Whether to use uppercase for the weekday.
+  final bool useUppercase;
+
   /// Creates a copy of the class with the provided parameters.
   CalendarWeekdayDecoration copyWith({
     TextStyle? textStyle,
+    bool? useUppercase,
   }) {
     return CalendarWeekdayDecoration(
       textStyle: textStyle ?? this.textStyle,
+      useUppercase: useUppercase ?? this.useUppercase,
     );
   }
 }

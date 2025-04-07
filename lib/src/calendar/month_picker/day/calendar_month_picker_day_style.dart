@@ -275,14 +275,17 @@ class CalendarMonthPickerCurrentDayStyle extends CalendarMonthPickerDayStyle {
   /// with default values for non-provided parameters.
   factory CalendarMonthPickerCurrentDayStyle({
     TextStyle? textStyle,
+    Color? borderColor,
   }) {
     return CalendarMonthPickerCurrentDayStyle._(
       textStyle: textStyle ?? calendarMonthPickerCurrentDayStyle,
+      borderColor: borderColor,
     );
   }
 
   const CalendarMonthPickerCurrentDayStyle._({
     required super.textStyle,
+    required this.borderColor,
   });
 
   /// Creates a calendar's month picker current day decoration class
@@ -295,6 +298,7 @@ class CalendarMonthPickerCurrentDayStyle extends CalendarMonthPickerDayStyle {
     BuildContext context, {
     Color? mainColor,
     TextStyle? textStyle,
+    Color? borderColor,
   }) {
     final TextStyle style = textStyle ?? calendarMonthPickerCurrentDayStyle;
     return CalendarMonthPickerCurrentDayStyle(
@@ -304,15 +308,21 @@ class CalendarMonthPickerCurrentDayStyle extends CalendarMonthPickerDayStyle {
           context,
         ),
       ),
+      borderColor: borderColor,
     );
   }
 
   /// Creates a copy of the class with the provided parameters.
   CalendarMonthPickerCurrentDayStyle? copyWith({
     TextStyle? textStyle,
+    bool useBorder = false,
   }) {
     return CalendarMonthPickerCurrentDayStyle(
       textStyle: textStyle ?? this.textStyle,
+      borderColor: borderColor ?? this.borderColor,
     );
   }
+
+  /// Whether to use a border for the calendar's month picker day.
+  final Color? borderColor;
 }
