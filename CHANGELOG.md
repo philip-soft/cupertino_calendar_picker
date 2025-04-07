@@ -1,3 +1,7 @@
+## 2.2.5
+
+* Add customizable header and weekday decorations to calendar
+
 ## 2.2.4
 
 * Fixed an issue with wrong weekday generation caused by daylight saving time differences. (Thanks to [@vixez](https://github.com/philip-soft/cupertino_calendar_picker/issues/49))

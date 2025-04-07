@@ -38,6 +38,9 @@ class CalendarMonthPickerDay extends StatelessWidget {
                   ? dayStyle.backgroundCircleColor
                   : null,
           backgroundCircleSize: backgroundCircleSize,
+          borderColor: dayStyle is CalendarMonthPickerCurrentDayStyle
+              ? dayStyle.borderColor
+              : null,
         ),
       ),
     );
@@ -51,14 +54,15 @@ class CalendarMonthPickerDayPainter extends CustomPainter {
     required this.style,
     required this.backgroundCircleSize,
     this.backgroundCircleColor,
+    this.borderColor,
   });
 
   final TextScaler textScaler;
   final String day;
   final TextStyle style;
   final Color? backgroundCircleColor;
+  final Color? borderColor;
   final double backgroundCircleSize;
-
   @override
   void paint(Canvas canvas, Size size) {
     final ParagraphBuilder paragraphBuilder = ParagraphBuilder(
@@ -80,6 +84,10 @@ class CalendarMonthPickerDayPainter extends CustomPainter {
         Offset(centerX, centerY),
         backgroundCircleColor!,
       );
+    }
+
+    if (borderColor != null) {
+      _drawBorder(canvas, Offset(centerX, centerY), borderColor!);
     }
 
     final double dayBottomY = centerY - dayHalfHeight;
@@ -107,6 +115,19 @@ class CalendarMonthPickerDayPainter extends CustomPainter {
 
   void _drawBackgroundCircle(Canvas canvas, Offset offset, Color color) {
     final Paint paint = Paint()..color = color;
+    canvas.drawCircle(
+      offset,
+      backgroundCircleSize / 2,
+      paint,
+    );
+  }
+
+  void _drawBorder(Canvas canvas, Offset offset, Color color) {
+    final Paint paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
     canvas.drawCircle(
       offset,
       backgroundCircleSize / 2,

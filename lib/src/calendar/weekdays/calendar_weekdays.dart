@@ -40,7 +40,9 @@ class CalendarWeekdays extends StatelessWidget {
 
       return Expanded(
         child: CalendarWeekday(
-          weekday: formattedWeekday.toUpperCase(),
+          weekday: decoration.useUppercase
+              ? formattedWeekday.toUpperCase()
+              : formattedWeekday,
           decoration: decoration,
         ),
       );

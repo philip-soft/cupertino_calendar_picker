@@ -112,6 +112,31 @@ class _ExampleAppState extends State<ExampleApp> {
                 timeLabel: 'Ends',
                 mode: CupertinoCalendarMode.dateTime,
                 onDateTimeChanged: _onDateTimeChanged,
+                headerDecoration: CalendarHeaderDecoration(
+                  monthSwitcherIconSize: 16,
+                  monthDateStyle: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  showMonthPickerIcon: false,
+                  headerMode: CalendarHeaderMode.centerMonthYear,
+                  // monthDateFormat: DateFormat('MMMM yyyy'),
+                ),
+                weekdayDecoration: CalendarWeekdayDecoration(
+                  useUppercase: false,
+                  textStyle: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                monthPickerDecoration: CalendarMonthPickerDecoration(
+                  currentDayStyle: CalendarMonthPickerCurrentDayStyle(
+                    borderColor: CupertinoColors.systemBlue,
+                    textStyle: const TextStyle(
+                      color: CupertinoColors.systemBlue,
+                    ),
+                  ),
+                ),
               ),
             ),
             const Spacer(),

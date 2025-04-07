@@ -2,7 +2,9 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
+import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 
 const CupertinoDynamicColor calendarMontDateColor = CupertinoColors.label;
 const TextStyle calendarMonthDateStyle = TextStyle(
@@ -31,6 +33,11 @@ class CalendarHeaderDecoration {
     Color? backwardButtonColor,
     Color? backwardDisabledButtonColor,
     Color? forwardDisabledButtonColor,
+    double monthSwitcherIconSize = calendarMonthSwitcherIconSize,
+    double monthPickerIconSize = calendarMonthPickerIconSize,
+    bool showMonthPickerIcon = true,
+    DateFormat? monthDateFormat,
+    CalendarHeaderMode headerMode = CalendarHeaderMode.leadingMonthYear,
   }) {
     return CalendarHeaderDecoration._(
       monthDateStyle: monthDateStyle ?? calendarMonthDateStyle,
@@ -41,6 +48,11 @@ class CalendarHeaderDecoration {
           backwardDisabledButtonColor ?? calendarForwardDisabledButtonColor,
       forwardDisabledButtonColor:
           forwardDisabledButtonColor ?? calendarForwardDisabledButtonColor,
+      monthSwitcherIconSize: monthSwitcherIconSize,
+      monthPickerIconSize: monthPickerIconSize,
+      showMonthPickerIcon: showMonthPickerIcon,
+      monthDateFormat: monthDateFormat,
+      headerMode: headerMode,
     );
   }
 
@@ -51,6 +63,11 @@ class CalendarHeaderDecoration {
     this.backwardButtonColor,
     this.backwardDisabledButtonColor,
     this.forwardDisabledButtonColor,
+    this.monthSwitcherIconSize = calendarMonthSwitcherIconSize,
+    this.monthPickerIconSize = calendarMonthPickerIconSize,
+    this.showMonthPickerIcon = true,
+    this.monthDateFormat,
+    this.headerMode = CalendarHeaderMode.leadingMonthYear,
   });
 
   /// Creates a calendar's header decoration class with default values
@@ -68,6 +85,11 @@ class CalendarHeaderDecoration {
     CupertinoDynamicColor? backwardButtonColor,
     CupertinoDynamicColor? backwardDisabledButtonColor,
     CupertinoDynamicColor? forwardDisabledButtonColor,
+    double monthSwitcherIconSize = calendarMonthSwitcherIconSize,
+    double monthPickerIconSize = calendarMonthPickerIconSize,
+    bool showMonthPickerIcon = true,
+    DateFormat? monthDateFormat,
+    CalendarHeaderMode headerMode = CalendarHeaderMode.leadingMonthYear,
   }) {
     final TextStyle style = monthDateStyle ?? calendarMonthDateStyle;
     return CalendarHeaderDecoration(
@@ -98,6 +120,11 @@ class CalendarHeaderDecoration {
         backwardDisabledButtonColor ?? calendarBackwardDisabledButtonColor,
         context,
       ),
+      monthSwitcherIconSize: monthSwitcherIconSize,
+      monthPickerIconSize: monthPickerIconSize,
+      showMonthPickerIcon: showMonthPickerIcon,
+      monthDateFormat: monthDateFormat,
+      headerMode: headerMode,
     );
   }
 
@@ -120,6 +147,21 @@ class CalendarHeaderDecoration {
   /// The [Color] of the calendar's disabled forward arrow at the top right.
   final Color? forwardDisabledButtonColor;
 
+  /// The [double] size of the calendar's month switcher icons.
+  final double monthSwitcherIconSize;
+
+  /// The [double] size of the calendar's month picker icons.
+  final double monthPickerIconSize;
+
+  /// Whether to show the calendar's month picker icons.
+  final bool showMonthPickerIcon;
+
+  /// The [DateFormat] of the calendar's month date.
+  final DateFormat? monthDateFormat;
+
+  /// The [CalendarHeaderMode] of the calendar's header.
+  final CalendarHeaderMode headerMode;
+
   /// Creates a copy of the class with the provided parameters.
   CalendarHeaderDecoration copyWith({
     TextStyle? monthDateStyle,
@@ -128,6 +170,11 @@ class CalendarHeaderDecoration {
     Color? backwardButtonColor,
     Color? backwardDisabledButtonColor,
     Color? forwardDisabledButtonColor,
+    double monthSwitcherIconSize = calendarMonthSwitcherIconSize,
+    double monthPickerIconSize = calendarMonthPickerIconSize,
+    bool showMonthPickerIcon = true,
+    DateFormat? monthDateFormat,
+    CalendarHeaderMode? headerMode,
   }) {
     return CalendarHeaderDecoration(
       monthDateStyle: monthDateStyle ?? this.monthDateStyle,
@@ -138,6 +185,11 @@ class CalendarHeaderDecoration {
           backwardDisabledButtonColor ?? this.backwardDisabledButtonColor,
       forwardDisabledButtonColor:
           forwardDisabledButtonColor ?? this.forwardDisabledButtonColor,
+      monthSwitcherIconSize: monthSwitcherIconSize,
+      monthPickerIconSize: monthPickerIconSize,
+      showMonthPickerIcon: showMonthPickerIcon,
+      monthDateFormat: monthDateFormat ?? this.monthDateFormat,
+      headerMode: headerMode ?? this.headerMode,
     );
   }
 }
