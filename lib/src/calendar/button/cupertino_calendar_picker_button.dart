@@ -41,6 +41,7 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
     this.use24hFormat,
     this.firstDayOfWeekIndex,
     this.actions,
+    this.useRootNavigator = true,
   });
 
   /// Specifies the earliest date that can be selected by the user
@@ -167,6 +168,10 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   /// the [_selectedDateTime] inside the button will not be updated.
   final List<CupertinoCalendarAction>? actions;
 
+  /// Whether to use the root navigator for displaying the dialog.
+  /// Default is `true`.
+  final bool useRootNavigator;
+
   @override
   State<CupertinoCalendarPickerButton> createState() =>
       _CupertinoCalendarPickerButtonState();
@@ -219,6 +224,7 @@ class _CupertinoCalendarPickerButtonState
       use24hFormat: widget.use24hFormat,
       firstDayOfWeekIndex: widget.firstDayOfWeekIndex,
       actions: widget.actions,
+      useRootNavigator: widget.useRootNavigator,
     );
     widget.onCompleted?.call(val);
     return val;

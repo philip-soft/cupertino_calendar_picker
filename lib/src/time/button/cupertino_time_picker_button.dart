@@ -24,6 +24,7 @@ class CupertinoTimePickerButton extends StatefulWidget {
     this.minuteInterval = 1,
     this.onPressed,
     this.use24hFormat,
+    this.useRootNavigator = true,
   });
 
   /// The minimum selectable [TimeOfDay].
@@ -91,6 +92,10 @@ class CupertinoTimePickerButton extends StatefulWidget {
   /// The default value is null, which calls [MediaQuery.alwaysUse24HourFormatOf].
   final bool? use24hFormat;
 
+  /// Whether to use the root navigator for displaying the dialog.
+  /// Default is `true`.
+  final bool useRootNavigator;
+
   @override
   State<CupertinoTimePickerButton> createState() =>
       _CupertinoTimePickerButtonState();
@@ -136,6 +141,7 @@ class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
       onTimeChanged: _onTimeChanged,
       minuteInterval: widget.minuteInterval,
       use24hFormat: widget.use24hFormat,
+      useRootNavigator: widget.useRootNavigator,
     );
     widget.onCompleted?.call(val);
     return val;
