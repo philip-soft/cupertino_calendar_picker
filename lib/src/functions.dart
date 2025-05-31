@@ -127,6 +127,10 @@ import 'package:flutter/material.dart';
 ///   Available actions are [CancelCupertinoCalendarAction], [ConfirmCupertinoCalendarAction].
 ///   Displayed only when the calendar is in the [CupertinoCalendarType.compact] mode.
 ///
+/// - [useRootNavigator]:
+///  Whether to use the root navigator for displaying the dialog.
+///  Default is `true`.
+///
 /// ## Returns:
 ///
 /// A [Future] that resolves to the selected [DateTime] if a date was chosen, or `null`
@@ -160,6 +164,7 @@ Future<DateTime?> showCupertinoCalendarPicker(
   bool? use24hFormat,
   int? firstDayOfWeekIndex,
   List<CupertinoCalendarAction>? actions,
+  bool useRootNavigator = true,
 }) {
   return showGeneralDialog<DateTime?>(
     context: context,
@@ -167,6 +172,7 @@ Future<DateTime?> showCupertinoCalendarPicker(
     barrierColor: barrierColor,
     transitionDuration: Duration.zero,
     routeSettings: const RouteSettings(name: calendarPickerRouteName),
+    useRootNavigator: useRootNavigator,
     transitionBuilder: (
       BuildContext _,
       Animation<double> __,
@@ -274,6 +280,10 @@ Future<DateTime?> showCupertinoCalendarPicker(
 ///   Can be used as a type of duration picker (limited to 23 hours) when set to `true`.
 ///   The default value is null, which calls [MediaQuery.alwaysUse24HourFormatOf].
 ///
+/// - [useRootNavigator]:
+///  Whether to use the root navigator for displaying the dialog.
+///  Default is `true`.
+///
 /// ## Returns:
 ///
 /// A [Future] that resolves to the selected [TimeOfDay] if a time was chosen, or `null`
@@ -293,6 +303,7 @@ Future<TimeOfDay?> showCupertinoTimePicker(
   PickerContainerDecoration? containerDecoration,
   int minuteInterval = 1,
   bool? use24hFormat,
+  bool useRootNavigator = true,
 }) {
   return showGeneralDialog<TimeOfDay?>(
     context: context,
@@ -300,6 +311,7 @@ Future<TimeOfDay?> showCupertinoTimePicker(
     barrierColor: barrierColor,
     transitionDuration: Duration.zero,
     routeSettings: const RouteSettings(name: timePickerRouteName),
+    useRootNavigator: useRootNavigator,
     transitionBuilder: (
       BuildContext _,
       Animation<double> __,
