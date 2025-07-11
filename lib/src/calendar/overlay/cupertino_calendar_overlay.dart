@@ -20,6 +20,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     required this.minuteInterval,
     required this.use24hFormat,
     required this.actions,
+    this.selectableDayPredicate,
     this.onDateTimeChanged,
     this.onDateSelected,
     this.currentDateTime,
@@ -41,6 +42,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
   final DateTime? initialDateTime;
   final DateTime minimumDateTime;
   final DateTime maximumDateTime;
+  final SelectableDayPredicate? selectableDayPredicate;
   final DateTime? currentDateTime;
   final ValueChanged<DateTime>? onDateTimeChanged;
   final ValueChanged<DateTime>? onDateSelected;
@@ -135,6 +137,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
         initialDateTime: widget.initialDateTime,
         currentDateTime: widget.currentDateTime,
         maximumDateTime: widget.maximumDateTime,
+        selectableDayPredicate: widget.selectableDayPredicate,
         onDateTimeChanged: _onDateTimeChanged,
         onDateSelected: _onDateSelected,
         onDisplayedMonthChanged: widget.onDisplayedMonthChanged,

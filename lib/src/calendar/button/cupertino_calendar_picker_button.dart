@@ -16,6 +16,7 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   const CupertinoCalendarPickerButton({
     required this.minimumDateTime,
     required this.maximumDateTime,
+    this.selectableDayPredicate,
     this.dismissBehavior = CalendarDismissBehavior.onOutsideTap,
     this.initialDateTime,
     this.offset = const Offset(0.0, 10.0),
@@ -51,6 +52,9 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   /// Specifies the latest date that can be selected by the user in the
   /// calendar picker.
   final DateTime maximumDateTime;
+
+  /// A predicate that determines whether a specific day is selectable
+  final SelectableDayPredicate? selectableDayPredicate;
 
   /// A callback that is triggered whenever the selected [DateTime] changes
   /// in the calendar.
@@ -213,6 +217,7 @@ class _CupertinoCalendarPickerButtonState
       maximumDateTime: widget.maximumDateTime,
       barrierColor: widget.barrierColor,
       verticalSpacing: widget.verticalSpacing,
+      selectableDayPredicate: widget.selectableDayPredicate,
       horizontalSpacing: widget.horizontalSpacing,
       onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
       mode: widget.mode,
