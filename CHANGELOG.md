@@ -1,3 +1,7 @@
+## 2.2.6
+
+* Added `selectableDayPredicate` callback parameter to the calendar, allowing certain dates to be disabled. (Thanks to [@Menelphor](https://github.com/philip-soft/cupertino_calendar_picker/pull/54))
+
 ## 2.2.5
 
 * Added `useRootNavigator` parameter to dialog functions and buttons, allowing to disable the root navigator for displaying the picker. (Thanks to [@pablodekeyzer](https://github.com/philip-soft/cupertino_calendar_picker/issues/52))
