@@ -23,6 +23,7 @@ class CalendarMonthPicker extends StatefulWidget {
     required this.decoration,
     required this.mainColor,
     required this.firstDayOfWeekIndex,
+    required this.selectableDayPredicate,
     super.key,
   })  : minimumDate = DateUtils.dateOnly(minimumDate),
         maximumDate = DateUtils.dateOnly(maximumDate),
@@ -43,6 +44,9 @@ class CalendarMonthPicker extends StatefulWidget {
 
   /// Called when the user picks a day.
   final ValueChanged<DateTime> onChanged;
+
+  /// A predicate that determines whether a day is selectable.
+  final SelectableDayPredicate? selectableDayPredicate;
 
   /// The earliest date the user is permitted to pick.
   ///
@@ -129,7 +133,8 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
           date,
         );
         final bool isDisabledDay = date.isAfter(widget.maximumDate) ||
-            date.isBefore(widget.minimumDate);
+            date.isBefore(widget.minimumDate) ||
+            widget.selectableDayPredicate?.call(date) == false;
 
         final CalendarMonthPickerDecoration decoration = widget.decoration;
 

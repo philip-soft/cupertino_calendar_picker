@@ -23,6 +23,7 @@ class CupertinoCalendar extends StatefulWidget {
     this.onDateTimeChanged,
     this.onDateSelected,
     this.initialDateTime,
+    this.selectableDayPredicate,
     this.currentDateTime,
     this.onDisplayedMonthChanged,
     this.weekdayDecoration,
@@ -83,6 +84,9 @@ class CupertinoCalendar extends StatefulWidget {
   ///
   /// This date must be on or after the [minimumDateTime].
   final DateTime maximumDateTime;
+
+  /// A predicate that determines whether a day is selectable.
+  final SelectableDayPredicate? selectableDayPredicate;
 
   /// The current date (i.e., today's date).
   final DateTime? currentDateTime;
@@ -276,6 +280,7 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
         currentDateTime: widget.currentDateTime ?? DateTime.now(),
         minimumDateTime: widget.minimumDateTime,
         maximumDateTime: widget.maximumDateTime,
+        selectableDayPredicate: widget.selectableDayPredicate,
         selectedDateTime: _selectedDateTime,
         firstDayOfWeekIndex: widget.firstDayOfWeekIndex,
         onDateChanged: _onDateChanged,

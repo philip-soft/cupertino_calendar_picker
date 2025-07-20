@@ -13,6 +13,7 @@ class CupertinoCalendarPicker extends StatefulWidget {
     required this.minimumDateTime,
     required this.maximumDateTime,
     required this.selectedDateTime,
+    required this.selectableDayPredicate,
     required this.firstDayOfWeekIndex,
     required this.onDateChanged,
     required this.onTimeChanged,
@@ -37,6 +38,7 @@ class CupertinoCalendarPicker extends StatefulWidget {
   final DateTime minimumDateTime;
   final DateTime maximumDateTime;
   final DateTime selectedDateTime;
+  final SelectableDayPredicate? selectableDayPredicate;
   final ValueChanged<DateTime> onDateChanged;
   final ValueChanged<DateTime> onTimeChanged;
   final ValueChanged<DateTime> onDisplayedMonthChanged;
@@ -67,6 +69,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
   late GlobalKey<CustomCupertinoDatePickerDateTimeState> _timePickerKey;
 
   CupertinoCalendarViewMode get viewMode => _viewMode;
+
   set viewMode(CupertinoCalendarViewMode mode) {
     _previousViewMode = viewMode;
     _viewMode = mode;
@@ -280,6 +283,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
                     displayedMonth: _currentMonth,
                     minimumDate: widget.minimumDateTime,
                     maximumDate: widget.maximumDateTime,
+                    selectableDayPredicate: widget.selectableDayPredicate,
                     selectedDate: widget.selectedDateTime,
                     onChanged: _onMonthDateChanged,
                     decoration: widget.monthPickerDecoration,

@@ -43,6 +43,7 @@ class _ExampleAppState extends State<ExampleApp> {
       minimumDateTime: _minimumDateTime,
       initialDateTime: _selectedDateTime,
       maximumDateTime: _maximumDateTime,
+      selectableDayPredicate: (date) => date.day % 2 == 0,
       mode: CupertinoCalendarMode.dateTime,
       timeLabel: 'Ends',
       onDateTimeChanged: _onDateTimeChanged,
@@ -109,6 +110,7 @@ class _ExampleAppState extends State<ExampleApp> {
                 minimumDateTime: _minimumDateTime,
                 maximumDateTime: _maximumDateTime,
                 initialDateTime: _selectedDateTime,
+                selectableDayPredicate: (date) => date.day % 2 == 0,
                 timeLabel: 'Ends',
                 mode: CupertinoCalendarMode.dateTime,
                 onDateTimeChanged: _onDateTimeChanged,
@@ -122,6 +124,7 @@ class _ExampleAppState extends State<ExampleApp> {
                   minimumDateTime: _minimumDateTime,
                   maximumDateTime: _maximumDateTime,
                   initialDateTime: _selectedDateTime,
+                  selectableDayPredicate: (date) => date.day % 2 == 0,
                   mode: CupertinoCalendarMode.dateTime,
                   timeLabel: 'Ends',
                   onDateTimeChanged: _onDateTimeChanged,
@@ -161,6 +164,7 @@ class _ExampleAppState extends State<ExampleApp> {
                   maximumDateTime: _maximumDateTime,
                   initialDateTime: _selectedDateTime,
                   dismissBehavior: CalendarDismissBehavior.onActionTap,
+                  selectableDayPredicate: (date) => date.day % 2 == 0,
                   mode: CupertinoCalendarMode.date,
                   actions: [
                     CancelCupertinoCalendarAction(
