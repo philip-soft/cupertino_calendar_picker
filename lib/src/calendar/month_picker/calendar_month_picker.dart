@@ -4,6 +4,7 @@
 
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 // /// Displays the days of a given month and allows choosing a day.
 // ///
@@ -166,11 +167,19 @@ class CalendarMonthPickerState extends State<CalendarMonthPicker> {
               CalendarMonthPickerDefaultDayStyle.withDynamicColor(context);
         }
 
-        final Widget dayWidget = CalendarMonthPickerDay(
-          dayDate: date,
-          onDaySelected: isDisabledDay ? null : widget.onChanged,
-          style: style,
-          backgroundCircleSize: backgroundCircleSize,
+        final Widget dayWidget = MergeSemantics(
+          child: Semantics(
+            button: true,
+            label: DateFormat.MMMMd(Localizations.localeOf(context).toString())
+                .format(date),
+            selected: isSelectedDay,
+            child: CalendarMonthPickerDay(
+              dayDate: date,
+              onDaySelected: isDisabledDay ? null : widget.onChanged,
+              style: style,
+              backgroundCircleSize: backgroundCircleSize,
+            ),
+          ),
         );
         yield dayWidget;
       }
