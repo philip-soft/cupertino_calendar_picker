@@ -2,6 +2,8 @@
 /// and time selection seamless and visually consistent with iOS design principles.
 library;
 
+export 'src/calendar/date_picker/custom_cupertino_date_picker.dart'
+    show CupertinoTimerPicker, CupertinoTimerPickerMode;
 export 'src/src.dart'
     show
         showCupertinoCalendarPicker,

@@ -14,6 +14,7 @@ class CupertinoTimePickerWheel extends StatelessWidget {
     required this.minuteInterval,
     this.use24hFormat,
     this.pickerKey,
+    this.looping = true,
     super.key,
   });
 
@@ -24,6 +25,7 @@ class CupertinoTimePickerWheel extends StatelessWidget {
   final ValueChanged<DateTime> onTimeChanged;
   final int minuteInterval;
   final bool? use24hFormat;
+  final bool looping;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +38,7 @@ class CupertinoTimePickerWheel extends StatelessWidget {
       onDateTimeChanged: onTimeChanged,
       use24hFormat: use24hFormat ?? context.alwaysUse24hFormat,
       minuteInterval: minuteInterval,
+      looping: looping,
     );
   }
 }

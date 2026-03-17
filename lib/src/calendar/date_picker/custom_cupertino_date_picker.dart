@@ -268,6 +268,10 @@ class CustomCupertinoDatePicker extends StatefulWidget {
   /// mode. When using monthYear mode, both [DatePickerDateOrder.dmy] and
   /// [DatePickerDateOrder.mdy] will result in the month|year order.
   /// Defaults to the locale's default date format/order.
+  /// 
+  /// [looping] determines whether the hour and minute pickers should loop.
+  /// When true, scrolling past the last item wraps to the first item and vice versa.
+  /// Defaults to true.
   CustomCupertinoDatePicker({
     required this.onDateTimeChanged,
     super.key,
@@ -284,6 +288,7 @@ class CustomCupertinoDatePicker extends StatefulWidget {
     this.showDayOfWeek = false,
     this.itemExtent = _kItemExtent,
     this.selectionOverlayBuilder,
+    this.looping = true,
   })  : initialDateTime = initialDateTime ?? DateTime.now(),
         assert(
           itemExtent > 0,
@@ -462,6 +467,12 @@ class CustomCupertinoDatePicker extends StatefulWidget {
   /// ```
   /// {@end-tool}
   final SelectionOverlayBuilder? selectionOverlayBuilder;
+
+  /// Whether the hour and minute pickers should loop.
+  /// 
+  /// When true, scrolling past the last item wraps to the first item and vice versa.
+  /// Defaults to true.
+  final bool looping;
 
   @override
   State<StatefulWidget> createState() {
@@ -931,7 +942,7 @@ class CustomCupertinoDatePickerDateTimeState
 
             assert(debugIsFlipped == isHourRegionFlipped);
           },
-          looping: true,
+          looping: widget.looping,
           selectionOverlay: selectionOverlay,
           children: List<Widget>.generate(24, (int index) {
             final int hour = isHourRegionFlipped ? (index + 12) % 24 : index;
@@ -983,7 +994,7 @@ class CustomCupertinoDatePickerDateTimeState
           backgroundColor: widget.backgroundColor,
           squeeze: _kSqueeze,
           onSelectedItemChanged: _onSelectedItemChange,
-          looping: true,
+          looping: widget.looping,
           selectionOverlay: selectionOverlay,
           children:
               List<Widget>.generate(60 ~/ widget.minuteInterval, (int index) {
@@ -2569,6 +2580,7 @@ class _CupertinoTimerPickerState extends State<CupertinoTimerPicker> {
         itemExtent: widget.itemExtent,
         backgroundColor: widget.backgroundColor,
         squeeze: _kSqueeze,
+        looping: true,
         onSelectedItemChanged: (int index) {
           setState(() {
             selectedHour = index;

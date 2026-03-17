@@ -13,6 +13,7 @@ class CupertinoTimePicker extends StatelessWidget {
     required this.onTimeChanged,
     required this.minuteInterval,
     required this.use24hFormat,
+    this.looping = true,
     super.key,
   });
 
@@ -22,6 +23,7 @@ class CupertinoTimePicker extends StatelessWidget {
   final ValueChanged<DateTime> onTimeChanged;
   final int minuteInterval;
   final bool use24hFormat;
+  final bool looping;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,7 @@ class CupertinoTimePicker extends StatelessWidget {
             onTimeChanged: onTimeChanged,
             minuteInterval: minuteInterval,
             use24hFormat: use24hFormat,
+            looping: looping,
           ),
         ),
       ),
