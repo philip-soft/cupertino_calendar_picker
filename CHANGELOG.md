@@ -1,3 +1,7 @@
+## 2.2.7
+
+* Add accessibility support for screen readers (WCAG/BITV compliance) (Thanks to [@mikailsyr](https://github.com/philip-soft/cupertino_calendar_picker/pull/60))
+
 ## 2.2.6
 
 * Added `selectableDayPredicate` callback parameter to the calendar, allowing certain dates to be disabled. (Thanks to [@Menelphor](https://github.com/philip-soft/cupertino_calendar_picker/pull/54))
