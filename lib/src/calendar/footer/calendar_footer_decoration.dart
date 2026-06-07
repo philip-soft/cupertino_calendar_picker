@@ -52,7 +52,7 @@ class CalendarFooterDecoration {
     TextStyle? timeStyle,
     TextStyle? dayPeriodTextStyle,
   }) {
-    final TextStyle timeTextStyle = timeStyle ?? calendarFooterTimeLabelStyle;
+    final TextStyle timeTextStyle = timeStyle ?? calendarTimeStyle;
     final TextStyle titleTextStyle =
         timeLabelStyle ?? calendarFooterTimeLabelStyle;
     final TextStyle periodTextStyle =

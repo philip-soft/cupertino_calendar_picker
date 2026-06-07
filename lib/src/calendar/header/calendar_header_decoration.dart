@@ -4,9 +4,9 @@
 
 import 'package:flutter/cupertino.dart';
 
-const CupertinoDynamicColor calendarMontDateColor = CupertinoColors.label;
+const CupertinoDynamicColor calendarMonthDateColor = CupertinoColors.label;
 const TextStyle calendarMonthDateStyle = TextStyle(
-  color: calendarMontDateColor,
+  color: calendarMonthDateColor,
   fontWeight: FontWeight.w600,
   fontSize: 17.0,
   letterSpacing: -0.5,
@@ -74,7 +74,7 @@ class CalendarHeaderDecoration {
       mainColor: mainColor,
       monthDateStyle: style.copyWith(
         color: CupertinoDynamicColor.resolve(
-          style.color ?? calendarMontDateColor,
+          style.color ?? calendarMonthDateColor,
           context,
         ),
       ),

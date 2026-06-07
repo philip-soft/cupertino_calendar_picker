@@ -102,11 +102,11 @@ class CalendarMonthPickerDecoration {
     CalendarMonthPickerDisabledDayStyle? disabledDayStyle,
   }) {
     return CalendarMonthPickerDecoration(
-      defaultDayStyle: defaultDayStyle ?? defaultDayStyle,
-      currentDayStyle: currentDayStyle ?? currentDayStyle,
+      defaultDayStyle: defaultDayStyle ?? this.defaultDayStyle,
+      currentDayStyle: currentDayStyle ?? this.currentDayStyle,
       selectedDayStyle: selectedDayStyle ?? this.selectedDayStyle,
       selectedCurrentDayStyle:
-          selectedCurrentDayStyle ?? selectedCurrentDayStyle,
+          selectedCurrentDayStyle ?? this.selectedCurrentDayStyle,
       disabledDayStyle: disabledDayStyle ?? this.disabledDayStyle,
     );
   }

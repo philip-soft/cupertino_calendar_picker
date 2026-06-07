@@ -151,7 +151,7 @@ class _CupertinoPickerOverlayState extends State<CupertinoPickerOverlay> {
       xAlignment = 0.0;
     }
 
-    final Alignment scaleAligment = Alignment(
+    final Alignment scaleAlignment = Alignment(
       xAlignment,
       fitsOnTop ? 1.0 : -1.0,
     );
@@ -209,7 +209,7 @@ class _CupertinoPickerOverlayState extends State<CupertinoPickerOverlay> {
                 decoration: widget.containerDecoration ??
                     PickerContainerDecoration.withDynamicColor(context),
                 maxScale: maxScale,
-                scaleAlignment: scaleAligment,
+                scaleAlignment: scaleAlignment,
                 child: widget.child,
               ),
             ),
