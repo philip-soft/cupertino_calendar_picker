@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -75,6 +75,13 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
     _viewMode = mode;
   }
 
+  @visibleForTesting
+  void setViewModeForTest(CupertinoCalendarViewMode mode) {
+    setState(() {
+      viewMode = mode;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -98,7 +105,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
     if (initialMonth != oldInitialMonth && initialMonth != _currentMonth) {
       // We can't interrupt this widget build with a scroll, so do it next frame
       WidgetsBinding.instance.addPostFrameCallback(
-        (Duration timeStamp) => _showMonth(widget.initialMonth, jump: true),
+        (Duration timeStamp) => showMonth(widget.initialMonth, jump: true),
       );
     }
 
@@ -155,7 +162,8 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
     }
   }
 
-  void _showMonth(DateTime month, {bool jump = false}) {
+  @visibleForTesting
+  void showMonth(DateTime month, {bool jump = false}) {
     final int monthPage = DateUtils.monthDelta(widget.minimumDateTime, month);
     if (jump) {
       _monthPageController.jumpToPage(monthPage);
@@ -209,7 +217,8 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
     widget.onTimeChanged(_selectedDateTime);
   }
 
-  void _onDayPeriodChanged(TimeOfDay newTime) {
+  @visibleForTesting
+  void onDayPeriodChanged(TimeOfDay newTime) {
     final DateTime newDateTime = _selectedDateTime.copyWith(
       hour: newTime.hour,
       minute: _selectedDateTime.minute,
@@ -340,7 +349,7 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
                 mainColor: widget.mainColor,
                 time: TimeOfDay.fromDateTime(_selectedDateTime),
                 onTimePickerStateChanged: _toggleTimePicker,
-                onTimeChanged: _onDayPeriodChanged,
+                onTimeChanged: onDayPeriodChanged,
                 use24hFormat: widget.use24hFormat,
               ),
               crossFadeState: viewMode == CupertinoCalendarViewMode.yearPicker
