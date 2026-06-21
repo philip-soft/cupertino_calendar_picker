@@ -1,7 +1,12 @@
 #!/bin/bash
 set -e
 
-flutter test --coverage
+UPDATE_GOLDENS=""
+if [[ "$1" == "--update-goldens" ]]; then
+  UPDATE_GOLDENS="--update-goldens"
+fi
+
+flutter test --coverage $UPDATE_GOLDENS
 
 lcov \
   --remove coverage/lcov.info \

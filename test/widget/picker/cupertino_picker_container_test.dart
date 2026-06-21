@@ -55,7 +55,9 @@ void main() {
       );
 
       expect(
-          decoration.backgroundType, PickerBackgroundType.transparentAndBlured);
+        decoration.backgroundType,
+        PickerBackgroundType.transparentAndBlured,
+      );
       expect(find.byType(BackdropFilter), findsOneWidget);
     });
 

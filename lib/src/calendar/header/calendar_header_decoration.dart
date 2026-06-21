@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 
 const CupertinoDynamicColor calendarMonthDateColor = CupertinoColors.label;
 const TextStyle calendarMonthDateStyle = TextStyle(
+  fontFamily: 'CupertinoSystemText',
   color: calendarMonthDateColor,
   fontWeight: FontWeight.w600,
   fontSize: 17.0,

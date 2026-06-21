@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -98,24 +100,19 @@ class _CupertinoPickerButtonState<T> extends State<CupertinoPickerButton<T>>
   }
 
   void _animate() {
-    final bool wasHeldDown = _buttonHeldDown;
-    final TickerFuture ticker = _buttonHeldDown
-        ? _animationController.animateTo(
-            1.0,
-            duration: pickerButtonFadeOutDuration,
-            curve: Curves.easeInOutCubicEmphasized,
-          )
-        : _animationController.animateTo(
-            0.0,
-            duration: pickerButtonFadeInDuration,
-            curve: Curves.easeOutCubic,
-          );
-    // ignore: cascade_invocations
-    ticker.then<void>((void value) {
-      if (mounted && wasHeldDown != _buttonHeldDown) {
-        _animate();
-      }
-    });
+    unawaited(
+      _buttonHeldDown
+          ? _animationController.animateTo(
+              1.0,
+              duration: pickerButtonFadeOutDuration,
+              curve: Curves.easeInOutCubicEmphasized,
+            )
+          : _animationController.animateTo(
+              0.0,
+              duration: pickerButtonFadeInDuration,
+              curve: Curves.easeOutCubic,
+            ),
+    );
   }
 
   @override

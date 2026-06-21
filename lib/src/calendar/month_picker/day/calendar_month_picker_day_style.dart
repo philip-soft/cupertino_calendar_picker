@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 const CupertinoDynamicColor calendarMonthPickerDisabledDayColor =
     CupertinoColors.tertiaryLabel;
 const TextStyle calendarMonthPickerDisabledDayStyle = TextStyle(
+  fontFamily: 'CupertinoSystemText',
   fontSize: 20.0,
   color: calendarMonthPickerDisabledDayColor,
   fontWeight: FontWeight.w400,
@@ -16,6 +17,7 @@ const TextStyle calendarMonthPickerDisabledDayStyle = TextStyle(
 const CupertinoDynamicColor calendarMonthPickerDefaultDayColor =
     CupertinoColors.label;
 const TextStyle calendarMonthPickerDefaultDayStyle = TextStyle(
+  fontFamily: 'CupertinoSystemText',
   fontSize: 20.0,
   color: calendarMonthPickerDefaultDayColor,
   fontWeight: FontWeight.w400,
@@ -23,11 +25,13 @@ const TextStyle calendarMonthPickerDefaultDayStyle = TextStyle(
 );
 
 const TextStyle calendarMonthPickerSelectedDayStyle = TextStyle(
+  fontFamily: 'CupertinoSystemText',
   fontSize: 20.0,
   fontWeight: FontWeight.w500,
 );
 
 final TextStyle calendarMonthPickerSelectedCurrentDayStyle = TextStyle(
+  fontFamily: 'CupertinoSystemText',
   fontSize: 20.0,
   color: CupertinoDynamicColor.withBrightness(
     color: CupertinoColors.label.darkColor,
@@ -37,6 +41,7 @@ final TextStyle calendarMonthPickerSelectedCurrentDayStyle = TextStyle(
 );
 
 const TextStyle calendarMonthPickerCurrentDayStyle = TextStyle(
+  fontFamily: 'CupertinoSystemText',
   fontSize: 20.0,
   fontWeight: FontWeight.w400,
   letterSpacing: -0.4,

@@ -411,7 +411,7 @@ void main() {
     });
 
     testWidgets(
-      'showMonth with jump:false uses animateToPage (line 163)',
+      'showMonth with jump:false animates to the requested month',
       (WidgetTester tester) async {
         final GlobalKey<CupertinoCalendarPickerState> pickerKey =
             GlobalKey<CupertinoCalendarPickerState>();
@@ -475,8 +475,7 @@ void main() {
     );
 
     testWidgets(
-      '_onTimeChanged is called when time picker wheel is scrolled '
-      '(lines 204–209)',
+      'scrolling the time picker wheel fires onTimeChanged',
       (WidgetTester tester) async {
         DateTime? timeChanged;
         await tester.pumpWidget(
@@ -509,8 +508,7 @@ void main() {
     );
 
     testWidgets(
-      '_onDayPeriodChanged fires onTimeChanged when not in timePicker view '
-      '(lines 212–225)',
+      'changing AM/PM fires onTimeChanged when not in the time picker view',
       (WidgetTester tester) async {
         DateTime? timeChanged;
         await tester.pumpWidget(
@@ -584,7 +582,7 @@ void main() {
     );
 
     testWidgets(
-      '_toggleTimePicker(false) returns to _previousViewMode (line 184)',
+      'closing the time picker returns to the previous view mode',
       (WidgetTester tester) async {
         await tester.pumpWidget(
           buildPicker(mode: CupertinoCalendarMode.dateTime),
@@ -608,8 +606,7 @@ void main() {
     );
 
     testWidgets(
-      'onDayPeriodChanged scrolls time picker wheel when time picker is open '
-      '(line 220)',
+      'changing AM/PM scrolls the time picker wheel when it is open',
       (WidgetTester tester) async {
         final GlobalKey<CupertinoCalendarPickerState> pickerKey =
             GlobalKey<CupertinoCalendarPickerState>();

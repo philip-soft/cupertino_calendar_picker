@@ -8,6 +8,30 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'test_helpers.dart';
 
+/// Reads the [CalendarMonthPickerDayPainter] backing the given day-of-month so
+/// tests can assert the resolved style (e.g. whether a background circle was
+/// applied) rather than only that the widget rendered.
+CalendarMonthPickerDayPainter _dayPainter(
+  WidgetTester tester,
+  int day, {
+  int month = 6,
+}) {
+  final CustomPaint paint = tester.widget<CustomPaint>(
+    find
+        .descendant(
+          of: find.byWidgetPredicate(
+            (Widget w) =>
+                w is CalendarMonthPickerDay &&
+                w.dayDate.day == day &&
+                w.dayDate.month == month,
+          ),
+          matching: find.byType(CustomPaint),
+        )
+        .first,
+  );
+  return paint.painter! as CalendarMonthPickerDayPainter;
+}
+
 void main() {
   group('CalendarMonthPicker', () {
     final DateTime minimum = DateTime.utc(2024, 6);
@@ -102,6 +126,12 @@ void main() {
 
         expect(find.byType(CalendarMonthPicker), findsOneWidget);
         expect(tester.takeException(), isNull);
+
+        // With null decoration styles the picker falls back to defaults:
+        // a plain in-range day (12) gets no background circle, while the
+        // selected day (15) resolves to the selected fallback, which does.
+        expect(_dayPainter(tester, 12).backgroundCircleColor, isNull);
+        expect(_dayPainter(tester, 15).backgroundCircleColor, isNotNull);
       },
     );
 
@@ -229,9 +259,36 @@ void main() {
             .first,
       );
 
+      // The bounds themselves are inclusive: day 10 (minimum) and day 20
+      // (maximum) must stay enabled — guards against an off-by-one.
+      final CalendarMonthPickerDay minBoundary =
+          tester.widget<CalendarMonthPickerDay>(
+        find
+            .byWidgetPredicate(
+              (Widget w) =>
+                  w is CalendarMonthPickerDay &&
+                  w.dayDate.day == 10 &&
+                  w.dayDate.month == 6,
+            )
+            .first,
+      );
+      final CalendarMonthPickerDay maxBoundary =
+          tester.widget<CalendarMonthPickerDay>(
+        find
+            .byWidgetPredicate(
+              (Widget w) =>
+                  w is CalendarMonthPickerDay &&
+                  w.dayDate.day == 20 &&
+                  w.dayDate.month == 6,
+            )
+            .first,
+      );
+
       expect(before.onDaySelected, isNull);
       expect(within.onDaySelected, isNotNull);
       expect(after.onDaySelected, isNull);
+      expect(minBoundary.onDaySelected, isNotNull);
+      expect(maxBoundary.onDaySelected, isNotNull);
     });
 
     testWidgets(
@@ -334,6 +391,11 @@ void main() {
 
         expect(tester.takeException(), isNull);
         expect(find.byType(CalendarMonthPicker), findsOneWidget);
+
+        // current == selected == day 15, and the decoration supplies no
+        // selectedCurrentDayStyle, so the fallback (seeded with mainColor)
+        // applies a background circle to that day.
+        expect(_dayPainter(tester, 15).backgroundCircleColor, isNotNull);
       },
     );
   });

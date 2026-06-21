@@ -19,6 +19,7 @@ dependencies:
   intl: ">=0.19.0 <0.21.0"
 
 dev_dependencies:
+  alchemist: ^0.14.0
   flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
@@ -35,3 +36,6 @@ topics:
   - ios
   - time-picker
   - widgets
+
+flutter:
+  uses-material-design: true
