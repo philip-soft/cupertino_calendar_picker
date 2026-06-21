@@ -24,25 +24,35 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   );
 }
 
-/// Loads Roboto as a stand-in for SF Pro so that Cupertino text renders
-/// as readable glyphs instead of Ahem boxes in golden screenshots.
 Future<void> _loadFonts() async {
-  // Cupertino widgets request these font families at runtime (Flutter 3.x).
-  const List<String> families = <String>[
-    'CupertinoSystemText',
-    'CupertinoSystemDisplay',
-  ];
-
-  final ByteData regular = _readFont('test/fonts/Roboto-Regular.ttf');
-  final ByteData bold = _readFont('test/fonts/Roboto-Bold.ttf');
-
-  for (final String family in families) {
-    final FontLoader loader = FontLoader(family)
-      ..addFont(Future<ByteData>.value(regular))
-      ..addFont(Future<ByteData>.value(bold));
-    await loader.load();
-  }
+  await Future.wait(<Future<void>>[
+    _loadRobotoAs('Roboto'),
+    _loadRobotoAs('CupertinoSystemText'),
+    _loadRobotoAs('CupertinoSystemDisplay'),
+    _loadIconFont('MaterialIcons', 'test/fonts/MaterialIcons-Regular.otf'),
+    _loadIconFont('CupertinoIcons', 'test/fonts/CupertinoIcons.ttf'),
+  ]);
 }
 
-ByteData _readFont(String path) =>
-    File(path).readAsBytesSync().buffer.asByteData();
+/// Loads all Roboto weight variants under [family].
+///
+/// Flutter reads the weight from each file's internal metadata, so adding
+/// all variants to one FontLoader gives the engine the full weight range.
+Future<void> _loadRobotoAs(String family) async {
+  final FontLoader loader = FontLoader(family)
+    ..addFont(_bytes('test/fonts/Roboto-Thin.ttf'))
+    ..addFont(_bytes('test/fonts/Roboto-Light.ttf'))
+    ..addFont(_bytes('test/fonts/Roboto-Regular.ttf'))
+    ..addFont(_bytes('test/fonts/Roboto-Medium.ttf'))
+    ..addFont(_bytes('test/fonts/Roboto-Bold.ttf'))
+    ..addFont(_bytes('test/fonts/Roboto-Black.ttf'));
+  await loader.load();
+}
+
+Future<void> _loadIconFont(String family, String path) async {
+  final FontLoader loader = FontLoader(family)..addFont(_bytes(path));
+  await loader.load();
+}
+
+Future<ByteData> _bytes(String path) =>
+    Future<ByteData>.value(File(path).readAsBytesSync().buffer.asByteData());

@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 
 const CupertinoDynamicColor pickerButtonTextColor = CupertinoColors.label;
 const TextStyle pickerButtonTextStyle = TextStyle(
+  fontFamily: 'CupertinoSystemText',
   color: pickerButtonTextColor,
   fontSize: 17.0,
 );

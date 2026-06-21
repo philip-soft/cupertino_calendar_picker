@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:alchemist/alchemist.dart';
-import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
+import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -13,12 +13,18 @@ void main() {
   final DateTime maximum = DateTime.utc(2030, 12, 31);
   final DateTime fixedDate = DateTime.utc(2024, 6, 15);
 
+  const List<CupertinoCalendarAction> actions = <CupertinoCalendarAction>[
+    CancelCupertinoCalendarAction(),
+    ConfirmCupertinoCalendarAction(),
+  ];
+
   Widget buildCalendar({
     required Brightness brightness,
     CupertinoCalendarMode mode = CupertinoCalendarMode.date,
   }) {
     return CupertinoApp(
       debugShowCheckedModeBanner: false,
+      theme: CupertinoThemeData(brightness: brightness),
       locale: const Locale('en', 'US'),
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         GlobalMaterialLocalizations.delegate,
@@ -35,7 +41,9 @@ void main() {
               initialDateTime: fixedDate,
               currentDateTime: fixedDate,
               firstDayOfWeekIndex: 0,
+              type: CupertinoCalendarType.compact,
               mode: mode,
+              actions: actions,
             ),
           ),
         ),
@@ -44,8 +52,8 @@ void main() {
   }
 
   goldenTest(
-    'CupertinoCalendar renders date mode in light and dark themes',
-    fileName: 'cupertino_calendar_date',
+    'CupertinoCalendar compact renders date mode with actions',
+    fileName: 'cupertino_calendar_compact_actions',
     builder: () => GoldenTestGroup(
       columns: 2,
       children: <Widget>[
@@ -62,8 +70,8 @@ void main() {
   );
 
   goldenTest(
-    'CupertinoCalendar renders dateTime mode in light and dark themes',
-    fileName: 'cupertino_calendar_date_time',
+    'CupertinoCalendar compact renders dateTime mode with actions',
+    fileName: 'cupertino_calendar_compact_date_time_actions',
     builder: () => GoldenTestGroup(
       columns: 2,
       children: <Widget>[

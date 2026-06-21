@@ -3,22 +3,18 @@
 // found in the LICENSE file.
 
 import 'package:alchemist/alchemist.dart';
-import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
+import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
-  // Fixed dates keep the rendered output deterministic across runs/machines.
-  final DateTime minimum = DateTime.utc(2020);
-  final DateTime maximum = DateTime.utc(2030, 12, 31);
-  final DateTime fixedDate = DateTime.utc(2024, 6, 15);
-
-  Widget buildCalendar({
+  Widget buildScenario({
     required Brightness brightness,
-    CupertinoCalendarMode mode = CupertinoCalendarMode.date,
+    required List<CupertinoCalendarAction> actions,
   }) {
     return CupertinoApp(
       debugShowCheckedModeBanner: false,
+      theme: CupertinoThemeData(brightness: brightness),
       locale: const Locale('en', 'US'),
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         GlobalMaterialLocalizations.delegate,
@@ -29,13 +25,9 @@ void main() {
         child: Center(
           child: SizedBox(
             width: 320.0,
-            child: CupertinoCalendar(
-              minimumDateTime: minimum,
-              maximumDateTime: maximum,
-              initialDateTime: fixedDate,
-              currentDateTime: fixedDate,
-              firstDayOfWeekIndex: 0,
-              mode: mode,
+            child: CalendarActions(
+              actions: actions,
+              onPressed: (_) {},
             ),
           ),
         ),
@@ -43,42 +35,58 @@ void main() {
     );
   }
 
+  const List<CupertinoCalendarAction> cancelConfirmActions =
+      <CupertinoCalendarAction>[
+    CancelCupertinoCalendarAction(),
+    ConfirmCupertinoCalendarAction(),
+  ];
+
+  const List<CupertinoCalendarAction> confirmOnly = <CupertinoCalendarAction>[
+    ConfirmCupertinoCalendarAction(),
+  ];
+
   goldenTest(
-    'CupertinoCalendar renders date mode in light and dark themes',
-    fileName: 'cupertino_calendar_date',
+    'CalendarActions renders cancel and confirm buttons in light and dark themes',
+    fileName: 'calendar_actions',
     builder: () => GoldenTestGroup(
       columns: 2,
       children: <Widget>[
         GoldenTestScenario(
           name: 'light',
-          child: buildCalendar(brightness: Brightness.light),
+          child: buildScenario(
+            brightness: Brightness.light,
+            actions: cancelConfirmActions,
+          ),
         ),
         GoldenTestScenario(
           name: 'dark',
-          child: buildCalendar(brightness: Brightness.dark),
+          child: buildScenario(
+            brightness: Brightness.dark,
+            actions: cancelConfirmActions,
+          ),
         ),
       ],
     ),
   );
 
   goldenTest(
-    'CupertinoCalendar renders dateTime mode in light and dark themes',
-    fileName: 'cupertino_calendar_date_time',
+    'CalendarActions renders single confirm button in light and dark themes',
+    fileName: 'calendar_actions_confirm_only',
     builder: () => GoldenTestGroup(
       columns: 2,
       children: <Widget>[
         GoldenTestScenario(
           name: 'light',
-          child: buildCalendar(
+          child: buildScenario(
             brightness: Brightness.light,
-            mode: CupertinoCalendarMode.dateTime,
+            actions: confirmOnly,
           ),
         ),
         GoldenTestScenario(
           name: 'dark',
-          child: buildCalendar(
+          child: buildScenario(
             brightness: Brightness.dark,
-            mode: CupertinoCalendarMode.dateTime,
+            actions: confirmOnly,
           ),
         ),
       ],

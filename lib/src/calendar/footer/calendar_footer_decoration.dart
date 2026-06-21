@@ -8,6 +8,7 @@ const CupertinoDynamicColor calendarFooterTitleColor = CupertinoColors.label;
 const CupertinoDynamicColor calendarTimeColor = CupertinoColors.label;
 const CupertinoDynamicColor calendarDayPeriodColor = CupertinoColors.label;
 const TextStyle calendarTimeStyle = TextStyle(
+  fontFamily: 'CupertinoSystemText',
   color: calendarTimeColor,
   fontSize: 17.0,
 );
