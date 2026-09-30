@@ -23,9 +23,10 @@
 * **Picker result:** the cancel action no longer returns the changed date and the confirm action no longer returns `null`. With a confirm action, closing the picker in any other way returns `null`. `CupertinoCalendarPickerButton` now displays the confirmed date.
 * **Placement:** the picker stays on the screen and outside of the safe area in all cases: when the screen rotates, on screens narrower than the picker, for anchors partially off the screen, in nested navigators, and with a horizontal `offset`. It keeps `offset` from its anchor and is centered on the screen when it would otherwise shrink below half of its size.
 * **Date range:** the initial date and time are limited to `minimumDateTime`...`maximumDateTime` in all widgets, including when the range changes; this also fixes an assertion when today is outside of the range. The AM/PM switcher, the year picker and times that are not a multiple of `minuteInterval` no longer produce invalid values.
+* **Range changes:** when a changed `minimumDateTime` or `maximumDateTime` moves the selection into the range, `CupertinoCalendar`, `CupertinoCalendarPickerButton` and `CupertinoTimePickerButton` report it through `onDateTimeChanged`/`onTimeChanged`, and the displayed month no longer jumps.
 * **Buttons:** `CupertinoCalendarPickerButton` and `CupertinoTimePickerButton` no longer fill the whole width of their parent.
 * **Actions:** actions of a compact `CupertinoCalendar` outside of an overlay no longer pop the hosting route, and the picker no longer closes a route pushed on top of it.
-* **Decorations:** `copyWith` keeps the values that were not passed, and dynamic colors adapt to dark mode in all decorations, including `PickerContainerDecoration`.
+* **Decorations:** `copyWith` keeps the values that were not passed, and dynamic colors adapt to dark mode in all decorations, including `PickerContainerDecoration`. `PickerContainerDecoration.withDynamicColor` now only limits the opacity of a custom color instead of raising it.
 * **Localization:** 12-hour times follow the locale (e.g. `下午 3:07`), one-letter weekdays are no longer repeated in Chinese and Arabic, and the chevrons are mirrored in right-to-left layouts.
 * Stability fixes for disposed widgets and animations.
 
