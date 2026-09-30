@@ -1,10 +1,10 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Displays a Cupertino-style calendar picker as an overlay above or below the widget.
 ///
@@ -23,8 +23,7 @@ import 'package:flutter/material.dart';
 ///
 /// - [widgetRenderBox]:
 ///   The render box of the widget relative to which the calendar picker is displayed.
-///   This is required to correctly position the picker. If `null`, the picker
-///   might not display correctly.
+///   If `null` or detached, the picker is centered on the screen.
 ///
 /// - [minimumDateTime]:
 ///   The earliest selectable [DateTime] in the picker.
@@ -32,6 +31,10 @@ import 'package:flutter/material.dart';
 /// - [maximumDateTime]:
 ///   The latest selectable [DateTime] in the picker.
 ///   Must be after or equal to [minimumDateTime].
+///
+/// - [selectableDayPredicate]:
+///   A predicate that decides whether a day can be selected. Days for which
+///   it returns `false` are displayed as disabled.
 ///
 /// - [onDateTimeChanged]:
 ///   A callback that is triggered whenever the selected [DateTime] changes in the picker.
@@ -43,7 +46,7 @@ import 'package:flutter/material.dart';
 /// - [initialDateTime]:
 ///   The initially selected [DateTime] that the calendar should display when it opens.
 ///   This must be between [minimumDateTime] and [maximumDateTime], or equal to one of them.
-///   If not provided, the calendar will default to `DateTime.now()`.
+///   If not provided, the calendar will default to `DateTime.now()` limited to that range.
 ///
 /// - [currentDateTime]:
 ///   The [DateTime] representing the current day (i.e., today). It will be highlighted
@@ -55,11 +58,11 @@ import 'package:flutter/material.dart';
 ///
 /// - [horizontalSpacing]:
 ///   The horizontal spacing between the picker and the edges of the screen.
-///   Default is [15.0] pixels.
+///   Default is `15.0` pixels.
 ///
 /// - [verticalSpacing]:
 ///   The vertical spacing between the picker and the edges of the screen.
-///   Default is [15.0] pixels.
+///   Default is `15.0` pixels.
 ///
 /// - [offset]:
 ///   The offset from the top/bottom of the [widgetRenderBox] location.
@@ -80,6 +83,7 @@ import 'package:flutter/material.dart';
 ///   [CalendarDismissBehavior.onOutsideTap], allowing dismissal by tapping
 ///   outside the calendar.
 ///   The Android back button will always close the calendar.
+///   [CalendarDismissBehavior.onActionTap] requires at least one action.
 ///
 /// - [containerDecoration]:
 ///   Optional custom decoration for the picker container.
@@ -95,7 +99,7 @@ import 'package:flutter/material.dart';
 ///
 /// - [footerDecoration]:
 ///   Optional custom decoration for the footer of the picker.
-///   Applied for the [dateTime] mode only.
+///   Applied for the [CupertinoCalendarMode.dateTime] mode only.
 ///
 /// - [mode]:
 ///   The mode in which the picker operates. Default is [CupertinoCalendarMode.date].
@@ -103,7 +107,7 @@ import 'package:flutter/material.dart';
 ///   allow selecting time.
 ///
 /// - [timeLabel]:
-///   An optional label to be displayed when the calendar is in a mode that includes time selection.
+///   An optional label displayed next to the time in the
 ///   [CupertinoCalendarMode.dateTime] mode.
 ///   This label typically indicates what the selected time is for or provides
 ///   additional context.
@@ -125,7 +129,7 @@ import 'package:flutter/material.dart';
 /// - [actions]:
 ///   A list of actions that will be displayed at the bottom of the calendar picker.
 ///   Available actions are [CancelCupertinoCalendarAction], [ConfirmCupertinoCalendarAction].
-///   Displayed only when the calendar is in the [CupertinoCalendarType.compact] mode.
+///   Pressing an action closes the picker.
 ///
 /// - [useRootNavigator]:
 ///  Whether to use the root navigator for displaying the dialog.
@@ -133,25 +137,29 @@ import 'package:flutter/material.dart';
 ///
 /// ## Returns:
 ///
-/// A [Future] that resolves to the selected [DateTime] if a date was chosen, or `null`
-/// if the picker was dismissed without a selection.
-
+/// A [Future] that resolves to:
+/// - the selected [DateTime] when a [ConfirmCupertinoCalendarAction] is pressed
+///   or the picker closes on date selection;
+/// - `null` when a [CancelCupertinoCalendarAction] is pressed;
+/// - when the picker is dismissed by an outside tap or the back gesture,
+///   `null` if [actions] contain a [ConfirmCupertinoCalendarAction],
+///   otherwise the last changed [DateTime], or `null` if nothing changed.
 Future<DateTime?> showCupertinoCalendarPicker(
   BuildContext context, {
-  required RenderBox? widgetRenderBox,
   required DateTime minimumDateTime,
   required DateTime maximumDateTime,
+  RenderBox? widgetRenderBox,
   SelectableDayPredicate? selectableDayPredicate,
   ValueChanged<DateTime>? onDateTimeChanged,
   ValueChanged<DateTime>? onDateSelected,
   DateTime? initialDateTime,
   DateTime? currentDateTime,
   ValueChanged<DateTime>? onDisplayedMonthChanged,
-  double horizontalSpacing = 15.0,
-  double verticalSpacing = 15.0,
-  Offset offset = const Offset(0.0, 10.0),
+  double horizontalSpacing = pickerDefaultHorizontalSpacing,
+  double verticalSpacing = pickerDefaultVerticalSpacing,
+  Offset offset = pickerDefaultOffset,
   Color barrierColor = Colors.transparent,
-  Color mainColor = CupertinoColors.systemRed,
+  Color mainColor = calendarDefaultMainColor,
   CalendarDismissBehavior dismissBehavior =
       CalendarDismissBehavior.onOutsideTap,
   PickerContainerDecoration? containerDecoration,
@@ -174,19 +182,16 @@ Future<DateTime?> showCupertinoCalendarPicker(
     transitionDuration: Duration.zero,
     routeSettings: const RouteSettings(name: calendarPickerRouteName),
     useRootNavigator: useRootNavigator,
-    transitionBuilder: (
-      BuildContext _,
-      Animation<double> __,
-      Animation<double> ___,
-      Widget child,
-    ) {
-      return child;
-    },
-    pageBuilder: (
-      BuildContext _,
-      Animation<double> __,
-      Animation<double> ___,
-    ) {
+    transitionBuilder:
+        (
+          BuildContext _,
+          Animation<double> _,
+          Animation<double> _,
+          Widget child,
+        ) {
+          return child;
+        },
+    pageBuilder: (BuildContext _, Animation<double> _, Animation<double> _) {
       return CupertinoCalendarOverlay(
         mainColor: mainColor,
         horizontalSpacing: horizontalSpacing,
@@ -224,8 +229,8 @@ Future<DateTime?> showCupertinoCalendarPicker(
 /// on the minimum and maximum selectable times. The picker can be positioned relative
 /// to the [widgetRenderBox].
 ///
-/// The method returns a [Future] that resolves to a [TimeOfDay] if a time was selected,
-/// or `null` if the picker was dismissed without a selection.
+/// The method returns a [Future] that resolves to a [TimeOfDay] if a time was changed,
+/// or `null` if the picker was dismissed without a change.
 ///
 /// ## Parameters:
 ///
@@ -235,8 +240,7 @@ Future<DateTime?> showCupertinoCalendarPicker(
 ///
 /// - [widgetRenderBox]:
 ///   The render box of the widget relative to which the time picker is displayed.
-///   This is required to correctly position the picker. If `null`, the picker
-///   might not display correctly.
+///   If `null` or detached, the picker is centered on the screen.
 ///
 /// - [minimumTime]:
 ///   The earliest selectable [TimeOfDay] in the picker. If provided, users will not be able
@@ -252,14 +256,15 @@ Future<DateTime?> showCupertinoCalendarPicker(
 /// - [initialTime]:
 ///   The initially selected [TimeOfDay] that the time picker should display when it opens.
 ///   If not provided, the `TimeOfDay.now()` will be used as the initial selection.
+///   The time is limited to the [minimumTime]...[maximumTime] range.
 ///
 /// - [horizontalSpacing]:
 ///   The horizontal spacing between the picker and the edges of the screen.
-///   Default is [15.0] pixels.
+///   Default is `15.0` pixels.
 ///
 /// - [verticalSpacing]:
 ///   The vertical spacing between the picker and the edges of the screen.
-///   Default is [15.0] pixels.
+///   Default is `15.0` pixels.
 ///
 /// - [offset]:
 ///   The offset from the top/bottom of the [widgetRenderBox] location.
@@ -288,19 +293,18 @@ Future<DateTime?> showCupertinoCalendarPicker(
 ///
 /// ## Returns:
 ///
-/// A [Future] that resolves to the selected [TimeOfDay] if a time was chosen, or `null`
-/// if the picker was dismissed without a selection.
-
+/// A [Future] that resolves to the last changed [TimeOfDay] when the picker is
+/// dismissed, or `null` if the time was not changed.
 Future<TimeOfDay?> showCupertinoTimePicker(
   BuildContext context, {
-  required RenderBox? widgetRenderBox,
+  RenderBox? widgetRenderBox,
   TimeOfDay? minimumTime,
   TimeOfDay? maximumTime,
   ValueChanged<TimeOfDay>? onTimeChanged,
   TimeOfDay? initialTime,
-  double horizontalSpacing = 15.0,
-  double verticalSpacing = 15.0,
-  Offset offset = const Offset(0.0, 10.0),
+  double horizontalSpacing = pickerDefaultHorizontalSpacing,
+  double verticalSpacing = pickerDefaultVerticalSpacing,
+  Offset offset = pickerDefaultOffset,
   Color barrierColor = Colors.transparent,
   PickerContainerDecoration? containerDecoration,
   int minuteInterval = 1,
@@ -314,19 +318,16 @@ Future<TimeOfDay?> showCupertinoTimePicker(
     transitionDuration: Duration.zero,
     routeSettings: const RouteSettings(name: timePickerRouteName),
     useRootNavigator: useRootNavigator,
-    transitionBuilder: (
-      BuildContext _,
-      Animation<double> __,
-      Animation<double> ___,
-      Widget child,
-    ) {
-      return child;
-    },
-    pageBuilder: (
-      BuildContext _,
-      Animation<double> __,
-      Animation<double> ___,
-    ) {
+    transitionBuilder:
+        (
+          BuildContext _,
+          Animation<double> _,
+          Animation<double> _,
+          Widget child,
+        ) {
+          return child;
+        },
+    pageBuilder: (BuildContext _, Animation<double> _, Animation<double> _) {
       return CupertinoTimeOverlay(
         horizontalSpacing: horizontalSpacing,
         verticalSpacing: verticalSpacing,

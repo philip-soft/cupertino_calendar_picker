@@ -1,3 +1,53 @@
+## 3.0.0
+
+* **Breaking:** Migrated from the in-SDK `package:flutter/material.dart` and `package:flutter/cupertino.dart` libraries to the standalone [`material_ui`](https://pub.dev/packages/material_ui) and [`cupertino_ui`](https://pub.dev/packages/cupertino_ui) packages. Apps using this package must migrate as well, see the [migration guide](https://docs.flutter.dev/release/breaking-changes/material-ui-and-cupertino-ui).
+* **Breaking:** Minimum supported versions raised to Flutter `3.47.0` and Dart `3.13.0`.
+* Removed the `flutter_localizations` dependency; use `GlobalMaterialLocalizations.delegates` from `package:material_ui` instead.
+* Add accessibility support for screen readers (WCAG/BITV compliance) (Thanks to [@mikailsyr](https://github.com/philip-soft/cupertino_calendar_picker/pull/60))
+* **Breaking:** Fixed the misspelled `CalendarDismissBehavior.onOusideTapOrDateSelect`, `CalendarDismissBehavior.hasOusideTapDismiss` and `PickerBackgroundType.transparentAndBlured`, renamed to `onOutsideTapOrDateSelect`, `hasOutsideTapDismiss` and `transparentAndBlurred`.
+* **Breaking:** `CancelCupertinoCalendarAction.onPressed` is now a `VoidCallback` and `ConfirmCupertinoCalendarAction.onPressed` is a `ValueChanged<DateTime>`, instead of an untyped `Function`. `onPressed` was removed from the `CupertinoCalendarAction` base class.
+* **Breaking:** Action labels default to the localized "Cancel" and "OK" labels instead of `'Cancel'` and `'Done'`. `CupertinoCalendarAction.label` is nullable; use `effectiveLabel` to get the displayed label.
+* **Breaking:** Decoration fields are non-nullable where a default always exists, and `copyWith` of the selected day styles keeps `backgroundCircleColor`. `CalendarHeaderDecoration`, `CalendarMonthPickerSelectedDayStyle`, `CalendarMonthPickerSelectedCurrentDayStyle` and `CalendarMonthPickerCurrentDayStyle` default to `CupertinoColors.systemRed` when no `mainColor` is given.
+* **Breaking:** `widgetRenderBox` of `showCupertinoCalendarPicker` and `showCupertinoTimePicker` is optional; without it the picker is centered.
+* **Breaking:** Cross-type equality of actions was removed: a `CancelCupertinoCalendarAction` never equals a `ConfirmCupertinoCalendarAction`.
+* Fixed `CancelCupertinoCalendarAction` completing `showCupertinoCalendarPicker` with the changed date, and `ConfirmCupertinoCalendarAction` completing it with `null` when the date was not changed. With a confirm action, dismissing by an outside tap or the back gesture now completes with `null`.
+* Fixed `CupertinoCalendarPickerButton` not displaying the confirmed date when a `ConfirmCupertinoCalendarAction` is used.
+* Fixed actions of a compact `CupertinoCalendar` placed outside of an overlay popping the hosting route.
+* Fixed an assertion and a broken month page when today is outside of the `minimumDateTime`...`maximumDateTime` range and no initial date is given. The default date and time are now limited to the range in all widgets.
+* Fixed the AM/PM switcher producing a time outside of the allowed range.
+* Fixed the displayed month shifting when `minimumDateTime` changes, and the selection staying outside of a range that shrank.
+* Fixed `CupertinoCalendar` jumping back to the month of the selected date, without reporting it through `onDisplayedMonthChanged`, when the range changes after navigating to another month.
+* Fixed an assertion when the time picker opens with a time that is not a multiple of `minuteInterval`, e.g. the default current time. The time wheel rounds the time down to the interval.
+* Fixed the horizontal `offset` moving the picker past `horizontalSpacing` when it is pinned to a screen edge.
+* Fixed `CupertinoCalendarPickerButton` and `CupertinoTimePickerButton` filling the whole width of a `Center`, `Align` or `Column`. The buttons hug their title unless the parent forces a width.
+* Fixed the picker staying at its old position when the screen rotates while it is open.
+* Fixed the picker crossing `horizontalSpacing` on screens narrower than the picker. It is scaled to fit and still grows from its anchor.
+* Fixed the picker being displayed partially off the screen or under the safe area when its anchor is partially outside of the screen.
+* Fixed the picker opened above its anchor being placed closer to it than `offset`.
+* The picker is centered on the screen when the space next to its anchor fits it only below half of its size, e.g. for a button in the middle of a landscape screen. Previously it was shrunk, down to being invisible for an anchor covering the screen.
+* Fixed the day overflowing into the next month when switching to a shorter month in the year picker.
+* Fixed the picker being misplaced in a nested navigator (`useRootNavigator: false`) and the right safe area being ignored when the picker is pinned to the right edge.
+* Fixed `PickerContainerDecoration.copyWith` resetting `backgroundType`.
+* Fixed `CalendarMonthPickerDecoration.copyWith` dropping the `defaultDayStyle`, `currentDayStyle` and `selectedCurrentDayStyle` that were not passed.
+* Fixed a custom `pressedColor` of `CalendarActionDecoration.withDynamicColor` not being resolved for the current brightness.
+* Fixed dynamic colors of decorations created without a `BuildContext` not adapting to dark mode.
+* Fixed a leak of `CurvedAnimation`s in the picker container.
+* Fixed `PickerContainerDecoration` turning a `CupertinoDynamicColor` into a light-only color when limiting its opacity, e.g. `PickerContainerDecoration()` stayed white in dark mode. `PickerContainerDecoration.withDynamicColor` now only limits the opacity of a custom color instead of raising it.
+* Fixed the one-letter weekdays at large text scales repeating the same letter in some locales, e.g. Chinese and Arabic.
+* Fixed the month switcher and the year picker chevrons not being mirrored in right-to-left layouts.
+* Fixed the picker closing a route pushed on top of it from a callback, e.g. `onDateSelected`.
+* Fixed `setState` being called by `CupertinoCalendarPickerButton` and `CupertinoTimePickerButton` when they are disposed while their picker is open.
+* `CupertinoCalendar`, `CupertinoCalendarPickerButton` and `CupertinoTimePickerButton` report the selection through `onDateTimeChanged`/`onTimeChanged` when a changed range limits it.
+* The 12-hour time is formatted with the day period placed as the locale expects, e.g. `下午 3:07`.
+* The newly displayed month is announced to screen readers when switching months.
+* Times are formatted with the ambient locale.
+* Exported `CupertinoCalendarAction` and `CalendarButtonFormatter`.
+* Added `horizontalSpacing` and `verticalSpacing` to `CupertinoCalendarPickerButton` and `CupertinoTimePickerButton`.
+* Added semantics to the days, header, footer, actions, picker buttons and the dismiss barrier, and keyboard activation to the buttons.
+* Added value equality to decoration classes.
+* `CalendarDismissBehavior.onActionTap` asserts that at least one action is provided, since otherwise the calendar can only be closed by the back gesture.
+* `CupertinoCalendar` and `CalendarMonthPickerDecoration` have `const` constructors.
+
 ## 2.2.6
 
 * Added `selectableDayPredicate` callback parameter to the calendar, allowing certain dates to be disabled. (Thanks to [@Menelphor](https://github.com/philip-soft/cupertino_calendar_picker/pull/54))

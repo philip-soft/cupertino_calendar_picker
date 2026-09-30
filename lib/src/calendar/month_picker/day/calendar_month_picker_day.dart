@@ -1,17 +1,20 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 import 'dart:ui';
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CalendarMonthPickerDay extends StatelessWidget {
   const CalendarMonthPickerDay({
     required this.dayDate,
     required this.style,
     required this.backgroundCircleSize,
+    this.isSelected = false,
+    this.isToday = false,
     this.onDaySelected,
     super.key,
   });
@@ -19,24 +22,35 @@ class CalendarMonthPickerDay extends StatelessWidget {
   final DateTime dayDate;
   final CalendarMonthPickerDayStyle style;
   final double backgroundCircleSize;
+  final bool isSelected;
+  final bool isToday;
   final ValueChanged<DateTime>? onDaySelected;
+
+  String _semanticsLabel(BuildContext context) {
+    final String date = DateFormat.yMMMMEEEEd(context.localeString)
+        .format(dayDate);
+    if (!isToday) return date;
+    return '${context.materialLocalization.currentDateLabel}, $date';
+  }
 
   @override
   Widget build(BuildContext context) {
     final CalendarMonthPickerDayStyle dayStyle = style;
+    final ValueChanged<DateTime>? onDaySelected = this.onDaySelected;
 
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: onDaySelected != null ? () => onDaySelected?.call(dayDate) : null,
+    return CupertinoPickerTapTarget(
+      onTap: onDaySelected == null ? null : () => onDaySelected(dayDate),
+      semanticsLabel: _semanticsLabel(context),
+      isSelected: isSelected,
       child: CustomPaint(
         painter: CalendarMonthPickerDayPainter(
           day: '${dayDate.day}',
           textScaler: context.textScaler,
-          style: style.textStyle,
+          style: dayStyle.textStyle.resolveDynamic(context),
           backgroundCircleColor:
               dayStyle is CalendarMonthPickerBackgroundCircledDayStyle
-                  ? dayStyle.backgroundCircleColor
-                  : null,
+              ? dayStyle.backgroundCircleColor.resolveDynamic(context)
+              : null,
           backgroundCircleSize: backgroundCircleSize,
         ),
       ),
@@ -61,56 +75,36 @@ class CalendarMonthPickerDayPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final ParagraphBuilder paragraphBuilder = ParagraphBuilder(
-      style.getParagraphStyle(textAlign: TextAlign.center),
-    )
-      ..pushStyle(style.getTextStyle(textScaler: textScaler))
-      ..addText(day);
+    final ParagraphBuilder paragraphBuilder =
+        ParagraphBuilder(style.getParagraphStyle(textAlign: TextAlign.center))
+          ..pushStyle(style.getTextStyle(textScaler: textScaler))
+          ..addText(day);
 
-    final Paragraph dayPragrapth = paragraphBuilder.build()
+    final Paragraph dayParagraph = paragraphBuilder.build()
       ..layout(ParagraphConstraints(width: size.width));
 
-    final double centerX = size.width / 2;
-    final double centerY = size.height / 2;
-    final double dayHalfHeight = dayPragrapth.height / 2;
+    final Offset center = size.center(Offset.zero);
+    final Color? backgroundCircleColor = this.backgroundCircleColor;
 
     if (backgroundCircleColor != null) {
-      _drawBackgroundCircle(
-        canvas,
-        Offset(centerX, centerY),
-        backgroundCircleColor!,
-      );
+      _drawBackgroundCircle(canvas, center, backgroundCircleColor);
     }
 
-    final double dayBottomY = centerY - dayHalfHeight;
-    _drawDayParagraph(
-      canvas,
-      Offset(0.0, dayBottomY),
-      dayPragrapth,
-    );
+    final double dayTopY = center.dy - dayParagraph.height / 2;
+    canvas.drawParagraph(dayParagraph, Offset(0.0, dayTopY));
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    final CalendarMonthPickerDayPainter oldPainter =
-        oldDelegate as CalendarMonthPickerDayPainter;
-    return style != oldPainter.style ||
-        backgroundCircleColor != oldPainter.backgroundCircleColor ||
-        day != oldPainter.day ||
-        backgroundCircleSize != oldPainter.backgroundCircleSize ||
-        textScaler != oldPainter.textScaler;
+  bool shouldRepaint(CalendarMonthPickerDayPainter oldDelegate) {
+    return style != oldDelegate.style ||
+        backgroundCircleColor != oldDelegate.backgroundCircleColor ||
+        day != oldDelegate.day ||
+        backgroundCircleSize != oldDelegate.backgroundCircleSize ||
+        textScaler != oldDelegate.textScaler;
   }
 
-  void _drawDayParagraph(Canvas canvas, Offset offset, Paragraph day) {
-    canvas.drawParagraph(day, offset);
-  }
-
-  void _drawBackgroundCircle(Canvas canvas, Offset offset, Color color) {
+  void _drawBackgroundCircle(Canvas canvas, Offset center, Color color) {
     final Paint paint = Paint()..color = color;
-    canvas.drawCircle(
-      offset,
-      backgroundCircleSize / 2,
-      paint,
-    );
+    canvas.drawCircle(center, backgroundCircleSize / 2, paint);
   }
 }

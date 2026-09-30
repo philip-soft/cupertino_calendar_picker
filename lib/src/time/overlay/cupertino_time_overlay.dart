@@ -1,48 +1,41 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
+/// Displays a [CupertinoTimePicker] in a [CupertinoPickerOverlay].
+///
+/// The route completes with the last changed time, or `null` if the time
+/// was not changed.
 class CupertinoTimeOverlay extends StatefulWidget {
-  CupertinoTimeOverlay({
-    required this.widgetRenderBox,
-    required this.horizontalSpacing,
-    required this.verticalSpacing,
-    required this.offset,
+  const CupertinoTimeOverlay({
     required this.minuteInterval,
     required this.use24hFormat,
-    TimeOfDay? initialTime,
-    TimeOfDay? minimumTime,
-    TimeOfDay? maximumTime,
-    super.key,
+    this.widgetRenderBox,
+    this.horizontalSpacing = pickerDefaultHorizontalSpacing,
+    this.verticalSpacing = pickerDefaultVerticalSpacing,
+    this.offset = pickerDefaultOffset,
+    this.initialTime,
+    this.minimumTime,
+    this.maximumTime,
     this.containerDecoration,
     this.onTimeChanged,
-  })  : initialTime = initialTime ?? TimeOfDay.now(),
-        minimumTime = minimumTime ?? const TimeOfDay(hour: 0, minute: -1),
-        maximumTime = maximumTime ?? const TimeOfDay(hour: 23, minute: 60) {
-    assert(
-      !this.maximumTime.isBefore(this.minimumTime),
-      'maximumTime ${this.maximumTime} must be on or after minimumTime ${this.minimumTime}.',
-    );
-    assert(
-      !this.initialTime.isBefore(this.minimumTime),
-      'initialTime ${this.initialTime} must be on or after minimumTime ${this.minimumTime}.',
-    );
-    assert(
-      !this.initialTime.isAfter(this.maximumTime),
-      'initialTime ${this.initialTime} must be on or before maximumTime ${this.maximumTime}.',
-    );
-  }
+    super.key,
+  });
 
   final double horizontalSpacing;
   final double verticalSpacing;
   final Offset offset;
   final RenderBox? widgetRenderBox;
-  final TimeOfDay initialTime;
-  final TimeOfDay minimumTime;
-  final TimeOfDay maximumTime;
+
+  /// The initially selected time, clamped to the range.
+  ///
+  /// Defaults to [TimeOfDay.now].
+  final TimeOfDay? initialTime;
+  final TimeOfDay? minimumTime;
+  final TimeOfDay? maximumTime;
   final PickerContainerDecoration? containerDecoration;
   final ValueChanged<TimeOfDay>? onTimeChanged;
   final int minuteInterval;
@@ -53,30 +46,42 @@ class CupertinoTimeOverlay extends StatefulWidget {
 }
 
 class _CupertinoTimeOverlayState extends State<CupertinoTimeOverlay> {
-  AnimationController? _controller;
-  TimeOfDay? _selectedTime;
+  late final TimeOfDay _initialTime;
+  TimeOfDay? _changedTime;
 
-  void _onInitialized(AnimationController animationController) {
-    _controller = animationController;
-    _controller?.forward();
-    _controller?.addStatusListener(_statusListener);
+  @override
+  void initState() {
+    super.initState();
+    final TimeOfDay? minimumTime = widget.minimumTime;
+    final TimeOfDay? maximumTime = widget.maximumTime;
+    assert(
+      minimumTime == null ||
+          maximumTime == null ||
+          !maximumTime.isBefore(minimumTime),
+      'maximumTime $maximumTime must be on or after minimumTime $minimumTime.',
+    );
+    final TimeOfDay? initialTime = widget.initialTime;
+    assert(
+      initialTime == null ||
+          initialTime.clampTo(minimumTime, maximumTime) == initialTime,
+      'initialTime $initialTime must be within the range '
+      '$minimumTime...$maximumTime.',
+    );
+    _initialTime = (widget.initialTime ?? TimeOfDay.now()).clampTo(
+      widget.minimumTime,
+      widget.maximumTime,
+    );
   }
 
-  void _statusListener(AnimationStatus status) {
-    if (status == AnimationStatus.dismissed) {
-      Navigator.of(context).pop(_selectedTime);
-    }
-  }
-
-  void _onDateTimeChanged(DateTime dateTime) {
-    _selectedTime = TimeOfDay.fromDateTime(dateTime);
-    widget.onTimeChanged?.call(_selectedTime!);
+  void _onTimeChanged(DateTime dateTime) {
+    final TimeOfDay time = TimeOfDay.fromDateTime(dateTime);
+    _changedTime = time;
+    widget.onTimeChanged?.call(time);
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPickerOverlay(
-      onInitialized: _onInitialized,
       containerDecoration: widget.containerDecoration,
       widgetRenderBox: widget.widgetRenderBox,
       height: timePickerHeight,
@@ -84,21 +89,16 @@ class _CupertinoTimeOverlayState extends State<CupertinoTimeOverlay> {
       horizontalSpacing: widget.horizontalSpacing,
       verticalSpacing: widget.verticalSpacing,
       offset: widget.offset,
-      outsideTapDismissable: true,
+      dismissResult: () => _changedTime,
+      semanticsLabel: context.materialLocalization.timePickerDialHelpText,
       child: CupertinoTimePicker(
-        initialTime: widget.initialTime,
+        initialTime: _initialTime,
         minimumTime: widget.minimumTime,
         maximumTime: widget.maximumTime,
-        onTimeChanged: _onDateTimeChanged,
+        onTimeChanged: _onTimeChanged,
         minuteInterval: widget.minuteInterval,
         use24hFormat: widget.use24hFormat,
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _controller?.removeStatusListener(_statusListener);
-    super.dispose();
   }
 }

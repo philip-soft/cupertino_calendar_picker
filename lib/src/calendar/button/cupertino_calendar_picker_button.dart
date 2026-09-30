@@ -1,12 +1,13 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 
+/// Signature for formatting the date displayed by a
+/// [CupertinoCalendarPickerButton].
 typedef CalendarButtonFormatter = String Function(DateTime dateTime);
 
 /// A customizable Cupertino-style button that displays a calendar picker
@@ -19,9 +20,11 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
     this.selectableDayPredicate,
     this.dismissBehavior = CalendarDismissBehavior.onOutsideTap,
     this.initialDateTime,
-    this.offset = const Offset(0.0, 10.0),
+    this.horizontalSpacing = pickerDefaultHorizontalSpacing,
+    this.verticalSpacing = pickerDefaultVerticalSpacing,
+    this.offset = pickerDefaultOffset,
     this.barrierColor = Colors.transparent,
-    this.mainColor = CupertinoColors.systemRed,
+    this.mainColor = calendarDefaultMainColor,
     super.key,
     this.onDateTimeChanged,
     this.onDateSelected,
@@ -53,7 +56,9 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   /// calendar picker.
   final DateTime maximumDateTime;
 
-  /// A predicate that determines whether a specific day is selectable
+  /// A predicate that determines whether a specific day is selectable.
+  ///
+  /// Days for which it returns `false` are displayed as disabled.
   final SelectableDayPredicate? selectableDayPredicate;
 
   /// A callback that is triggered whenever the selected [DateTime] changes
@@ -63,13 +68,18 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   /// A callback that is triggered when the user selects a date in the calendar.
   final ValueChanged<DateTime>? onDateSelected;
 
-  /// A callback that is triggered when the user completes the selection.
+  /// A callback that is triggered when the calendar picker is closed.
+  ///
+  /// It receives the result of [showCupertinoCalendarPicker].
   final ValueChanged<DateTime?>? onCompleted;
 
   /// The initially selected [DateTime] that the calendar should display.
   ///
   /// This date is highlighted in the picker and the default date when the picker
   /// is first displayed.
+  ///
+  /// Defaults to the current date, limited to the
+  /// [minimumDateTime]...[maximumDateTime] range.
   final DateTime? initialDateTime;
 
   /// The [DateTime] value representing today's date, which will be
@@ -82,19 +92,24 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   final ValueChanged<DateTime>? onDisplayedMonthChanged;
 
   /// Defines the spacing on the left and right sides of the calendar picker.
-  final double horizontalSpacing = 15.0;
+  ///
+  /// Default is `15.0`.
+  final double horizontalSpacing;
 
   /// Defines the spacing on the top and bottom sides of the calendar picker.
-  final double verticalSpacing = 15.0;
+  ///
+  /// Default is `15.0`.
+  final double verticalSpacing;
 
-  /// The position offset applied to the widget from its top and bottom edges
-  /// relative to its [widgetRenderBox] location. This is typically used to
-  /// adjust the widget's placement on the screen.
+  /// The position offset applied to the calendar picker from the top and
+  /// bottom edges of this button. This is typically used to adjust the
+  /// picker's placement on the screen.
   final Offset offset;
 
   /// The color of the modal barrier that appears behind the calendar when it
-  /// is displayed. This provides a dimmed background to focus
-  /// attention on the calendar.
+  /// is displayed.
+  ///
+  /// The default is [Colors.transparent], meaning no darkening occurs.
   final Color barrierColor;
 
   /// The primary color used within the calendar widget.
@@ -120,18 +135,19 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
 
   /// The decoration for the footer of the calendar.
   ///
-  /// Applied for the [dateTime] mode only.
+  /// Applied for the [CupertinoCalendarMode.dateTime] mode only.
   final CalendarFooterDecoration? footerDecoration;
 
-  /// The mode of the calendar picker, determining whether it operates in [date]
-  /// or [dateTime] selection mode.
+  /// The mode of the calendar picker, determining whether it operates in
+  /// [CupertinoCalendarMode.date] or [CupertinoCalendarMode.dateTime]
+  /// selection mode.
   final CupertinoCalendarMode mode;
 
   /// The custom formatter of the calendar picker button.
   final CalendarButtonFormatter? formatter;
 
-  /// An optional label to be displayed when the calendar is in a mode that
-  /// includes time selection.
+  /// An optional label displayed next to the time in the
+  /// [CupertinoCalendarMode.dateTime] mode.
   ///
   /// This label typically indicates what the selected time is for or provides
   /// additional context.
@@ -148,6 +164,7 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   /// The default value is [CalendarDismissBehavior.onOutsideTap],
   /// allowing dismissal by tapping outside the calendar.
   /// The Android back button will always close the calendar.
+  /// [CalendarDismissBehavior.onActionTap] requires at least one action.
   final CalendarDismissBehavior dismissBehavior;
 
   /// For 24h format being used or not, results in AM/PM being shown or hidden in the widget.
@@ -168,8 +185,8 @@ class CupertinoCalendarPickerButton extends StatefulWidget {
   ///
   /// Displayed only when the calendar is in the [CupertinoCalendarType.compact] mode.
   ///
-  /// If the list contains a [ConfirmCupertinoCalendarAction],
-  /// the [_selectedDateTime] inside the button will not be updated.
+  /// If the list contains a [ConfirmCupertinoCalendarAction], the button
+  /// displays the new date only after the action is pressed.
   final List<CupertinoCalendarAction>? actions;
 
   /// Whether to use the root navigator for displaying the dialog.
@@ -188,7 +205,7 @@ class _CupertinoCalendarPickerButtonState
   @override
   void initState() {
     super.initState();
-    _selectedDateTime = widget.initialDateTime ?? DateTime.now();
+    _selectedDateTime = _initialDateTime();
   }
 
   @override
@@ -196,12 +213,37 @@ class _CupertinoCalendarPickerButtonState
     super.didUpdateWidget(oldWidget);
 
     if (widget.initialDateTime != oldWidget.initialDateTime) {
-      _selectedDateTime = widget.initialDateTime ?? DateTime.now();
+      _selectedDateTime = _initialDateTime();
+    } else if (widget.minimumDateTime != oldWidget.minimumDateTime ||
+        widget.maximumDateTime != oldWidget.maximumDateTime) {
+      _clampSelectionToRange();
     }
   }
 
-  Future<DateTime?> _showPickerFunction(RenderBox? renderBox) async {
-    final DateTime? val = await showCupertinoCalendarPicker(
+  /// Limits the selection to a changed range and reports it if it moved.
+  void _clampSelectionToRange() {
+    final DateTime selected = _clamp(_selectedDateTime);
+    if (selected == _selectedDateTime) return;
+
+    _selectedDateTime = selected;
+    // Listeners may call setState, which is not allowed during this build.
+    WidgetsBinding.instance.addPostFrameCallback((Duration _) {
+      if (mounted) widget.onDateTimeChanged?.call(selected);
+    });
+  }
+
+  DateTime _initialDateTime() {
+    return _clamp(
+      widget.initialDateTime ?? widget.minimumDateTime.nowInSameZone(),
+    );
+  }
+
+  DateTime _clamp(DateTime dateTime) {
+    return dateTime.clampTo(widget.minimumDateTime, widget.maximumDateTime);
+  }
+
+  Future<DateTime?> _showPicker(RenderBox? renderBox) async {
+    final DateTime? result = await showCupertinoCalendarPicker(
       context,
       widgetRenderBox: renderBox,
       minimumDateTime: widget.minimumDateTime,
@@ -231,61 +273,42 @@ class _CupertinoCalendarPickerButtonState
       actions: widget.actions,
       useRootNavigator: widget.useRootNavigator,
     );
-    widget.onCompleted?.call(val);
-    return val;
+    if (result != null && mounted) {
+      setState(() => _selectedDateTime = result);
+    }
+    widget.onCompleted?.call(result);
+    return result;
   }
 
   void _onDateTimeChanged(DateTime dateTime) {
     widget.onDateTimeChanged?.call(dateTime);
+    // The overlay is displayed in its own route and can outlive the button.
+    if (widget.actions.requiresConfirmation || !mounted) return;
 
-    final List<CupertinoCalendarAction> actions =
-        widget.actions ?? <CupertinoCalendarAction>[];
-    final bool containsConfirmAction = actions.any(
-      (CupertinoCalendarAction action) =>
-          action is ConfirmCupertinoCalendarAction,
-    );
-    if (containsConfirmAction) return;
+    setState(() => _selectedDateTime = dateTime);
+  }
 
-    setState(() {
-      _selectedDateTime = dateTime;
-    });
+  String _format(BuildContext context, DateTime date) {
+    final CalendarButtonFormatter? formatter = widget.formatter;
+    if (formatter != null) return formatter(date);
+
+    final String dateString = DateFormat.yMMMd(context.localeString)
+        .format(date);
+    if (widget.mode == CupertinoCalendarMode.date) return dateString;
+
+    final String timeString = TimeOfDay.fromDateTime(date)
+        .timeFormat(context, use24hFormat: widget.use24hFormat);
+    return '$dateString $timeString';
   }
 
   @override
   Widget build(BuildContext context) {
-    String formattedString;
-
-    final DateTime date = _selectedDateTime;
-    final CalendarButtonFormatter? formatter = widget.formatter;
-
-    if (formatter != null) {
-      formattedString = formatter(date);
-    } else {
-      final TimeOfDay time = TimeOfDay(
-        hour: date.hour,
-        minute: date.minute,
-      );
-
-      String timeString = '';
-      if (widget.mode == CupertinoCalendarMode.dateTime) {
-        timeString = ' ';
-        timeString += time.timeFormat(
-          context,
-          use24hFormat: widget.use24hFormat ?? context.alwaysUse24hFormat,
-        );
-      }
-
-      final String dateString =
-          DateFormat.yMMMd(context.localeString).format(date);
-      formattedString = dateString + timeString;
-    }
-
     return CupertinoPickerButton<DateTime?>(
-      title: formattedString,
+      title: _format(context, _selectedDateTime),
       mainColor: widget.mainColor,
       decoration: widget.buttonDecoration,
       onPressed: widget.onPressed,
-      showPickerFunction: _showPickerFunction,
+      showPickerFunction: _showPicker,
     );
   }
 }

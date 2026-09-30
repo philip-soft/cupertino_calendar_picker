@@ -1,13 +1,13 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-/// A enum for the picker's background appearance.
+/// An enum for the picker's background appearance.
 enum PickerBackgroundType {
-  /// The provided color will be applied only.
+  /// Fills the background with the color as is.
   plainColor,
 
-  /// The transparency to the provided color will be applied
-  /// using a background blur.
-  transparentAndBlured;
+  /// Blurs the content behind the picker and limits the opacity of the color,
+  /// so that the blur stays visible.
+  transparentAndBlurred,
 }

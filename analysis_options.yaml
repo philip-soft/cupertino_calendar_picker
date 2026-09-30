@@ -1,3 +1,6 @@
+analyzer:
+  exclude:
+    - build/**
 include: package:flutter_lints/flutter.yaml
 
 linter:
@@ -12,9 +15,7 @@ linter:
     avoid_empty_else: true
     avoid_escaping_inner_quotes: true
     avoid_init_to_null: true
-    avoid_null_checks_in_equality_operators: true
     avoid_print: true
-    avoid_private_typedef_functions: true
     avoid_redundant_argument_values: true
     avoid_relative_lib_imports: true
     avoid_return_types_on_setters: true
@@ -114,7 +115,6 @@ linter:
     type_annotate_public_apis: true
     type_init_formals: true
     unawaited_futures: true
-    unnecessary_await_in_return: true
     unnecessary_brace_in_string_interps: true
     unnecessary_const: true
     unnecessary_constructor_name: true

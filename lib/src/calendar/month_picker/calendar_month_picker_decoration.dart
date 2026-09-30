@@ -1,31 +1,18 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 /// A decoration class for the calendar's month picker.
+///
+/// A `null` style falls back to the default style of that day type.
+@immutable
 class CalendarMonthPickerDecoration {
   /// Creates a calendar's month picker decoration class with default values
   /// for non-provided parameters.
-  factory CalendarMonthPickerDecoration({
-    CalendarMonthPickerDefaultDayStyle? defaultDayStyle,
-    CalendarMonthPickerCurrentDayStyle? currentDayStyle,
-    CalendarMonthPickerSelectedDayStyle? selectedDayStyle,
-    CalendarMonthPickerSelectedCurrentDayStyle? selectedCurrentDayStyle,
-    CalendarMonthPickerDisabledDayStyle? disabledDayStyle,
-  }) {
-    return CalendarMonthPickerDecoration._(
-      defaultDayStyle: defaultDayStyle,
-      currentDayStyle: currentDayStyle,
-      selectedDayStyle: selectedDayStyle,
-      selectedCurrentDayStyle: selectedCurrentDayStyle,
-      disabledDayStyle: disabledDayStyle,
-    );
-  }
-
-  const CalendarMonthPickerDecoration._({
+  const CalendarMonthPickerDecoration({
     this.defaultDayStyle,
     this.currentDayStyle,
     this.selectedDayStyle,
@@ -49,23 +36,26 @@ class CalendarMonthPickerDecoration {
     CalendarMonthPickerDisabledDayStyle? disabledDayStyle,
   }) {
     return CalendarMonthPickerDecoration(
-      defaultDayStyle: defaultDayStyle ??
+      defaultDayStyle:
+          defaultDayStyle ??
           CalendarMonthPickerDefaultDayStyle.withDynamicColor(context),
-      currentDayStyle: currentDayStyle ??
+      currentDayStyle:
+          currentDayStyle ??
           CalendarMonthPickerCurrentDayStyle.withDynamicColor(
             context,
             mainColor: mainColor,
           ),
-      disabledDayStyle: disabledDayStyle ??
-          CalendarMonthPickerDisabledDayStyle.withDynamicColor(
-            context,
-          ),
-      selectedDayStyle: selectedDayStyle ??
+      disabledDayStyle:
+          disabledDayStyle ??
+          CalendarMonthPickerDisabledDayStyle.withDynamicColor(context),
+      selectedDayStyle:
+          selectedDayStyle ??
           CalendarMonthPickerSelectedDayStyle.withDynamicColor(
             context,
             mainColor: mainColor,
           ),
-      selectedCurrentDayStyle: selectedCurrentDayStyle ??
+      selectedCurrentDayStyle:
+          selectedCurrentDayStyle ??
           CalendarMonthPickerSelectedCurrentDayStyle.withDynamicColor(
             context,
             mainColor: mainColor,
@@ -102,12 +92,34 @@ class CalendarMonthPickerDecoration {
     CalendarMonthPickerDisabledDayStyle? disabledDayStyle,
   }) {
     return CalendarMonthPickerDecoration(
-      defaultDayStyle: defaultDayStyle ?? defaultDayStyle,
-      currentDayStyle: currentDayStyle ?? currentDayStyle,
+      defaultDayStyle: defaultDayStyle ?? this.defaultDayStyle,
+      currentDayStyle: currentDayStyle ?? this.currentDayStyle,
       selectedDayStyle: selectedDayStyle ?? this.selectedDayStyle,
       selectedCurrentDayStyle:
-          selectedCurrentDayStyle ?? selectedCurrentDayStyle,
+          selectedCurrentDayStyle ?? this.selectedCurrentDayStyle,
       disabledDayStyle: disabledDayStyle ?? this.disabledDayStyle,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is CalendarMonthPickerDecoration &&
+        other.defaultDayStyle == defaultDayStyle &&
+        other.currentDayStyle == currentDayStyle &&
+        other.selectedDayStyle == selectedDayStyle &&
+        other.selectedCurrentDayStyle == selectedCurrentDayStyle &&
+        other.disabledDayStyle == disabledDayStyle;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      defaultDayStyle,
+      currentDayStyle,
+      selectedDayStyle,
+      selectedCurrentDayStyle,
+      disabledDayStyle,
     );
   }
 }

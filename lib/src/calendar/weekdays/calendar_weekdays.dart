@@ -1,10 +1,10 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CalendarWeekdays extends StatelessWidget {
   const CalendarWeekdays({
@@ -30,17 +30,18 @@ class CalendarWeekdays extends StatelessWidget {
       month,
       1 - firstDayOffset,
     );
-    final bool isOneLetterWeekdayFormat =
-        context.textScaleFactor > calendarFormatChangeTextScaleFactor;
+    // The narrow format is the locale's one-letter form, which the first
+    // letter of the abbreviation is not in every locale, e.g. "周一" in Chinese.
+    final DateFormat format =
+        context.textScaleFactor > calendarFormatChangeTextScaleFactor
+        ? DateFormat.EEEEE(context.localeString)
+        : DateFormat.E(context.localeString);
     return List<Widget>.generate(DateTime.daysPerWeek, (int index) {
       final DateTime date = firstDayOfWeekDate.addDays(index);
-      final String weekday = DateFormat.E(context.localeString).format(date);
-      final String formattedWeekday =
-          isOneLetterWeekdayFormat ? weekday.characters.first : weekday;
 
       return Expanded(
         child: CalendarWeekday(
-          weekday: formattedWeekday.toUpperCase(),
+          weekday: format.format(date).toUpperCase(),
           decoration: decoration,
         ),
       );
@@ -49,13 +50,15 @@ class CalendarWeekdays extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: calendarWeekdaysHeight,
-      margin: const EdgeInsets.symmetric(
-        horizontal: calendarWeekdaysHorizontalPadding,
-      ),
-      child: Row(
-        children: _weekdays(context),
+    // Day cells announce their full date, so the abbreviated weekdays
+    // would only add noise for screen readers.
+    return ExcludeSemantics(
+      child: Container(
+        height: calendarWeekdaysHeight,
+        margin: const EdgeInsets.symmetric(
+          horizontal: calendarWeekdaysHorizontalPadding,
+        ),
+        child: Row(children: _weekdays(context)),
       ),
     );
   }

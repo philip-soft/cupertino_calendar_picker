@@ -1,14 +1,15 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart';
 
-class CalendarFooter extends StatefulWidget {
+class CalendarFooter extends StatelessWidget {
   const CalendarFooter({
     required this.time,
+    required this.isTimePickerVisible,
     required this.onTimePickerStateChanged,
     required this.onTimeChanged,
     required this.type,
@@ -20,7 +21,12 @@ class CalendarFooter extends StatefulWidget {
   });
 
   final TimeOfDay time;
+  final bool isTimePickerVisible;
+
+  /// Called with the time after switching the day period.
   final ValueChanged<TimeOfDay> onTimeChanged;
+
+  /// Called with the requested visibility of the time picker.
   final ValueChanged<bool> onTimePickerStateChanged;
   final CupertinoCalendarType type;
   final String? label;
@@ -28,140 +34,135 @@ class CalendarFooter extends StatefulWidget {
   final CalendarFooterDecoration decoration;
   final bool? use24hFormat;
 
-  @override
-  State<CalendarFooter> createState() => _CalendarFooterState();
-}
-
-class _CalendarFooterState extends State<CalendarFooter> {
-  late TimeOfDay _timeOfDay;
-  bool _showTimePicker = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _timeOfDay = widget.time;
-  }
-
-  @override
-  void didUpdateWidget(covariant CalendarFooter oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (widget.time != oldWidget.time) {
-      _timeOfDay = widget.time;
-    }
-  }
-
-  void _handleTimePickerStateChange() {
-    setState(() {
-      _showTimePicker = !_showTimePicker;
-      widget.onTimePickerStateChanged.call(_showTimePicker);
-    });
-  }
-
   void _onDayPeriodChanged(DayPeriod? dayPeriod) {
-    if (dayPeriod != null) {
-      setState(() {
-        final int newHour =
-            _timeOfDay.hour % 12 + (dayPeriod == DayPeriod.pm ? 12 : 0);
-        _timeOfDay = TimeOfDay(
-          hour: newHour,
-          minute: _timeOfDay.minute,
-        );
-        widget.onTimeChanged(_timeOfDay);
-      });
-    }
+    if (dayPeriod == null || dayPeriod == time.period) return;
+
+    final int hourOfPeriod = time.hour % TimeOfDay.hoursPerPeriod;
+    final int periodOffset = dayPeriod == DayPeriod.pm
+        ? TimeOfDay.hoursPerPeriod
+        : 0;
+    onTimeChanged(
+      TimeOfDay(hour: hourOfPeriod + periodOffset, minute: time.minute),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final TimeOfDay time = _timeOfDay;
-    final bool use24HoursFormat =
-        widget.use24hFormat ?? context.alwaysUse24hFormat;
+    final bool use24HoursFormat = use24hFormat ?? context.alwaysUse24hFormat;
     final bool shouldShowDayPeriodSwitcher =
-        !use24HoursFormat && widget.type == CupertinoCalendarType.compact;
+        !use24HoursFormat && type == CupertinoCalendarType.compact;
+    final TextStyle timeStyle = decoration.timeStyle.resolveDynamic(context);
+    final String timeText = shouldShowDayPeriodSwitcher
+        ? time.timeWithDayPeriodFormat(context)
+        : time.timeFormat(context, use24hFormat: use24hFormat);
+    final String? label = this.label;
 
     return Column(
       children: <Widget>[
         const CupertinoPickerDivider(),
-        const SizedBox(height: 5.0),
+        const SizedBox(height: calendarFooterTopSpacing),
         Row(
           children: <Widget>[
-            if (widget.label != null) ...<Widget>[
-              const SizedBox(width: 16.0),
+            if (label != null) ...<Widget>[
+              const SizedBox(width: calendarFooterHorizontalSpacing),
               Expanded(
-                child: Text(
-                  widget.label!,
-                  maxLines: 1,
-                  style: widget.decoration.timeLabelStyle,
+                child: ExcludeSemantics(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    style: decoration.timeLabelStyle.resolveDynamic(context),
+                  ),
                 ),
               ),
             ] else
               const Spacer(),
-            const SizedBox(width: 16.0),
-            GestureDetector(
-              onTap: _handleTimePickerStateChange,
-              behavior: HitTestBehavior.translucent,
+            const SizedBox(width: calendarFooterHorizontalSpacing),
+            CupertinoPickerTapTarget(
+              onTap: () => onTimePickerStateChanged(!isTimePickerVisible),
+              semanticsLabel:
+                  label ??
+                  MaterialLocalizations.of(context).timePickerDialHelpText,
+              semanticsValue: time.timeFormat(
+                context,
+                use24hFormat: use24hFormat,
+              ),
+              isExpanded: isTimePickerVisible,
               child: Container(
-                height: 34.0,
+                height: calendarFooterTimeButtonHeight,
                 decoration: BoxDecoration(
-                  color:
-                      CupertinoColors.tertiarySystemFill.resolveFrom(context),
-                  borderRadius: BorderRadius.circular(6.0),
+                  color: CupertinoColors.tertiarySystemFill.resolveFrom(
+                    context,
+                  ),
+                  borderRadius: BorderRadius.circular(
+                    calendarFooterTimeButtonRadius,
+                  ),
                 ),
                 alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(horizontal: 11.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: calendarFooterTimeButtonHorizontalPadding,
+                ),
                 child: AnimatedDefaultTextStyle(
                   duration: innerPickersFadeDuration,
-                  style: widget.decoration.timeStyle!.copyWith(
-                    color: _showTimePicker
-                        ? widget.mainColor
-                        : widget.decoration.timeStyle?.color,
-                  ),
-                  child: Text(
-                    shouldShowDayPeriodSwitcher
-                        ? time.timeWithDayPeriodFormat(context)
-                        : time.timeFormat(
-                            context,
-                            use24hFormat: widget.use24hFormat,
-                          ),
-                  ),
+                  style: isTimePickerVisible
+                      ? timeStyle.copyWith(
+                          color: mainColor.resolveDynamic(context),
+                        )
+                      : timeStyle,
+                  child: Text(timeText),
                 ),
               ),
             ),
             if (shouldShowDayPeriodSwitcher) ...<Widget>[
-              const SizedBox(width: 8.0),
+              const SizedBox(width: calendarFooterDayPeriodSpacing),
               CupertinoSlidingSegmentedControl<DayPeriod>(
                 onValueChanged: _onDayPeriodChanged,
                 groupValue: time.period,
-                children:
-                    DayPeriod.values.asMap().map((int index, DayPeriod period) {
-                  final bool isActive = time.period == period;
-
-                  return MapEntry<DayPeriod, Widget>(
-                    period,
-                    SizedBox(
-                      width: 30.0,
-                      height: 30.0,
-                      child: Center(
-                        child: Text(
-                          period.localizedString(context),
-                          textAlign: TextAlign.center,
-                          style: widget.decoration.dayPeriodTextStyle?.copyWith(
-                            fontWeight:
-                                isActive ? FontWeight.w600 : FontWeight.w400,
-                          ),
-                        ),
+                children: <DayPeriod, Widget>{
+                  for (final DayPeriod period in DayPeriod.values)
+                    period: _DayPeriodSegment(
+                      period: period,
+                      isActive: time.period == period,
+                      style: decoration.dayPeriodTextStyle.resolveDynamic(
+                        context,
                       ),
                     ),
-                  );
-                }),
+                },
               ),
             ],
-            const SizedBox(width: 16.0),
+            const SizedBox(width: calendarFooterHorizontalSpacing),
           ],
         ),
-        const SizedBox(height: 7.0),
+        const SizedBox(height: calendarFooterBottomSpacing),
       ],
+    );
+  }
+}
+
+class _DayPeriodSegment extends StatelessWidget {
+  const _DayPeriodSegment({
+    required this.period,
+    required this.isActive,
+    required this.style,
+  });
+
+  final DayPeriod period;
+  final bool isActive;
+  final TextStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: calendarFooterDayPeriodItemSize,
+      height: calendarFooterDayPeriodItemSize,
+      child: Center(
+        child: Text(
+          period.localizedString(context),
+          textAlign: TextAlign.center,
+          style: style.copyWith(
+            fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+          ),
+        ),
+      ),
     );
   }
 }

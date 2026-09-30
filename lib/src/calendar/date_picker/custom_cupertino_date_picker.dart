@@ -8,7 +8,7 @@ library;
 import 'dart:math' as math;
 
 import 'package:cupertino_calendar_picker/src/utils/utils.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/scheduler.dart';
 
 // Values derived from https://developer.apple.com/design/resources/ and on iOS
@@ -16,7 +16,6 @@ import 'package:flutter/scheduler.dart';
 const double _kItemExtent = 32.0;
 // From the picker's intrinsic content size constraint.
 const double _kPickerWidth = 320.0;
-const double _kPickerHeight = 216.0;
 const bool _kUseMagnifier = true;
 const double _kMagnification = 2.35 / 2.1;
 const double _kDatePickerPadSize = 16.0;
@@ -24,35 +23,12 @@ const double _kDatePickerPadSize = 16.0;
 // Eyeballed from iOS.
 const double _kSqueeze = 1.25;
 
-const TextStyle _kDefaultPickerTextStyle = TextStyle(
-  letterSpacing: -0.83,
-);
-
-// The item height is 32 and the magnifier height is 34, from
-// iOS simulators with "Debug View Hierarchy".
-// And the magnified fontSize by [_kTimerPickerMagnification] conforms to the
-// iOS 14 native style by eyeball test.
-const double _kTimerPickerMagnification = 34 / 32;
-// Minimum horizontal padding between [CupertinoTimerPicker]
-//
-// It shouldn't actually be hard-coded for direct use, and the perfect solution
-// should be to calculate the values that match the magnified values by
-// offAxisFraction and _kSqueeze.
-// Such calculations are complex, so we'll hard-code them for now.
-const double _kTimerPickerMinHorizontalPadding = 30;
-// Half of the horizontal padding value between the timer picker's columns.
-const double _kTimerPickerHalfColumnPadding = 4;
-// The horizontal padding between the timer picker's number label and its
-// corresponding unit label.
-const double _kTimerPickerLabelPadSize = 6;
-const double _kTimerPickerLabelFontSize = 17.0;
-
-// The width of each column of the countdown time picker.
-const double _kTimerPickerColumnIntrinsicWidth = 106;
+const TextStyle _kDefaultPickerTextStyle = TextStyle(letterSpacing: -0.83);
 
 TextStyle _themeTextStyle(BuildContext context, {bool isValid = true}) {
-  final TextStyle style =
-      CupertinoTheme.of(context).textTheme.dateTimePickerTextStyle;
+  final TextStyle style = CupertinoTheme.of(context)
+      .textTheme
+      .dateTimePickerTextStyle;
   return isValid
       ? style.copyWith(
           color: CupertinoDynamicColor.maybeResolve(style.color, context),
@@ -76,14 +52,16 @@ void _animateColumnControllerToItem(
   );
 }
 
-const Widget _startSelectionOverlay =
-    CupertinoPickerDefaultSelectionOverlay(capEndEdge: false);
+const Widget _startSelectionOverlay = CupertinoPickerDefaultSelectionOverlay(
+  capEndEdge: false,
+);
 const Widget _centerSelectionOverlay = CupertinoPickerDefaultSelectionOverlay(
   capStartEdge: false,
   capEndEdge: false,
 );
-const Widget _endSelectionOverlay =
-    CupertinoPickerDefaultSelectionOverlay(capStartEdge: false);
+const Widget _endSelectionOverlay = CupertinoPickerDefaultSelectionOverlay(
+  capStartEdge: false,
+);
 
 /// Defines a function signature for creating a widget that serves as a selection overlay,
 /// given the current context, the selected item's index, and the total number of columns.
@@ -127,8 +105,9 @@ class _DatePickerLayoutDelegate extends MultiChildLayoutDelegate {
     }
 
     for (int i = 0; i < columnWidths.length; i++) {
-      final int index =
-          textDirectionFactor == 1 ? i : columnWidths.length - i - 1;
+      final int index = textDirectionFactor == 1
+          ? i
+          : columnWidths.length - i - 1;
 
       double childWidth = columnWidths[index] + _kDatePickerPadSize * 2;
       if (index == 0 || index == columnWidths.length - 1) {
@@ -284,15 +263,12 @@ class CustomCupertinoDatePicker extends StatefulWidget {
     this.showDayOfWeek = false,
     this.itemExtent = _kItemExtent,
     this.selectionOverlayBuilder,
-  })  : initialDateTime = initialDateTime ?? DateTime.now(),
-        assert(
-          itemExtent > 0,
-          'item extent should be greater than 0',
-        ),
-        assert(
-          minuteInterval > 0 && 60 % minuteInterval == 0,
-          'minute interval is not a positive integer factor of 60',
-        ) {
+  }) : initialDateTime = initialDateTime ?? DateTime.now(),
+       assert(itemExtent > 0, 'item extent should be greater than 0'),
+       assert(
+         minuteInterval > 0 && 60 % minuteInterval == 0,
+         'minute interval is not a positive integer factor of 60',
+       ) {
     assert(
       mode != CupertinoDatePickerMode.dateAndTime ||
           minimumDate == null ||
@@ -474,8 +450,9 @@ class CustomCupertinoDatePicker extends StatefulWidget {
       CupertinoDatePickerMode.time => CustomCupertinoDatePickerDateTimeState(),
       CupertinoDatePickerMode.dateAndTime =>
         CustomCupertinoDatePickerDateTimeState(),
-      CupertinoDatePickerMode.date =>
-        _CustomCupertinoDatePickerDateState(dateOrder: dateOrder),
+      CupertinoDatePickerMode.date => _CustomCupertinoDatePickerDateState(
+        dateOrder: dateOrder,
+      ),
       CupertinoDatePickerMode.monthYear =>
         _CustomCupertinoDatePickerMonthYearState(dateOrder: dateOrder),
     };
@@ -494,8 +471,9 @@ class CustomCupertinoDatePicker extends StatefulWidget {
     switch (columnType) {
       case _PickerColumnType.date:
         for (int i = 1; i <= 12; i++) {
-          final String date =
-              localizations.datePickerMediumDate(DateTime(2018, i, 25));
+          final String date = localizations.datePickerMediumDate(
+            DateTime(2018, i, 25),
+          );
           longTexts.add(date);
         }
       case _PickerColumnType.hour:
@@ -520,8 +498,10 @@ class CustomCupertinoDatePicker extends StatefulWidget {
         }
         if (showDayOfWeek) {
           for (int wd = 1; wd < DateTime.daysPerWeek; wd++) {
-            final String dayOfMonth =
-                localizations.datePickerDayOfMonth(longestDayOfMonth, wd);
+            final String dayOfMonth = localizations.datePickerDayOfMonth(
+              longestDayOfMonth,
+              wd,
+            );
             longTexts.add(dayOfMonth);
           }
         }
@@ -695,8 +675,9 @@ class CustomCupertinoDatePickerDateTimeState
     meridiemRegion = selectedAmPm;
 
     meridiemController = FixedExtentScrollController(initialItem: selectedAmPm);
-    hourController =
-        FixedExtentScrollController(initialItem: initialDateTime.hour);
+    hourController = FixedExtentScrollController(
+      initialItem: initialDateTime.hour,
+    );
     minuteController = FixedExtentScrollController(
       initialItem: initialDateTime.minute ~/ widget.minuteInterval,
     );
@@ -716,8 +697,9 @@ class CustomCupertinoDatePickerDateTimeState
     minuteController.dispose();
     meridiemController.dispose();
 
-    PaintingBinding.instance.systemFonts
-        .removeListener(_handleSystemFontsChange);
+    PaintingBinding.instance.systemFonts.removeListener(
+      _handleSystemFontsChange,
+    );
     super.dispose();
   }
 
@@ -734,8 +716,9 @@ class CustomCupertinoDatePickerDateTimeState
       // Thanks to the physical and meridiem region mapping, the only thing we
       // need to update is the meridiem controller, if it's not previously attached.
       meridiemController.dispose();
-      meridiemController =
-          FixedExtentScrollController(initialItem: selectedAmPm);
+      meridiemController = FixedExtentScrollController(
+        initialItem: selectedAmPm,
+      );
     }
   }
 
@@ -743,14 +726,17 @@ class CustomCupertinoDatePickerDateTimeState
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    textDirectionFactor =
-        Directionality.of(context) == TextDirection.ltr ? 1 : -1;
+    textDirectionFactor = Directionality.of(context) == TextDirection.ltr
+        ? 1
+        : -1;
     localizations = CupertinoLocalizations.of(context);
 
-    alignCenterLeft =
-        textDirectionFactor == 1 ? Alignment.centerLeft : Alignment.centerRight;
-    alignCenterRight =
-        textDirectionFactor == 1 ? Alignment.centerRight : Alignment.centerLeft;
+    alignCenterLeft = textDirectionFactor == 1
+        ? Alignment.centerLeft
+        : Alignment.centerRight;
+    alignCenterRight = textDirectionFactor == 1
+        ? Alignment.centerRight
+        : Alignment.centerLeft;
 
     estimatedColumnWidths.clear();
   }
@@ -759,11 +745,11 @@ class CustomCupertinoDatePickerDateTimeState
   double _getEstimatedColumnWidth(_PickerColumnType columnType) {
     estimatedColumnWidths[columnType.index] ??=
         CustomCupertinoDatePicker._getColumnWidth(
-      columnType,
-      localizations,
-      context,
-      widget.showDayOfWeek,
-    );
+          columnType,
+          localizations,
+          context,
+          widget.showDayOfWeek,
+        );
 
     return estimatedColumnWidths[columnType.index]!;
   }
@@ -785,7 +771,7 @@ class CustomCupertinoDatePickerDateTimeState
 
     final bool isDateInvalid =
         (widget.minimumDate?.isAfter(selected) ?? false) ||
-            (widget.maximumDate?.isBefore(selected) ?? false);
+        (widget.maximumDate?.isBefore(selected) ?? false);
 
     if (isDateInvalid) {
       return;
@@ -847,8 +833,8 @@ class CustomCupertinoDatePickerDateTimeState
 
             final String dateText =
                 rangeStart == DateTime(now.year, now.month, now.day)
-                    ? localizations.todayLabel
-                    : localizations.datePickerMediumDate(rangeStart);
+                ? localizations.todayLabel
+                : localizations.datePickerMediumDate(rangeStart);
 
             return itemPositioningBuilder(
               context,
@@ -935,15 +921,17 @@ class CustomCupertinoDatePickerDateTimeState
           selectionOverlay: selectionOverlay,
           children: List<Widget>.generate(24, (int index) {
             final int hour = isHourRegionFlipped ? (index + 12) % 24 : index;
-            final int displayHour =
-                widget.use24hFormat ? hour : (hour + 11) % 12 + 1;
+            final int displayHour = widget.use24hFormat
+                ? hour
+                : (hour + 11) % 12 + 1;
 
             return itemPositioningBuilder(
               context,
               Text(
                 localizations.datePickerHour(displayHour),
-                semanticsLabel:
-                    localizations.datePickerHourSemanticsLabel(displayHour),
+                semanticsLabel: localizations.datePickerHourSemanticsLabel(
+                  displayHour,
+                ),
                 style: _themeTextStyle(
                   context,
                   isValid: _isValidHour(selectedAmPm, index),
@@ -985,8 +973,9 @@ class CustomCupertinoDatePickerDateTimeState
           onSelectedItemChanged: _onSelectedItemChange,
           looping: true,
           selectionOverlay: selectionOverlay,
-          children:
-              List<Widget>.generate(60 ~/ widget.minuteInterval, (int index) {
+          children: List<Widget>.generate(60 ~/ widget.minuteInterval, (
+            int index,
+          ) {
             final int minute = index * widget.minuteInterval;
 
             final DateTime date = DateTime(
@@ -999,14 +988,15 @@ class CustomCupertinoDatePickerDateTimeState
 
             final bool isInvalidMinute =
                 (widget.minimumDate?.isAfter(date) ?? false) ||
-                    (widget.maximumDate?.isBefore(date) ?? false);
+                (widget.maximumDate?.isBefore(date) ?? false);
 
             return itemPositioningBuilder(
               context,
               Text(
                 localizations.datePickerMinute(minute),
-                semanticsLabel:
-                    localizations.datePickerMinuteSemanticsLabel(minute),
+                semanticsLabel: localizations.datePickerMinuteSemanticsLabel(
+                  minute,
+                ),
                 style: _themeTextStyle(context, isValid: !isInvalidMinute),
               ),
             );
@@ -1085,56 +1075,52 @@ class CustomCupertinoDatePickerDateTimeState
 
     if (minCheck || maxCheck) {
       // We have minCheck === !maxCheck.
-      final DateTime targetDate =
-          minCheck ? widget.minimumDate! : widget.maximumDate!;
+      final DateTime targetDate = minCheck
+          ? widget.minimumDate!
+          : widget.maximumDate!;
       scrollToDate(targetDate, selectedDate, minCheck);
     }
   }
 
   void scrollToDate(DateTime newDate, DateTime fromDate, bool minCheck) {
-    SchedulerBinding.instance.addPostFrameCallback(
-      (Duration timestamp) {
-        if (fromDate.year != newDate.year ||
-            fromDate.month != newDate.month ||
-            fromDate.day != newDate.day) {
+    SchedulerBinding.instance.addPostFrameCallback((Duration timestamp) {
+      if (fromDate.year != newDate.year ||
+          fromDate.month != newDate.month ||
+          fromDate.day != newDate.day) {
+        _animateColumnControllerToItem(dateController, selectedDayFromInitial);
+      }
+
+      if (fromDate.hour != newDate.hour) {
+        final bool needsMeridiemChange =
+            !widget.use24hFormat && fromDate.hour ~/ 12 != newDate.hour ~/ 12;
+        // In AM/PM mode, the pickers should not scroll all the way to the other hour region.
+        if (needsMeridiemChange) {
           _animateColumnControllerToItem(
-            dateController,
-            selectedDayFromInitial,
+            meridiemController,
+            1 - meridiemController.selectedItem,
+          );
+
+          // Keep the target item index in the current 12-h region.
+          final int newItem =
+              (hourController.selectedItem ~/ 12) * 12 +
+              (hourController.selectedItem + newDate.hour - fromDate.hour) % 12;
+          _animateColumnControllerToItem(hourController, newItem);
+        } else {
+          _animateColumnControllerToItem(
+            hourController,
+            hourController.selectedItem + newDate.hour - fromDate.hour,
           );
         }
+      }
 
-        if (fromDate.hour != newDate.hour) {
-          final bool needsMeridiemChange =
-              !widget.use24hFormat && fromDate.hour ~/ 12 != newDate.hour ~/ 12;
-          // In AM/PM mode, the pickers should not scroll all the way to the other hour region.
-          if (needsMeridiemChange) {
-            _animateColumnControllerToItem(
-              meridiemController,
-              1 - meridiemController.selectedItem,
-            );
-
-            // Keep the target item index in the current 12-h region.
-            final int newItem = (hourController.selectedItem ~/ 12) * 12 +
-                (hourController.selectedItem + newDate.hour - fromDate.hour) %
-                    12;
-            _animateColumnControllerToItem(hourController, newItem);
-          } else {
-            _animateColumnControllerToItem(
-              hourController,
-              hourController.selectedItem + newDate.hour - fromDate.hour,
-            );
-          }
-        }
-
-        if (fromDate.minute != newDate.minute) {
-          final double positionDouble = newDate.minute / widget.minuteInterval;
-          final int position =
-              minCheck ? positionDouble.ceil() : positionDouble.floor();
-          _animateColumnControllerToItem(minuteController, position);
-        }
-      },
-      debugLabel: 'DatePicker.scrollToDate',
-    );
+      if (fromDate.minute != newDate.minute) {
+        final double positionDouble = newDate.minute / widget.minuteInterval;
+        final int position = minCheck
+            ? positionDouble.ceil()
+            : positionDouble.floor();
+        _animateColumnControllerToItem(minuteController, position);
+      }
+    }, debugLabel: 'DatePicker.scrollToDate');
   }
 
   @override
@@ -1148,8 +1134,8 @@ class CustomCupertinoDatePickerDateTimeState
     // Swap the hours and minutes if RTL to ensure they are in the correct position.
     final List<_ColumnBuilder> pickerBuilders =
         Directionality.of(context) == TextDirection.rtl
-            ? <_ColumnBuilder>[_buildMinutePicker, _buildHourPicker]
-            : <_ColumnBuilder>[_buildHourPicker, _buildMinutePicker];
+        ? <_ColumnBuilder>[_buildMinutePicker, _buildHourPicker]
+        : <_ColumnBuilder>[_buildHourPicker, _buildMinutePicker];
 
     // Adds am/pm column if the picker is not using 24h format.
     if (!widget.use24hFormat) {
@@ -1157,8 +1143,9 @@ class CustomCupertinoDatePickerDateTimeState
         case DatePickerDateTimeOrder.date_time_dayPeriod:
         case DatePickerDateTimeOrder.time_dayPeriod_date:
           pickerBuilders.add(_buildAmPmPicker);
-          columnWidths
-              .add(_getEstimatedColumnWidth(_PickerColumnType.dayPeriod));
+          columnWidths.add(
+            _getEstimatedColumnWidth(_PickerColumnType.dayPeriod),
+          );
         case DatePickerDateTimeOrder.date_dayPeriod_time:
         case DatePickerDateTimeOrder.dayPeriod_time_date:
           pickerBuilders.insert(0, _buildAmPmPicker);
@@ -1190,8 +1177,10 @@ class CustomCupertinoDatePickerDateTimeState
     double totalColumnWidths = 4 * _kDatePickerPadSize;
 
     for (final (int i, double width) in columnWidths.indexed) {
-      final (bool firstColumn, bool lastColumn) =
-          (i == 0, i == columnWidths.length - 1);
+      final (bool firstColumn, bool lastColumn) = (
+        i == 0,
+        i == columnWidths.length - 1,
+      );
       double offAxisFraction = 0.0;
       Widget? selectionOverlay = _centerSelectionOverlay;
 
@@ -1228,31 +1217,32 @@ class CustomCupertinoDatePickerDateTimeState
       pickers.add(
         LayoutId(
           id: i,
-          child: pickerBuilders[i](
-            offAxisFraction,
-            (BuildContext context, Widget? child) {
-              late final Widget constrained = ConstrainedBox(
-                constraints:
-                    BoxConstraints(maxWidth: width + _kDatePickerPadSize),
-                child: child,
-              );
+          child: pickerBuilders[i](offAxisFraction, (
+            BuildContext context,
+            Widget? child,
+          ) {
+            late final Widget constrained = ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: width + _kDatePickerPadSize,
+              ),
+              child: child,
+            );
 
-              return Padding(
-                padding: padding,
-                child: Align(
-                  alignment: lastColumn ? alignCenterLeft : alignCenterRight,
-                  child: firstColumn || lastColumn ? constrained : child,
-                ),
-              );
-            },
-            selectionOverlay,
-          ),
+            return Padding(
+              padding: padding,
+              child: Align(
+                alignment: lastColumn ? alignCenterLeft : alignCenterRight,
+                child: firstColumn || lastColumn ? constrained : child,
+              ),
+            );
+          }, selectionOverlay),
         ),
       );
     }
 
-    final double maxPickerWidth =
-        totalColumnWidths > _kPickerWidth ? totalColumnWidths : _kPickerWidth;
+    final double maxPickerWidth = totalColumnWidths > _kPickerWidth
+        ? totalColumnWidths
+        : _kPickerWidth;
 
     return MediaQuery.withNoTextScaling(
       child: DefaultTextStyle.merge(
@@ -1272,9 +1262,7 @@ class CustomCupertinoDatePickerDateTimeState
 
 class _CustomCupertinoDatePickerDateState
     extends State<CustomCupertinoDatePicker> {
-  _CustomCupertinoDatePickerDateState({
-    required this.dateOrder,
-  });
+  _CustomCupertinoDatePickerDateState({required this.dateOrder});
 
   final DatePickerDateOrder? dateOrder;
 
@@ -1316,8 +1304,9 @@ class _CustomCupertinoDatePickerDateState
     selectedYear = widget.initialDateTime.year;
 
     dayController = FixedExtentScrollController(initialItem: selectedDay - 1);
-    monthController =
-        FixedExtentScrollController(initialItem: selectedMonth - 1);
+    monthController = FixedExtentScrollController(
+      initialItem: selectedMonth - 1,
+    );
     yearController = FixedExtentScrollController(initialItem: selectedYear);
 
     PaintingBinding.instance.systemFonts.addListener(_handleSystemFontsChange);
@@ -1333,8 +1322,9 @@ class _CustomCupertinoDatePickerDateState
     monthController.dispose();
     yearController.dispose();
 
-    PaintingBinding.instance.systemFonts
-        .removeListener(_handleSystemFontsChange);
+    PaintingBinding.instance.systemFonts.removeListener(
+      _handleSystemFontsChange,
+    );
     super.dispose();
   }
 
@@ -1342,14 +1332,17 @@ class _CustomCupertinoDatePickerDateState
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    textDirectionFactor =
-        Directionality.of(context) == TextDirection.ltr ? 1 : -1;
+    textDirectionFactor = Directionality.of(context) == TextDirection.ltr
+        ? 1
+        : -1;
     localizations = CupertinoLocalizations.of(context);
 
-    alignCenterLeft =
-        textDirectionFactor == 1 ? Alignment.centerLeft : Alignment.centerRight;
-    alignCenterRight =
-        textDirectionFactor == 1 ? Alignment.centerRight : Alignment.centerLeft;
+    alignCenterLeft = textDirectionFactor == 1
+        ? Alignment.centerLeft
+        : Alignment.centerRight;
+    alignCenterRight = textDirectionFactor == 1
+        ? Alignment.centerRight
+        : Alignment.centerLeft;
 
     _refreshEstimatedColumnWidths();
   }
@@ -1357,25 +1350,25 @@ class _CustomCupertinoDatePickerDateState
   void _refreshEstimatedColumnWidths() {
     estimatedColumnWidths[_PickerColumnType.dayOfMonth.index] =
         CustomCupertinoDatePicker._getColumnWidth(
-      _PickerColumnType.dayOfMonth,
-      localizations,
-      context,
-      widget.showDayOfWeek,
-    );
+          _PickerColumnType.dayOfMonth,
+          localizations,
+          context,
+          widget.showDayOfWeek,
+        );
     estimatedColumnWidths[_PickerColumnType.month.index] =
         CustomCupertinoDatePicker._getColumnWidth(
-      _PickerColumnType.month,
-      localizations,
-      context,
-      widget.showDayOfWeek,
-    );
+          _PickerColumnType.month,
+          localizations,
+          context,
+          widget.showDayOfWeek,
+        );
     estimatedColumnWidths[_PickerColumnType.year.index] =
         CustomCupertinoDatePicker._getColumnWidth(
-      _PickerColumnType.year,
-      localizations,
-      context,
-      widget.showDayOfWeek,
-    );
+          _PickerColumnType.year,
+          localizations,
+          context,
+          widget.showDayOfWeek,
+        );
   }
 
   // The DateTime of the last day of a given month in a given year.
@@ -1387,8 +1380,10 @@ class _CustomCupertinoDatePickerDateState
     TransitionBuilder itemPositioningBuilder,
     Widget? selectionOverlay,
   ) {
-    final int daysInCurrentMonth =
-        _lastDayInMonth(selectedYear, selectedMonth).day;
+    final int daysInCurrentMonth = _lastDayInMonth(
+      selectedYear,
+      selectedMonth,
+    ).day;
     return NotificationListener<ScrollNotification>(
       onNotification: (ScrollNotification notification) {
         if (notification is ScrollStartNotification) {
@@ -1425,7 +1420,8 @@ class _CustomCupertinoDatePickerDateState
             final int? dayOfWeek = widget.showDayOfWeek
                 ? DateTime(selectedYear, selectedMonth, day).weekday
                 : null;
-            final bool isInvalidDay = (day > daysInCurrentMonth) ||
+            final bool isInvalidDay =
+                (day > daysInCurrentMonth) ||
                 (widget.minimumDate?.year == selectedYear &&
                     widget.minimumDate!.month == selectedMonth &&
                     widget.minimumDate!.day > day) ||
@@ -1485,13 +1481,13 @@ class _CustomCupertinoDatePickerDateState
             final int month = index + 1;
             final bool isInvalidMonth =
                 (widget.minimumDate?.year == selectedYear &&
-                        widget.minimumDate!.month > month) ||
-                    (widget.maximumDate?.year == selectedYear &&
-                        widget.maximumDate!.month < month);
+                    widget.minimumDate!.month > month) ||
+                (widget.maximumDate?.year == selectedYear &&
+                    widget.maximumDate!.month < month);
             final String monthName =
                 (widget.mode == CupertinoDatePickerMode.monthYear)
-                    ? localizations.datePickerStandaloneMonth(month)
-                    : localizations.datePickerMonth(month);
+                ? localizations.datePickerStandaloneMonth(month)
+                : localizations.datePickerMonth(month);
 
             return itemPositioningBuilder(
               context,
@@ -1548,7 +1544,8 @@ class _CustomCupertinoDatePickerDateState
               return null;
             }
 
-            final bool isValidYear = (widget.minimumDate == null ||
+            final bool isValidYear =
+                (widget.minimumDate == null ||
                     widget.minimumDate!.year <= year) &&
                 (widget.maximumDate == null ||
                     widget.maximumDate!.year >= year);
@@ -1569,10 +1566,16 @@ class _CustomCupertinoDatePickerDateState
 
   bool get _isCurrentDateValid {
     // The current date selection represents a range [minSelectedData, maxSelectDate].
-    final DateTime minSelectedDate =
-        DateTime(selectedYear, selectedMonth, selectedDay);
-    final DateTime maxSelectedDate =
-        DateTime(selectedYear, selectedMonth, selectedDay + 1);
+    final DateTime minSelectedDate = DateTime(
+      selectedYear,
+      selectedMonth,
+      selectedDay,
+    );
+    final DateTime maxSelectedDate = DateTime(
+      selectedYear,
+      selectedMonth,
+      selectedDay + 1,
+    );
 
     final bool minCheck = widget.minimumDate?.isBefore(maxSelectedDate) ?? true;
     final bool maxCheck =
@@ -1593,18 +1596,25 @@ class _CustomCupertinoDatePickerDateState
 
     // Whenever scrolling lands on an invalid entry, the picker
     // automatically scrolls to a valid one.
-    final DateTime minSelectDate =
-        DateTime(selectedYear, selectedMonth, selectedDay);
-    final DateTime maxSelectDate =
-        DateTime(selectedYear, selectedMonth, selectedDay + 1);
+    final DateTime minSelectDate = DateTime(
+      selectedYear,
+      selectedMonth,
+      selectedDay,
+    );
+    final DateTime maxSelectDate = DateTime(
+      selectedYear,
+      selectedMonth,
+      selectedDay + 1,
+    );
 
     final bool minCheck = widget.minimumDate?.isBefore(maxSelectDate) ?? true;
     final bool maxCheck = widget.maximumDate?.isBefore(minSelectDate) ?? false;
 
     if (!minCheck || maxCheck) {
       // We have minCheck === !maxCheck.
-      final DateTime targetDate =
-          minCheck ? widget.maximumDate! : widget.minimumDate!;
+      final DateTime targetDate = minCheck
+          ? widget.maximumDate!
+          : widget.minimumDate!;
       _scrollToDate(targetDate);
       return;
     }
@@ -1618,22 +1628,19 @@ class _CustomCupertinoDatePickerDateState
   }
 
   void _scrollToDate(DateTime newDate) {
-    SchedulerBinding.instance.addPostFrameCallback(
-      (Duration timestamp) {
-        if (selectedYear != newDate.year) {
-          _animateColumnControllerToItem(yearController, newDate.year);
-        }
+    SchedulerBinding.instance.addPostFrameCallback((Duration timestamp) {
+      if (selectedYear != newDate.year) {
+        _animateColumnControllerToItem(yearController, newDate.year);
+      }
 
-        if (selectedMonth != newDate.month) {
-          _animateColumnControllerToItem(monthController, newDate.month - 1);
-        }
+      if (selectedMonth != newDate.month) {
+        _animateColumnControllerToItem(monthController, newDate.month - 1);
+      }
 
-        if (selectedDay != newDate.day) {
-          _animateColumnControllerToItem(dayController, newDate.day - 1);
-        }
-      },
-      debugLabel: 'DatePicker.scrollToDate',
-    );
+      if (selectedDay != newDate.day) {
+        _animateColumnControllerToItem(dayController, newDate.day - 1);
+      }
+    }, debugLabel: 'DatePicker.scrollToDate');
   }
 
   @override
@@ -1695,8 +1702,10 @@ class _CustomCupertinoDatePickerDateState
     double totalColumnWidths = 4 * _kDatePickerPadSize;
 
     for (final (int i, double width) in columnWidths.indexed) {
-      final (bool firstColumn, bool lastColumn) =
-          (i == 0, i == columnWidths.length - 1);
+      final (bool firstColumn, bool lastColumn) = (
+        i == 0,
+        i == columnWidths.length - 1,
+      );
       final double offAxisFraction = (i - 1) * 0.3 * textDirectionFactor;
 
       EdgeInsets padding = const EdgeInsets.only(right: _kDatePickerPadSize);
@@ -1725,32 +1734,31 @@ class _CustomCupertinoDatePickerDateState
       pickers.add(
         LayoutId(
           id: i,
-          child: pickerBuilders[i](
-            offAxisFraction,
-            (BuildContext context, Widget? child) {
-              return Padding(
-                padding: firstColumn ? EdgeInsets.zero : padding,
-                child: Align(
-                  alignment: lastColumn ? alignCenterLeft : alignCenterRight,
-                  child: SizedBox(
-                    width: width + _kDatePickerPadSize,
-                    child: Align(
-                      alignment:
-                          firstColumn ? alignCenterLeft : alignCenterRight,
-                      child: child,
-                    ),
+          child: pickerBuilders[i](offAxisFraction, (
+            BuildContext context,
+            Widget? child,
+          ) {
+            return Padding(
+              padding: firstColumn ? EdgeInsets.zero : padding,
+              child: Align(
+                alignment: lastColumn ? alignCenterLeft : alignCenterRight,
+                child: SizedBox(
+                  width: width + _kDatePickerPadSize,
+                  child: Align(
+                    alignment: firstColumn ? alignCenterLeft : alignCenterRight,
+                    child: child,
                   ),
                 ),
-              );
-            },
-            selectionOverlay,
-          ),
+              ),
+            );
+          }, selectionOverlay),
         ),
       );
     }
 
-    final double maxPickerWidth =
-        totalColumnWidths > _kPickerWidth ? totalColumnWidths : _kPickerWidth;
+    final double maxPickerWidth = totalColumnWidths > _kPickerWidth
+        ? totalColumnWidths
+        : _kPickerWidth;
 
     return MediaQuery.withNoTextScaling(
       child: DefaultTextStyle.merge(
@@ -1770,9 +1778,7 @@ class _CustomCupertinoDatePickerDateState
 
 class _CustomCupertinoDatePickerMonthYearState
     extends State<CustomCupertinoDatePicker> {
-  _CustomCupertinoDatePickerMonthYearState({
-    required this.dateOrder,
-  });
+  _CustomCupertinoDatePickerMonthYearState({required this.dateOrder});
 
   final DatePickerDateOrder? dateOrder;
 
@@ -1808,8 +1814,9 @@ class _CustomCupertinoDatePickerMonthYearState
     selectedMonth = widget.initialDateTime.month;
     selectedYear = widget.initialDateTime.year;
 
-    monthController =
-        FixedExtentScrollController(initialItem: selectedMonth - 1);
+    monthController = FixedExtentScrollController(
+      initialItem: selectedMonth - 1,
+    );
     yearController = FixedExtentScrollController(initialItem: selectedYear);
 
     PaintingBinding.instance.systemFonts.addListener(_handleSystemFontsChange);
@@ -1824,8 +1831,9 @@ class _CustomCupertinoDatePickerMonthYearState
     monthController.dispose();
     yearController.dispose();
 
-    PaintingBinding.instance.systemFonts
-        .removeListener(_handleSystemFontsChange);
+    PaintingBinding.instance.systemFonts.removeListener(
+      _handleSystemFontsChange,
+    );
     super.dispose();
   }
 
@@ -1833,14 +1841,17 @@ class _CustomCupertinoDatePickerMonthYearState
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    textDirectionFactor =
-        Directionality.of(context) == TextDirection.ltr ? 1 : -1;
+    textDirectionFactor = Directionality.of(context) == TextDirection.ltr
+        ? 1
+        : -1;
     localizations = CupertinoLocalizations.of(context);
 
-    alignCenterLeft =
-        textDirectionFactor == 1 ? Alignment.centerLeft : Alignment.centerRight;
-    alignCenterRight =
-        textDirectionFactor == 1 ? Alignment.centerRight : Alignment.centerLeft;
+    alignCenterLeft = textDirectionFactor == 1
+        ? Alignment.centerLeft
+        : Alignment.centerRight;
+    alignCenterRight = textDirectionFactor == 1
+        ? Alignment.centerRight
+        : Alignment.centerLeft;
 
     _refreshEstimatedColumnWidths();
   }
@@ -1848,19 +1859,19 @@ class _CustomCupertinoDatePickerMonthYearState
   void _refreshEstimatedColumnWidths() {
     estimatedColumnWidths[_PickerColumnType.month.index] =
         CustomCupertinoDatePicker._getColumnWidth(
-      _PickerColumnType.month,
-      localizations,
-      context,
-      false,
-      standaloneMonth: widget.mode == CupertinoDatePickerMode.monthYear,
-    );
+          _PickerColumnType.month,
+          localizations,
+          context,
+          false,
+          standaloneMonth: widget.mode == CupertinoDatePickerMode.monthYear,
+        );
     estimatedColumnWidths[_PickerColumnType.year.index] =
         CustomCupertinoDatePicker._getColumnWidth(
-      _PickerColumnType.year,
-      localizations,
-      context,
-      false,
-    );
+          _PickerColumnType.year,
+          localizations,
+          context,
+          false,
+        );
   }
 
   Widget _buildMonthPicker(
@@ -1901,13 +1912,13 @@ class _CustomCupertinoDatePickerMonthYearState
             final int month = index + 1;
             final bool isInvalidMonth =
                 (widget.minimumDate?.year == selectedYear &&
-                        widget.minimumDate!.month > month) ||
-                    (widget.maximumDate?.year == selectedYear &&
-                        widget.maximumDate!.month < month);
+                    widget.minimumDate!.month > month) ||
+                (widget.maximumDate?.year == selectedYear &&
+                    widget.maximumDate!.month < month);
             final String monthName =
                 (widget.mode == CupertinoDatePickerMode.monthYear)
-                    ? localizations.datePickerStandaloneMonth(month)
-                    : localizations.datePickerMonth(month);
+                ? localizations.datePickerStandaloneMonth(month)
+                : localizations.datePickerMonth(month);
 
             return itemPositioningBuilder(
               context,
@@ -1962,7 +1973,8 @@ class _CustomCupertinoDatePickerMonthYearState
               return null;
             }
 
-            final bool isValidYear = (widget.minimumDate == null ||
+            final bool isValidYear =
+                (widget.minimumDate == null ||
                     widget.minimumDate!.year <= year) &&
                 (widget.maximumDate == null ||
                     widget.maximumDate!.year >= year);
@@ -1984,8 +1996,11 @@ class _CustomCupertinoDatePickerMonthYearState
   bool get _isCurrentDateValid {
     // The current date selection represents a range [minSelectedData, maxSelectDate].
     final DateTime minSelectedDate = DateTime(selectedYear, selectedMonth);
-    final DateTime maxSelectedDate =
-        DateTime(selectedYear, selectedMonth, widget.initialDateTime.day + 1);
+    final DateTime maxSelectedDate = DateTime(
+      selectedYear,
+      selectedMonth,
+      widget.initialDateTime.day + 1,
+    );
 
     final bool minCheck = widget.minimumDate?.isBefore(maxSelectedDate) ?? true;
     final bool maxCheck =
@@ -2007,34 +2022,35 @@ class _CustomCupertinoDatePickerMonthYearState
     // Whenever scrolling lands on an invalid entry, the picker
     // automatically scrolls to a valid one.
     final DateTime minSelectDate = DateTime(selectedYear, selectedMonth);
-    final DateTime maxSelectDate =
-        DateTime(selectedYear, selectedMonth, widget.initialDateTime.day + 1);
+    final DateTime maxSelectDate = DateTime(
+      selectedYear,
+      selectedMonth,
+      widget.initialDateTime.day + 1,
+    );
 
     final bool minCheck = widget.minimumDate?.isBefore(maxSelectDate) ?? true;
     final bool maxCheck = widget.maximumDate?.isBefore(minSelectDate) ?? false;
 
     if (!minCheck || maxCheck) {
       // We have minCheck === !maxCheck.
-      final DateTime targetDate =
-          minCheck ? widget.maximumDate! : widget.minimumDate!;
+      final DateTime targetDate = minCheck
+          ? widget.maximumDate!
+          : widget.minimumDate!;
       _scrollToDate(targetDate);
       return;
     }
   }
 
   void _scrollToDate(DateTime newDate) {
-    SchedulerBinding.instance.addPostFrameCallback(
-      (Duration timestamp) {
-        if (selectedYear != newDate.year) {
-          _animateColumnControllerToItem(yearController, newDate.year);
-        }
+    SchedulerBinding.instance.addPostFrameCallback((Duration timestamp) {
+      if (selectedYear != newDate.year) {
+        _animateColumnControllerToItem(yearController, newDate.year);
+      }
 
-        if (selectedMonth != newDate.month) {
-          _animateColumnControllerToItem(monthController, newDate.month - 1);
-        }
-      },
-      debugLabel: 'DatePicker.scrollToDate',
-    );
+      if (selectedMonth != newDate.month) {
+        _animateColumnControllerToItem(monthController, newDate.month - 1);
+      }
+    }, debugLabel: 'DatePicker.scrollToDate');
   }
 
   @override
@@ -2066,8 +2082,10 @@ class _CustomCupertinoDatePickerMonthYearState
     double totalColumnWidths = 3 * _kDatePickerPadSize;
 
     for (final (int i, double width) in columnWidths.indexed) {
-      final (bool firstColumn, bool lastColumn) =
-          (i == 0, i == columnWidths.length - 1);
+      final (bool firstColumn, bool lastColumn) = (
+        i == 0,
+        i == columnWidths.length - 1,
+      );
       final double offAxisFraction =
           textDirectionFactor * (firstColumn ? -0.3 : 0.5);
 
@@ -2092,38 +2110,39 @@ class _CustomCupertinoDatePickerMonthYearState
       pickers.add(
         LayoutId(
           id: i,
-          child: pickerBuilders[i](
-            offAxisFraction,
-            (BuildContext context, Widget? child) {
-              final Widget contents = Align(
-                alignment: lastColumn ? alignCenterLeft : alignCenterRight,
-                child: SizedBox(
-                  width: width + _kDatePickerPadSize,
-                  child: Align(
-                    alignment: firstColumn ? alignCenterLeft : alignCenterRight,
-                    child: child,
-                  ),
+          child: pickerBuilders[i](offAxisFraction, (
+            BuildContext context,
+            Widget? child,
+          ) {
+            final Widget contents = Align(
+              alignment: lastColumn ? alignCenterLeft : alignCenterRight,
+              child: SizedBox(
+                width: width + _kDatePickerPadSize,
+                child: Align(
+                  alignment: firstColumn ? alignCenterLeft : alignCenterRight,
+                  child: child,
                 ),
-              );
-              if (firstColumn) {
-                return contents;
-              }
+              ),
+            );
+            if (firstColumn) {
+              return contents;
+            }
 
-              const EdgeInsets padding =
-                  EdgeInsets.only(right: _kDatePickerPadSize);
-              return Padding(
-                padding: textDirectionFactor == -1 ? padding.flipped : padding,
-                child: contents,
-              );
-            },
-            selectionOverlay,
-          ),
+            const EdgeInsets padding = EdgeInsets.only(
+              right: _kDatePickerPadSize,
+            );
+            return Padding(
+              padding: textDirectionFactor == -1 ? padding.flipped : padding,
+              child: contents,
+            );
+          }, selectionOverlay),
         ),
       );
     }
 
-    final double maxPickerWidth =
-        totalColumnWidths > _kPickerWidth ? totalColumnWidths : _kPickerWidth;
+    final double maxPickerWidth = totalColumnWidths > _kPickerWidth
+        ? totalColumnWidths
+        : _kPickerWidth;
 
     return MediaQuery.withNoTextScaling(
       child: DefaultTextStyle.merge(
@@ -2137,929 +2156,6 @@ class _CustomCupertinoDatePickerMonthYearState
           children: pickers,
         ),
       ),
-    );
-  }
-}
-
-// The iOS date picker and timer picker has their width fixed to 320.0 in all
-// modes. The only exception is the hms mode (which doesn't have a native counterpart),
-// with a fixed width of 330.0 px.
-//
-// For date pickers, if the maximum width given to the picker is greater than
-// 320.0, the leftmost and rightmost column will be extended equally so that the
-// widths match, and the picker is in the center.
-//
-// For timer pickers, if the maximum width given to the picker is greater than
-// its intrinsic width, it will keep its intrinsic size and position itself in the
-// parent using its alignment parameter.
-//
-// If the maximum width given to the picker is smaller than 320.0, the picker's
-// layout will be broken.
-
-/// Different modes of [CupertinoTimerPicker].
-///
-/// See also:
-///
-///  * [CupertinoTimerPicker], the class that implements the iOS-style timer picker.
-///  * [CupertinoPicker], the class that implements a content agnostic spinner UI.
-enum CupertinoTimerPickerMode {
-  /// Mode that shows the timer duration in hour and minute.
-  ///
-  /// Examples: 16 hours | 14 min.
-  hm,
-
-  /// Mode that shows the timer duration in minute and second.
-  ///
-  /// Examples: 14 min | 43 sec.
-  ms,
-
-  /// Mode that shows the timer duration in hour, minute, and second.
-  ///
-  /// Examples: 16 hours | 14 min | 43 sec.
-  hms,
-}
-
-/// A countdown timer picker in iOS style.
-///
-/// This picker shows a countdown duration with hour, minute and second spinners.
-/// The duration is bound between 0 and 23 hours 59 minutes 59 seconds.
-///
-/// There are several modes of the timer picker listed in [CupertinoTimerPickerMode].
-///
-/// The picker has a fixed size of 320 x 216, in logical pixels, with the exception
-/// of [CupertinoTimerPickerMode.hms], which is 330 x 216. If the parent widget
-/// provides more space than it needs, the picker will position itself according
-/// to its [alignment] property.
-///
-/// {@tool dartpad}
-/// This example shows a [CupertinoTimerPicker] that returns a countdown duration.
-///
-/// ** See code in examples/api/lib/cupertino/date_picker/cupertino_timer_picker.0.dart **
-/// {@end-tool}
-///
-/// See also:
-///
-///  * [CustomCupertinoDatePicker], the class that implements different display modes
-///    of the iOS-style date picker.
-///  * [CupertinoPicker], the class that implements a content agnostic spinner UI.
-///  * <https://developer.apple.com/design/human-interface-guidelines/ios/controls/pickers/>
-class CupertinoTimerPicker extends StatefulWidget {
-  /// Constructs an iOS style countdown timer picker.
-  ///
-  /// [mode] is one of the modes listed in [CupertinoTimerPickerMode] and
-  /// defaults to [CupertinoTimerPickerMode.hms].
-  ///
-  /// [onTimerDurationChanged] is the callback called when the selected duration
-  /// changes.
-  ///
-  /// [initialTimerDuration] defaults to 0 second and is limited from 0 second
-  /// to 23 hours 59 minutes 59 seconds.
-  ///
-  /// [minuteInterval] is the granularity of the minute spinner. Must be a
-  /// positive integer factor of 60.
-  ///
-  /// [secondInterval] is the granularity of the second spinner. Must be a
-  /// positive integer factor of 60.
-  CupertinoTimerPicker({
-    required this.onTimerDurationChanged,
-    super.key,
-    this.mode = CupertinoTimerPickerMode.hms,
-    this.initialTimerDuration = Duration.zero,
-    this.minuteInterval = 1,
-    this.secondInterval = 1,
-    this.alignment = Alignment.center,
-    this.backgroundColor,
-    this.itemExtent = _kItemExtent,
-    this.selectionOverlayBuilder,
-  })  : assert(initialTimerDuration >= Duration.zero),
-        assert(initialTimerDuration < const Duration(days: 1)),
-        assert(minuteInterval > 0 && 60 % minuteInterval == 0),
-        assert(secondInterval > 0 && 60 % secondInterval == 0),
-        assert(initialTimerDuration.inMinutes % minuteInterval == 0),
-        assert(initialTimerDuration.inSeconds % secondInterval == 0),
-        assert(
-          itemExtent > 0,
-          'item extent should be greater than 0',
-        );
-
-  /// The mode of the timer picker.
-  final CupertinoTimerPickerMode mode;
-
-  /// The initial duration of the countdown timer.
-  final Duration initialTimerDuration;
-
-  /// The granularity of the minute spinner. Must be a positive integer factor
-  /// of 60.
-  final int minuteInterval;
-
-  /// The granularity of the second spinner. Must be a positive integer factor
-  /// of 60.
-  final int secondInterval;
-
-  /// Callback called when the timer duration changes.
-  final ValueChanged<Duration> onTimerDurationChanged;
-
-  /// Defines how the timer picker should be positioned within its parent.
-  ///
-  /// Defaults to [Alignment.center].
-  final AlignmentGeometry alignment;
-
-  /// Background color of timer picker.
-  ///
-  /// Defaults to null, which disables background painting entirely.
-  final Color? backgroundColor;
-
-  /// {@macro flutter.cupertino.picker.itemExtent}
-  ///
-  /// Defaults to a value that matches the default iOS timer picker wheel.
-  final double itemExtent;
-
-  /// A function that returns a widget that is overlaid on the picker
-  /// to highlight the currently selected entry.
-  ///
-  /// If unspecified, it defaults to a [CupertinoPickerDefaultSelectionOverlay]
-  /// which is a gray rounded rectangle overlay in iOS 14 style.
-  ///
-  /// If the selection overlay builder returns null, no overlay will be drawn.
-  ///
-  /// {@tool snippet}
-  ///
-  /// This example shows how to recreate the default selection overlay
-  /// with selectionOverlayBuilder.
-  ///
-  /// ```dart
-  /// CupertinoTimerPicker(
-  ///   onTimerDurationChanged: (Duration newDateTime) {},
-  ///   selectionOverlayBuilder: (
-  ///     BuildContext context, {
-  ///     required int selectedIndex,
-  ///     required int columnCount,
-  ///   }) {
-  ///     if (selectedIndex == 0) {
-  ///       return const CupertinoPickerDefaultSelectionOverlay(
-  ///         capEndEdge: false,
-  ///       );
-  ///     } else if (selectedIndex == columnCount - 1) {
-  ///       return const CupertinoPickerDefaultSelectionOverlay(
-  ///         capStartEdge: false,
-  ///       );
-  ///     }
-  ///     return const CupertinoPickerDefaultSelectionOverlay(
-  ///       capStartEdge: false,
-  ///       capEndEdge: false,
-  ///     );
-  ///   },
-  /// )
-  /// ```
-  /// {@end-tool}
-  final SelectionOverlayBuilder? selectionOverlayBuilder;
-
-  @override
-  State<StatefulWidget> createState() => _CupertinoTimerPickerState();
-}
-
-class _CupertinoTimerPickerState extends State<CupertinoTimerPicker> {
-  late TextDirection textDirection;
-  late CupertinoLocalizations localizations;
-  int get textDirectionFactor {
-    return switch (textDirection) {
-      TextDirection.ltr => 1,
-      TextDirection.rtl => -1,
-    };
-  }
-
-  // The currently selected values of the picker.
-  int? selectedHour;
-  late int selectedMinute;
-  int? selectedSecond;
-
-  // On iOS the selected values won't be reported until the scrolling fully stops.
-  // The values below are the latest selected values when the picker comes to a full stop.
-  int? lastSelectedHour;
-  int? lastSelectedMinute;
-  int? lastSelectedSecond;
-
-  final TextPainter textPainter = TextPainter();
-  final List<String> numbers = List<String>.generate(10, (int i) => '${9 - i}');
-  late double numberLabelWidth;
-  late double numberLabelHeight;
-  late double numberLabelBaseline;
-
-  late double hourLabelWidth;
-  late double minuteLabelWidth;
-  late double secondLabelWidth;
-
-  late double totalWidth;
-  late double pickerColumnWidth;
-
-  FixedExtentScrollController? _hourScrollController;
-  FixedExtentScrollController? _minuteScrollController;
-  FixedExtentScrollController? _secondScrollController;
-
-  @override
-  void initState() {
-    super.initState();
-
-    selectedMinute = widget.initialTimerDuration.inMinutes % 60;
-
-    if (widget.mode != CupertinoTimerPickerMode.ms) {
-      selectedHour = widget.initialTimerDuration.inHours;
-    }
-
-    if (widget.mode != CupertinoTimerPickerMode.hm) {
-      selectedSecond = widget.initialTimerDuration.inSeconds % 60;
-    }
-
-    PaintingBinding.instance.systemFonts.addListener(_handleSystemFontsChange);
-  }
-
-  void _handleSystemFontsChange() {
-    setState(() {
-      // System fonts change might cause the text layout width to change.
-      textPainter.markNeedsLayout();
-      _measureLabelMetrics();
-    });
-  }
-
-  @override
-  void dispose() {
-    PaintingBinding.instance.systemFonts
-        .removeListener(_handleSystemFontsChange);
-    textPainter.dispose();
-
-    _hourScrollController?.dispose();
-    _minuteScrollController?.dispose();
-    _secondScrollController?.dispose();
-    super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(CupertinoTimerPicker oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    assert(
-      oldWidget.mode == widget.mode,
-      "The CupertinoTimerPicker's mode cannot change once it's built",
-    );
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    textDirection = Directionality.of(context);
-    localizations = CupertinoLocalizations.of(context);
-
-    _measureLabelMetrics();
-  }
-
-  void _measureLabelMetrics() {
-    textPainter.textDirection = textDirection;
-    final TextStyle textStyle =
-        _textStyleFrom(context, _kTimerPickerMagnification);
-
-    double maxWidth = double.negativeInfinity;
-    String? widestNumber;
-
-    // Assumes that:
-    // - 2-digit numbers are always wider than 1-digit numbers.
-    // - There's at least one number in 1-9 that's wider than or equal to 0.
-    // - The widest 2-digit number is composed of 2 same 1-digit numbers
-    //   that has the biggest width.
-    // - If two different 1-digit numbers are of the same width, their corresponding
-    //   2 digit numbers are of the same width.
-    for (final String input in numbers) {
-      textPainter.text = TextSpan(
-        text: input,
-        style: textStyle,
-      );
-      textPainter.layout();
-
-      if (textPainter.maxIntrinsicWidth > maxWidth) {
-        maxWidth = textPainter.maxIntrinsicWidth;
-        widestNumber = input;
-      }
-    }
-
-    textPainter.text = TextSpan(
-      text: '$widestNumber$widestNumber',
-      style: textStyle,
-    );
-
-    textPainter.layout();
-    numberLabelWidth = textPainter.maxIntrinsicWidth;
-    numberLabelHeight = textPainter.height;
-    numberLabelBaseline =
-        textPainter.computeDistanceToActualBaseline(TextBaseline.alphabetic);
-
-    minuteLabelWidth = _measureLabelsMaxWidth(
-      localizations.timerPickerMinuteLabels,
-      textStyle,
-    );
-
-    if (widget.mode != CupertinoTimerPickerMode.ms) {
-      hourLabelWidth = _measureLabelsMaxWidth(
-        localizations.timerPickerHourLabels,
-        textStyle,
-      );
-    }
-
-    if (widget.mode != CupertinoTimerPickerMode.hm) {
-      secondLabelWidth = _measureLabelsMaxWidth(
-        localizations.timerPickerSecondLabels,
-        textStyle,
-      );
-    }
-  }
-
-  // Measures all possible time text labels and return maximum width.
-  double _measureLabelsMaxWidth(List<String?> labels, TextStyle style) {
-    double maxWidth = double.negativeInfinity;
-    for (int i = 0; i < labels.length; i++) {
-      final String? label = labels[i];
-      if (label == null) {
-        continue;
-      }
-
-      textPainter.text = TextSpan(text: label, style: style);
-      textPainter.layout();
-      textPainter.maxIntrinsicWidth;
-      if (textPainter.maxIntrinsicWidth > maxWidth) {
-        maxWidth = textPainter.maxIntrinsicWidth;
-      }
-    }
-
-    return maxWidth;
-  }
-
-  // Builds a text label with scale factor 1.0 and font weight semi-bold.
-  // `pickerPadding ` is the additional padding the corresponding picker has to apply
-  // around the `Text`, in order to extend its separators towards the closest
-  // horizontal edge of the encompassing widget.
-  Widget _buildLabel(String text, EdgeInsetsDirectional pickerPadding) {
-    final EdgeInsetsDirectional padding = EdgeInsetsDirectional.only(
-      start: numberLabelWidth + _kTimerPickerLabelPadSize + pickerPadding.start,
-    );
-
-    return IgnorePointer(
-      child: Padding(
-        padding: padding.resolve(textDirection),
-        child: Align(
-          alignment: AlignmentDirectional.centerStart.resolve(textDirection),
-          child: SizedBox(
-            height: numberLabelHeight,
-            child: Baseline(
-              baseline: numberLabelBaseline,
-              baselineType: TextBaseline.alphabetic,
-              child: Text(
-                text,
-                style: const TextStyle(
-                  fontSize: _kTimerPickerLabelFontSize,
-                  fontWeight: FontWeight.w600,
-                ),
-                maxLines: 1,
-                softWrap: false,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // The picker has to be wider than its content, since the separators
-  // are part of the picker.
-  Widget _buildPickerNumberLabel(String text, EdgeInsetsDirectional padding) {
-    return SizedBox(
-      width: _kTimerPickerColumnIntrinsicWidth + padding.horizontal,
-      child: Padding(
-        padding: padding.resolve(textDirection),
-        child: Align(
-          alignment: AlignmentDirectional.centerStart.resolve(textDirection),
-          child: SizedBox(
-            width: numberLabelWidth,
-            child: Align(
-              alignment: AlignmentDirectional.centerEnd.resolve(textDirection),
-              child: Text(
-                text,
-                softWrap: false,
-                maxLines: 1,
-                overflow: TextOverflow.visible,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHourPicker(
-    EdgeInsetsDirectional additionalPadding,
-    Widget? selectionOverlay,
-  ) {
-    _hourScrollController ??= FixedExtentScrollController(
-      initialItem: selectedHour!,
-    );
-    return CupertinoFixedItemMouseScrolling(
-      scrollController: _hourScrollController,
-      child: CupertinoPicker(
-        scrollController: _hourScrollController,
-        magnification: _kMagnification,
-        offAxisFraction: _calculateOffAxisFraction(additionalPadding.start, 0),
-        itemExtent: widget.itemExtent,
-        backgroundColor: widget.backgroundColor,
-        squeeze: _kSqueeze,
-        onSelectedItemChanged: (int index) {
-          setState(() {
-            selectedHour = index;
-            widget.onTimerDurationChanged(
-              Duration(
-                hours: selectedHour!,
-                minutes: selectedMinute,
-                seconds: selectedSecond ?? 0,
-              ),
-            );
-          });
-        },
-        selectionOverlay: selectionOverlay,
-        children: List<Widget>.generate(24, (int index) {
-          final String label = localizations.timerPickerHourLabel(index) ?? '';
-          final String semanticsLabel = textDirectionFactor == 1
-              ? localizations.timerPickerHour(index) + label
-              : label + localizations.timerPickerHour(index);
-
-          return Semantics(
-            label: semanticsLabel,
-            excludeSemantics: true,
-            child: _buildPickerNumberLabel(
-              localizations.timerPickerHour(index),
-              additionalPadding,
-            ),
-          );
-        }),
-      ),
-    );
-  }
-
-  Widget _buildHourColumn(
-    EdgeInsetsDirectional additionalPadding,
-    Widget? selectionOverlay,
-  ) {
-    additionalPadding = EdgeInsetsDirectional.only(
-      start: math.max(additionalPadding.start, 0),
-      end: math.max(additionalPadding.end, 0),
-    );
-
-    return Stack(
-      children: <Widget>[
-        NotificationListener<ScrollEndNotification>(
-          onNotification: (ScrollEndNotification notification) {
-            setState(() {
-              lastSelectedHour = selectedHour;
-            });
-            return false;
-          },
-          child: _buildHourPicker(additionalPadding, selectionOverlay),
-        ),
-        _buildLabel(
-          localizations
-                  .timerPickerHourLabel(lastSelectedHour ?? selectedHour!) ??
-              '',
-          additionalPadding,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMinutePicker(
-    EdgeInsetsDirectional additionalPadding,
-    Widget? selectionOverlay,
-  ) {
-    _minuteScrollController ??= FixedExtentScrollController(
-      initialItem: selectedMinute ~/ widget.minuteInterval,
-    );
-    return CupertinoFixedItemMouseScrolling(
-      scrollController: _minuteScrollController,
-      child: CupertinoPicker(
-        scrollController: _minuteScrollController,
-        magnification: _kMagnification,
-        offAxisFraction: _calculateOffAxisFraction(
-          additionalPadding.start,
-          widget.mode == CupertinoTimerPickerMode.ms ? 0 : 1,
-        ),
-        itemExtent: widget.itemExtent,
-        backgroundColor: widget.backgroundColor,
-        squeeze: _kSqueeze,
-        looping: true,
-        onSelectedItemChanged: (int index) {
-          setState(() {
-            selectedMinute = index * widget.minuteInterval;
-            widget.onTimerDurationChanged(
-              Duration(
-                hours: selectedHour ?? 0,
-                minutes: selectedMinute,
-                seconds: selectedSecond ?? 0,
-              ),
-            );
-          });
-        },
-        selectionOverlay: selectionOverlay,
-        children:
-            List<Widget>.generate(60 ~/ widget.minuteInterval, (int index) {
-          final int minute = index * widget.minuteInterval;
-          final String label =
-              localizations.timerPickerMinuteLabel(minute) ?? '';
-          final String semanticsLabel = textDirectionFactor == 1
-              ? localizations.timerPickerMinute(minute) + label
-              : label + localizations.timerPickerMinute(minute);
-
-          return Semantics(
-            label: semanticsLabel,
-            excludeSemantics: true,
-            child: _buildPickerNumberLabel(
-              localizations.timerPickerMinute(minute),
-              additionalPadding,
-            ),
-          );
-        }),
-      ),
-    );
-  }
-
-  Widget _buildMinuteColumn(
-    EdgeInsetsDirectional additionalPadding,
-    Widget? selectionOverlay,
-  ) {
-    additionalPadding = EdgeInsetsDirectional.only(
-      start: math.max(additionalPadding.start, 0),
-      end: math.max(additionalPadding.end, 0),
-    );
-
-    return Stack(
-      children: <Widget>[
-        NotificationListener<ScrollEndNotification>(
-          onNotification: (ScrollEndNotification notification) {
-            setState(() {
-              lastSelectedMinute = selectedMinute;
-            });
-            return false;
-          },
-          child: _buildMinutePicker(additionalPadding, selectionOverlay),
-        ),
-        _buildLabel(
-          localizations.timerPickerMinuteLabel(
-                lastSelectedMinute ?? selectedMinute,
-              ) ??
-              '',
-          additionalPadding,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSecondPicker(
-    EdgeInsetsDirectional additionalPadding,
-    Widget? selectionOverlay,
-  ) {
-    _secondScrollController ??= FixedExtentScrollController(
-      initialItem: selectedSecond! ~/ widget.secondInterval,
-    );
-    return CupertinoFixedItemMouseScrolling(
-      scrollController: _secondScrollController,
-      child: CupertinoPicker(
-        scrollController: _secondScrollController,
-        magnification: _kMagnification,
-        offAxisFraction: _calculateOffAxisFraction(
-          additionalPadding.start,
-          widget.mode == CupertinoTimerPickerMode.ms ? 1 : 2,
-        ),
-        itemExtent: widget.itemExtent,
-        backgroundColor: widget.backgroundColor,
-        squeeze: _kSqueeze,
-        looping: true,
-        onSelectedItemChanged: (int index) {
-          setState(() {
-            selectedSecond = index * widget.secondInterval;
-            widget.onTimerDurationChanged(
-              Duration(
-                hours: selectedHour ?? 0,
-                minutes: selectedMinute,
-                seconds: selectedSecond!,
-              ),
-            );
-          });
-        },
-        selectionOverlay: selectionOverlay,
-        children:
-            List<Widget>.generate(60 ~/ widget.secondInterval, (int index) {
-          final int second = index * widget.secondInterval;
-          final String label =
-              localizations.timerPickerSecondLabel(second) ?? '';
-          final String semanticsLabel = textDirectionFactor == 1
-              ? localizations.timerPickerSecond(second) + label
-              : label + localizations.timerPickerSecond(second);
-
-          return Semantics(
-            label: semanticsLabel,
-            excludeSemantics: true,
-            child: _buildPickerNumberLabel(
-              localizations.timerPickerSecond(second),
-              additionalPadding,
-            ),
-          );
-        }),
-      ),
-    );
-  }
-
-  Widget _buildSecondColumn(
-    EdgeInsetsDirectional additionalPadding,
-    Widget? selectionOverlay,
-  ) {
-    additionalPadding = EdgeInsetsDirectional.only(
-      start: math.max(additionalPadding.start, 0),
-      end: math.max(additionalPadding.end, 0),
-    );
-
-    return Stack(
-      children: <Widget>[
-        NotificationListener<ScrollEndNotification>(
-          onNotification: (ScrollEndNotification notification) {
-            setState(() {
-              lastSelectedSecond = selectedSecond;
-            });
-            return false;
-          },
-          child: _buildSecondPicker(additionalPadding, selectionOverlay),
-        ),
-        _buildLabel(
-          localizations.timerPickerSecondLabel(
-                lastSelectedSecond ?? selectedSecond!,
-              ) ??
-              '',
-          additionalPadding,
-        ),
-      ],
-    );
-  }
-
-  // Returns [CupertinoTextThemeData.pickerTextStyle] and magnifies the fontSize
-  // by [magnification].
-  TextStyle _textStyleFrom(BuildContext context, [double magnification = 1.0]) {
-    final TextStyle textStyle =
-        CupertinoTheme.of(context).textTheme.pickerTextStyle;
-    return textStyle.copyWith(
-      color: CupertinoDynamicColor.maybeResolve(textStyle.color, context),
-      fontSize: textStyle.fontSize! * magnification,
-    );
-  }
-
-  // Calculate the number label center point by padding start and position to
-  // get a reasonable offAxisFraction.
-  double _calculateOffAxisFraction(double paddingStart, int position) {
-    final double centerPoint = paddingStart + (numberLabelWidth / 2);
-
-    // Compute the offAxisFraction needed to be straight within the pickerColumn.
-    final double pickerColumnOffAxisFraction =
-        0.5 - centerPoint / pickerColumnWidth;
-    // Position is to calculate the reasonable offAxisFraction in the picker.
-    final double timerPickerOffAxisFraction =
-        0.5 - (centerPoint + pickerColumnWidth * position) / totalWidth;
-    return (pickerColumnOffAxisFraction - timerPickerOffAxisFraction) *
-        textDirectionFactor;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        // The timer picker can be divided into columns corresponding to hour,
-        // minute, and second. Each column consists of a scrollable and a fixed
-        // label on top of it.
-        List<Widget> columns;
-
-        if (widget.mode == CupertinoTimerPickerMode.hms) {
-          // Pad the widget to make it as wide as `_kPickerWidth`.
-          pickerColumnWidth = _kTimerPickerColumnIntrinsicWidth +
-              (_kTimerPickerHalfColumnPadding * 2);
-          totalWidth = pickerColumnWidth * 3;
-        } else {
-          // The default totalWidth for 2-column modes.
-          totalWidth = _kPickerWidth;
-          pickerColumnWidth = totalWidth / 2;
-        }
-
-        if (constraints.maxWidth < totalWidth) {
-          totalWidth = constraints.maxWidth;
-          pickerColumnWidth = totalWidth /
-              (widget.mode == CupertinoTimerPickerMode.hms ? 3 : 2);
-        }
-
-        final double baseLabelContentWidth =
-            numberLabelWidth + _kTimerPickerLabelPadSize;
-        final double minuteLabelContentWidth =
-            baseLabelContentWidth + minuteLabelWidth;
-
-        switch (widget.mode) {
-          case CupertinoTimerPickerMode.hm:
-            // Pad the widget to make it as wide as `_kPickerWidth`.
-            final double hourLabelContentWidth =
-                baseLabelContentWidth + hourLabelWidth;
-            double hourColumnStartPadding = pickerColumnWidth -
-                hourLabelContentWidth -
-                _kTimerPickerHalfColumnPadding;
-            if (hourColumnStartPadding < _kTimerPickerMinHorizontalPadding) {
-              hourColumnStartPadding = _kTimerPickerMinHorizontalPadding;
-            }
-
-            double minuteColumnEndPadding = pickerColumnWidth -
-                minuteLabelContentWidth -
-                _kTimerPickerHalfColumnPadding;
-            if (minuteColumnEndPadding < _kTimerPickerMinHorizontalPadding) {
-              minuteColumnEndPadding = _kTimerPickerMinHorizontalPadding;
-            }
-
-            Widget? hourSelectionOverlay = _startSelectionOverlay;
-            Widget? minuteSelectionOverlay = _endSelectionOverlay;
-
-            if (widget.selectionOverlayBuilder != null) {
-              hourSelectionOverlay = widget.selectionOverlayBuilder!(
-                context,
-                selectedIndex: 0,
-                columnCount: 2,
-              );
-              minuteSelectionOverlay = widget.selectionOverlayBuilder!(
-                context,
-                selectedIndex: 1,
-                columnCount: 2,
-              );
-            }
-
-            columns = <Widget>[
-              _buildHourColumn(
-                EdgeInsetsDirectional.only(
-                  start: hourColumnStartPadding,
-                  end: pickerColumnWidth -
-                      hourColumnStartPadding -
-                      hourLabelContentWidth,
-                ),
-                hourSelectionOverlay,
-              ),
-              _buildMinuteColumn(
-                EdgeInsetsDirectional.only(
-                  start: pickerColumnWidth -
-                      minuteColumnEndPadding -
-                      minuteLabelContentWidth,
-                  end: minuteColumnEndPadding,
-                ),
-                minuteSelectionOverlay,
-              ),
-            ];
-          case CupertinoTimerPickerMode.ms:
-            final double secondLabelContentWidth =
-                baseLabelContentWidth + secondLabelWidth;
-            double secondColumnEndPadding = pickerColumnWidth -
-                secondLabelContentWidth -
-                _kTimerPickerHalfColumnPadding;
-            if (secondColumnEndPadding < _kTimerPickerMinHorizontalPadding) {
-              secondColumnEndPadding = _kTimerPickerMinHorizontalPadding;
-            }
-
-            double minuteColumnStartPadding = pickerColumnWidth -
-                minuteLabelContentWidth -
-                _kTimerPickerHalfColumnPadding;
-            if (minuteColumnStartPadding < _kTimerPickerMinHorizontalPadding) {
-              minuteColumnStartPadding = _kTimerPickerMinHorizontalPadding;
-            }
-
-            Widget? minuteSelectionOverlay = _startSelectionOverlay;
-            Widget? secondSelectionOverlay = _endSelectionOverlay;
-
-            if (widget.selectionOverlayBuilder != null) {
-              minuteSelectionOverlay = widget.selectionOverlayBuilder!(
-                context,
-                selectedIndex: 0,
-                columnCount: 2,
-              );
-              secondSelectionOverlay = widget.selectionOverlayBuilder!(
-                context,
-                selectedIndex: 1,
-                columnCount: 2,
-              );
-            }
-
-            columns = <Widget>[
-              _buildMinuteColumn(
-                EdgeInsetsDirectional.only(
-                  start: minuteColumnStartPadding,
-                  end: pickerColumnWidth -
-                      minuteColumnStartPadding -
-                      minuteLabelContentWidth,
-                ),
-                minuteSelectionOverlay,
-              ),
-              _buildSecondColumn(
-                EdgeInsetsDirectional.only(
-                  start: pickerColumnWidth -
-                      secondColumnEndPadding -
-                      minuteLabelContentWidth,
-                  end: secondColumnEndPadding,
-                ),
-                secondSelectionOverlay,
-              ),
-            ];
-          case CupertinoTimerPickerMode.hms:
-            final double hourColumnEndPadding = pickerColumnWidth -
-                baseLabelContentWidth -
-                hourLabelWidth -
-                _kTimerPickerMinHorizontalPadding;
-            final double minuteColumnPadding =
-                (pickerColumnWidth - minuteLabelContentWidth) / 2;
-            final double secondColumnStartPadding = pickerColumnWidth -
-                baseLabelContentWidth -
-                secondLabelWidth -
-                _kTimerPickerMinHorizontalPadding;
-
-            Widget? hourSelectionOverlay = _startSelectionOverlay;
-            Widget? minuteSelectionOverlay = _centerSelectionOverlay;
-            Widget? secondSelectionOverlay = _endSelectionOverlay;
-
-            if (widget.selectionOverlayBuilder != null) {
-              hourSelectionOverlay = widget.selectionOverlayBuilder!(
-                context,
-                selectedIndex: 0,
-                columnCount: 3,
-              );
-              minuteSelectionOverlay = widget.selectionOverlayBuilder!(
-                context,
-                selectedIndex: 1,
-                columnCount: 3,
-              );
-              secondSelectionOverlay = widget.selectionOverlayBuilder!(
-                context,
-                selectedIndex: 2,
-                columnCount: 3,
-              );
-            }
-
-            columns = <Widget>[
-              _buildHourColumn(
-                EdgeInsetsDirectional.only(
-                  start: _kTimerPickerMinHorizontalPadding,
-                  end: math.max(hourColumnEndPadding, 0),
-                ),
-                hourSelectionOverlay,
-              ),
-              _buildMinuteColumn(
-                EdgeInsetsDirectional.only(
-                  start: minuteColumnPadding,
-                  end: minuteColumnPadding,
-                ),
-                minuteSelectionOverlay,
-              ),
-              _buildSecondColumn(
-                EdgeInsetsDirectional.only(
-                  start: math.max(secondColumnStartPadding, 0),
-                  end: _kTimerPickerMinHorizontalPadding,
-                ),
-                secondSelectionOverlay,
-              ),
-            ];
-        }
-
-        Widget contents = SizedBox(
-          width: totalWidth,
-          height: _kPickerHeight,
-          child: DefaultTextStyle(
-            style: _textStyleFrom(context),
-            child: Row(
-              children: columns
-                  .map((Widget child) => Expanded(child: child))
-                  .toList(growable: false),
-            ),
-          ),
-        );
-        final Color? color =
-            CupertinoDynamicColor.maybeResolve(widget.backgroundColor, context);
-        if (color != null) {
-          contents = ColoredBox(color: color, child: contents);
-        }
-
-        final CupertinoThemeData themeData = CupertinoTheme.of(context);
-
-        // Text scaling is fixed to match the native iOS date picker.
-        return MediaQuery.withNoTextScaling(
-          child: CupertinoTheme(
-            data: themeData.copyWith(
-              textTheme: themeData.textTheme.copyWith(
-                pickerTextStyle:
-                    _textStyleFrom(context, _kTimerPickerMagnification),
-              ),
-            ),
-            child: Align(alignment: widget.alignment, child: contents),
-          ),
-        );
-      },
     );
   }
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -7,11 +7,7 @@ abstract final class PackageDateUtils {
     return DateTime(date.year, date.month);
   }
 
-  static int firstDayOffset(
-    int year,
-    int month,
-    int firstDayOfWeekIndex,
-  ) {
+  static int firstDayOffset(int year, int month, int firstDayOfWeekIndex) {
     // 0-based day of week for the month and year, with 0 representing Monday.
     final int weekdayFromMonday = DateTime(year, month).weekday - 1;
 

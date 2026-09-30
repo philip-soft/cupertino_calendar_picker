@@ -26,6 +26,8 @@ export 'src/src.dart'
         CupertinoTimePickerButton,
         CupertinoCalendar,
         CupertinoCalendarType,
+        CupertinoCalendarAction,
         CancelCupertinoCalendarAction,
         ConfirmCupertinoCalendarAction,
-        CalendarActionDecoration;
+        CalendarActionDecoration,
+        CalendarButtonFormatter;

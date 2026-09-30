@@ -1,11 +1,19 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'dart:async';
 
+import 'package:cupertino_calendar_picker/src/src.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:flutter/semantics.dart';
+import 'package:material_ui/material_ui.dart';
+
+/// The calendar's layout: header, weekdays, month pages, the inner
+/// year/time pickers, the footer and the actions.
+///
+/// The selection is owned by the parent: every change is reported through the
+/// callbacks and displayed once the parent passes a new [selectedDateTime].
 class CupertinoCalendarPicker extends StatefulWidget {
   const CupertinoCalendarPicker({
     required this.initialMonth,
@@ -62,101 +70,137 @@ class CupertinoCalendarPicker extends StatefulWidget {
 
 class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
   late DateTime _currentMonth;
-  late DateTime _selectedDateTime;
   late PageController _monthPageController;
-  late CupertinoCalendarViewMode _previousViewMode;
-  late CupertinoCalendarViewMode _viewMode;
-  late GlobalKey<CustomCupertinoDatePickerDateTimeState> _timePickerKey;
+  final GlobalKey<CustomCupertinoDatePickerDateTimeState> _timePickerKey =
+      GlobalKey<CustomCupertinoDatePickerDateTimeState>();
+  CupertinoCalendarViewMode _viewMode = CupertinoCalendarViewMode.monthPicker;
 
+  @visibleForTesting
   CupertinoCalendarViewMode get viewMode => _viewMode;
 
-  set viewMode(CupertinoCalendarViewMode mode) {
-    _previousViewMode = viewMode;
-    _viewMode = mode;
-  }
+  DateTime get _minimumMonth =>
+      PackageDateUtils.monthDateOnly(widget.minimumDateTime);
+
+  DateTime get _maximumMonth =>
+      PackageDateUtils.monthDateOnly(widget.maximumDateTime);
 
   @override
   void initState() {
     super.initState();
-    _currentMonth = widget.initialMonth;
-    final int monthDelta = DateUtils.monthDelta(
-      widget.minimumDateTime,
-      _currentMonth,
-    );
-    _monthPageController = PageController(initialPage: monthDelta);
-    _previousViewMode = CupertinoCalendarViewMode.monthPicker;
-    _viewMode = CupertinoCalendarViewMode.monthPicker;
-    _selectedDateTime = widget.selectedDateTime;
-    _timePickerKey = GlobalKey();
+    _currentMonth = _clampMonth(widget.initialMonth);
+    _monthPageController = PageController(initialPage: _pageOf(_currentMonth));
   }
 
   @override
   void didUpdateWidget(CupertinoCalendarPicker oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    final bool isRangeChanged =
+        !DateUtils.isSameMonth(
+          oldWidget.minimumDateTime,
+          widget.minimumDateTime,
+        ) ||
+        !DateUtils.isSameMonth(
+          oldWidget.maximumDateTime,
+          widget.maximumDateTime,
+        );
+    if (isRangeChanged) _resetMonthPages();
+
     final DateTime initialMonth = widget.initialMonth;
-    final DateTime oldInitialMonth = oldWidget.initialMonth;
-    if (initialMonth != oldInitialMonth && initialMonth != _currentMonth) {
+    if (initialMonth != oldWidget.initialMonth &&
+        !DateUtils.isSameMonth(initialMonth, _currentMonth)) {
       // We can't interrupt this widget build with a scroll, so do it next frame
-      WidgetsBinding.instance.addPostFrameCallback(
-        (Duration timeStamp) => _showMonth(widget.initialMonth, jump: true),
-      );
-    }
-
-    if (widget.selectedDateTime != oldWidget.selectedDateTime) {
-      _selectedDateTime = widget.selectedDateTime;
+      WidgetsBinding.instance.addPostFrameCallback((Duration _) {
+        if (mounted) showMonth(widget.initialMonth, jump: true);
+      });
     }
   }
 
-  /// Earliest allowable month.
-  bool get _isDisplayingFirstMonth {
-    final DateTime minimumDate = widget.minimumDateTime;
-    return !_currentMonth.isAfter(
-      DateTime(minimumDate.year, minimumDate.month),
-    );
+  @override
+  void dispose() {
+    _monthPageController.dispose();
+    super.dispose();
   }
 
-  /// Latest allowable month.
-  bool get _isDisplayingLastMonth {
-    final DateTime maximumDate = widget.maximumDateTime;
-    return !_currentMonth.isBefore(
-      DateTime(maximumDate.year, maximumDate.month),
+  /// Recreates the page controller, since page indices are relative to
+  /// the minimum month and the month pages are rebuilt with a new key.
+  void _resetMonthPages() {
+    final PageController oldController = _monthPageController;
+    WidgetsBinding.instance.addPostFrameCallback(
+      (Duration _) => oldController.dispose(),
     );
+
+    final DateTime month = _clampMonth(_currentMonth);
+    _monthPageController = PageController(initialPage: _pageOf(month));
+    if (!DateUtils.isSameMonth(month, _currentMonth)) {
+      _currentMonth = month;
+      // Listeners may call setState, which is not allowed during this build.
+      WidgetsBinding.instance.addPostFrameCallback((Duration _) {
+        if (mounted) widget.onDisplayedMonthChanged(month);
+      });
+    }
   }
+
+  DateTime _clampMonth(DateTime month) {
+    return PackageDateUtils.monthDateOnly(month)
+        .clampTo(_minimumMonth, _maximumMonth);
+  }
+
+  int _pageOf(DateTime month) {
+    final int lastPage = DateUtils.monthDelta(_minimumMonth, _maximumMonth);
+    return DateUtils.monthDelta(_minimumMonth, month).clamp(0, lastPage);
+  }
+
+  bool get _isDisplayingFirstMonth => !_currentMonth.isAfter(_minimumMonth);
+
+  bool get _isDisplayingLastMonth => !_currentMonth.isBefore(_maximumMonth);
 
   void _handleMonthPageChanged(int monthPage) {
-    setState(() {
-      final DateTime minimumDate = widget.minimumDateTime;
-      final DateTime monthDate =
-          DateUtils.addMonthsToMonthDate(minimumDate, monthPage);
-      final bool isCurrentMonth =
-          DateUtils.isSameMonth(_currentMonth, monthDate);
-      if (!isCurrentMonth) {
-        _currentMonth = DateTime(monthDate.year, monthDate.month);
-        widget.onDisplayedMonthChanged(_currentMonth);
-      }
-    });
+    final DateTime monthDate = DateUtils.addMonthsToMonthDate(
+      _minimumMonth,
+      monthPage,
+    );
+    if (DateUtils.isSameMonth(_currentMonth, monthDate)) return;
+
+    setState(() => _currentMonth = monthDate);
+    widget.onDisplayedMonthChanged(monthDate);
+    // The inner pickers announce their own values.
+    if (_viewMode == CupertinoCalendarViewMode.monthPicker) {
+      _announceMonth(monthDate);
+    }
+  }
+
+  /// Screen reader focus stays on the control that switched the month, so the
+  /// new month would otherwise go unnoticed.
+  void _announceMonth(DateTime month) {
+    unawaited(
+      SemanticsService.sendAnnouncement(
+        View.of(context),
+        month.monthYearFormat(context),
+        Directionality.of(context),
+      ),
+    );
   }
 
   void _handleNextMonth() {
-    if (!_isDisplayingLastMonth) {
-      _monthPageController.nextPage(
-        duration: monthScrollDuration,
-        curve: Curves.ease,
-      );
-    }
+    if (_isDisplayingLastMonth) return;
+    _monthPageController.nextPage(
+      duration: monthScrollDuration,
+      curve: Curves.ease,
+    );
   }
 
   void _handlePreviousMonth() {
-    if (!_isDisplayingFirstMonth) {
-      _monthPageController.previousPage(
-        duration: monthScrollDuration,
-        curve: Curves.ease,
-      );
-    }
+    if (_isDisplayingFirstMonth) return;
+    _monthPageController.previousPage(
+      duration: monthScrollDuration,
+      curve: Curves.ease,
+    );
   }
 
-  void _showMonth(DateTime month, {bool jump = false}) {
-    final int monthPage = DateUtils.monthDelta(widget.minimumDateTime, month);
+  @visibleForTesting
+  void showMonth(DateTime month, {bool jump = false}) {
+    final int monthPage = _pageOf(month);
     if (jump) {
       _monthPageController.jumpToPage(monthPage);
     } else {
@@ -168,110 +212,128 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
     }
   }
 
-  void _toggleYearPicker(bool shouldShowYearPicker) {
+  void _toggleViewMode(CupertinoCalendarViewMode mode, bool isVisible) {
     setState(() {
-      viewMode = shouldShowYearPicker
-          ? CupertinoCalendarViewMode.yearPicker
-          : _previousViewMode;
+      _viewMode = isVisible ? mode : CupertinoCalendarViewMode.monthPicker;
     });
   }
 
-  void _toggleTimePicker(bool shouldShowTimePicker) {
-    setState(() {
-      viewMode = shouldShowTimePicker
-          ? CupertinoCalendarViewMode.timePicker
-          : _previousViewMode;
-    });
-  }
-
-  void _onYearPickerChanged(DateTime date) {
-    _selectedDateTime = _selectedDateTime.copyWith(
-      year: date.year,
-      month: date.month,
+  void _onMonthDateChanged(DateTime date) {
+    widget.onDateChanged(
+      widget.selectedDateTime.copyWith(
+        year: date.year,
+        month: date.month,
+        day: date.day,
+      ),
     );
-    widget.onYearPickerChanged(date);
-  }
-
-  void _onMonthDateChanged(DateTime dateTime) {
-    _selectedDateTime = _selectedDateTime.copyWith(
-      year: dateTime.year,
-      month: dateTime.month,
-      day: dateTime.day,
-    );
-    widget.onDateChanged(_selectedDateTime);
   }
 
   void _onTimeChanged(DateTime dateTime) {
-    _selectedDateTime = _selectedDateTime.copyWith(
-      hour: dateTime.hour,
-      minute: dateTime.minute,
+    widget.onTimeChanged(
+      widget.selectedDateTime.copyWith(
+        hour: dateTime.hour,
+        minute: dateTime.minute,
+      ),
     );
-    widget.onTimeChanged(_selectedDateTime);
   }
 
-  void _onDayPeriodChanged(TimeOfDay newTime) {
-    final DateTime newDateTime = _selectedDateTime.copyWith(
-      hour: newTime.hour,
-      minute: _selectedDateTime.minute,
-    );
+  /// Switches the selected time to [newTime]'s day period, limited to
+  /// the allowed range.
+  @visibleForTesting
+  void onDayPeriodChanged(TimeOfDay newTime) {
+    final DateTime selected = widget.selectedDateTime;
+    final DateTime minimum = widget.minimumDateTime.truncateToMinutes();
+    final DateTime newDateTime = selected
+        .copyWith(hour: newTime.hour, minute: newTime.minute)
+        .clampTo(minimum, widget.maximumDateTime.truncateToMinutes());
+
     _timePickerKey.currentState?.scrollToDate(
       newDateTime,
-      _selectedDateTime,
-      false,
+      selected,
+      newDateTime == minimum,
     );
-    _selectedDateTime = newDateTime;
-
-    if (viewMode != CupertinoCalendarViewMode.timePicker) {
-      widget.onTimeChanged(_selectedDateTime);
-    }
+    widget.onTimeChanged(newDateTime);
   }
 
   void _onActionPressed(CupertinoCalendarAction action) {
+    final CupertinoPickerOverlayScope? overlay =
+        CupertinoPickerOverlayScope.maybeOf(context);
+    final DateTime selected = widget.selectedDateTime;
+
     switch (action) {
-      case final ConfirmCupertinoCalendarAction _:
-        action.onPressed?.call(_selectedDateTime);
-        Navigator.of(context).maybePop();
-        break;
-      case final CancelCupertinoCalendarAction _:
-        action.onPressed?.call();
-        Navigator.of(context).maybePop();
-        break;
+      case ConfirmCupertinoCalendarAction(
+        :final ValueChanged<DateTime>? onPressed,
+      ):
+        onPressed?.call(selected);
+        overlay?.close(selected);
+      case CancelCupertinoCalendarAction(:final VoidCallback? onPressed):
+        onPressed?.call();
+        overlay?.close(null);
     }
+  }
+
+  Widget _buildInnerPicker() {
+    return switch (_viewMode) {
+      CupertinoCalendarViewMode.yearPicker => CustomCupertinoDatePicker(
+        minimumDate: _minimumMonth,
+        maximumDate: _maximumMonth,
+        mode: CupertinoDatePickerMode.monthYear,
+        onDateTimeChanged: widget.onYearPickerChanged,
+        initialDateTime: _currentMonth,
+      ),
+      CupertinoCalendarViewMode.timePicker => CupertinoTimePickerWheel(
+        pickerKey: _timePickerKey,
+        onTimeChanged: _onTimeChanged,
+        minimumDateTime: widget.minimumDateTime.truncateToMinutes(),
+        maximumDateTime: widget.maximumDateTime.truncateToMinutes(),
+        initialDateTime: widget.selectedDateTime.truncateToMinutes(),
+        minuteInterval: widget.minuteInterval,
+        use24hFormat: widget.use24hFormat,
+      ),
+      CupertinoCalendarViewMode.monthPicker => const SizedBox(),
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     final List<CupertinoCalendarAction>? actions = widget.actions;
-    final bool withActions = actions != null && actions.isNotEmpty;
+    final bool isYearPickerVisible =
+        _viewMode == CupertinoCalendarViewMode.yearPicker;
+    final bool isTimePickerVisible =
+        _viewMode == CupertinoCalendarViewMode.timePicker;
 
     return CupertinoPickerMediaQuery(
       child: Column(
         children: <Widget>[
-          const SizedBox(height: 13.0),
+          const SizedBox(height: calendarHeaderTopSpacing),
           CupertinoPickerAnimatedCrossFade(
             firstChild: CalendarHeader(
               currentMonth: _currentMonth,
-              onNextMonthIconTapped:
-                  _isDisplayingLastMonth ? null : _handleNextMonth,
-              onPreviousMonthIconTapped:
-                  _isDisplayingFirstMonth ? null : _handlePreviousMonth,
-              onYearPickerStateChanged: _toggleYearPicker,
+              isYearPickerVisible: isYearPickerVisible,
+              onNextMonthIconTapped: _isDisplayingLastMonth
+                  ? null
+                  : _handleNextMonth,
+              onPreviousMonthIconTapped: _isDisplayingFirstMonth
+                  ? null
+                  : _handlePreviousMonth,
+              onYearPickerStateChanged: (bool isVisible) => _toggleViewMode(
+                CupertinoCalendarViewMode.yearPicker,
+                isVisible,
+              ),
               decoration: widget.headerDecoration,
             ),
-            crossFadeState: viewMode == CupertinoCalendarViewMode.timePicker
+            crossFadeState: isTimePickerVisible
                 ? CrossFadeState.showSecond
                 : CrossFadeState.showFirst,
           ),
           Expanded(
             child: CupertinoPickerAnimatedCrossFade(
-              crossFadeState:
-                  viewMode == CupertinoCalendarViewMode.yearPicker ||
-                          viewMode == CupertinoCalendarViewMode.timePicker
-                      ? CrossFadeState.showSecond
-                      : CrossFadeState.showFirst,
+              crossFadeState: isYearPickerVisible || isTimePickerVisible
+                  ? CrossFadeState.showSecond
+                  : CrossFadeState.showFirst,
               firstChild: Column(
                 children: <Widget>[
-                  const SizedBox(height: 11.0),
+                  const SizedBox(height: calendarWeekdaysTopSpacing),
                   CalendarWeekdays(
                     decoration: widget.weekdayDecoration,
                     firstDayOfWeekIndex: widget.firstDayOfWeekIndex,
@@ -293,41 +355,8 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
                 ],
               ),
               secondChild: Padding(
-                padding: const EdgeInsets.only(
-                  left: 7.0,
-                  right: 7.0,
-                  top: 10.0,
-                  bottom: 38.0,
-                ),
-                child: switch (viewMode) {
-                  CupertinoCalendarViewMode.yearPicker =>
-                    CustomCupertinoDatePicker(
-                      minimumDate: DateTime(
-                        widget.minimumDateTime.year,
-                        widget.minimumDateTime.month,
-                      ),
-                      maximumDate: DateTime(
-                        widget.maximumDateTime.year,
-                        widget.maximumDateTime.month,
-                      ),
-                      mode: CupertinoDatePickerMode.monthYear,
-                      onDateTimeChanged: _onYearPickerChanged,
-                      initialDateTime: _currentMonth,
-                    ),
-                  CupertinoCalendarViewMode.timePicker =>
-                    CupertinoTimePickerWheel(
-                      pickerKey: _timePickerKey,
-                      onTimeChanged: _onTimeChanged,
-                      minimumDateTime:
-                          widget.minimumDateTime.truncateToMinutes(),
-                      maximumDateTime:
-                          widget.maximumDateTime.truncateToMinutes(),
-                      initialDateTime: _selectedDateTime.truncateToMinutes(),
-                      minuteInterval: widget.minuteInterval,
-                      use24hFormat: widget.use24hFormat,
-                    ),
-                  _ => const SizedBox(),
-                },
+                padding: calendarInnerPickerPadding,
+                child: _buildInnerPicker(),
               ),
             ),
           ),
@@ -338,31 +367,27 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
                 label: widget.timeLabel,
                 type: widget.type,
                 mainColor: widget.mainColor,
-                time: TimeOfDay.fromDateTime(_selectedDateTime),
-                onTimePickerStateChanged: _toggleTimePicker,
-                onTimeChanged: _onDayPeriodChanged,
+                time: TimeOfDay.fromDateTime(widget.selectedDateTime),
+                isTimePickerVisible: isTimePickerVisible,
+                onTimePickerStateChanged: (bool isVisible) => _toggleViewMode(
+                  CupertinoCalendarViewMode.timePicker,
+                  isVisible,
+                ),
+                onTimeChanged: onDayPeriodChanged,
                 use24hFormat: widget.use24hFormat,
               ),
-              crossFadeState: viewMode == CupertinoCalendarViewMode.yearPicker
+              crossFadeState: isYearPickerVisible
                   ? CrossFadeState.showSecond
                   : CrossFadeState.showFirst,
             ),
           if (widget.type == CupertinoCalendarType.compact &&
-              withActions) ...<Widget>[
+              actions != null &&
+              actions.isNotEmpty) ...<Widget>[
             const CupertinoPickerDivider(horizontalIndent: 0.0),
-            CalendarActions(
-              actions: actions,
-              onPressed: _onActionPressed,
-            ),
+            CalendarActions(actions: actions, onPressed: _onActionPressed),
           ],
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _monthPageController.dispose();
-    super.dispose();
   }
 }

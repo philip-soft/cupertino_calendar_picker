@@ -1,0 +1,64 @@
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
+// Use of this source code is governed by a MIT-style license that can be
+// found in the LICENSE file.
+
+import 'package:alchemist/alchemist.dart';
+import 'package:cupertino_calendar_picker/src/src.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart' show TimeOfDay;
+
+import 'support/golden_harness.dart';
+
+void main() {
+  const TimeOfDay fixedTime = TimeOfDay(hour: 14, minute: 30);
+
+  Widget buildScenario(
+    Brightness brightness, {
+    bool use24h = false,
+    String? label,
+  }) {
+    return goldenApp(
+      brightness: brightness,
+      child: SizedBox(
+        width: 320.0,
+        child: Builder(
+          builder: (BuildContext context) {
+            return CalendarFooter(
+              time: fixedTime,
+              isTimePickerVisible: false,
+              onTimePickerStateChanged: (_) {},
+              onTimeChanged: (_) {},
+              type: CupertinoCalendarType.compact,
+              label: label,
+              mainColor: CupertinoColors.systemRed.resolveFrom(context),
+              decoration: CalendarFooterDecoration.withDynamicColor(context),
+              use24hFormat: use24h,
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  goldenTest(
+    'CalendarFooter renders time row with AM/PM in light and dark themes',
+    fileName: 'calendar_footer',
+    builder: () => lightDarkGroup(buildScenario),
+  );
+
+  goldenTest(
+    'CalendarFooter renders time row with label in light and dark themes',
+    fileName: 'calendar_footer_label',
+    builder: () => lightDarkGroup(
+      (Brightness brightness) => buildScenario(brightness, label: 'Time'),
+    ),
+  );
+
+  goldenTest(
+    'CalendarFooter renders time row in 24h format in light and dark themes',
+    fileName: 'calendar_footer_24h',
+    builder: () => lightDarkGroup(
+      (Brightness brightness) => buildScenario(brightness, use24h: true),
+    ),
+  );
+}

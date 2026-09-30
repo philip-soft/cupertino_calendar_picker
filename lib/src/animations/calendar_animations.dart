@@ -1,13 +1,11 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 abstract final class CalendarAnimations {
-  static TweenSequence<double> heightAnimation({
-    required double height,
-  }) {
+  static TweenSequence<double> heightAnimation({required double height}) {
     return TweenSequence<double>(
       generateHeightAnimation(
         height: height,
@@ -48,19 +46,14 @@ abstract final class CalendarAnimations {
     for (final double percentage in percentageList) {
       final double end = percentage * height / 100;
       yield TweenSequenceItem<double>(
-        tween: Tween<double>(
-          begin: begin,
-          end: end,
-        ),
+        tween: Tween<double>(begin: begin, end: end),
         weight: 1.0,
       );
       begin = end;
     }
   }
 
-  static TweenSequence<double> scaleAnimation({
-    required double maxScale,
-  }) {
+  static TweenSequence<double> scaleAnimation({required double maxScale}) {
     return TweenSequence<double>(
       generateScaleAnimation(
         maxScale: maxScale,
@@ -96,10 +89,7 @@ abstract final class CalendarAnimations {
     for (final double value in valueList) {
       final double end = value * maxScale;
       yield TweenSequenceItem<double>(
-        tween: Tween<double>(
-          begin: begin,
-          end: end,
-        ),
+        tween: Tween<double>(begin: begin, end: end),
         weight: 1.0,
       );
       begin = end;

@@ -1,0 +1,32 @@
+# pub ignores .gitignore in a directory that has a .pubignore, so its rules
+# are repeated here.
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+*.iml
+*.ipr
+*.iws
+.idea/
+/pubspec.lock
+**/doc/api/
+.dart_tool/
+build/
+coverage/
+
+# Not needed by package users.
+CLAUDE.md
+scripts/
+test/fonts/
+test/golden/goldens/
+
+# README loads its images from GitHub; only the pubspec screenshots are needed.
+doc/*
+!doc/cupertino_calendar_light_preview.png
+!doc/cupertino_calendar_dark_preview.png

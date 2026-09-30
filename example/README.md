@@ -1,16 +1,20 @@
-# cupertino_calendar_picker_example
+# cupertino_calendar_picker example
 
-A new Flutter project.
+An app that shows the widgets and functions of the [`cupertino_calendar_picker`](https://pub.dev/packages/cupertino_calendar_picker) package:
 
-## Getting Started
+* an inline `CupertinoCalendar`;
+* `CupertinoCalendarPickerButton` and `CupertinoTimePickerButton`;
+* `showCupertinoCalendarPicker` and `showCupertinoTimePicker` opened next to your own widgets;
+* Cancel and Confirm actions;
+* a picker with a custom color, the week starting on Monday and weekends disabled.
 
-This project is a starting point for a Flutter application.
+The **Layout** button in the navigation bar opens a playground for checking where the pickers open on different screens.
 
-A few resources to get you started if this is your first Flutter project:
+The code is in [`lib/main.dart`](lib/main.dart).
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Running
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+cd example
+flutter run
+```

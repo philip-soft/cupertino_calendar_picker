@@ -1,10 +1,9 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A button widget that triggers a Cupertino-style time picker when pressed.
 class CupertinoTimePickerButton extends StatefulWidget {
@@ -13,13 +12,15 @@ class CupertinoTimePickerButton extends StatefulWidget {
     this.initialTime,
     this.minimumTime,
     this.maximumTime,
-    this.offset = const Offset(0.0, 10.0),
+    this.horizontalSpacing = pickerDefaultHorizontalSpacing,
+    this.verticalSpacing = pickerDefaultVerticalSpacing,
+    this.offset = pickerDefaultOffset,
     this.barrierColor = Colors.transparent,
     super.key,
     this.onTimeChanged,
     this.onCompleted,
     this.containerDecoration,
-    this.mainColor = CupertinoColors.systemRed,
+    this.mainColor = calendarDefaultMainColor,
     this.buttonDecoration,
     this.minuteInterval = 1,
     this.onPressed,
@@ -42,25 +43,29 @@ class CupertinoTimePickerButton extends StatefulWidget {
   /// Called when the user selects a time in the picker.
   final ValueChanged<TimeOfDay>? onTimeChanged;
 
-  /// A callback that is triggered when the user completes the selection.
+  /// A callback that is triggered when the time picker is closed.
+  ///
+  /// It receives the result of [showCupertinoTimePicker].
   final ValueChanged<TimeOfDay?>? onCompleted;
 
   /// The initial [TimeOfDay] that the picker should display. If `null`,
   /// `TimeOfDay.now()` will be used instead.
+  ///
+  /// The time is limited to the [minimumTime]...[maximumTime] range.
   final TimeOfDay? initialTime;
 
   /// The spacing from the left and right sides of the screen.
-  /// Default is [15.0].
-  final double horizontalSpacing = 15.0;
+  /// Default is `15.0`.
+  final double horizontalSpacing;
 
   /// The spacing from the top and bottom sides of the screen.
-  /// Default is [15.0].
-  final double verticalSpacing = 15.0;
+  /// Default is `15.0`.
+  final double verticalSpacing;
 
-  /// The offset from the top/bottom of the [widgetRenderBox] location.
+  /// The offset from the top/bottom of this button.
   ///
   /// This controls the vertical position of the picker relative to
-  /// the [widgetRenderBox].
+  /// this button.
   /// Default is `Offset(0.0, 10.0)`.
   final Offset offset;
 
@@ -76,8 +81,8 @@ class CupertinoTimePickerButton extends StatefulWidget {
   /// Custom decoration for the picker button.
   final PickerButtonDecoration? buttonDecoration;
 
-  ///   The interval of minutes that the time picker should allow.
-  ///   The default value is 1 minute, meaning the user can select any minute of the hour.
+  /// The interval of minutes that the time picker should allow.
+  /// The default value is 1 minute, meaning the user can select any minute of the hour.
   final int minuteInterval;
 
   /// The primary color used within the button widget.
@@ -107,7 +112,7 @@ class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
   @override
   void initState() {
     super.initState();
-    _selectedTime = widget.initialTime ?? TimeOfDay.now();
+    _selectedTime = _initialTime();
   }
 
   @override
@@ -115,19 +120,43 @@ class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
     super.didUpdateWidget(oldWidget);
 
     if (widget.initialTime != oldWidget.initialTime) {
-      _selectedTime = widget.initialTime ?? TimeOfDay.now();
+      _selectedTime = _initialTime();
+    } else if (widget.minimumTime != oldWidget.minimumTime ||
+        widget.maximumTime != oldWidget.maximumTime) {
+      _clampSelectionToRange();
     }
   }
 
-  void _onTimeChanged(TimeOfDay time) {
-    setState(() {
-      _selectedTime = time;
-      widget.onTimeChanged?.call(time);
+  /// Limits the selection to a changed range and reports it if it moved.
+  void _clampSelectionToRange() {
+    final TimeOfDay selected = _selectedTime.clampTo(
+      widget.minimumTime,
+      widget.maximumTime,
+    );
+    if (selected == _selectedTime) return;
+
+    _selectedTime = selected;
+    // Listeners may call setState, which is not allowed during this build.
+    WidgetsBinding.instance.addPostFrameCallback((Duration _) {
+      if (mounted) widget.onTimeChanged?.call(selected);
     });
   }
 
-  Future<TimeOfDay?> _showPickerFunction(RenderBox? renderBox) async {
-    final TimeOfDay? val = await showCupertinoTimePicker(
+  TimeOfDay _initialTime() {
+    return (widget.initialTime ?? TimeOfDay.now()).clampTo(
+      widget.minimumTime,
+      widget.maximumTime,
+    );
+  }
+
+  void _onTimeChanged(TimeOfDay time) {
+    // The overlay is displayed in its own route and can outlive the button.
+    if (mounted) setState(() => _selectedTime = time);
+    widget.onTimeChanged?.call(time);
+  }
+
+  Future<TimeOfDay?> _showPicker(RenderBox? renderBox) async {
+    final TimeOfDay? result = await showCupertinoTimePicker(
       context,
       widgetRenderBox: renderBox,
       initialTime: _selectedTime,
@@ -143,8 +172,8 @@ class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
       use24hFormat: widget.use24hFormat,
       useRootNavigator: widget.useRootNavigator,
     );
-    widget.onCompleted?.call(val);
-    return val;
+    widget.onCompleted?.call(result);
+    return result;
   }
 
   @override
@@ -157,7 +186,7 @@ class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
       decoration: widget.buttonDecoration,
       mainColor: widget.mainColor,
       onPressed: widget.onPressed,
-      showPickerFunction: _showPickerFunction,
+      showPickerFunction: _showPicker,
     );
   }
 }

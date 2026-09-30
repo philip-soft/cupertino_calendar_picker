@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -6,9 +6,11 @@
 ///
 /// This enum defines the display style of the calendar.
 enum CupertinoCalendarType {
-  /// A compact version of the calendar.
+  /// The calendar displayed in an overlay.
+  ///
+  /// Supports actions and displays the AM/PM switcher in the 12-hour format.
   compact,
 
-  /// An inline version of the calendar.
-  inline;
+  /// The calendar embedded in a screen.
+  inline,
 }

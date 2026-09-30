@@ -1,12 +1,14 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_calendar_picker/src/src.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
-const CupertinoDynamicColor calendarMontDateColor = CupertinoColors.label;
+const CupertinoDynamicColor calendarMonthDateColor = CupertinoColors.label;
 const TextStyle calendarMonthDateStyle = TextStyle(
-  color: calendarMontDateColor,
+  fontFamily: 'CupertinoSystemText',
+  color: calendarMonthDateColor,
   fontWeight: FontWeight.w600,
   fontSize: 17.0,
   letterSpacing: -0.5,
@@ -18,11 +20,16 @@ const CupertinoDynamicColor calendarBackwardDisabledButtonColor =
     CupertinoColors.opaqueSeparator;
 
 /// A decoration class for the calendar's header.
+@immutable
 class CalendarHeaderDecoration {
   /// Creates a calendar's header decoration class with default values
   /// for non-provided parameters.
   ///
-  /// [mainColor] is used only if any other color is not provided.
+  /// [mainColor] is used only if any other color is not provided and
+  /// defaults to [CupertinoColors.systemRed].
+  ///
+  /// [CupertinoDynamicColor]s are resolved against the ambient brightness
+  /// when the header is built.
   factory CalendarHeaderDecoration({
     Color? mainColor,
     TextStyle? monthDateStyle,
@@ -32,25 +39,26 @@ class CalendarHeaderDecoration {
     Color? backwardDisabledButtonColor,
     Color? forwardDisabledButtonColor,
   }) {
+    final Color color = mainColor ?? calendarDefaultMainColor;
     return CalendarHeaderDecoration._(
       monthDateStyle: monthDateStyle ?? calendarMonthDateStyle,
-      monthDateArrowColor: monthDateArrowColor ?? mainColor,
-      forwardButtonColor: forwardButtonColor ?? mainColor,
-      backwardButtonColor: backwardButtonColor ?? mainColor,
+      monthDateArrowColor: monthDateArrowColor ?? color,
+      forwardButtonColor: forwardButtonColor ?? color,
+      backwardButtonColor: backwardButtonColor ?? color,
       backwardDisabledButtonColor:
-          backwardDisabledButtonColor ?? calendarForwardDisabledButtonColor,
+          backwardDisabledButtonColor ?? calendarBackwardDisabledButtonColor,
       forwardDisabledButtonColor:
           forwardDisabledButtonColor ?? calendarForwardDisabledButtonColor,
     );
   }
 
   const CalendarHeaderDecoration._({
-    this.monthDateStyle,
-    this.monthDateArrowColor,
-    this.forwardButtonColor,
-    this.backwardButtonColor,
-    this.backwardDisabledButtonColor,
-    this.forwardDisabledButtonColor,
+    required this.monthDateStyle,
+    required this.monthDateArrowColor,
+    required this.forwardButtonColor,
+    required this.backwardButtonColor,
+    required this.backwardDisabledButtonColor,
+    required this.forwardDisabledButtonColor,
   });
 
   /// Creates a calendar's header decoration class with default values
@@ -58,7 +66,8 @@ class CalendarHeaderDecoration {
   ///
   /// Applies the [CupertinoDynamicColor.resolve] method for colors.
   ///
-  /// [mainColor] is used only if any other color is not provided.
+  /// [mainColor] is used only if any other color is not provided and
+  /// defaults to [CupertinoColors.systemRed].
   factory CalendarHeaderDecoration.withDynamicColor(
     BuildContext context, {
     Color? mainColor,
@@ -69,32 +78,32 @@ class CalendarHeaderDecoration {
     CupertinoDynamicColor? backwardDisabledButtonColor,
     CupertinoDynamicColor? forwardDisabledButtonColor,
   }) {
+    final Color color = mainColor ?? calendarDefaultMainColor;
     final TextStyle style = monthDateStyle ?? calendarMonthDateStyle;
     return CalendarHeaderDecoration(
-      mainColor: mainColor,
       monthDateStyle: style.copyWith(
         color: CupertinoDynamicColor.resolve(
-          style.color ?? calendarMontDateColor,
+          style.color ?? calendarMonthDateColor,
           context,
         ),
       ),
-      monthDateArrowColor: CupertinoDynamicColor.maybeResolve(
-        monthDateArrowColor ?? mainColor,
+      monthDateArrowColor: CupertinoDynamicColor.resolve(
+        monthDateArrowColor ?? color,
         context,
       ),
-      forwardButtonColor: CupertinoDynamicColor.maybeResolve(
-        forwardButtonColor ?? mainColor,
+      forwardButtonColor: CupertinoDynamicColor.resolve(
+        forwardButtonColor ?? color,
         context,
       ),
-      backwardButtonColor: CupertinoDynamicColor.maybeResolve(
-        backwardButtonColor ?? mainColor,
+      backwardButtonColor: CupertinoDynamicColor.resolve(
+        backwardButtonColor ?? color,
         context,
       ),
-      forwardDisabledButtonColor: CupertinoDynamicColor.maybeResolve(
+      forwardDisabledButtonColor: CupertinoDynamicColor.resolve(
         forwardDisabledButtonColor ?? calendarForwardDisabledButtonColor,
         context,
       ),
-      backwardDisabledButtonColor: CupertinoDynamicColor.maybeResolve(
+      backwardDisabledButtonColor: CupertinoDynamicColor.resolve(
         backwardDisabledButtonColor ?? calendarBackwardDisabledButtonColor,
         context,
       ),
@@ -102,23 +111,23 @@ class CalendarHeaderDecoration {
   }
 
   /// The [TextStyle] of the calendar's month date at the top left.
-  final TextStyle? monthDateStyle;
+  final TextStyle monthDateStyle;
 
   /// The [Color] of the calendar's month date arrow
   /// on the right of the month date.
-  final Color? monthDateArrowColor;
+  final Color monthDateArrowColor;
 
   /// The [Color] of the calendar's forward arrow at the top right.
-  final Color? forwardButtonColor;
+  final Color forwardButtonColor;
 
   /// The [Color] of the calendar's backward arrow at the top right.
-  final Color? backwardButtonColor;
+  final Color backwardButtonColor;
 
   /// The [Color] of the calendar's disabled backward arrow at the top right.
-  final Color? backwardDisabledButtonColor;
+  final Color backwardDisabledButtonColor;
 
   /// The [Color] of the calendar's disabled forward arrow at the top right.
-  final Color? forwardDisabledButtonColor;
+  final Color forwardDisabledButtonColor;
 
   /// Creates a copy of the class with the provided parameters.
   CalendarHeaderDecoration copyWith({
@@ -129,7 +138,7 @@ class CalendarHeaderDecoration {
     Color? backwardDisabledButtonColor,
     Color? forwardDisabledButtonColor,
   }) {
-    return CalendarHeaderDecoration(
+    return CalendarHeaderDecoration._(
       monthDateStyle: monthDateStyle ?? this.monthDateStyle,
       monthDateArrowColor: monthDateArrowColor ?? this.monthDateArrowColor,
       forwardButtonColor: forwardButtonColor ?? this.forwardButtonColor,
@@ -138,6 +147,30 @@ class CalendarHeaderDecoration {
           backwardDisabledButtonColor ?? this.backwardDisabledButtonColor,
       forwardDisabledButtonColor:
           forwardDisabledButtonColor ?? this.forwardDisabledButtonColor,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is CalendarHeaderDecoration &&
+        other.monthDateStyle == monthDateStyle &&
+        other.monthDateArrowColor == monthDateArrowColor &&
+        other.forwardButtonColor == forwardButtonColor &&
+        other.backwardButtonColor == backwardButtonColor &&
+        other.backwardDisabledButtonColor == backwardDisabledButtonColor &&
+        other.forwardDisabledButtonColor == forwardDisabledButtonColor;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      monthDateStyle,
+      monthDateArrowColor,
+      forwardButtonColor,
+      backwardButtonColor,
+      backwardDisabledButtonColor,
+      forwardDisabledButtonColor,
     );
   }
 }

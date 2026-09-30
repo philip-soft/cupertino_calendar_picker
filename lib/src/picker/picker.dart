@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Philip Softworks. All rights reserved.
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
@@ -8,4 +8,6 @@ export 'cupertino_picker_animated_cross_fade.dart';
 export 'cupertino_picker_container.dart';
 export 'cupertino_picker_media_query.dart';
 export 'cupertino_picker_overlay.dart';
+export 'cupertino_picker_tap_target.dart';
 export 'dividers/dividers.dart';
+export 'picker_overlay_layout.dart';
