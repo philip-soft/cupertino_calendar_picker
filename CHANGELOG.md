@@ -1,7 +1,5 @@
 ## 3.0.0
 
-See [Migrating from 2.x](https://pub.dev/packages/cupertino_calendar_picker#migrating-from-2x) for a short upgrade guide.
-
 ### Breaking changes
 
 * Migrated to the standalone [`cupertino_ui`](https://pub.dev/packages/cupertino_ui) and [`material_ui`](https://pub.dev/packages/material_ui) packages; apps must migrate as well (see the [migration guide](https://docs.flutter.dev/release/breaking-changes/material-ui-and-cupertino-ui)). The `flutter_localizations` dependency was removed; use `GlobalMaterialLocalizations.delegates` from `material_ui`.
