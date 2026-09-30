@@ -24,8 +24,13 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   TolerantGoldenFileComparator.install();
 
   return AlchemistConfig.runWithConfig(
-    config: const AlchemistConfig(
-      ciGoldensConfig: CiGoldensConfig(obscureText: false),
+    config: AlchemistConfig(
+      ciGoldensConfig: const CiGoldensConfig(obscureText: false),
+      // Platform goldens are only recorded on macOS; other hosts, such as the
+      // Linux CI runner, compare the CI goldens alone.
+      platformGoldensConfig: PlatformGoldensConfig(
+        platforms: <HostPlatform>{HostPlatform.macOS},
+      ),
     ),
     run: testMain,
   );

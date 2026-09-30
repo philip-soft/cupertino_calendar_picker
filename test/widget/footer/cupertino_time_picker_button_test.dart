@@ -135,6 +135,31 @@ void main() {
       },
     );
 
+    testWidgets('clamps and reports the selection when maximumTime shrinks', (
+      WidgetTester tester,
+    ) async {
+      final List<TimeOfDay> changes = <TimeOfDay>[];
+      Widget build(TimeOfDay maximumTime) {
+        return wrapWithApp(
+          CupertinoTimePickerButton(
+            initialTime: const TimeOfDay(hour: 18, minute: 0),
+            maximumTime: maximumTime,
+            use24hFormat: true,
+            onTimeChanged: changes.add,
+          ),
+        );
+      }
+
+      await tester.pumpWidget(build(const TimeOfDay(hour: 23, minute: 59)));
+      expect(find.text('18:00'), findsOneWidget);
+
+      await tester.pumpWidget(build(const TimeOfDay(hour: 12, minute: 30)));
+      await tester.pump();
+
+      expect(find.text('12:30'), findsOneWidget);
+      expect(changes, <TimeOfDay>[const TimeOfDay(hour: 12, minute: 30)]);
+    });
+
     testWidgets('uses CupertinoPickerButton internally', (
       WidgetTester tester,
     ) async {

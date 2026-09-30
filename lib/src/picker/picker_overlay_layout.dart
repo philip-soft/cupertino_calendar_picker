@@ -66,23 +66,18 @@ class PickerOverlayLayout {
       return PickerOverlayLayout._centered(size, availableArea);
     }
 
-    final double halfWidth = size.width / 2;
-    final bool fitsHorizontally = availableArea.width >= size.width;
-    // A picker wider than the area is scaled around its center to fit it.
-    final double left = fitsHorizontally
-        ? (anchor.center.dx - halfWidth + offset.dx).clamp(
-            availableArea.left,
-            availableArea.right - size.width,
-          )
-        : availableArea.center.dx - halfWidth;
-    final double xAlignment = fitsHorizontally
-        ? ((anchor.center.dx - (left + halfWidth)) / halfWidth).clamp(-1.0, 1.0)
-        : 0.0;
+    final double scale = _fitScale(
+      size,
+      Size(availableArea.width, verticalSpace),
+    );
+    final (double left, double xAlignment) = availableArea.width >= size.width
+        ? _placeNextToAnchor(anchor, availableArea, size.width, offset.dx)
+        : _placeScaledToWidth(anchor, availableArea, size.width, scale);
 
     return PickerOverlayLayout(
       left: left,
       top: opensAbove ? aboveBottom - size.height : belowTop,
-      scale: _fitScale(size, Size(availableArea.width, verticalSpace)),
+      scale: scale,
       scaleAlignment: Alignment(xAlignment, opensAbove ? 1.0 : -1.0),
     );
   }
@@ -94,6 +89,47 @@ class PickerOverlayLayout {
         scale: _fitScale(size, availableArea.size),
         scaleAlignment: Alignment.center,
       );
+
+  /// Centers the picker on the anchor, limited to the area, and returns its
+  /// left edge with the horizontal alignment pointing at the anchor.
+  static (double, double) _placeNextToAnchor(
+    Rect anchor,
+    Rect area,
+    double width,
+    double offsetX,
+  ) {
+    final double halfWidth = width / 2;
+    final double left = (anchor.center.dx - halfWidth + offsetX).clamp(
+      area.left,
+      area.right - width,
+    );
+    final double xAlignment =
+        ((anchor.center.dx - (left + halfWidth)) / halfWidth).clamp(-1.0, 1.0);
+    return (left, xAlignment);
+  }
+
+  /// Places a picker wider than the area so that, once scaled, it lies within
+  /// the area and grows from the point closest to the anchor.
+  static (double, double) _placeScaledToWidth(
+    Rect anchor,
+    Rect area,
+    double width,
+    double scale,
+  ) {
+    final double scaledWidth = width * scale;
+    if (scaledWidth <= 0.0) return (area.center.dx - width / 2, 0.0);
+
+    final double scaledLeft = (anchor.center.dx - scaledWidth / 2).clamp(
+      area.left,
+      area.right - scaledWidth,
+    );
+    final double pivotX = anchor.center.dx.clamp(
+      scaledLeft,
+      scaledLeft + scaledWidth,
+    );
+    final double pivotFraction = (pivotX - scaledLeft) / scaledWidth;
+    return (pivotX - pivotFraction * width, pivotFraction * 2 - 1);
+  }
 
   static double _fitScale(Size size, Size available) {
     final double widthScale = available.width / size.width;

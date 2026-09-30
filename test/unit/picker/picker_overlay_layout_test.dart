@@ -64,15 +64,21 @@ void main() {
       expect(layout.left, 35.0);
     });
 
-    test('centers and scales down when narrower than the picker', () {
-      final PickerOverlayLayout layout = _compute(
-        anchor: const Rect.fromLTWH(10.0, 100.0, 40.0, 40.0),
-        bounds: const Size(230.0, 800.0),
-      );
+    test(
+      'scales down and grows from the anchor when narrower than the picker',
+      () {
+        final PickerOverlayLayout layout = _compute(
+          anchor: const Rect.fromLTWH(10.0, 100.0, 40.0, 40.0),
+          bounds: const Size(230.0, 800.0),
+        );
 
-      expect(layout.left, (230.0 - 320.0) / 2);
-      expect(layout.scale, closeTo(200.0 / 320.0, 0.0001));
-    });
+        expect(layout.scale, closeTo(200.0 / 320.0, 0.0001));
+        // Grows from the anchor's center.
+        final Rect box =
+            Offset(layout.left, layout.top) & const Size(320.0, 332.0);
+        expect(layout.scaleAlignment.withinRect(box).dx, closeTo(30.0, 0.0001));
+      },
+    );
 
     test('applies the horizontal offset', () {
       final PickerOverlayLayout layout = _compute(
@@ -100,6 +106,22 @@ void main() {
 
       // Above: 300 - 10 - 15 = 275 is more than below: 585 - 340 - 10 = 235.
       expect(layout.scale, closeTo(275.0 / 332.0, 0.0001));
+    });
+
+    test('stays finite when the spacing leaves no width', () {
+      final PickerOverlayLayout layout = PickerOverlayLayout.compute(
+        anchor: const Rect.fromLTWH(160.0, 100.0, 80.0, 40.0),
+        bounds: const Size(400.0, 800.0),
+        padding: EdgeInsets.zero,
+        size: const Size(320.0, 332.0),
+        horizontalSpacing: 200.0,
+        verticalSpacing: 15.0,
+        offset: const Offset(0.0, 10.0),
+      );
+
+      expect(layout.scale, 0.0);
+      expect(layout.left.isFinite, isTrue);
+      expect(layout.scaleAlignment.x.isFinite, isTrue);
     });
 
     test('centers within the bounds without an anchor', () {

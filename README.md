@@ -1,3 +1,6 @@
+[![pub package](https://img.shields.io/pub/v/cupertino_calendar_picker.svg)](https://pub.dev/packages/cupertino_calendar_picker)
+[![CI](https://github.com/philip-soft/cupertino_calendar_picker/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/philip-soft/cupertino_calendar_picker/actions/workflows/ci.yml)
+
 The package provides sleek and stylish Cupertino calendar widgets designed to mimic the aesthetics of iOS. With smooth animations and intuitive user interactions, it seamlessly integrates into your Flutter app to deliver a delightful user experience.
 
 <p>

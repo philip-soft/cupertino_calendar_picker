@@ -5,8 +5,8 @@
 * Removed the `flutter_localizations` dependency; use `GlobalMaterialLocalizations.delegates` from `package:material_ui` instead.
 * Add accessibility support for screen readers (WCAG/BITV compliance) (Thanks to [@mikailsyr](https://github.com/philip-soft/cupertino_calendar_picker/pull/60))
 * **Breaking:** Fixed the misspelled `CalendarDismissBehavior.onOusideTapOrDateSelect`, `CalendarDismissBehavior.hasOusideTapDismiss` and `PickerBackgroundType.transparentAndBlured`, renamed to `onOutsideTapOrDateSelect`, `hasOutsideTapDismiss` and `transparentAndBlurred`.
-* **Breaking:** `CancelCupertinoCalendarAction.onPressed` is now a `VoidCallback` and `ConfirmCupertinoCalendarAction.onPressed` is a `ValueChanged<DateTime>`, instead of an untyped `Function`.
-* **Breaking:** Action labels default to the localized "Cancel" and "OK" labels. `CupertinoCalendarAction.label` is nullable; use `effectiveLabel` to get the displayed label.
+* **Breaking:** `CancelCupertinoCalendarAction.onPressed` is now a `VoidCallback` and `ConfirmCupertinoCalendarAction.onPressed` is a `ValueChanged<DateTime>`, instead of an untyped `Function`. `onPressed` was removed from the `CupertinoCalendarAction` base class.
+* **Breaking:** Action labels default to the localized "Cancel" and "OK" labels instead of `'Cancel'` and `'Done'`. `CupertinoCalendarAction.label` is nullable; use `effectiveLabel` to get the displayed label.
 * **Breaking:** Decoration fields are non-nullable where a default always exists, and `copyWith` of the selected day styles keeps `backgroundCircleColor`. `CalendarHeaderDecoration`, `CalendarMonthPickerSelectedDayStyle`, `CalendarMonthPickerSelectedCurrentDayStyle` and `CalendarMonthPickerCurrentDayStyle` default to `CupertinoColors.systemRed` when no `mainColor` is given.
 * **Breaking:** `widgetRenderBox` of `showCupertinoCalendarPicker` and `showCupertinoTimePicker` is optional; without it the picker is centered.
 * **Breaking:** Cross-type equality of actions was removed: a `CancelCupertinoCalendarAction` never equals a `ConfirmCupertinoCalendarAction`.
@@ -21,13 +21,15 @@
 * Fixed the horizontal `offset` moving the picker past `horizontalSpacing` when it is pinned to a screen edge.
 * Fixed `CupertinoCalendarPickerButton` and `CupertinoTimePickerButton` filling the whole width of a `Center`, `Align` or `Column`. The buttons hug their title unless the parent forces a width.
 * Fixed the picker staying at its old position when the screen rotates while it is open.
-* Fixed the picker crossing `horizontalSpacing` on screens narrower than the picker.
+* Fixed the picker crossing `horizontalSpacing` on screens narrower than the picker. It is scaled to fit and still grows from its anchor.
 * Fixed the picker being displayed partially off the screen or under the safe area when its anchor is partially outside of the screen.
 * Fixed the picker opened above its anchor being placed closer to it than `offset`.
 * The picker is centered on the screen when the space next to its anchor fits it only below half of its size, e.g. for a button in the middle of a landscape screen. Previously it was shrunk, down to being invisible for an anchor covering the screen.
 * Fixed the day overflowing into the next month when switching to a shorter month in the year picker.
 * Fixed the picker being misplaced in a nested navigator (`useRootNavigator: false`) and the right safe area being ignored when the picker is pinned to the right edge.
 * Fixed `PickerContainerDecoration.copyWith` resetting `backgroundType`.
+* Fixed `CalendarMonthPickerDecoration.copyWith` dropping the `defaultDayStyle`, `currentDayStyle` and `selectedCurrentDayStyle` that were not passed.
+* Fixed a custom `pressedColor` of `CalendarActionDecoration.withDynamicColor` not being resolved for the current brightness.
 * Fixed dynamic colors of decorations created without a `BuildContext` not adapting to dark mode.
 * Fixed a leak of `CurvedAnimation`s in the picker container.
 * Fixed `PickerContainerDecoration` turning a `CupertinoDynamicColor` into a light-only color when limiting its opacity, e.g. `PickerContainerDecoration()` stayed white in dark mode. `PickerContainerDecoration.withDynamicColor` now only limits the opacity of a custom color instead of raising it.
@@ -43,7 +45,8 @@
 * Added `horizontalSpacing` and `verticalSpacing` to `CupertinoCalendarPickerButton` and `CupertinoTimePickerButton`.
 * Added semantics to the days, header, footer, actions, picker buttons and the dismiss barrier, and keyboard activation to the buttons.
 * Added value equality to decoration classes.
-* `CupertinoCalendar` has a `const` constructor.
+* `CalendarDismissBehavior.onActionTap` asserts that at least one action is provided, since otherwise the calendar can only be closed by the back gesture.
+* `CupertinoCalendar` and `CalendarMonthPickerDecoration` have `const` constructors.
 
 ## 2.2.6
 

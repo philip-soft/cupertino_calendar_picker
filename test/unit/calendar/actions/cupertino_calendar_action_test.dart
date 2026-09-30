@@ -94,11 +94,35 @@ void main() {
     });
 
     test('two actions with identical fields are equal', () {
-      const ConfirmCupertinoCalendarAction a = ConfirmCupertinoCalendarAction();
-      const ConfirmCupertinoCalendarAction b = ConfirmCupertinoCalendarAction();
+      void onPressed(DateTime _) {}
+      // Not const, so that the instances are not canonicalized into one.
+      final ConfirmCupertinoCalendarAction a = ConfirmCupertinoCalendarAction(
+        label: 'OK',
+        onPressed: onPressed,
+      );
+      final ConfirmCupertinoCalendarAction b = ConfirmCupertinoCalendarAction(
+        label: 'OK',
+        onPressed: onPressed,
+      );
 
+      expect(identical(a, b), isFalse);
       expect(a, b);
       expect(a.hashCode, b.hashCode);
+    });
+
+    test('actions with different callbacks or labels are not equal', () {
+      final ConfirmCupertinoCalendarAction a = ConfirmCupertinoCalendarAction(
+        onPressed: (DateTime _) {},
+      );
+      final ConfirmCupertinoCalendarAction b = ConfirmCupertinoCalendarAction(
+        onPressed: (DateTime _) {},
+      );
+
+      expect(a, isNot(b));
+      expect(
+        const ConfirmCupertinoCalendarAction(label: 'A'),
+        isNot(const ConfirmCupertinoCalendarAction(label: 'B')),
+      );
     });
   });
 

@@ -172,6 +172,37 @@ void main() {
 
       _expectWithin(pickerVisualRect(layout, size), narrow.pickerArea);
       expect(layout.scale, closeTo(200.0 / 320.0, _epsilon));
+      final Rect box = Offset(layout.left, layout.top) & size;
+      expect(
+        layout.scaleAlignment.withinRect(box).dx,
+        closeTo(anchor.center.dx, _epsilon),
+      );
     });
+  });
+  group('PickerOverlayLayout on a screen narrower than the picker', () {
+    const TestScreen narrow = TestScreen(
+      name: 'narrow',
+      size: Size(260.0, 700.0),
+      padding: EdgeInsets.only(top: 20.0),
+    );
+    const Size size = Size(calendarWidth, calendarDatePickerHeight);
+
+    for (final MapEntry<String, Alignment> position
+        in anchorPositions.entries) {
+      test('grows from the anchor at the ${position.key}', () {
+        final Rect anchor = narrow.anchorRect(position.value, _anchorSize);
+
+        final PickerOverlayLayout layout = _compute(narrow, anchor, size);
+        final Rect visual = pickerVisualRect(layout, size);
+        final Rect box = Offset(layout.left, layout.top) & size;
+
+        _expectInvariants(narrow, anchor, size);
+        expect(layout.scale, lessThan(1.0));
+        expect(
+          layout.scaleAlignment.withinRect(box).dx,
+          closeTo(anchor.center.dx.clamp(visual.left, visual.right), _epsilon),
+        );
+      });
+    }
   });
 }
