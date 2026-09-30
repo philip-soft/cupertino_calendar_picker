@@ -12,9 +12,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Run tests (from repo root)
 flutter test
 
-# Run tests for the example app
-cd example && flutter test
-
 # Regenerate golden images (after an intended visual change)
 flutter test --update-goldens test/golden
 
