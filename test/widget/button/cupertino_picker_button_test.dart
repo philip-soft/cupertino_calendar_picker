@@ -10,6 +10,18 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'test_helpers.dart';
 
+double _titleOpacity(WidgetTester tester) {
+  return tester
+      .widget<FadeTransition>(
+        find.descendant(
+          of: find.byType(CupertinoPickerTapTarget),
+          matching: find.byType(FadeTransition),
+        ),
+      )
+      .opacity
+      .value;
+}
+
 void main() {
   group('CupertinoPickerButton', () {
     testWidgets('renders the title text', (WidgetTester tester) async {
@@ -24,6 +36,55 @@ void main() {
       );
 
       expect(find.text('Tap me'), findsOneWidget);
+    });
+
+    testWidgets('hugs its title when centered', (WidgetTester tester) async {
+      // Arrange & Act
+      await tester.pumpWidget(
+        wrapWithApp(
+          CupertinoPickerButton<int?>(
+            title: 'Tap me',
+            showPickerFunction: (RenderBox? _) async => 0,
+            onPressed: null,
+          ),
+        ),
+      );
+
+      // Assert
+      final double buttonWidth = tester
+          .getSize(find.byType(CupertinoPickerButton<int?>))
+          .width;
+      final double titleWidth = tester.getSize(find.text('Tap me')).width;
+      expect(
+        buttonWidth,
+        closeTo(titleWidth + pickerButtonHorizontalPadding * 2, 0.01),
+      );
+    });
+
+    testWidgets('fills a width forced by its parent', (
+      WidgetTester tester,
+    ) async {
+      // Arrange & Act
+      await tester.pumpWidget(
+        wrapWithApp(
+          SizedBox(
+            width: 300.0,
+            child: CupertinoPickerButton<int?>(
+              title: 'Tap me',
+              showPickerFunction: (RenderBox? _) async => 0,
+              onPressed: null,
+            ),
+          ),
+        ),
+      );
+
+      // Assert
+      final Finder button = find.byType(CupertinoPickerButton<int?>);
+      expect(tester.getSize(button).width, 300.0);
+      expect(
+        tester.getCenter(find.text('Tap me')).dx,
+        closeTo(tester.getCenter(button).dx, 0.01),
+      );
     });
 
     testWidgets('invokes onPressed and showPickerFunction when tapped', (
@@ -114,32 +175,30 @@ void main() {
       expect(textStyle.style.fontSize, 22.0);
     });
 
-    testWidgets(
-      'cancelling a tap-down still animates back via _handleTapCancel',
-      (WidgetTester tester) async {
-        await tester.pumpWidget(
-          wrapWithApp(
-            CupertinoPickerButton<int?>(
-              title: 'Cancel me',
-              onPressed: null,
-              showPickerFunction: (RenderBox? _) async => 0,
-            ),
+    testWidgets('cancelling a tap-down restores the title opacity', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWithApp(
+          CupertinoPickerButton<int?>(
+            title: 'Cancel me',
+            onPressed: null,
+            showPickerFunction: (RenderBox? _) async => 0,
           ),
-        );
+        ),
+      );
 
-        final TestGesture gesture = await tester.startGesture(
-          tester.getCenter(find.text('Cancel me')),
-        );
-        await tester.pump();
-        await gesture.moveBy(const Offset(0, 500));
-        await tester.pump();
-        await gesture.cancel();
-        await tester.pumpAndSettle();
+      final TestGesture gesture = await tester.startGesture(
+        tester.getCenter(find.text('Cancel me')),
+      );
+      await tester.pump();
+      await gesture.moveBy(const Offset(0, 500));
+      await tester.pump();
+      await gesture.cancel();
+      await tester.pumpAndSettle();
 
-        expect(tester.takeException(), isNull);
-        expect(find.byType(FadeTransition), findsWidgets);
-      },
-    );
+      expect(_titleOpacity(tester), 1.0);
+    });
 
     testWidgets('animates opacity on tap-down', (WidgetTester tester) async {
       await tester.pumpWidget(
@@ -158,14 +217,14 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
 
-      expect(find.byType(FadeTransition), findsWidgets);
+      expect(_titleOpacity(tester), lessThan(1.0));
 
       await gesture.up();
       await tester.pumpAndSettle();
     });
 
     testWidgets(
-      'completes fade-out animation cycle including .then callback (line 116)',
+      'restores the title opacity after release while the picker opens',
       (WidgetTester tester) async {
         final Completer<int?> completer = Completer<int?>();
 
@@ -187,42 +246,40 @@ void main() {
         await tester.pump(const Duration(milliseconds: 1200));
         await tester.pumpAndSettle();
 
-        expect(tester.takeException(), isNull);
-        expect(find.byType(FadeTransition), findsWidgets);
+        expect(_titleOpacity(tester), 1.0);
 
         completer.complete(null);
         await tester.pumpAndSettle();
       },
     );
 
-    testWidgets(
-      'applies mainColor to text while picker is open (isCalendarOpened == true)',
-      (WidgetTester tester) async {
-        final Completer<int?> completer = Completer<int?>();
+    testWidgets('applies mainColor to the title while the picker is open', (
+      WidgetTester tester,
+    ) async {
+      final Completer<int?> completer = Completer<int?>();
 
-        await tester.pumpWidget(
-          wrapWithApp(
-            CupertinoPickerButton<int?>(
-              title: 'Open',
-              mainColor: CupertinoColors.activeBlue,
-              onPressed: null,
-              showPickerFunction: (RenderBox? _) => completer.future,
-            ),
+      await tester.pumpWidget(
+        wrapWithApp(
+          CupertinoPickerButton<int?>(
+            title: 'Open',
+            mainColor: CupertinoColors.activeBlue,
+            onPressed: null,
+            showPickerFunction: (RenderBox? _) => completer.future,
           ),
-        );
+        ),
+      );
 
-        await tester.tap(find.text('Open'));
-        await tester.pump();
+      await tester.tap(find.text('Open'));
+      await tester.pump();
 
-        final AnimatedDefaultTextStyle textWidget = tester
-            .widget<AnimatedDefaultTextStyle>(
-              find.byType(AnimatedDefaultTextStyle),
-            );
-        expect(textWidget.style.color, CupertinoColors.activeBlue);
+      final AnimatedDefaultTextStyle textWidget = tester
+          .widget<AnimatedDefaultTextStyle>(
+            find.byType(AnimatedDefaultTextStyle),
+          );
+      expect(textWidget.style.color, CupertinoColors.activeBlue);
 
-        completer.complete(null);
-        await tester.pumpAndSettle();
-      },
-    );
+      completer.complete(null);
+      await tester.pumpAndSettle();
+    });
   });
 }

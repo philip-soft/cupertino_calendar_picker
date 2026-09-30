@@ -2,8 +2,11 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:flutter/semantics.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The calendar's layout: header, weekdays, month pages, the inner
@@ -161,6 +164,22 @@ class CupertinoCalendarPickerState extends State<CupertinoCalendarPicker> {
 
     setState(() => _currentMonth = monthDate);
     widget.onDisplayedMonthChanged(monthDate);
+    // The inner pickers announce their own values.
+    if (_viewMode == CupertinoCalendarViewMode.monthPicker) {
+      _announceMonth(monthDate);
+    }
+  }
+
+  /// Screen reader focus stays on the control that switched the month, so the
+  /// new month would otherwise go unnoticed.
+  void _announceMonth(DateTime month) {
+    unawaited(
+      SemanticsService.sendAnnouncement(
+        View.of(context),
+        month.monthYearFormat(context),
+        Directionality.of(context),
+      ),
+    );
   }
 
   void _handleNextMonth() {

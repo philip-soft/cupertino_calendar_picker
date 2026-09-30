@@ -107,5 +107,33 @@ void main() {
 
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('rounds an initial time down to the minute interval', (
+      WidgetTester tester,
+    ) async {
+      // Arrange & Act
+      await tester.pumpWidget(
+        wrapWithApp(
+          SizedBox(
+            height: 160.0,
+            width: 231.0,
+            child: CupertinoTimePickerWheel(
+              initialDateTime: DateTime(2024, 1, 1, 9, 41),
+              onTimeChanged: (_) {},
+              minuteInterval: 5,
+              use24hFormat: true,
+            ),
+          ),
+        ),
+      );
+
+      // Assert
+      expect(tester.takeException(), isNull);
+      final CustomCupertinoDatePicker picker = tester
+          .widget<CustomCupertinoDatePicker>(
+            find.byType(CustomCupertinoDatePicker),
+          );
+      expect(picker.initialDateTime, DateTime(2024, 1, 1, 9, 40));
+    });
   });
 }

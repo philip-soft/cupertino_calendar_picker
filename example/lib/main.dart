@@ -4,6 +4,8 @@ import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'layout_playground.dart';
+
 void main() {
   runApp(const ExampleApp());
 }
@@ -94,6 +96,19 @@ class _ExampleAppState extends State<ExampleApp> {
       debugShowCheckedModeBanner: false,
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+          trailing: Builder(
+            builder: (context) => CupertinoButton(
+              padding: EdgeInsets.zero,
+              onPressed: () => Navigator.of(context).push(
+                CupertinoPageRoute<void>(
+                  builder: (_) => const LayoutPlaygroundPage(),
+                ),
+              ),
+              child: const Text('Layout playground'),
+            ),
+          ),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,

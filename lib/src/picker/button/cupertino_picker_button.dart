@@ -108,19 +108,22 @@ class _CupertinoPickerButtonState<T> extends State<CupertinoPickerButton<T>>
           color: decoration.backgroundColor.resolveDynamic(context),
           borderRadius: BorderRadius.circular(pickerButtonBorderRadius),
         ),
-        alignment: Alignment.center,
         height: pickerButtonHeight.scale(context),
         padding: const EdgeInsets.symmetric(
           horizontal: pickerButtonHorizontalPadding,
         ),
-        child: FadeTransition(
-          opacity: _opacityAnimation,
-          child: AnimatedDefaultTextStyle(
-            duration: pickerButtonTextStyleDuration,
-            style: _isPickerOpened && mainColor != null
-                ? textStyle.copyWith(color: mainColor)
-                : textStyle,
-            child: Text(widget.title),
+        // Hugs the title unless the parent forces a width.
+        child: Center(
+          widthFactor: 1.0,
+          child: FadeTransition(
+            opacity: _opacityAnimation,
+            child: AnimatedDefaultTextStyle(
+              duration: pickerButtonTextStyleDuration,
+              style: _isPickerOpened && mainColor != null
+                  ? textStyle.copyWith(color: mainColor)
+                  : textStyle,
+              child: Text(widget.title),
+            ),
           ),
         ),
       ),

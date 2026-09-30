@@ -6,9 +6,11 @@
 ///
 /// This enum defines the display style of the calendar.
 enum CupertinoCalendarType {
-  /// A compact version of the calendar.
+  /// The calendar displayed in an overlay.
+  ///
+  /// Supports actions and displays the AM/PM switcher in the 12-hour format.
   compact,
 
-  /// An inline version of the calendar.
+  /// The calendar embedded in a screen.
   inline,
 }

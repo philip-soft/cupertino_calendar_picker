@@ -43,7 +43,9 @@ class CupertinoTimePickerButton extends StatefulWidget {
   /// Called when the user selects a time in the picker.
   final ValueChanged<TimeOfDay>? onTimeChanged;
 
-  /// A callback that is triggered when the user completes the selection.
+  /// A callback that is triggered when the time picker is closed.
+  ///
+  /// It receives the result of [showCupertinoTimePicker].
   final ValueChanged<TimeOfDay?>? onCompleted;
 
   /// The initial [TimeOfDay] that the picker should display. If `null`,
@@ -121,11 +123,23 @@ class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
       _selectedTime = _initialTime();
     } else if (widget.minimumTime != oldWidget.minimumTime ||
         widget.maximumTime != oldWidget.maximumTime) {
-      _selectedTime = _selectedTime.clampTo(
-        widget.minimumTime,
-        widget.maximumTime,
-      );
+      _clampSelectionToRange();
     }
+  }
+
+  /// Limits the selection to a changed range and reports it if it moved.
+  void _clampSelectionToRange() {
+    final TimeOfDay selected = _selectedTime.clampTo(
+      widget.minimumTime,
+      widget.maximumTime,
+    );
+    if (selected == _selectedTime) return;
+
+    _selectedTime = selected;
+    // Listeners may call setState, which is not allowed during this build.
+    WidgetsBinding.instance.addPostFrameCallback((Duration _) {
+      if (mounted) widget.onTimeChanged?.call(selected);
+    });
   }
 
   TimeOfDay _initialTime() {
@@ -136,7 +150,8 @@ class _CupertinoTimePickerButtonState extends State<CupertinoTimePickerButton> {
   }
 
   void _onTimeChanged(TimeOfDay time) {
-    setState(() => _selectedTime = time);
+    // The overlay is displayed in its own route and can outlive the button.
+    if (mounted) setState(() => _selectedTime = time);
     widget.onTimeChanged?.call(time);
   }
 

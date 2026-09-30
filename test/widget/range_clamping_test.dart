@@ -193,6 +193,40 @@ void main() {
       expect(_day(DateTime(2026, 9, 15)), findsOneWidget);
     });
 
+    testWidgets('keeps the navigated month when the range changes', (
+      WidgetTester tester,
+    ) async {
+      // Arrange
+      final List<DateTime> months = <DateTime>[];
+      Widget build(DateTime maximum, {String? timeLabel}) {
+        return _app(
+          CupertinoCalendar(
+            minimumDateTime: DateTime(2026),
+            maximumDateTime: maximum,
+            initialDateTime: DateTime(2026, 3, 10),
+            onDisplayedMonthChanged: months.add,
+            timeLabel: timeLabel,
+          ),
+        );
+      }
+
+      await tester.pumpWidget(build(DateTime(2026, 12, 31)));
+      await tester.pumpAndSettle();
+      await tester.tap(find.bySemanticsLabel('Next month'));
+      await tester.pumpAndSettle();
+      // An unrelated rebuild after the navigation.
+      await tester.pumpWidget(build(DateTime(2026, 12, 31), timeLabel: 'A'));
+      await tester.pumpAndSettle();
+
+      // Act
+      await tester.pumpWidget(build(DateTime(2026, 11, 30), timeLabel: 'A'));
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(find.text('April 2026'), findsOneWidget);
+      expect(months, <DateTime>[DateTime(2026, 4)]);
+    });
+
     testWidgets('clamps the selection when the range shrinks past it', (
       WidgetTester tester,
     ) async {
@@ -214,6 +248,93 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(find.text('May 2026'), findsOneWidget);
+    });
+
+    testWidgets('reports the selection limited by a shrunk range', (
+      WidgetTester tester,
+    ) async {
+      // Arrange
+      final List<DateTime> changes = <DateTime>[];
+      Widget build(DateTime maximum) {
+        return _app(
+          CupertinoCalendar(
+            minimumDateTime: DateTime(2026),
+            maximumDateTime: maximum,
+            initialDateTime: DateTime(2026, 9, 10),
+            onDateTimeChanged: changes.add,
+          ),
+        );
+      }
+
+      await tester.pumpWidget(build(DateTime(2026, 12, 31)));
+      await tester.pumpAndSettle();
+
+      // Act
+      await tester.pumpWidget(build(DateTime(2026, 10, 31)));
+      await tester.pumpAndSettle();
+      await tester.pumpWidget(build(DateTime(2026, 5, 20)));
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(changes, <DateTime>[DateTime(2026, 5, 20)]);
+    });
+
+    testWidgets('CupertinoCalendarPickerButton reports the limited date', (
+      WidgetTester tester,
+    ) async {
+      // Arrange
+      final List<DateTime> changes = <DateTime>[];
+      Widget build(DateTime maximum) {
+        return _app(
+          CupertinoCalendarPickerButton(
+            minimumDateTime: DateTime(2026),
+            maximumDateTime: maximum,
+            initialDateTime: DateTime(2026, 9, 10),
+            onDateTimeChanged: changes.add,
+          ),
+        );
+      }
+
+      await tester.pumpWidget(build(DateTime(2026, 12, 31)));
+
+      // Act
+      await tester.pumpWidget(build(DateTime(2026, 10, 31)));
+      await tester.pump();
+      await tester.pumpWidget(build(DateTime(2026, 5, 20)));
+      await tester.pump();
+
+      // Assert
+      expect(changes, <DateTime>[DateTime(2026, 5, 20)]);
+      expect(find.text('May 20, 2026'), findsOneWidget);
+    });
+
+    testWidgets('CupertinoTimePickerButton reports the limited time', (
+      WidgetTester tester,
+    ) async {
+      // Arrange
+      final List<TimeOfDay> changes = <TimeOfDay>[];
+      Widget build(TimeOfDay minimum) {
+        return _app(
+          CupertinoTimePickerButton(
+            initialTime: const TimeOfDay(hour: 9, minute: 30),
+            minimumTime: minimum,
+            use24hFormat: true,
+            onTimeChanged: changes.add,
+          ),
+        );
+      }
+
+      await tester.pumpWidget(build(const TimeOfDay(hour: 8, minute: 0)));
+
+      // Act
+      await tester.pumpWidget(build(const TimeOfDay(hour: 9, minute: 0)));
+      await tester.pump();
+      await tester.pumpWidget(build(const TimeOfDay(hour: 11, minute: 0)));
+      await tester.pump();
+
+      // Assert
+      expect(changes, <TimeOfDay>[const TimeOfDay(hour: 11, minute: 0)]);
+      expect(find.text('11:00'), findsOneWidget);
     });
   });
 

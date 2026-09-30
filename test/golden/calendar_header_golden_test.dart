@@ -5,42 +5,36 @@
 import 'package:alchemist/alchemist.dart';
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:material_ui/material_ui.dart' show GlobalMaterialLocalizations;
+
+import 'support/golden_harness.dart';
 
 void main() {
   final DateTime fixedMonth = DateTime.utc(2024, 6);
 
-  Widget buildScenario({
-    required Brightness brightness,
+  Widget buildScenario(
+    Brightness brightness, {
     bool backwardEnabled = true,
     bool forwardEnabled = true,
   }) {
-    return CupertinoApp(
-      debugShowCheckedModeBanner: false,
-      theme: CupertinoThemeData(brightness: brightness),
-      locale: const Locale('en', 'US'),
-      localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      home: CupertinoPageScaffold(
-        child: Center(
-          child: SizedBox(
-            width: 320.0,
-            height: 44.0,
-            child: Builder(
-              builder: (BuildContext context) {
-                return CalendarHeader(
-                  currentMonth: fixedMonth,
-                  isYearPickerVisible: false,
-                  decoration: CalendarHeaderDecoration.withDynamicColor(
-                    context,
-                    mainColor: CupertinoColors.systemRed.resolveFrom(context),
-                  ),
-                  onYearPickerStateChanged: (_) {},
-                  onPreviousMonthIconTapped: backwardEnabled ? () {} : null,
-                  onNextMonthIconTapped: forwardEnabled ? () {} : null,
-                );
-              },
-            ),
-          ),
+    return goldenApp(
+      brightness: brightness,
+      child: SizedBox(
+        width: 320.0,
+        height: 44.0,
+        child: Builder(
+          builder: (BuildContext context) {
+            return CalendarHeader(
+              currentMonth: fixedMonth,
+              isYearPickerVisible: false,
+              decoration: CalendarHeaderDecoration.withDynamicColor(
+                context,
+                mainColor: CupertinoColors.systemRed.resolveFrom(context),
+              ),
+              onYearPickerStateChanged: (_) {},
+              onPreviousMonthIconTapped: backwardEnabled ? () {} : null,
+              onNextMonthIconTapped: forwardEnabled ? () {} : null,
+            );
+          },
         ),
       ),
     );
@@ -49,19 +43,7 @@ void main() {
   goldenTest(
     'CalendarHeader renders navigation buttons in light and dark themes',
     fileName: 'calendar_header',
-    builder: () => GoldenTestGroup(
-      columns: 2,
-      children: <Widget>[
-        GoldenTestScenario(
-          name: 'light',
-          child: buildScenario(brightness: Brightness.light),
-        ),
-        GoldenTestScenario(
-          name: 'dark',
-          child: buildScenario(brightness: Brightness.dark),
-        ),
-      ],
-    ),
+    builder: () => lightDarkGroup(buildScenario),
   );
 
   goldenTest(
@@ -72,17 +54,11 @@ void main() {
       children: <Widget>[
         GoldenTestScenario(
           name: 'backward disabled – light',
-          child: buildScenario(
-            brightness: Brightness.light,
-            backwardEnabled: false,
-          ),
+          child: buildScenario(Brightness.light, backwardEnabled: false),
         ),
         GoldenTestScenario(
           name: 'forward disabled – dark',
-          child: buildScenario(
-            brightness: Brightness.dark,
-            forwardEnabled: false,
-          ),
+          child: buildScenario(Brightness.dark, forwardEnabled: false),
         ),
       ],
     ),

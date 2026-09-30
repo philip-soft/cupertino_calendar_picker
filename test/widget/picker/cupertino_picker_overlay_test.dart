@@ -58,6 +58,7 @@ Future<void> _pumpOverlayWithAnchor(
         children: <Widget>[
           buildAnchor(),
           CupertinoPickerOverlay(
+            semanticsLabel: 'Picker',
             widgetRenderBox: anchor,
             height: height,
             width: width,
@@ -102,6 +103,7 @@ Future<_RouteResult> _pushOverlay(
           PageRouteBuilder<Object?>(
             opaque: false,
             pageBuilder: (_, _, _) => CupertinoPickerOverlay(
+              semanticsLabel: 'Picker',
               height: 100.0,
               width: 100.0,
               outsideTapDismissable: outsideTapDismissable,
@@ -223,6 +225,7 @@ void main() {
       await tester.pumpWidget(
         wrapWithApp(
           const CupertinoPickerOverlay(
+            semanticsLabel: 'Picker',
             height: 100.0,
             width: 200.0,
             child: Text('overlay-child'),
@@ -247,6 +250,7 @@ void main() {
       await tester.pumpWidget(
         wrapWithApp(
           CupertinoPickerOverlay(
+            semanticsLabel: 'Picker',
             height: 100.0,
             width: 100.0,
             containerDecoration: decoration,
@@ -302,6 +306,7 @@ void main() {
         PageRouteBuilder<void>(
           opaque: false,
           pageBuilder: (_, _, _) => CupertinoPickerOverlay(
+            semanticsLabel: 'Picker',
             widgetRenderBox: anchor,
             height: 100.0,
             width: 100.0,

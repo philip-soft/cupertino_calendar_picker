@@ -90,6 +90,7 @@ class _CupertinoTimeOverlayState extends State<CupertinoTimeOverlay> {
       verticalSpacing: widget.verticalSpacing,
       offset: widget.offset,
       dismissResult: () => _changedTime,
+      semanticsLabel: context.materialLocalization.timePickerDialHelpText,
       child: CupertinoTimePicker(
         initialTime: _initialTime,
         minimumTime: widget.minimumTime,

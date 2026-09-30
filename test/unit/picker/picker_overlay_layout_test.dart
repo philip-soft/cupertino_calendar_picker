@@ -83,6 +83,15 @@ void main() {
       expect(layout.left, 45.0);
     });
 
+    test('keeps the horizontal spacing when the offset pushes past it', () {
+      final PickerOverlayLayout layout = _compute(
+        anchor: const Rect.fromLTWH(300.0, 100.0, 80.0, 40.0),
+        offset: const Offset(10.0, 10.0),
+      );
+
+      expect(layout.left, 400.0 - 15.0 - 320.0);
+    });
+
     test('scales down when the vertical space is not enough', () {
       final PickerOverlayLayout layout = _compute(
         anchor: const Rect.fromLTWH(160.0, 300.0, 80.0, 40.0),

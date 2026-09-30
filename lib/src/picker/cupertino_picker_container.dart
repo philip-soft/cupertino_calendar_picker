@@ -55,12 +55,19 @@ class CupertinoPickerContainer extends StatelessWidget {
         return Transform.scale(
           scale: scale.evaluate(animation),
           alignment: scaleAlignment,
-          child: Container(
-            height: height * (CalendarAnimations.maxHeightPercentage / 100),
-            alignment: scaleAlignment,
-            child: SizedBox(
-              height: expandedHeight.evaluate(animation),
-              child: child,
+          // The height overshoots while expanding, which must not move
+          // the settled picker away from its position.
+          child: SizedBox(
+            height: height,
+            child: OverflowBox(
+              minHeight: 0.0,
+              maxHeight:
+                  height * (CalendarAnimations.maxHeightPercentage / 100),
+              alignment: scaleAlignment,
+              child: SizedBox(
+                height: expandedHeight.evaluate(animation),
+                child: child,
+              ),
             ),
           ),
         );

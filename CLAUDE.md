@@ -15,6 +15,9 @@ flutter test
 # Run tests for the example app
 cd example && flutter test
 
+# Regenerate golden images (after an intended visual change)
+flutter test --update-goldens test/golden
+
 # Analyze for lint issues
 flutter analyze
 
@@ -54,7 +57,7 @@ showCupertinoCalendarPicker
                           └── CupertinoCalendarPicker (month paging + view mode; reports changes up)
 ```
 
-`PickerOverlayLayout.compute` is a pure function that places the picker relative to the anchor's rect (in the navigator's coordinates): it opens on the side with more vertical space, centers on the anchor or pins to the safe-area edge, and scales down if necessary.
+`PickerOverlayLayout.compute` is a pure function that places the picker relative to the anchor's rect (in the navigator's coordinates): it opens on the side with more vertical space, centers on the anchor or pins to the safe-area edge, and scales down if necessary. When the space next to the anchor fits the picker only below `pickerMinimumAnchoredScale`, it is centered on the screen instead. `CupertinoPickerOverlay` re-measures the anchor after each frame it builds, since the anchor lays out after the overlay (e.g. on rotation).
 
 Descendants close the overlay with a result through `CupertinoPickerOverlayScope.maybeOf(context)?.close(result)`; actions use it, so outside of an overlay they only call their `onPressed`.
 
@@ -107,3 +110,11 @@ Exceptions: `custom_cupertino_date_picker.dart` and `cupertino_picker_button.dar
 ### Actions
 
 `CupertinoCalendarAction` is a `sealed` class. Only two concrete subtypes exist: `CancelCupertinoCalendarAction` and `ConfirmCupertinoCalendarAction`. Actions are only valid when `type == CupertinoCalendarType.compact` and the list must have 1–2 entries.
+
+### Placement Tests
+
+`test/support/picker_screens.dart` defines the tested screens (small phone, phone, landscape phone, tablet with safe areas) and anchor positions. `test/unit/picker/picker_overlay_layout_matrix_test.dart` checks the layout invariants for every combination, `test/widget/picker/picker_placement_test.dart` compares the rendered picker of the real buttons with `PickerOverlayLayout.compute`, and `test/golden/picker_placement_golden_test.dart` renders opened pickers on whole screens.
+
+### Golden Tests
+
+Golden tests (alchemist) live in `test/golden/` and render through `test/golden/support/golden_harness.dart` (`goldenApp`, `lightDarkGroup`). Each test produces a `ci/` image (software renderer, compared on CI) and a `macos/` image. The test fonts (`test/fonts/`) only contain Latin glyphs, so CJK and Arabic text renders as boxes; cover such locales with widget tests instead.

@@ -4,6 +4,7 @@
 
 import 'dart:math' as math;
 
+import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:cupertino_ui/cupertino_ui.dart';
 
 /// The placement of a picker overlay relative to its anchor widget.
@@ -24,9 +25,12 @@ class PickerOverlayLayout {
   /// is horizontally centered on the anchor unless it would cross the
   /// [horizontalSpacing] from the [bounds] edges, in which case it is pinned
   /// to that edge. When the available space is smaller than the picker, it is
-  /// centered and scaled down.
+  /// scaled down. An anchor partially or fully outside of the available area
+  /// is treated as if it was at its edge.
   ///
-  /// When [anchor] is `null`, the picker is centered within the [bounds].
+  /// When [anchor] is `null`, or the space next to it only fits the picker
+  /// scaled below [pickerMinimumAnchoredScale], the picker is centered within
+  /// the [bounds].
   factory PickerOverlayLayout.compute({
     required Rect? anchor,
     required Size bounds,
@@ -42,47 +46,54 @@ class PickerOverlayLayout {
         .deflateVertically(verticalSpacing);
 
     if (anchor == null) {
-      final double scale = _fitScale(size, availableArea.size);
-      return PickerOverlayLayout(
-        left: availableArea.center.dx - size.width / 2,
-        top: availableArea.center.dy - size.height / 2,
-        scale: scale,
-        scaleAlignment: Alignment.center,
-      );
+      return PickerOverlayLayout._centered(size, availableArea);
     }
 
-    final double spaceAbove = anchor.top - offset.dy - availableArea.top;
-    final double spaceBelow = availableArea.bottom - anchor.bottom - offset.dy;
+    final double aboveBottom = math.min(
+      anchor.top - offset.dy,
+      availableArea.bottom,
+    );
+    final double belowTop = math.max(
+      anchor.bottom + offset.dy,
+      availableArea.top,
+    );
+    final double spaceAbove = aboveBottom - availableArea.top;
+    final double spaceBelow = availableArea.bottom - belowTop;
     final bool opensAbove = spaceAbove >= spaceBelow;
-    final double top = opensAbove
-        ? anchor.top - size.height - offset.dy
-        : anchor.bottom + offset.dy;
+    final double verticalSpace = opensAbove ? spaceAbove : spaceBelow;
 
-    final double availableWidth = availableArea.width - offset.dx.abs();
-    final double halfWidth = size.width / 2;
-    final double left;
-    if (availableWidth < size.width) {
-      left = availableArea.center.dx - halfWidth;
-    } else {
-      left = (anchor.center.dx - halfWidth).clamp(
-        availableArea.left,
-        availableArea.right - size.width,
-      );
+    if (verticalSpace < size.height * pickerMinimumAnchoredScale) {
+      return PickerOverlayLayout._centered(size, availableArea);
     }
 
-    final double xAlignment =
-        ((anchor.center.dx - (left + halfWidth)) / halfWidth).clamp(-1.0, 1.0);
+    final double halfWidth = size.width / 2;
+    final bool fitsHorizontally = availableArea.width >= size.width;
+    // A picker wider than the area is scaled around its center to fit it.
+    final double left = fitsHorizontally
+        ? (anchor.center.dx - halfWidth + offset.dx).clamp(
+            availableArea.left,
+            availableArea.right - size.width,
+          )
+        : availableArea.center.dx - halfWidth;
+    final double xAlignment = fitsHorizontally
+        ? ((anchor.center.dx - (left + halfWidth)) / halfWidth).clamp(-1.0, 1.0)
+        : 0.0;
 
     return PickerOverlayLayout(
-      left: left + offset.dx,
-      top: top,
-      scale: _fitScale(
-        size,
-        Size(availableWidth, opensAbove ? spaceAbove : spaceBelow),
-      ),
+      left: left,
+      top: opensAbove ? aboveBottom - size.height : belowTop,
+      scale: _fitScale(size, Size(availableArea.width, verticalSpace)),
       scaleAlignment: Alignment(xAlignment, opensAbove ? 1.0 : -1.0),
     );
   }
+
+  PickerOverlayLayout._centered(Size size, Rect availableArea)
+    : this(
+        left: availableArea.center.dx - size.width / 2,
+        top: availableArea.center.dy - size.height / 2,
+        scale: _fitScale(size, availableArea.size),
+        scaleAlignment: Alignment.center,
+      );
 
   static double _fitScale(Size size, Size available) {
     final double widthScale = available.width / size.width;

@@ -64,16 +64,21 @@ class CupertinoCalendar extends StatefulWidget {
   final DateTime maximumDateTime;
 
   /// A predicate that determines whether a day is selectable.
+  ///
+  /// Days for which it returns `false` are displayed as disabled.
   final SelectableDayPredicate? selectableDayPredicate;
 
-  /// The current date (i.e., today's date).
+  /// The date highlighted as today.
+  ///
+  /// Defaults to [DateTime.now].
   final DateTime? currentDateTime;
 
   /// A callback that is triggered whenever the selected [DateTime] changes
-  /// in the calendar.
+  /// in the calendar, including changes of the month, the year and the time,
+  /// and when a changed range limits the selection.
   final ValueChanged<DateTime>? onDateTimeChanged;
 
-  /// A callback that is triggered when the user selects a date in the calendar.
+  /// A callback that is triggered when the user taps a day in the calendar.
   final ValueChanged<DateTime>? onDateSelected;
 
   /// A callback that is triggered when the user navigates to a different month in the calendar.
@@ -104,19 +109,22 @@ class CupertinoCalendar extends StatefulWidget {
   /// This defines whether the picker allows selection of just the date or both date and time.
   final CupertinoCalendarMode mode;
 
-  /// The type of the calendar, which may define specific behaviors or appearances.
+  /// The type of the calendar.
+  ///
+  /// Only the [CupertinoCalendarType.compact] type displays [actions] and
+  /// the AM/PM switcher in the 12-hour format.
+  ///
   /// The default type is [CupertinoCalendarType.inline].
   final CupertinoCalendarType type;
 
   /// The maximum width of the calendar widget.
   ///
   /// The default value is [double.infinity], meaning the widget can expand
-  /// to fill available space.
-  ///
-  /// minWidth is [320].
+  /// to fill available space. The calendar is never narrower than `320.0`.
   final double maxWidth;
 
-  /// An optional label to be displayed when the calendar is in a mode that includes time selection.
+  /// An optional label displayed next to the time in the
+  /// [CupertinoCalendarMode.dateTime] mode.
   ///
   /// This label typically indicates what the selected time is for or provides additional context.
   final String? timeLabel;
@@ -176,9 +184,22 @@ class _CupertinoCalendarState extends State<CupertinoCalendar> {
       _initializeSelection();
     } else if (oldWidget.minimumDateTime != widget.minimumDateTime ||
         oldWidget.maximumDateTime != widget.maximumDateTime) {
-      _selectedDateTime = _clamp(_selectedDateTime);
-      _requestedMonth = PackageDateUtils.monthDateOnly(_selectedDateTime);
+      _clampSelectionToRange();
     }
+  }
+
+  /// Limits the selection to a changed range and reports it if it moved.
+  ///
+  /// The displayed month is kept, the month pages limit it to the new range.
+  void _clampSelectionToRange() {
+    final DateTime selected = _clamp(_selectedDateTime);
+    if (selected == _selectedDateTime) return;
+
+    _selectedDateTime = selected;
+    // Listeners may call setState, which is not allowed during this build.
+    WidgetsBinding.instance.addPostFrameCallback((Duration _) {
+      if (mounted) widget.onDateTimeChanged?.call(selected);
+    });
   }
 
   void _debugAssertIsValid() {

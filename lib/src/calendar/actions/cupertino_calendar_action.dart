@@ -129,3 +129,15 @@ final class ConfirmCupertinoCalendarAction extends CupertinoCalendarAction {
     );
   }
 }
+
+extension CupertinoCalendarActionList on List<CupertinoCalendarAction>? {
+  /// Whether a selection only counts once a [ConfirmCupertinoCalendarAction]
+  /// is pressed.
+  bool get requiresConfirmation {
+    return this?.any(
+          (CupertinoCalendarAction action) =>
+              action is ConfirmCupertinoCalendarAction,
+        ) ??
+        false;
+  }
+}

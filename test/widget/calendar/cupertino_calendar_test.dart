@@ -335,31 +335,44 @@ void main() {
   });
 
   group('CupertinoCalendar – appearance modes', () {
-    testWidgets('renders in dark mode without errors', (
+    testWidgets('resolves the header color for dark mode', (
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(buildCalendar(brightness: Brightness.dark));
       await tester.pumpAndSettle();
 
-      expect(find.byType(CupertinoCalendar), findsOneWidget);
-      expect(tester.takeException(), isNull);
+      final AnimatedDefaultTextStyle header = tester
+          .widget<AnimatedDefaultTextStyle>(
+            find.ancestor(
+              of: find.text('June 2024'),
+              matching: find.byType(AnimatedDefaultTextStyle),
+            ),
+          );
+      expect(
+        header.style.color,
+        isSameColorAs(CupertinoColors.label.darkColor),
+      );
     });
 
-    testWidgets('renders in RTL direction without errors', (
+    testWidgets('mirrors the month switcher in RTL', (
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(buildCalendar(direction: TextDirection.rtl));
       await tester.pumpAndSettle();
 
-      expect(find.byType(CupertinoCalendar), findsOneWidget);
-      expect(tester.takeException(), isNull);
+      final double previousX = tester
+          .getCenter(find.bySemanticsLabel('Previous month'))
+          .dx;
+      final double nextX = tester
+          .getCenter(find.bySemanticsLabel('Next month'))
+          .dx;
+      expect(previousX, greaterThan(nextX));
     });
   });
 
   group('CupertinoCalendar – year picker boundary clamping', () {
     testWidgets(
-      'clamps to minimumDateTime when year picker result is before minimum '
-      '(line 216)',
+      'clamps to minimumDateTime when year picker result is before minimum',
       (WidgetTester tester) async {
         final DateTime min = DateTime.utc(2024, 6, 20);
         final DateTime max = DateTime.utc(2030, 12, 31);
@@ -398,8 +411,7 @@ void main() {
     );
 
     testWidgets(
-      'clamps to maximumDateTime when year picker result exceeds maximum '
-      '(line 218)',
+      'clamps to maximumDateTime when year picker result exceeds maximum',
       (WidgetTester tester) async {
         final DateTime min = DateTime.utc(2020);
         final DateTime max = DateTime.utc(2024, 7, 10);

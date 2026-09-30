@@ -89,16 +89,8 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
     );
   }
 
-  bool get _requiresConfirmation {
-    final List<CupertinoCalendarAction> actions =
-        widget.actions ?? const <CupertinoCalendarAction>[];
-    return actions.any(
-      (CupertinoCalendarAction action) =>
-          action is ConfirmCupertinoCalendarAction,
-    );
-  }
-
-  Object? _dismissResult() => _requiresConfirmation ? null : _changedDateTime;
+  Object? _dismissResult() =>
+      widget.actions.requiresConfirmation ? null : _changedDateTime;
 
   void _onDateTimeChanged(DateTime date) {
     _changedDateTime = date;
@@ -130,6 +122,7 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
       offset: widget.offset,
       outsideTapDismissable: widget.dismissBehavior.hasOutsideTapDismiss,
       dismissResult: _dismissResult,
+      semanticsLabel: context.materialLocalization.datePickerHelpText,
       child: Builder(
         builder: (BuildContext context) {
           return CupertinoCalendar(

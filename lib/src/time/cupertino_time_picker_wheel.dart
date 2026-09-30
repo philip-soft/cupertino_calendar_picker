@@ -25,12 +25,21 @@ class CupertinoTimePickerWheel extends StatelessWidget {
   final int minuteInterval;
   final bool? use24hFormat;
 
+  /// The wheel only displays multiples of [minuteInterval], so the initial
+  /// time is rounded down to one of them.
+  DateTime get _alignedInitialDateTime {
+    final int minute = initialDateTime.minute;
+    return initialDateTime.truncateToMinutes(
+      newMinute: minute - minute % minuteInterval,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomCupertinoDatePicker(
       key: pickerKey,
       mode: CupertinoDatePickerMode.time,
-      initialDateTime: initialDateTime,
+      initialDateTime: _alignedInitialDateTime,
       minimumDate: minimumDateTime,
       maximumDate: maximumDateTime,
       onDateTimeChanged: onTimeChanged,

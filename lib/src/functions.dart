@@ -32,6 +32,10 @@ import 'package:material_ui/material_ui.dart';
 ///   The latest selectable [DateTime] in the picker.
 ///   Must be after or equal to [minimumDateTime].
 ///
+/// - [selectableDayPredicate]:
+///   A predicate that decides whether a day can be selected. Days for which
+///   it returns `false` are displayed as disabled.
+///
 /// - [onDateTimeChanged]:
 ///   A callback that is triggered whenever the selected [DateTime] changes in the picker.
 ///
@@ -103,7 +107,7 @@ import 'package:material_ui/material_ui.dart';
 ///   allow selecting time.
 ///
 /// - [timeLabel]:
-///   An optional label to be displayed when the calendar is in a mode that includes time selection.
+///   An optional label displayed next to the time in the
 ///   [CupertinoCalendarMode.dateTime] mode.
 ///   This label typically indicates what the selected time is for or provides
 ///   additional context.
@@ -225,8 +229,8 @@ Future<DateTime?> showCupertinoCalendarPicker(
 /// on the minimum and maximum selectable times. The picker can be positioned relative
 /// to the [widgetRenderBox].
 ///
-/// The method returns a [Future] that resolves to a [TimeOfDay] if a time was selected,
-/// or `null` if the picker was dismissed without a selection.
+/// The method returns a [Future] that resolves to a [TimeOfDay] if a time was changed,
+/// or `null` if the picker was dismissed without a change.
 ///
 /// ## Parameters:
 ///
@@ -289,8 +293,8 @@ Future<DateTime?> showCupertinoCalendarPicker(
 ///
 /// ## Returns:
 ///
-/// A [Future] that resolves to the selected [TimeOfDay] if a time was chosen, or `null`
-/// if the picker was dismissed without a selection.
+/// A [Future] that resolves to the last changed [TimeOfDay] when the picker is
+/// dismissed, or `null` if the time was not changed.
 Future<TimeOfDay?> showCupertinoTimePicker(
   BuildContext context, {
   RenderBox? widgetRenderBox,

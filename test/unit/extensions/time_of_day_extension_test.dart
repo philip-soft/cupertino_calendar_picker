@@ -6,8 +6,14 @@ import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
-Widget _wrap(Widget child, {bool alwaysUse24HourFormat = false}) {
+Widget _wrap(
+  Widget child, {
+  bool alwaysUse24HourFormat = false,
+  Locale locale = const Locale('en', 'US'),
+}) {
   return MaterialApp(
+    locale: locale,
+    supportedLocales: const <Locale>[Locale('en', 'US'), Locale('zh')],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
     home: MediaQuery(
       data: MediaQueryData(alwaysUse24HourFormat: alwaysUse24HourFormat),
@@ -242,6 +248,34 @@ void main() {
         );
 
         expect(result, '3:07 PM');
+      });
+
+      testWidgets('places the day period where the locale expects it', (
+        WidgetTester tester,
+      ) async {
+        // Arrange
+        late BuildContext capturedContext;
+        await tester.pumpWidget(
+          _wrap(
+            Builder(
+              builder: (BuildContext context) {
+                capturedContext = context;
+                return const SizedBox.shrink();
+              },
+            ),
+            locale: const Locale('zh'),
+          ),
+        );
+
+        // Act
+        const TimeOfDay time = TimeOfDay(hour: 15, minute: 7);
+        final String result = time.timeFormat(
+          capturedContext,
+          use24hFormat: false,
+        );
+
+        // Assert
+        expect(result, '下午 3:07');
       });
 
       testWidgets('falls back to context.alwaysUse24hFormat=false when null', (

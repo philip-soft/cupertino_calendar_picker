@@ -70,29 +70,57 @@ class PickerContainerDecoration {
     PickerBackgroundType backgroundType = pickerBackgroundType,
     List<BoxShadow>? boxShadow,
   }) {
-    CupertinoDynamicColor color = backgroundColor ?? pickerBackgroundColor;
-
-    if (backgroundType == PickerBackgroundType.transparentAndBlurred) {
-      color = CupertinoDynamicColor.withBrightness(
-        color: color.withAlpha(calendarBlurredLightBackgroundColorAlpha),
-        darkColor: color.darkColor.withAlpha(
-          calendarBlurredDarkBackgroundColorAlpha,
-        ),
-      );
-    }
-
-    return PickerContainerDecoration(
-      backgroundColor: CupertinoDynamicColor.resolve(color, context),
+    final PickerContainerDecoration decoration = PickerContainerDecoration(
+      borderRadius: borderRadius,
+      backgroundColor: backgroundColor,
       backgroundType: backgroundType,
       boxShadow: boxShadow,
-      borderRadius: borderRadius ?? pickerBorderRadius,
+    );
+    return PickerContainerDecoration._(
+      borderRadius: decoration.borderRadius,
+      backgroundColor: CupertinoDynamicColor.resolve(
+        decoration.backgroundColor,
+        context,
+      ),
+      backgroundType: decoration.backgroundType,
+      boxShadow: decoration.boxShadow,
     );
   }
 
+  /// Caps the alpha of [color] so that the blur stays visible, keeping
+  /// a [CupertinoDynamicColor] dynamic.
   static Color _capAlpha(Color color) {
+    if (color is! CupertinoDynamicColor) {
+      return _capLightAlpha(color);
+    }
+    return CupertinoDynamicColor(
+      color: _capLightAlpha(color.color),
+      darkColor: _capDarkAlpha(color.darkColor),
+      highContrastColor: _capLightAlpha(color.highContrastColor),
+      darkHighContrastColor: _capDarkAlpha(color.darkHighContrastColor),
+      elevatedColor: _capLightAlpha(color.elevatedColor),
+      darkElevatedColor: _capDarkAlpha(color.darkElevatedColor),
+      highContrastElevatedColor: _capLightAlpha(
+        color.highContrastElevatedColor,
+      ),
+      darkHighContrastElevatedColor: _capDarkAlpha(
+        color.darkHighContrastElevatedColor,
+      ),
+    );
+  }
+
+  static Color _capLightAlpha(Color color) {
+    return _capAlphaTo(color, calendarBlurredLightBackgroundColorAlpha);
+  }
+
+  static Color _capDarkAlpha(Color color) {
+    return _capAlphaTo(color, calendarBlurredDarkBackgroundColorAlpha);
+  }
+
+  static Color _capAlphaTo(Color color, int maxAlpha) {
     final int alpha = (color.a * 255.0).round().clamp(0, 255);
-    if (alpha <= calendarBlurredLightBackgroundColorAlpha) return color;
-    return color.withAlpha(calendarBlurredLightBackgroundColorAlpha);
+    if (alpha <= maxAlpha) return color;
+    return color.withAlpha(maxAlpha);
   }
 
   /// The [borderRadius] of the calendar container.

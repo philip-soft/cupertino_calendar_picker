@@ -13,6 +13,7 @@ class CupertinoPickerOverlay extends StatefulWidget {
   const CupertinoPickerOverlay({
     required this.height,
     required this.width,
+    required this.semanticsLabel,
     required this.child,
     this.widgetRenderBox,
     this.horizontalSpacing = pickerDefaultHorizontalSpacing,
@@ -40,6 +41,9 @@ class CupertinoPickerOverlay extends StatefulWidget {
   /// Returns the result of the route when the overlay is dismissed by an
   /// outside tap or the system back gesture.
   final ValueGetter<Object?>? dismissResult;
+
+  /// The name screen readers announce when the overlay opens.
+  final String semanticsLabel;
   final Widget child;
 
   @override
@@ -77,8 +81,16 @@ class _CupertinoPickerOverlayState extends State<CupertinoPickerOverlay>
   }
 
   void _handleAnimationStatus(AnimationStatus status) {
-    if (status.isDismissed && _isClosing && mounted) {
-      Navigator.of(context).pop(_result);
+    if (!status.isDismissed || !_isClosing || !mounted) return;
+
+    final NavigatorState navigator = Navigator.of(context);
+    final ModalRoute<Object?>? route = ModalRoute.of(context);
+    // A route pushed on top of the overlay, e.g. from a selection callback,
+    // must stay, so only the overlay's own route is removed.
+    if (route == null || route.isCurrent) {
+      navigator.pop(_result);
+    } else {
+      navigator.removeRoute(route, _result);
     }
   }
 
@@ -94,23 +106,36 @@ class _CupertinoPickerOverlayState extends State<CupertinoPickerOverlay>
   /// Returns the anchor's rect relative to the navigator the overlay's route
   /// is displayed in, remembering the last known rect once it detaches.
   Rect? _resolveAnchorRect() {
+    return _anchorRect = _measureAnchorRect() ?? _anchorRect;
+  }
+
+  /// Returns the current rect of the anchor, or `null` when it is detached.
+  Rect? _measureAnchorRect() {
     final RenderBox? anchor = widget.widgetRenderBox;
-    if (anchor == null || !anchor.attached || !anchor.hasSize) {
-      return _anchorRect;
-    }
+    if (anchor == null || !anchor.attached || !anchor.hasSize) return null;
 
     final RenderObject? navigatorBox = Navigator.maybeOf(context)?.context
         .findRenderObject();
     final Offset origin = navigatorBox is RenderBox && navigatorBox.attached
         ? navigatorBox.localToGlobal(Offset.zero)
         : Offset.zero;
-    return _anchorRect =
-        anchor.localToGlobal(Offset.zero) - origin & anchor.size;
+    return anchor.localToGlobal(Offset.zero) - origin & anchor.size;
+  }
+
+  /// The anchor is laid out after this overlay is built, e.g. when the screen
+  /// rotates, so its rect is checked again once the frame is done.
+  void _scheduleAnchorCheck(Rect? usedRect) {
+    WidgetsBinding.instance.addPostFrameCallback((Duration _) {
+      if (!mounted) return;
+      final Rect? rect = _measureAnchorRect();
+      if (rect != null && rect != usedRect) setState(() {});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final Rect? anchorRect = _resolveAnchorRect();
+    _scheduleAnchorCheck(anchorRect);
     final EdgeInsets padding = MediaQuery.viewPaddingOf(context);
 
     return PopScope(
@@ -146,6 +171,8 @@ class _CupertinoPickerOverlayState extends State<CupertinoPickerOverlay>
                   width: widget.width,
                   child: Semantics(
                     scopesRoute: true,
+                    namesRoute: true,
+                    label: widget.semanticsLabel,
                     explicitChildNodes: true,
                     child: CupertinoPickerContainer(
                       animation: _animation,

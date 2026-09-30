@@ -112,4 +112,32 @@ void main() {
       expect(cancel == confirm, isFalse);
     });
   });
+
+  group('CupertinoCalendarActionList.requiresConfirmation', () {
+    test('is false without actions', () {
+      expect(
+        (null as List<CupertinoCalendarAction>?).requiresConfirmation,
+        isFalse,
+      );
+      expect(<CupertinoCalendarAction>[].requiresConfirmation, isFalse);
+    });
+
+    test('is false with a cancel action only', () {
+      expect(
+        <CupertinoCalendarAction>[const CancelCupertinoCalendarAction()]
+            .requiresConfirmation,
+        isFalse,
+      );
+    });
+
+    test('is true with a confirm action', () {
+      expect(
+        <CupertinoCalendarAction>[
+          const CancelCupertinoCalendarAction(),
+          const ConfirmCupertinoCalendarAction(),
+        ].requiresConfirmation,
+        isTrue,
+      );
+    });
+  });
 }

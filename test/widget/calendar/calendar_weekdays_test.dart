@@ -107,5 +107,49 @@ void main() {
         }
       },
     );
+
+    final Map<Locale, List<String>> narrowWeekdays = <Locale, List<String>>{
+      const Locale('en', 'US'): <String>['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+      const Locale('zh'): <String>['一', '二', '三', '四', '五', '六', '日'],
+      const Locale('ar'): <String>['ن', 'ث', 'ر', 'خ', 'ج', 'س', 'ح'],
+    };
+    for (final MapEntry<Locale, List<String>>(
+          key: Locale locale,
+          value: List<String> expected,
+        )
+        in narrowWeekdays.entries) {
+      testWidgets('shows narrow weekdays at a large text scale in $locale', (
+        WidgetTester tester,
+      ) async {
+        // Arrange
+        await tester.pumpWidget(
+          wrapWithApp(
+            Builder(
+              builder: (BuildContext context) => MediaQuery(
+                data: MediaQuery.of(context).copyWith(
+                  textScaler: const TextScaler.linear(
+                    calendarMaxTextScaleFactor,
+                  ),
+                ),
+                child: CalendarWeekdays(
+                  decoration: decoration,
+                  firstDayOfWeekIndex: 1,
+                ),
+              ),
+            ),
+            locale: locale,
+          ),
+        );
+
+        // Act
+        final List<String> weekdays = tester
+            .widgetList<CalendarWeekday>(find.byType(CalendarWeekday))
+            .map((CalendarWeekday weekday) => weekday.weekday)
+            .toList();
+
+        // Assert
+        expect(weekdays, expected);
+      });
+    }
   });
 }

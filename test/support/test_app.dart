@@ -28,6 +28,7 @@ Widget wrapTestWidget(
       Locale('en', 'US'),
       Locale('en', 'GB'),
       Locale('ar'),
+      Locale('zh'),
     ],
     theme: CupertinoThemeData(brightness: brightness),
     home: CupertinoPageScaffold(

@@ -59,7 +59,17 @@ extension TimeOfDayExtension on TimeOfDay {
     final String locale = context.localeString;
     final DateFormat format = use24HoursFormat
         ? DateFormat.Hm(locale)
-        : DateFormat('h:mm a', locale);
+        : DateFormat(_twelveHourPattern(context), locale);
     return format.format(toDateTime());
+  }
+
+  /// Returns the 12-hour pattern with the day period placed as the locale
+  /// expects, e.g. "3:07 PM" in English and "下午 3:07" in Chinese.
+  ///
+  /// Locales that use the 24-hour format by default get the day period last.
+  static String _twelveHourPattern(BuildContext context) {
+    final TimeOfDayFormat format = context.materialLocalization
+        .timeOfDayFormat();
+    return format == TimeOfDayFormat.a_space_h_colon_mm ? 'a h:mm' : 'h:mm a';
   }
 }

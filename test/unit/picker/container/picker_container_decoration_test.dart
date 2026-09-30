@@ -53,6 +53,58 @@ void main() {
       expect(decoration.backgroundColor, faint);
     });
 
+    for (final Brightness brightness in Brightness.values) {
+      testWidgets(
+        'default factory resolves like withDynamicColor in $brightness',
+        (WidgetTester tester) async {
+          // Arrange
+          late BuildContext ctx;
+          await tester.pumpWidget(
+            _wrap(
+              Builder(
+                builder: (BuildContext context) {
+                  ctx = context;
+                  return const SizedBox.shrink();
+                },
+              ),
+              brightness: brightness,
+            ),
+          );
+
+          // Act
+          final Color resolved = CupertinoDynamicColor.resolve(
+            PickerContainerDecoration().backgroundColor,
+            ctx,
+          );
+
+          // Assert
+          expect(
+            resolved,
+            isSameColorAs(
+              PickerContainerDecoration.withDynamicColor(ctx).backgroundColor,
+            ),
+          );
+        },
+      );
+    }
+
+    test('keeps a dynamic color dynamic when capping its alpha', () {
+      final PickerContainerDecoration decoration = PickerContainerDecoration(
+        backgroundColor: CupertinoColors.systemBackground,
+      );
+
+      final Color color = decoration.backgroundColor;
+      expect(color, isA<CupertinoDynamicColor>());
+      expect(
+        (color as CupertinoDynamicColor).darkColor,
+        isSameColorAs(
+          CupertinoColors.systemBackground.darkColor.withAlpha(
+            calendarBlurredDarkBackgroundColorAlpha,
+          ),
+        ),
+      );
+    });
+
     test('does not clamp alpha for plainColor backgroundType', () {
       const Color opaque = Color(0xFFFFFFFF);
 

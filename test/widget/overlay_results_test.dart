@@ -46,6 +46,7 @@ Future<_PickerResult> _openCalendar(
   List<CupertinoCalendarAction>? actions,
   CalendarDismissBehavior dismissBehavior =
       CalendarDismissBehavior.onOutsideTap,
+  ValueChanged<DateTime>? onDateSelected,
 }) async {
   final _PickerResult result = _PickerResult();
   await tester.pumpWidget(
@@ -63,6 +64,7 @@ Future<_PickerResult> _openCalendar(
                 initialDateTime: _initial,
                 dismissBehavior: dismissBehavior,
                 actions: actions,
+                onDateSelected: onDateSelected,
               );
               result
                 ..isCompleted = true
@@ -178,6 +180,36 @@ void main() {
       expect(result.isCompleted, isTrue);
       expect(result.value, DateTime(2026, 9, 20));
     });
+
+    testWidgets('closing keeps a route pushed on top of the overlay', (
+      WidgetTester tester,
+    ) async {
+      // Arrange
+      final _PickerResult result = await _openCalendar(
+        tester,
+        dismissBehavior: CalendarDismissBehavior.onDateSelect,
+        onDateSelected: (DateTime _) {
+          tester
+              .state<NavigatorState>(find.byType(Navigator))
+              .push(
+                PageRouteBuilder<void>(
+                  opaque: false,
+                  pageBuilder: (_, _, _) => const Text('Pushed'),
+                ),
+              );
+        },
+      );
+
+      // Act
+      await tester.tap(_day(20));
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(find.text('Pushed'), findsOneWidget);
+      expect(find.byType(CupertinoCalendar), findsNothing);
+      expect(result.isCompleted, isTrue);
+      expect(result.value, DateTime(2026, 9, 20));
+    });
   });
 
   group('CupertinoCalendar actions outside of an overlay', () {
@@ -278,6 +310,84 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Sep 10, 2026'), findsOneWidget);
+    });
+  });
+
+  group('Picker buttons removed while their overlay is open', () {
+    testWidgets('CupertinoCalendarPickerButton ignores later changes', (
+      WidgetTester tester,
+    ) async {
+      // Arrange
+      final ValueNotifier<bool> isButtonShown = ValueNotifier<bool>(true);
+      addTearDown(isButtonShown.dispose);
+      DateTime? changed;
+      await tester.pumpWidget(
+        _app(
+          ValueListenableBuilder<bool>(
+            valueListenable: isButtonShown,
+            builder: (BuildContext _, bool isShown, Widget? _) => isShown
+                ? CupertinoCalendarPickerButton(
+                    minimumDateTime: _minimum,
+                    maximumDateTime: _maximum,
+                    initialDateTime: _initial,
+                    onDateTimeChanged: (DateTime date) => changed = date,
+                  )
+                : const SizedBox(),
+          ),
+        ),
+      );
+      await tester.tap(find.byType(CupertinoCalendarPickerButton));
+      await tester.pumpAndSettle();
+      isButtonShown.value = false;
+      await tester.pump();
+
+      // Act
+      await tester.tap(_day(15));
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(tester.takeException(), isNull);
+      expect(changed, DateTime(2026, 9, 15));
+    });
+
+    testWidgets('CupertinoTimePickerButton ignores later changes', (
+      WidgetTester tester,
+    ) async {
+      // Arrange
+      final ValueNotifier<bool> isButtonShown = ValueNotifier<bool>(true);
+      addTearDown(isButtonShown.dispose);
+      TimeOfDay? changed;
+      await tester.pumpWidget(
+        _app(
+          ValueListenableBuilder<bool>(
+            valueListenable: isButtonShown,
+            builder: (BuildContext _, bool isShown, Widget? _) => isShown
+                ? CupertinoTimePickerButton(
+                    initialTime: const TimeOfDay(hour: 10, minute: 0),
+                    use24hFormat: true,
+                    onTimeChanged: (TimeOfDay time) => changed = time,
+                  )
+                : const SizedBox(),
+          ),
+        ),
+      );
+      await tester.tap(find.byType(CupertinoTimePickerButton));
+      await tester.pumpAndSettle();
+      isButtonShown.value = false;
+      await tester.pump();
+
+      // Act
+      await tester.fling(
+        find.byType(ListWheelScrollView).first,
+        const Offset(0.0, -100.0),
+        600.0,
+        warnIfMissed: false,
+      );
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(tester.takeException(), isNull);
+      expect(changed, isNotNull);
     });
   });
 }

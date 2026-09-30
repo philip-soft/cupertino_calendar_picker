@@ -5,43 +5,36 @@
 import 'package:alchemist/alchemist.dart';
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:material_ui/material_ui.dart' show TimeOfDay;
+
+import 'support/golden_harness.dart';
 
 void main() {
   const TimeOfDay fixedTime = TimeOfDay(hour: 14, minute: 30);
 
-  Widget buildScenario({
-    required Brightness brightness,
+  Widget buildScenario(
+    Brightness brightness, {
     bool use24h = false,
     String? label,
   }) {
-    return CupertinoApp(
-      debugShowCheckedModeBanner: false,
-      theme: CupertinoThemeData(brightness: brightness),
-      locale: const Locale('en', 'US'),
-      localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      home: CupertinoPageScaffold(
-        child: Center(
-          child: SizedBox(
-            width: 320.0,
-            child: Builder(
-              builder: (BuildContext context) {
-                return CalendarFooter(
-                  time: fixedTime,
-                  isTimePickerVisible: false,
-                  onTimePickerStateChanged: (_) {},
-                  onTimeChanged: (_) {},
-                  type: CupertinoCalendarType.compact,
-                  label: label,
-                  mainColor: CupertinoColors.systemRed.resolveFrom(context),
-                  decoration: CalendarFooterDecoration.withDynamicColor(
-                    context,
-                  ),
-                  use24hFormat: use24h,
-                );
-              },
-            ),
-          ),
+    return goldenApp(
+      brightness: brightness,
+      child: SizedBox(
+        width: 320.0,
+        child: Builder(
+          builder: (BuildContext context) {
+            return CalendarFooter(
+              time: fixedTime,
+              isTimePickerVisible: false,
+              onTimePickerStateChanged: (_) {},
+              onTimeChanged: (_) {},
+              type: CupertinoCalendarType.compact,
+              label: label,
+              mainColor: CupertinoColors.systemRed.resolveFrom(context),
+              decoration: CalendarFooterDecoration.withDynamicColor(context),
+              use24hFormat: use24h,
+            );
+          },
         ),
       ),
     );
@@ -50,54 +43,22 @@ void main() {
   goldenTest(
     'CalendarFooter renders time row with AM/PM in light and dark themes',
     fileName: 'calendar_footer',
-    builder: () => GoldenTestGroup(
-      columns: 2,
-      children: <Widget>[
-        GoldenTestScenario(
-          name: 'light',
-          child: buildScenario(brightness: Brightness.light),
-        ),
-        GoldenTestScenario(
-          name: 'dark',
-          child: buildScenario(brightness: Brightness.dark),
-        ),
-      ],
-    ),
+    builder: () => lightDarkGroup(buildScenario),
   );
 
   goldenTest(
     'CalendarFooter renders time row with label in light and dark themes',
     fileName: 'calendar_footer_label',
-    builder: () => GoldenTestGroup(
-      columns: 2,
-      children: <Widget>[
-        GoldenTestScenario(
-          name: 'light',
-          child: buildScenario(brightness: Brightness.light, label: 'Time'),
-        ),
-        GoldenTestScenario(
-          name: 'dark',
-          child: buildScenario(brightness: Brightness.dark, label: 'Time'),
-        ),
-      ],
+    builder: () => lightDarkGroup(
+      (Brightness brightness) => buildScenario(brightness, label: 'Time'),
     ),
   );
 
   goldenTest(
     'CalendarFooter renders time row in 24h format in light and dark themes',
     fileName: 'calendar_footer_24h',
-    builder: () => GoldenTestGroup(
-      columns: 2,
-      children: <Widget>[
-        GoldenTestScenario(
-          name: 'light',
-          child: buildScenario(brightness: Brightness.light, use24h: true),
-        ),
-        GoldenTestScenario(
-          name: 'dark',
-          child: buildScenario(brightness: Brightness.dark, use24h: true),
-        ),
-      ],
+    builder: () => lightDarkGroup(
+      (Brightness brightness) => buildScenario(brightness, use24h: true),
     ),
   );
 }

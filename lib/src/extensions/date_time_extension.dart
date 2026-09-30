@@ -2,6 +2,8 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
+import 'package:cupertino_calendar_picker/src/src.dart';
+import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 
 extension PackageDateTimeExtension on DateTime {
@@ -19,6 +21,11 @@ extension PackageDateTimeExtension on DateTime {
     if (isBefore(minimum)) return minimum;
     if (isAfter(maximum)) return maximum;
     return this;
+  }
+
+  /// Formats the month and year in the ambient locale, e.g. "September 2026".
+  String monthYearFormat(BuildContext context) {
+    return DateFormat.yMMMM(context.localeString).format(this);
   }
 
   /// Returns this date moved to [year] and [month], limiting the day to the

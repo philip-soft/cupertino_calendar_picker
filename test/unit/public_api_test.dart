@@ -50,7 +50,7 @@ void main() {
       expect(confirmed, DateTime(2026, 9, 30));
     });
 
-    test('dismiss behaviors are spelled correctly', () {
+    test('exports the enums with their public value names', () {
       expect(
         CalendarDismissBehavior.onOutsideTapOrDateSelect.hasOutsideTapDismiss,
         isTrue,

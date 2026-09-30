@@ -64,6 +64,10 @@ const double pickerDefaultHorizontalSpacing = 15.0;
 const double pickerDefaultVerticalSpacing = 15.0;
 const Offset pickerDefaultOffset = Offset(0.0, 10.0);
 
+/// The smallest scale the picker is displayed with next to its anchor.
+/// With less space next to the anchor, the picker is centered on the screen.
+const double pickerMinimumAnchoredScale = 0.5;
+
 /// The animation value the dismiss animation starts from, so that the overlay
 /// closes with a short bounce-less shrink rather than replaying the overshoot.
 const double pickerDismissAnimationStartValue = 0.75;

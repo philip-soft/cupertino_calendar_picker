@@ -130,6 +130,48 @@ void main() {
       handle.dispose();
     });
 
+    testWidgets('switching the month announces the new month', (
+      WidgetTester tester,
+    ) async {
+      final SemanticsHandle handle = tester.ensureSemantics();
+      await tester.pumpWidget(_app(_calendar()));
+      await tester.pumpAndSettle();
+      tester.takeAnnouncements();
+
+      tester.semantics.tap(find.semantics.byLabel('Next month'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeAnnouncements(), <Matcher>[
+        isAccessibilityAnnouncement('October 2026'),
+      ]);
+      handle.dispose();
+    });
+
+    testWidgets('scrolling the year picker does not announce the month', (
+      WidgetTester tester,
+    ) async {
+      // Arrange
+      final SemanticsHandle handle = tester.ensureSemantics();
+      await tester.pumpWidget(_app(_calendar()));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('September 2026'));
+      await tester.pumpAndSettle();
+      tester.takeAnnouncements();
+
+      // Act
+      await tester.drag(
+        find.byType(CustomCupertinoDatePicker),
+        const Offset(0.0, -120.0),
+        warnIfMissed: false,
+      );
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(find.text('September 2026'), findsNothing);
+      expect(tester.takeAnnouncements(), isEmpty);
+      handle.dispose();
+    });
+
     testWidgets('weekday labels are excluded from semantics', (
       WidgetTester tester,
     ) async {
@@ -238,6 +280,49 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(CupertinoCalendar), findsNothing);
+      handle.dispose();
+    });
+
+    testWidgets('calendar overlay names its route', (
+      WidgetTester tester,
+    ) async {
+      final SemanticsHandle handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _app(
+          CupertinoCalendarPickerButton(
+            minimumDateTime: DateTime(2026),
+            maximumDateTime: DateTime(2026, 12, 31),
+            initialDateTime: DateTime(2026, 9, 15),
+          ),
+        ),
+      );
+      await tester.tap(find.byType(CupertinoCalendarPickerButton));
+      await tester.pumpAndSettle();
+
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('Select date')),
+        isSemantics(scopesRoute: true, namesRoute: true),
+      );
+      handle.dispose();
+    });
+
+    testWidgets('time overlay names its route', (WidgetTester tester) async {
+      final SemanticsHandle handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _app(
+          const CupertinoTimePickerButton(
+            initialTime: TimeOfDay(hour: 9, minute: 30),
+            use24hFormat: true,
+          ),
+        ),
+      );
+      await tester.tap(find.byType(CupertinoTimePickerButton));
+      await tester.pumpAndSettle();
+
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('Select time')),
+        isSemantics(scopesRoute: true, namesRoute: true),
+      );
       handle.dispose();
     });
   });

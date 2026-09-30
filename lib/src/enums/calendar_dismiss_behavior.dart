@@ -7,17 +7,16 @@
 /// Regardless of the behavior, the calendar is always closed by its actions
 /// and by the system back gesture.
 enum CalendarDismissBehavior {
-  /// The calendar will close when a tap occurs outside of it or on the action button.
+  /// The calendar closes on a tap outside of it.
   onOutsideTap,
 
-  /// The calendar will close when a date is selected or on the action button.
+  /// The calendar closes when a date is selected.
   onDateSelect,
 
-  /// The calendar will close when either a tap occurs outside of it or a date
-  /// is selected or on the action button.
+  /// The calendar closes on a tap outside of it or when a date is selected.
   onOutsideTapOrDateSelect,
 
-  /// The calendar will close when a tap occurs on the action button only.
+  /// The calendar closes on an action tap only.
   ///
   /// Requires at least one action to be provided.
   onActionTap;

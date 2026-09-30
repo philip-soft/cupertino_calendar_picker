@@ -5,30 +5,22 @@
 import 'package:alchemist/alchemist.dart';
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:material_ui/material_ui.dart' show GlobalMaterialLocalizations;
+
+import 'support/golden_harness.dart';
 
 void main() {
-  Widget buildScenario({required Brightness brightness}) {
-    return CupertinoApp(
-      debugShowCheckedModeBanner: false,
-      theme: CupertinoThemeData(brightness: brightness),
-      locale: const Locale('en', 'US'),
-      localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      home: CupertinoPageScaffold(
-        child: Center(
-          child: SizedBox(
-            width: 320.0,
-            child: Builder(
-              builder: (BuildContext context) {
-                return CalendarWeekdays(
-                  decoration: CalendarWeekdayDecoration.withDynamicColor(
-                    context,
-                  ),
-                  firstDayOfWeekIndex: 0,
-                );
-              },
-            ),
-          ),
+  Widget buildScenario(Brightness brightness) {
+    return goldenApp(
+      brightness: brightness,
+      child: SizedBox(
+        width: 320.0,
+        child: Builder(
+          builder: (BuildContext context) {
+            return CalendarWeekdays(
+              decoration: CalendarWeekdayDecoration.withDynamicColor(context),
+              firstDayOfWeekIndex: 0,
+            );
+          },
         ),
       ),
     );
@@ -37,18 +29,6 @@ void main() {
   goldenTest(
     'CalendarWeekdays renders weekday labels in light and dark themes',
     fileName: 'calendar_weekdays',
-    builder: () => GoldenTestGroup(
-      columns: 2,
-      children: <Widget>[
-        GoldenTestScenario(
-          name: 'light',
-          child: buildScenario(brightness: Brightness.light),
-        ),
-        GoldenTestScenario(
-          name: 'dark',
-          child: buildScenario(brightness: Brightness.dark),
-        ),
-      ],
-    ),
+    builder: () => lightDarkGroup(buildScenario),
   );
 }

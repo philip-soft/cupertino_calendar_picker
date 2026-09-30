@@ -4,7 +4,6 @@
 
 import 'package:cupertino_calendar_picker/src/src.dart';
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart' show MaterialLocalizations;
 
 typedef YearPickerCallback = void Function(bool showYearPicker);
@@ -31,8 +30,7 @@ class CalendarHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String headerString = DateFormat.yMMMM(context.localeString)
-        .format(currentMonth);
+    final String headerString = currentMonth.monthYearFormat(context);
     final TextStyle monthDateStyle = decoration.monthDateStyle.resolveDynamic(
       context,
     );
@@ -58,17 +56,19 @@ class CalendarHeader extends StatelessWidget {
                 child: Text(headerString),
               ),
               SizedBox(width: calendarHeaderTitleArrowSpacing.scale(context)),
-              AnimatedRotation(
-                duration: innerPickersFadeDuration,
-                curve: Curves.easeInOut,
-                turns: isYearPickerVisible ? 1.25 : 1.0,
-                child: SizedBox(
-                  width: calendarHeaderArrowWidth.scale(context),
-                  height: calendarHeaderArrowHeight.scale(context),
-                  child: Icon(
-                    CupertinoIcons.chevron_forward,
-                    color: arrowColor,
-                    size: calendarMonthPickerIconSize.scale(context),
+              _DirectionalIcon(
+                child: AnimatedRotation(
+                  duration: innerPickersFadeDuration,
+                  curve: Curves.easeInOut,
+                  turns: isYearPickerVisible ? 1.25 : 1.0,
+                  child: SizedBox(
+                    width: calendarHeaderArrowWidth.scale(context),
+                    height: calendarHeaderArrowHeight.scale(context),
+                    child: Icon(
+                      CupertinoIcons.chevron_forward,
+                      color: arrowColor,
+                      size: calendarMonthPickerIconSize.scale(context),
+                    ),
                   ),
                 ),
               ),
@@ -142,12 +142,30 @@ class _MonthSwitcherButton extends StatelessWidget {
       child: SizedBox(
         height: calendarMonthSwitcherSize,
         width: calendarMonthSwitcherSize,
-        child: Icon(
-          icon,
-          color: iconColor.resolveDynamic(context),
-          size: calendarMonthSwitcherIconSize.scale(context),
+        child: _DirectionalIcon(
+          child: Icon(
+            icon,
+            color: iconColor.resolveDynamic(context),
+            size: calendarMonthSwitcherIconSize.scale(context),
+          ),
         ),
       ),
+    );
+  }
+}
+
+/// Mirrors a chevron in right-to-left text, since the Cupertino chevrons do
+/// not match the text direction themselves.
+class _DirectionalIcon extends StatelessWidget {
+  const _DirectionalIcon({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.flip(
+      flipX: Directionality.of(context) == TextDirection.rtl,
+      child: child,
     );
   }
 }
