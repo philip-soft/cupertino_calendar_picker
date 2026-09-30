@@ -17,6 +17,8 @@ The package provides sleek and stylish Cupertino calendar widgets designed to mi
 * **Smooth Animations**: Enjoy fluid animations that enhance the overall look and feel of the calendar, providing a polished user experience.
 * **Customizable**: Easily customize the appearance of the calendar to match your app's theme and branding.
 * **Intuitive Interactions**: Users can effortlessly navigate through years, months and interact with the calendar thanks to its intuitive design.
+* **Accessible**: Screen reader semantics, keyboard activation and text scaling support.
+* **Localized**: Weekdays, months, action labels and times follow the app's locale, including right-to-left layouts.
 
 ## Getting started
 
@@ -42,11 +44,29 @@ CupertinoApp(
 );
 ```
 
+## Migrating from 2.x
+
+Version 3.0.0 contains breaking changes. The most common updates are:
+
+| 2.x | 3.0.0 |
+| --- | --- |
+| `import 'package:flutter/cupertino.dart'` / `material.dart` | `import 'package:cupertino_ui/cupertino_ui.dart'` / `package:material_ui/material_ui.dart` |
+| `GlobalMaterialLocalizations.delegates` from `flutter_localizations` | `GlobalMaterialLocalizations.delegates` from `material_ui` |
+| `CalendarDismissBehavior.onOusideTapOrDateSelect` | `CalendarDismissBehavior.onOutsideTapOrDateSelect` |
+| `CalendarDismissBehavior.hasOusideTapDismiss` | `CalendarDismissBehavior.hasOutsideTapDismiss` |
+| `PickerBackgroundType.transparentAndBlured` | `PickerBackgroundType.transparentAndBlurred` |
+| `CancelCupertinoCalendarAction(onPressed: ...)` with an untyped `Function` | `onPressed` is a `VoidCallback` |
+| `ConfirmCupertinoCalendarAction(onPressed: ...)` with an untyped `Function` | `onPressed` is a `ValueChanged<DateTime>` that receives the selected date |
+| Default action labels `'Cancel'` and `'Done'` | Localized "Cancel" and "OK"; pass `label` to keep the old text |
+| `widgetRenderBox` is required | `widgetRenderBox` is optional; without it the picker is centered |
+
+The confirm and cancel actions now complete `showCupertinoCalendarPicker` with the selected date and `null` respectively. See the [changelog](https://pub.dev/packages/cupertino_calendar_picker/changelog) for the full list of changes.
+
 ## Widgets
 
 This package offers three convenient widgets for integrating pickers directly into your app.
 
-### `CupertinoCalendar` Widget.
+### `CupertinoCalendar`
 
 The `CupertinoCalendar` widget provides an inline calendar that can be displayed directly within your screen.
 
@@ -74,7 +94,7 @@ SizedBox(
 ),
 ```
 
-### `CupertinoCalendarPickerButton` Widget.
+### `CupertinoCalendarPickerButton`
 
 The `CupertinoCalendarPickerButton` widget allows users to open a cupertino calendar picker when the button is pressed.
 
@@ -100,7 +120,21 @@ CupertinoCalendarPickerButton(
 ),
 ```
 
-### `CupertinoTimePickerButton` Widget.
+The button text can be changed with `formatter` and its look with `buttonDecoration`. `onCompleted` receives the result of the picker when it closes.
+
+```dart
+CupertinoCalendarPickerButton(
+  minimumDateTime: DateTime(2024, 7, 10),
+  maximumDateTime: DateTime(2025, 7, 10),
+  formatter: (dateTime) => DateFormat.yMMMMd().format(dateTime), // package:intl
+  buttonDecoration: PickerButtonDecoration(
+    backgroundColor: CupertinoColors.systemGrey5,
+  ),
+  onCompleted: (dateTime) {},
+),
+```
+
+### `CupertinoTimePickerButton`
 
 The `CupertinoTimePickerButton` widget lets users select a time in a time picker that appears when the button is pressed.
 
@@ -125,10 +159,11 @@ CupertinoTimePickerButton(
 
 This package also includes two functions for displaying pickers from your widgets.
 
-### `showCupertinoCalendarPicker` function.
+### `showCupertinoCalendarPicker`
 
-The `showCupertinoCalendarPicker` function displays a calendar picker around your widget.
-- From version 2.0.0, you can specify the `CupertinoCalendarMode` to allow selection of both date and time.
+The `showCupertinoCalendarPicker` function displays a calendar picker around your widget. Use `CupertinoCalendarMode.dateTime` to select both a date and a time.
+
+The returned `Future` completes with the last changed date, or with `null` if the date was not changed. With a `ConfirmCupertinoCalendarAction`, it completes with the selected date only when the action is pressed (see [Actions](#actions)).
 
 #### Usage Example
 
@@ -150,7 +185,7 @@ Future<DateTime?> onCalendarWidgetTap(BuildContext context) async {
 }
 ```
 
-### `showCupertinoTimePicker` function.
+### `showCupertinoTimePicker`
 
 The `showCupertinoTimePicker` function shows a time picker around your widget. The returned `Future` completes with the last changed time, or with `null` if the time was not changed.
 
@@ -246,85 +281,61 @@ CupertinoCalendarPickerButton(
 ),
 ```
 
-## How to get a `RenderBox`?
-The picker is displayed above or below the widget whose `RenderBox` is passed as `widgetRenderBox`. Without it, the picker is centered on the screen.
+## Positioning
 
-There are 3 simple ways of how you can get the widget's render box to pass it to the `showCupertinoCalendarPicker` or `showCupertinoTimePicker` function.
+The picker opens below or above its anchor, on the side with more space, and is scaled down when it does not fit. If the space next to the anchor fits it only below half of its size, e.g. for a button in the middle of a landscape screen, the picker is centered on the screen instead. Without a `widgetRenderBox`, the picker is always centered.
 
-You can choose **any** of these.
+The functions and the buttons share these parameters:
 
-1. Wrap your widget with `Builder` widget.
+* `offset` — the distance between the anchor and the picker, `Offset(0, 10)` by default.
+* `horizontalSpacing` and `verticalSpacing` — the minimum distance to the screen edges and the safe area, `15.0` by default.
+* `barrierColor` — the color of the area around the picker, transparent by default.
+* `useRootNavigator` — set to `false` to show the picker in the nearest nested navigator.
+
+### How to get a `RenderBox`?
+
+Pass the `RenderBox` of the widget the picker should open next to as `widgetRenderBox`. You can get it from a `BuildContext` below that widget, e.g. with a `Builder`:
 
 ```dart
 Builder(
   builder: (context) {
     return YourWidget(
-      onTap: () => onTap(context),
+      onTap: () => showCupertinoCalendarPicker(
+        context,
+        widgetRenderBox: context.findRenderObject() as RenderBox?,
+        minimumDateTime: DateTime(2024, 7, 10),
+        maximumDateTime: DateTime(2025, 7, 10),
+      ),
     );
   },
 );
-
-Future<void> onTap(BuildContext context) {
-  /// And here you can get the `RenderBox` of your widget 
-  /// using the `Builder`s `BuildContext`
-  final renderBox = context.findRenderObject() as RenderBox?;
-  return showCupertinoCalendarPicker(...);
-}
-
 ```
 
-2. Use a `GlobalKey`.
+or with a `GlobalKey` assigned to that widget:
 
 ```dart
-final globalKey = GlobalKey();
+final GlobalKey anchorKey = GlobalKey();
 
-@override
-Widget build(BuildContext context) {
-  return CupertinoApp(
-    localizationsDelegates: GlobalMaterialLocalizations.delegates,
-    home: CupertinoPageScaffold(
-      child: YourWidget(
-        key: globalKey,
-        onTap: onTap,
-      ),
-    ),
-  );
-}
+// YourWidget(key: anchorKey, ...)
 
-Future<void> onTap() {
-  /// And here you can get the `RenderBox` of your widget using the `GlobalKey`.
-  final renderBox = globalKey.currentContext?.findRenderObject() as RenderBox?;
-  return showCupertinoCalendarPicker(...);
-}
-
+final RenderBox? renderBox =
+    anchorKey.currentContext?.findRenderObject() as RenderBox?;
 ```
 
-3. Pass a `BuildContext` directly from your widget's `build` method.
+## Accessibility and localization
 
-```dart
-class YourWidget extends StatelessWidget {
-  const YourWidget({
-    required this.onTap,
-  });
+* Days, the header, the time footer, actions, picker buttons and the dismiss barrier have screen reader semantics, and the newly displayed month is announced when switching months.
+* Clickable elements can be activated with the keyboard.
+* The picker adapts to the system text scale.
+* Weekdays, month names, action labels and times use the ambient locale, provided by `GlobalMaterialLocalizations.delegates`. The first day of the week comes from the locale unless `firstDayOfWeekIndex` is set.
+* The 12- or 24-hour format follows the system setting unless `use24hFormat` is set.
+* Right-to-left layouts are supported.
 
-  final void Function(BuildContext context) onTap;
+## Additional information
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => onTap(context),
-      child: ...,
-    );
-  }
-}
-
-Future<void> onTap(BuildContext context) {
-  /// And here you can get the `RenderBox` of your widget's `build` method.
-  final renderBox = context.findRenderObject() as RenderBox?;
-  return showCupertinoCalendarPicker(...);
-}
-
-```
+* A complete example app is available in the [`example`](https://github.com/philip-soft/cupertino_calendar_picker/tree/master/example) folder.
+* See the [API reference](https://pub.dev/documentation/cupertino_calendar_picker/latest/) for all parameters.
+* Bug reports and feature requests are welcome in the [issue tracker](https://github.com/philip-soft/cupertino_calendar_picker/issues). Pull requests are appreciated too.
 
 ## Maintainers
 

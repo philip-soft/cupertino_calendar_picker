@@ -26,8 +26,8 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   return AlchemistConfig.runWithConfig(
     config: AlchemistConfig(
       ciGoldensConfig: const CiGoldensConfig(obscureText: false),
-      // Platform goldens are only recorded on macOS; other hosts, such as the
-      // Linux CI runner, compare the CI goldens alone.
+      // Platform goldens are only recorded on macOS; other hosts compare the
+      // CI goldens alone.
       platformGoldensConfig: PlatformGoldensConfig(
         platforms: <HostPlatform>{HostPlatform.macOS},
       ),
