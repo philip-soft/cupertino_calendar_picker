@@ -4,8 +4,8 @@
 
 import 'package:alchemist/alchemist.dart';
 import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart' show GlobalMaterialLocalizations;
 
 void main() {
   // Fixed dates keep the rendered output deterministic across runs/machines.
@@ -19,12 +19,9 @@ void main() {
   }) {
     return CupertinoApp(
       debugShowCheckedModeBanner: false,
+      theme: CupertinoThemeData(brightness: brightness),
       locale: const Locale('en', 'US'),
-      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: CupertinoPageScaffold(
         child: Center(
           child: SizedBox(

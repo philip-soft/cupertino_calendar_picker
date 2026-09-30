@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -34,10 +34,12 @@ void main() {
     });
 
     test('blur amount and alpha values are positive and within byte range', () {
-      expect(calendarBlurAmount, greaterThan(0));
       expect(pickerContainerBlur, greaterThan(0));
-      expect(calendarBluredLightBackgroundColorAlpha, inInclusiveRange(0, 255));
-      expect(calendarBluredDarkBackgroundColorAlpha, inInclusiveRange(0, 255));
+      expect(
+        calendarBlurredLightBackgroundColorAlpha,
+        inInclusiveRange(0, 255),
+      );
+      expect(calendarBlurredDarkBackgroundColorAlpha, inInclusiveRange(0, 255));
     });
 
     test('text scale clamps are >= 1.0', () {
@@ -61,16 +63,10 @@ void main() {
     });
 
     test('button fade durations have the documented values', () {
-      expect(
-        pickerButtonFadeOutDuration,
-        const Duration(milliseconds: 1000),
-      );
+      expect(pickerButtonFadeOutDuration, const Duration(milliseconds: 1000));
       expect(pickerButtonFadeInDuration, const Duration(milliseconds: 800));
       expect(pickerButtonFadeDuration, const Duration(milliseconds: 200));
-      expect(
-        pickerButtonTextStyleDuration,
-        const Duration(milliseconds: 100),
-      );
+      expect(pickerButtonTextStyleDuration, const Duration(milliseconds: 100));
     });
 
     test('calendar animation durations have the documented values', () {

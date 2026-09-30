@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'test_helpers.dart';
@@ -75,8 +75,8 @@ void main() {
     ) async {
       final CalendarMonthPickerSelectedDayStyle style =
           CalendarMonthPickerSelectedDayStyle(
-        mainColor: CupertinoColors.systemRed,
-      );
+            mainColor: CupertinoColors.systemRed,
+          );
 
       await tester.pumpWidget(buildDay(style: style));
 

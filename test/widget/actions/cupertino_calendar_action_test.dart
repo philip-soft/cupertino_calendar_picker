@@ -3,154 +3,145 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
+
+import 'test_helpers.dart';
+
+Future<String> _effectiveLabel(
+  WidgetTester tester,
+  CupertinoCalendarAction action, {
+  Locale locale = const Locale('en', 'US'),
+}) async {
+  late String label;
+  await tester.pumpWidget(
+    wrapWithApp(
+      Builder(
+        builder: (BuildContext context) {
+          label = action.effectiveLabel(context);
+          return const SizedBox();
+        },
+      ),
+      locale: locale,
+    ),
+  );
+  return label;
+}
+
+Future<void> _pumpCalendar(
+  WidgetTester tester,
+  List<CupertinoCalendarAction> actions, {
+  CupertinoCalendarType type = CupertinoCalendarType.compact,
+}) {
+  return tester.pumpWidget(
+    wrapWithApp(
+      CupertinoCalendar(
+        minimumDateTime: DateTime.utc(2020),
+        maximumDateTime: DateTime.utc(2030),
+        initialDateTime: DateTime.utc(2024, 6, 15),
+        type: type,
+        actions: actions,
+      ),
+    ),
+  );
+}
 
 void main() {
   group('CancelCupertinoCalendarAction', () {
-    test('uses "Cancel" as default label', () {
-      const CancelCupertinoCalendarAction action =
-          CancelCupertinoCalendarAction();
+    testWidgets('uses the localized "Cancel" as default label', (
+      WidgetTester tester,
+    ) async {
+      final String label = await _effectiveLabel(
+        tester,
+        const CancelCupertinoCalendarAction(),
+      );
 
-      expect(action.label, 'Cancel');
-      expect(action.isDefaultAction, isFalse);
-      expect(action.onPressed, isNull);
+      expect(label, 'Cancel');
     });
 
-    test('allows custom label override', () {
-      const CancelCupertinoCalendarAction action =
-          CancelCupertinoCalendarAction(label: 'Abort');
+    testWidgets('allows custom label override', (WidgetTester tester) async {
+      final String label = await _effectiveLabel(
+        tester,
+        const CancelCupertinoCalendarAction(label: 'Abort'),
+      );
 
-      expect(action.label, 'Abort');
+      expect(label, 'Abort');
     });
   });
 
   group('ConfirmCupertinoCalendarAction', () {
-    test('uses "Done" as default label and is the default action', () {
-      const ConfirmCupertinoCalendarAction action =
-          ConfirmCupertinoCalendarAction();
-
-      expect(action.label, 'Done');
-      expect(action.isDefaultAction, isTrue);
-    });
-
-    test('accepts a typed onPressed callback', () {
-      DateTime? receivedDate;
-
-      final ConfirmCupertinoCalendarAction action =
-          ConfirmCupertinoCalendarAction(
-        onPressed: (DateTime date) {
-          receivedDate = date;
-        },
+    testWidgets('uses the localized "OK" as default label', (
+      WidgetTester tester,
+    ) async {
+      final String label = await _effectiveLabel(
+        tester,
+        const ConfirmCupertinoCalendarAction(),
       );
-      final DateTime now = DateTime.utc(2024, 6, 15);
-      (action.onPressed as ValueChanged<DateTime>?)?.call(now);
 
-      expect(receivedDate, now);
-    });
-  });
-
-  group('CupertinoCalendarAction equality', () {
-    test('actions with the same fields are equal', () {
-      const CancelCupertinoCalendarAction a = CancelCupertinoCalendarAction();
-      const CancelCupertinoCalendarAction b = CancelCupertinoCalendarAction();
-
-      expect(a == b, isTrue);
-      expect(a.hashCode, b.hashCode);
+      expect(label, 'OK');
     });
 
-    test('actions with different labels are not equal', () {
-      const CancelCupertinoCalendarAction a = CancelCupertinoCalendarAction();
-      const CancelCupertinoCalendarAction b =
-          CancelCupertinoCalendarAction(label: 'Stop');
+    testWidgets('localizes the default label', (WidgetTester tester) async {
+      final String label = await _effectiveLabel(
+        tester,
+        const ConfirmCupertinoCalendarAction(),
+        locale: const Locale('ar'),
+      );
 
-      expect(a == b, isFalse);
-    });
-
-    test('cancel and confirm are distinct types', () {
-      const CancelCupertinoCalendarAction cancel =
-          CancelCupertinoCalendarAction();
-      const ConfirmCupertinoCalendarAction confirm =
-          ConfirmCupertinoCalendarAction();
-
-      expect(cancel == confirm, isFalse);
+      expect(label, isNot('OK'));
     });
   });
 
   group('CupertinoCalendar actions constraints', () {
-    test('asserts when actions list is empty', () {
-      expect(
-        () => CupertinoCalendar(
-          minimumDateTime: DateTime.utc(2020),
-          maximumDateTime: DateTime.utc(2030),
-          initialDateTime: DateTime.utc(2024, 6, 15),
-          type: CupertinoCalendarType.compact,
-          actions: const <CupertinoCalendarAction>[],
-        ),
-        throwsAssertionError,
-      );
+    testWidgets('asserts when actions list is empty', (
+      WidgetTester tester,
+    ) async {
+      await _pumpCalendar(tester, const <CupertinoCalendarAction>[]);
+
+      expect(tester.takeException(), isAssertionError);
     });
 
-    test('asserts when actions list has more than 2 entries', () {
-      expect(
-        () => CupertinoCalendar(
-          minimumDateTime: DateTime.utc(2020),
-          maximumDateTime: DateTime.utc(2030),
-          initialDateTime: DateTime.utc(2024, 6, 15),
-          type: CupertinoCalendarType.compact,
-          actions: const <CupertinoCalendarAction>[
-            CancelCupertinoCalendarAction(),
-            ConfirmCupertinoCalendarAction(),
-            CancelCupertinoCalendarAction(label: 'Extra'),
-          ],
-        ),
-        throwsAssertionError,
-      );
+    testWidgets('asserts when actions list has more than 2 entries', (
+      WidgetTester tester,
+    ) async {
+      await _pumpCalendar(tester, const <CupertinoCalendarAction>[
+        CancelCupertinoCalendarAction(),
+        ConfirmCupertinoCalendarAction(),
+        CancelCupertinoCalendarAction(label: 'Extra'),
+      ]);
+
+      expect(tester.takeException(), isAssertionError);
     });
 
-    test('asserts when actions provided with inline type', () {
-      expect(
-        () => CupertinoCalendar(
-          minimumDateTime: DateTime.utc(2020),
-          maximumDateTime: DateTime.utc(2030),
-          initialDateTime: DateTime.utc(2024, 6, 15),
-          actions: const <CupertinoCalendarAction>[
-            ConfirmCupertinoCalendarAction(),
-          ],
-        ),
-        throwsAssertionError,
-      );
+    testWidgets('asserts when actions provided with inline type', (
+      WidgetTester tester,
+    ) async {
+      await _pumpCalendar(tester, const <CupertinoCalendarAction>[
+        ConfirmCupertinoCalendarAction(),
+      ], type: CupertinoCalendarType.inline);
+
+      expect(tester.takeException(), isAssertionError);
     });
 
-    test('builds successfully with 1 action in compact mode', () {
-      expect(
-        () => CupertinoCalendar(
-          minimumDateTime: DateTime.utc(2020),
-          maximumDateTime: DateTime.utc(2030),
-          initialDateTime: DateTime.utc(2024, 6, 15),
-          type: CupertinoCalendarType.compact,
-          actions: const <CupertinoCalendarAction>[
-            ConfirmCupertinoCalendarAction(),
-          ],
-        ),
-        returnsNormally,
-      );
+    testWidgets('builds successfully with 1 action in compact mode', (
+      WidgetTester tester,
+    ) async {
+      await _pumpCalendar(tester, const <CupertinoCalendarAction>[
+        ConfirmCupertinoCalendarAction(),
+      ]);
+
+      expect(tester.takeException(), isNull);
     });
 
-    test('builds successfully with 2 actions in compact mode', () {
-      expect(
-        () => CupertinoCalendar(
-          minimumDateTime: DateTime.utc(2020),
-          maximumDateTime: DateTime.utc(2030),
-          initialDateTime: DateTime.utc(2024, 6, 15),
-          type: CupertinoCalendarType.compact,
-          actions: const <CupertinoCalendarAction>[
-            CancelCupertinoCalendarAction(),
-            ConfirmCupertinoCalendarAction(),
-          ],
-        ),
-        returnsNormally,
-      );
+    testWidgets('builds successfully with 2 actions in compact mode', (
+      WidgetTester tester,
+    ) async {
+      await _pumpCalendar(tester, const <CupertinoCalendarAction>[
+        CancelCupertinoCalendarAction(),
+        ConfirmCupertinoCalendarAction(),
+      ]);
+
+      expect(tester.takeException(), isNull);
     });
   });
 }

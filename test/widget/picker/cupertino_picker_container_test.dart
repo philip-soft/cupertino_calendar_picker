@@ -2,36 +2,36 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-import 'dart:async';
-
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'test_helpers.dart';
 
+Widget _buildContainer({
+  Animation<double> animation = kAlwaysCompleteAnimation,
+  PickerContainerDecoration? decoration,
+  double maxScale = 1.0,
+  Widget child = const SizedBox.expand(),
+}) {
+  return CupertinoPickerContainer(
+    animation: animation,
+    decoration: decoration ?? PickerContainerDecoration(),
+    scaleAlignment: Alignment.center,
+    maxScale: maxScale,
+    height: 100.0,
+    width: 200.0,
+    child: child,
+  );
+}
+
 void main() {
   group('CupertinoPickerContainer', () {
-    testWidgets('invokes onInitialized with an AnimationController', (
-      WidgetTester tester,
-    ) async {
-      AnimationController? captured;
-
+    testWidgets('renders its child', (WidgetTester tester) async {
       await tester.pumpWidget(
-        wrapWithApp(
-          CupertinoPickerContainer(
-            decoration: PickerContainerDecoration(),
-            scaleAlignment: Alignment.center,
-            onInitialized: (AnimationController c) => captured = c,
-            maxScale: 1.0,
-            height: 100.0,
-            width: 200.0,
-            child: const Text('container-child'),
-          ),
-        ),
+        wrapWithApp(_buildContainer(child: const Text('container-child'))),
       );
 
-      expect(captured, isNotNull);
       expect(find.text('container-child'), findsOneWidget);
     });
 
@@ -41,22 +41,12 @@ void main() {
       final PickerContainerDecoration decoration = PickerContainerDecoration();
 
       await tester.pumpWidget(
-        wrapWithApp(
-          CupertinoPickerContainer(
-            decoration: decoration,
-            scaleAlignment: Alignment.topCenter,
-            onInitialized: (_) {},
-            maxScale: 1.0,
-            height: 200.0,
-            width: 320.0,
-            child: const SizedBox.expand(),
-          ),
-        ),
+        wrapWithApp(_buildContainer(decoration: decoration)),
       );
 
       expect(
         decoration.backgroundType,
-        PickerBackgroundType.transparentAndBlured,
+        PickerBackgroundType.transparentAndBlurred,
       );
       expect(find.byType(BackdropFilter), findsOneWidget);
     });
@@ -64,21 +54,13 @@ void main() {
     testWidgets('renders solid-color variant without BackdropFilter', (
       WidgetTester tester,
     ) async {
-      final PickerContainerDecoration decoration = PickerContainerDecoration(
-        backgroundType: PickerBackgroundType.plainColor,
-        backgroundColor: const Color(0xFFFF0000),
-      );
-
       await tester.pumpWidget(
         wrapWithApp(
-          CupertinoPickerContainer(
-            decoration: decoration,
-            scaleAlignment: Alignment.center,
-            onInitialized: (_) {},
-            maxScale: 1.0,
-            height: 100.0,
-            width: 100.0,
-            child: const SizedBox.expand(),
+          _buildContainer(
+            decoration: PickerContainerDecoration(
+              backgroundType: PickerBackgroundType.plainColor,
+              backgroundColor: const Color(0xFFFF0000),
+            ),
           ),
         ),
       );
@@ -86,81 +68,76 @@ void main() {
       expect(find.byType(BackdropFilter), findsNothing);
     });
 
-    testWidgets('animates scale via Transform.scale once controller runs', (
+    testWidgets('scales to maxScale when the animation completes', (
       WidgetTester tester,
     ) async {
-      AnimationController? controller;
+      await tester.pumpWidget(wrapWithApp(_buildContainer(maxScale: 0.5)));
+
+      final Transform transform = tester.widget<Transform>(
+        find.descendant(
+          of: find.byType(CupertinoPickerContainer),
+          matching: find.byType(Transform),
+        ),
+      );
+      expect(transform.transform.storage.first, closeTo(0.5, 0.001));
+    });
+
+    testWidgets('follows the provided animation', (WidgetTester tester) async {
+      final AnimationController controller = AnimationController(
+        vsync: const TestVSync(),
+        duration: const Duration(milliseconds: 100),
+      );
+      addTearDown(controller.dispose);
 
       await tester.pumpWidget(
+        wrapWithApp(_buildContainer(animation: controller)),
+      );
+      double scale() => tester
+          .widget<Transform>(
+            find.descendant(
+              of: find.byType(CupertinoPickerContainer),
+              matching: find.byType(Transform),
+            ),
+          )
+          .transform
+          .storage
+          .first;
+
+      expect(scale(), 0.0);
+
+      controller.value = 1.0;
+      await tester.pump();
+
+      expect(scale(), closeTo(1.0, 0.001));
+    });
+
+    testWidgets('resolves a dynamic background color for dark mode', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
         wrapWithApp(
-          CupertinoPickerContainer(
-            decoration: PickerContainerDecoration(),
-            scaleAlignment: Alignment.center,
-            onInitialized: (AnimationController c) => controller = c,
-            maxScale: 1.0,
-            height: 100.0,
-            width: 100.0,
-            child: const SizedBox.expand(),
+          _buildContainer(
+            decoration: PickerContainerDecoration(
+              backgroundType: PickerBackgroundType.plainColor,
+              backgroundColor: CupertinoColors.systemBackground,
+            ),
           ),
+          brightness: Brightness.dark,
         ),
       );
 
-      unawaited(controller?.forward());
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
-
-      expect(find.byType(Transform), findsWidgets);
-    });
-
-    testWidgets('updates scale animation when maxScale changes', (
-      WidgetTester tester,
-    ) async {
-      Widget build(double maxScale) {
-        return wrapWithApp(
-          CupertinoPickerContainer(
-            decoration: PickerContainerDecoration(),
-            scaleAlignment: Alignment.center,
-            onInitialized: (_) {},
-            maxScale: maxScale,
-            height: 100.0,
-            width: 100.0,
-            child: const SizedBox.expand(),
-          ),
-        );
-      }
-
-      await tester.pumpWidget(build(1.0));
-
-      await tester.pumpWidget(build(0.5));
-      await tester.pump();
-
-      expect(tester.takeException(), isNull);
-      expect(find.byType(CupertinoPickerContainer), findsOneWidget);
-    });
-
-    testWidgets('disposes the AnimationController when removed from tree', (
-      WidgetTester tester,
-    ) async {
-      AnimationController? controller;
-      await tester.pumpWidget(
-        wrapWithApp(
-          CupertinoPickerContainer(
-            decoration: PickerContainerDecoration(),
-            scaleAlignment: Alignment.center,
-            onInitialized: (AnimationController c) => controller = c,
-            maxScale: 1.0,
-            height: 100.0,
-            width: 100.0,
-            child: const SizedBox.expand(),
-          ),
-        ),
+      final DecoratedBox box = tester.widget<DecoratedBox>(
+        find
+            .descendant(
+              of: find.byType(CupertinoPickerContainer),
+              matching: find.byType(DecoratedBox),
+            )
+            .first,
       );
-
-      await tester.pumpWidget(wrapWithApp(const SizedBox.shrink()));
-
+      final BoxDecoration decoration = box.decoration as BoxDecoration;
       expect(
-        () => controller?.forward(),
-        throwsA(isA<AssertionError>()),
+        decoration.color?.toARGB32(),
+        CupertinoColors.systemBackground.darkColor.toARGB32(),
       );
     });
   });

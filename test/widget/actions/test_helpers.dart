@@ -2,36 +2,22 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
+import '../../support/test_app.dart';
+
+/// Wraps [child] in the shared test app using this suite's layout: 320px wide.
 Widget wrapWithApp(
   Widget child, {
   Brightness brightness = Brightness.light,
   TextDirection textDirection = TextDirection.ltr,
   Locale locale = const Locale('en', 'US'),
 }) {
-  return CupertinoApp(
+  return wrapTestWidget(
+    child,
+    brightness: brightness,
+    textDirection: textDirection,
     locale: locale,
-    debugShowCheckedModeBanner: false,
-    localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-      GlobalMaterialLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-    ],
-    supportedLocales: const <Locale>[
-      Locale('en', 'US'),
-      Locale('en', 'GB'),
-    ],
-    theme: CupertinoThemeData(brightness: brightness),
-    home: CupertinoPageScaffold(
-      child: Directionality(
-        textDirection: textDirection,
-        child: SizedBox(
-          width: 320.0,
-          child: child,
-        ),
-      ),
-    ),
+    layout: (Widget child) => SizedBox(width: 320.0, child: child),
   );
 }

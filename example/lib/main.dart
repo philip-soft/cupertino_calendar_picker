@@ -1,9 +1,8 @@
 import 'dart:developer';
 
 import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   runApp(const ExampleApp());
@@ -93,11 +92,7 @@ class _ExampleAppState extends State<ExampleApp> {
     return CupertinoApp(
       title: 'Cupertino Calendar Example',
       debugShowCheckedModeBanner: false,
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: CupertinoPageScaffold(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -189,10 +184,7 @@ class _ExampleAppState extends State<ExampleApp> {
 }
 
 class _MyWidget extends StatelessWidget {
-  const _MyWidget({
-    required this.title,
-    required this.onTap,
-  });
+  const _MyWidget({required this.title, required this.onTap});
 
   final String title;
   final void Function(BuildContext) onTap;
@@ -209,10 +201,7 @@ class _MyWidget extends StatelessWidget {
           color: CupertinoColors.tertiarySystemFill.resolveFrom(context),
         ),
         alignment: Alignment.center,
-        child: Text(
-          title,
-          textAlign: TextAlign.center,
-        ),
+        child: Text(title, textAlign: TextAlign.center),
       ),
     );
   }

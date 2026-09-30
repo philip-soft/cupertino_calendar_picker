@@ -3,20 +3,18 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
+
+import '../support/test_app.dart';
+import '../support/test_durations.dart';
 
 Widget _wrapWithApp(Widget child) {
-  return CupertinoApp(
-    debugShowCheckedModeBanner: false,
-    localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-      GlobalMaterialLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-    ],
-    home: CupertinoPageScaffold(child: child),
+  return wrapTestWidget(
+    child,
+    brightness: Brightness.light,
+    textDirection: TextDirection.ltr,
+    locale: const Locale('en', 'US'),
   );
 }
 
@@ -81,7 +79,7 @@ void main() {
 
       await tester.tap(find.byType(_Host));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(overlayOpenPumpDuration);
 
       expect(find.byType(CupertinoCalendarOverlay), findsOneWidget);
       expect(find.byType(CupertinoCalendar), findsOneWidget);
@@ -112,11 +110,11 @@ void main() {
 
       await tester.tap(find.byType(_Host));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(overlayOpenPumpDuration);
 
       await tester.tapAt(const Offset(5.0, 5.0));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(overlayClosePumpDuration);
       await tester.pumpAndSettle();
 
       expect(completed, isTrue);
@@ -146,11 +144,11 @@ void main() {
 
         await tester.tap(find.byType(_Host));
         await tester.pump();
-        await tester.pump(const Duration(milliseconds: 600));
+        await tester.pump(overlayOpenPumpDuration);
 
         await tester.tapAt(const Offset(5.0, 5.0));
         await tester.pump();
-        await tester.pump(const Duration(milliseconds: 500));
+        await tester.pump(overlayClosePumpDuration);
 
         expect(find.byType(CupertinoCalendarOverlay), findsOneWidget);
       },
@@ -179,7 +177,7 @@ void main() {
 
       await tester.tap(find.byType(_Host));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(overlayOpenPumpDuration);
 
       final CupertinoCalendar calendar = tester.widget<CupertinoCalendar>(
         find.byType(CupertinoCalendar),
@@ -213,10 +211,10 @@ void main() {
 
       await tester.tap(find.byType(_Host));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(overlayOpenPumpDuration);
 
       expect(find.text('Cancel'), findsOneWidget);
-      expect(find.text('Done'), findsOneWidget);
+      expect(find.text('OK'), findsOneWidget);
     });
   });
 
@@ -239,7 +237,7 @@ void main() {
 
       await tester.tap(find.byType(_Host));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(overlayOpenPumpDuration);
 
       expect(find.byType(CupertinoTimeOverlay), findsOneWidget);
       expect(find.byType(CupertinoTimePicker), findsOneWidget);
@@ -269,7 +267,7 @@ void main() {
 
       await tester.tap(find.byType(_Host));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(overlayOpenPumpDuration);
 
       await tester.tapAt(const Offset(5.0, 5.0));
       await tester.pump();
@@ -302,12 +300,10 @@ void main() {
 
         await tester.tap(find.byType(_Host));
         await tester.pump();
-        await tester.pump(const Duration(milliseconds: 600));
+        await tester.pump(overlayOpenPumpDuration);
 
-        final CupertinoTimeOverlay overlay =
-            tester.widget<CupertinoTimeOverlay>(
-          find.byType(CupertinoTimeOverlay),
-        );
+        final CupertinoTimeOverlay overlay = tester
+            .widget<CupertinoTimeOverlay>(find.byType(CupertinoTimeOverlay));
         expect(overlay.use24hFormat, isTrue);
       },
     );
@@ -330,7 +326,7 @@ void main() {
 
       await tester.tap(find.byType(_Host));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(overlayOpenPumpDuration);
 
       final CupertinoTimeOverlay overlay = tester.widget<CupertinoTimeOverlay>(
         find.byType(CupertinoTimeOverlay),

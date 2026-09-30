@@ -5,155 +5,108 @@
 import 'dart:ui';
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
-class CupertinoPickerContainer extends StatefulWidget {
+/// The decorated container of a picker overlay that scales and expands
+/// along with [animation].
+class CupertinoPickerContainer extends StatelessWidget {
   const CupertinoPickerContainer({
+    required this.animation,
     required this.child,
     required this.decoration,
     required this.scaleAlignment,
-    required this.onInitialized,
     required this.maxScale,
     required this.height,
     required this.width,
     super.key,
   });
 
+  final Animation<double> animation;
   final Widget child;
   final PickerContainerDecoration decoration;
   final Alignment scaleAlignment;
   final double maxScale;
-  final void Function(AnimationController controller) onInitialized;
   final double height;
   final double width;
 
   @override
-  State<CupertinoPickerContainer> createState() =>
-      _CupertinoPickerContainerState();
+  Widget build(BuildContext context) {
+    final Animatable<double> scale = CalendarAnimations.scaleAnimation(
+      maxScale: maxScale,
+    );
+    final Animatable<double> expandedHeight =
+        CalendarAnimations.heightAnimation(height: height);
+
+    return AnimatedBuilder(
+      animation: animation,
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: _DecoratedBackground(
+          decoration: decoration,
+          child: FittedBox(
+            alignment: Alignment.topCenter,
+            fit: BoxFit.none,
+            child: SizedBox(width: width, height: height, child: child),
+          ),
+        ),
+      ),
+      builder: (BuildContext context, Widget? child) {
+        return Transform.scale(
+          scale: scale.evaluate(animation),
+          alignment: scaleAlignment,
+          child: Container(
+            height: height * (CalendarAnimations.maxHeightPercentage / 100),
+            alignment: scaleAlignment,
+            child: SizedBox(
+              height: expandedHeight.evaluate(animation),
+              child: child,
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
-class _CupertinoPickerContainerState extends State<CupertinoPickerContainer>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scale;
-  late Animation<double> _height;
+class _DecoratedBackground extends StatelessWidget {
+  const _DecoratedBackground({required this.decoration, required this.child});
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: calendarAnimationDuration,
-      reverseDuration: calendarAnimationReverseDuration,
-    );
-
-    _scale = CalendarAnimations.scaleAnimation(
-      maxScale: widget.maxScale,
-    ).animate(_curvedAnimation);
-    _height = CalendarAnimations.heightAnimation(
-      height: widget.height,
-    ).animate(_curvedAnimation);
-
-    widget.onInitialized(_controller);
-  }
-
-  CurvedAnimation get _curvedAnimation {
-    return CurvedAnimation(
-      parent: _controller,
-      curve: calendarAnimationCurve,
-    );
-  }
-
-  @override
-  void didUpdateWidget(covariant CupertinoPickerContainer oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (widget.maxScale != oldWidget.maxScale) {
-      _scale = CalendarAnimations.scaleAnimation(
-        maxScale: widget.maxScale,
-      ).animate(_curvedAnimation);
-    }
-  }
+  final PickerContainerDecoration decoration;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final PickerContainerDecoration decoration = widget.decoration;
-
-    return Column(
-      children: <Widget>[
-        AnimatedBuilder(
-          animation: _controller,
-          child: SizedBox(
-            width: widget.width,
-            height: widget.height,
-            child: Builder(
-              builder: (BuildContext context) {
-                final FittedBox child = FittedBox(
-                  alignment: Alignment.topCenter,
-                  fit: BoxFit.none,
-                  child: SizedBox(
-                    width: widget.width,
-                    height: widget.height,
-                    child: widget.child,
-                  ),
-                );
-
-                return switch (decoration.backgroundType) {
-                  PickerBackgroundType.transparentAndBlured => DecoratedBox(
-                      decoration: BoxDecoration(
-                        boxShadow: decoration.boxShadow,
-                        borderRadius: decoration.borderRadius,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: decoration.borderRadius,
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(
-                            sigmaX: pickerContainerBlur,
-                            sigmaY: pickerContainerBlur,
-                          ),
-                          child: ColoredBox(
-                            color: decoration.backgroundColor,
-                            child: child,
-                          ),
-                        ),
-                      ),
-                    ),
-                  PickerBackgroundType.plainColor => Container(
-                      decoration: BoxDecoration(
-                        borderRadius: decoration.borderRadius,
-                        color: decoration.backgroundColor,
-                        boxShadow: decoration.boxShadow,
-                      ),
-                      clipBehavior: Clip.hardEdge,
-                      child: child,
-                    ),
-                };
-              },
-            ),
-          ),
-          builder: (BuildContext context, Widget? child) {
-            return Transform.scale(
-              scale: _scale.value,
-              alignment: widget.scaleAlignment,
-              child: Container(
-                height: widget.height *
-                    (CalendarAnimations.maxHeightPercentage / 100),
-                alignment: widget.scaleAlignment,
-                child: SizedBox(
-                  height: _height.value,
-                  child: child,
-                ),
-              ),
-            );
-          },
-        ),
-      ],
+    final Color backgroundColor = decoration.backgroundColor.resolveDynamic(
+      context,
     );
-  }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+    return switch (decoration.backgroundType) {
+      PickerBackgroundType.transparentAndBlurred => DecoratedBox(
+        decoration: BoxDecoration(
+          boxShadow: decoration.boxShadow,
+          borderRadius: decoration.borderRadius,
+        ),
+        child: ClipRRect(
+          borderRadius: decoration.borderRadius,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: pickerContainerBlur,
+              sigmaY: pickerContainerBlur,
+            ),
+            child: ColoredBox(color: backgroundColor, child: child),
+          ),
+        ),
+      ),
+      PickerBackgroundType.plainColor => Container(
+        decoration: BoxDecoration(
+          borderRadius: decoration.borderRadius,
+          color: backgroundColor,
+          boxShadow: decoration.boxShadow,
+        ),
+        clipBehavior: Clip.hardEdge,
+        child: child,
+      ),
+    };
   }
 }

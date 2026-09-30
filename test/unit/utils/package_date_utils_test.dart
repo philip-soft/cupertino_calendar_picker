@@ -40,23 +40,24 @@ void main() {
     });
 
     group('firstDayOffset', () {
-      test('returns 0 when the first day of the month is the first day of week',
-          () {
-        const int year = 2024;
-        const int month = 4;
-        const int firstDayOfWeekIndex = 1;
-
-        final int result = PackageDateUtils.firstDayOffset(
-          year,
-          month,
-          firstDayOfWeekIndex,
-        );
-
-        expect(result, 0);
-      });
-
       test(
-          'returns 6 when the first day of the month is the day before the '
+        'returns 0 when the first day of the month is the first day of week',
+        () {
+          const int year = 2024;
+          const int month = 4;
+          const int firstDayOfWeekIndex = 1;
+
+          final int result = PackageDateUtils.firstDayOffset(
+            year,
+            month,
+            firstDayOfWeekIndex,
+          );
+
+          expect(result, 0);
+        },
+      );
+
+      test('returns 6 when the first day of the month is the day before the '
           'week start', () {
         const int year = 2024;
         const int month = 6;

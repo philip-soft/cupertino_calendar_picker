@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'test_helpers.dart';
@@ -27,22 +27,24 @@ void main() {
       expect(find.text('second-child'), findsOneWidget);
     });
 
-    testWidgets('renders secondChild visible when crossFadeState is showSecond',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(
-        wrapWithApp(
-          const CupertinoPickerAnimatedCrossFade(
-            firstChild: Text('first-child'),
-            secondChild: Text('second-child'),
-            crossFadeState: CrossFadeState.showSecond,
+    testWidgets(
+      'renders secondChild visible when crossFadeState is showSecond',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          wrapWithApp(
+            const CupertinoPickerAnimatedCrossFade(
+              firstChild: Text('first-child'),
+              secondChild: Text('second-child'),
+              crossFadeState: CrossFadeState.showSecond,
+            ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.text('first-child'), findsOneWidget);
-      expect(find.text('second-child'), findsOneWidget);
-    });
+        expect(find.text('first-child'), findsOneWidget);
+        expect(find.text('second-child'), findsOneWidget);
+      },
+    );
 
     testWidgets('renders empty SizedBox when secondChild is null', (
       WidgetTester tester,

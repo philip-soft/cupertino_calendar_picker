@@ -2,7 +2,7 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 const CupertinoDynamicColor calendarFooterTitleColor = CupertinoColors.label;
 const CupertinoDynamicColor calendarTimeColor = CupertinoColors.label;
@@ -18,13 +18,17 @@ const TextStyle calendarFooterTimeLabelStyle = TextStyle(
 );
 const TextStyle calendarDayPeriodTextStyle = TextStyle(
   fontSize: 13.0,
-  color: CupertinoColors.label,
+  color: calendarDayPeriodColor,
 );
 
 /// A decoration class for the calendar's footer.
+@immutable
 class CalendarFooterDecoration {
   /// Creates a calendar's footer decoration class with default values
   /// for non-provided parameters.
+  ///
+  /// [CupertinoDynamicColor]s are resolved against the ambient brightness
+  /// when the footer is built.
   factory CalendarFooterDecoration({
     TextStyle? timeLabelStyle,
     TextStyle? timeStyle,
@@ -38,9 +42,9 @@ class CalendarFooterDecoration {
   }
 
   const CalendarFooterDecoration._({
-    this.timeLabelStyle,
-    this.timeStyle,
-    this.dayPeriodTextStyle,
+    required this.timeLabelStyle,
+    required this.timeStyle,
+    required this.dayPeriodTextStyle,
   });
 
   /// Creates a calendar's footer decoration class with default values
@@ -82,13 +86,13 @@ class CalendarFooterDecoration {
   }
 
   /// The [TextStyle] of the calendar's time label.
-  final TextStyle? timeLabelStyle;
+  final TextStyle timeLabelStyle;
 
   /// The [TextStyle] of the calendar's time.
-  final TextStyle? timeStyle;
+  final TextStyle timeStyle;
 
   /// The [TextStyle] of the AM/PM switcher text.
-  final TextStyle? dayPeriodTextStyle;
+  final TextStyle dayPeriodTextStyle;
 
   /// Creates a copy of the class with the provided parameters.
   CalendarFooterDecoration copyWith({
@@ -101,5 +105,19 @@ class CalendarFooterDecoration {
       timeStyle: timeStyle ?? this.timeStyle,
       dayPeriodTextStyle: dayPeriodTextStyle ?? this.dayPeriodTextStyle,
     );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is CalendarFooterDecoration &&
+        other.timeLabelStyle == timeLabelStyle &&
+        other.timeStyle == timeStyle &&
+        other.dayPeriodTextStyle == dayPeriodTextStyle;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(timeLabelStyle, timeStyle, dayPeriodTextStyle);
   }
 }

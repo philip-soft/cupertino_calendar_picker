@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CalendarActions extends StatelessWidget {
   const CalendarActions({
@@ -21,12 +21,10 @@ class CalendarActions extends StatelessWidget {
       height: calendarActionsHeight,
       child: Row(
         children: <Widget>[
-          for (final CupertinoCalendarAction action in actions) ...<Widget>[
-            CupertinoCalendarActionWidget(
-              action: action,
-              onPressed: onPressed,
-            ),
-            if (action != actions.last) const CupertinoPickerVerticalDivider(),
+          for (final (int index, CupertinoCalendarAction action)
+              in actions.indexed) ...<Widget>[
+            if (index > 0) const CupertinoPickerVerticalDivider(),
+            CupertinoCalendarActionWidget(action: action, onPressed: onPressed),
           ],
         ],
       ),

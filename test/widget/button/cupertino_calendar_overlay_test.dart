@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'test_helpers.dart';
@@ -125,10 +125,8 @@ void main() {
       );
       await tester.pump();
 
-      final CupertinoPickerOverlay overlay =
-          tester.widget<CupertinoPickerOverlay>(
-        find.byType(CupertinoPickerOverlay),
-      );
+      final CupertinoPickerOverlay overlay = tester
+          .widget<CupertinoPickerOverlay>(find.byType(CupertinoPickerOverlay));
       expect(overlay.outsideTapDismissable, isTrue);
     });
 
@@ -153,17 +151,46 @@ void main() {
             mode: CupertinoCalendarMode.date,
             minuteInterval: 1,
             use24hFormat: true,
-            actions: null,
+            actions: const <CupertinoCalendarAction>[
+              ConfirmCupertinoCalendarAction(),
+            ],
           ),
         ),
       );
       await tester.pump();
 
-      final CupertinoPickerOverlay overlay =
-          tester.widget<CupertinoPickerOverlay>(
-        find.byType(CupertinoPickerOverlay),
-      );
+      final CupertinoPickerOverlay overlay = tester
+          .widget<CupertinoPickerOverlay>(find.byType(CupertinoPickerOverlay));
       expect(overlay.outsideTapDismissable, isFalse);
+    });
+
+    testWidgets('asserts when behavior is onActionTap without actions', (
+      WidgetTester tester,
+    ) async {
+      final RenderBox anchor = await _pumpAnchor(tester);
+
+      await tester.pumpWidget(
+        wrapWithApp(
+          CupertinoCalendarOverlay(
+            widgetRenderBox: anchor,
+            minimumDateTime: min,
+            maximumDateTime: max,
+            initialDateTime: initial,
+            firstDayOfWeekIndex: 0,
+            horizontalSpacing: 15.0,
+            verticalSpacing: 15.0,
+            offset: const Offset(0.0, 10.0),
+            mainColor: const Color(0xFFFF0000),
+            dismissBehavior: CalendarDismissBehavior.onActionTap,
+            mode: CupertinoCalendarMode.date,
+            minuteInterval: 1,
+            use24hFormat: true,
+            actions: null,
+          ),
+        ),
+      );
+
+      expect(tester.takeException(), isAssertionError);
     });
 
     testWidgets(
@@ -215,73 +242,73 @@ void main() {
       },
     );
 
-    testWidgets(
-      'reverse animation pops the route with the selected date',
-      (WidgetTester tester) async {
-        final RenderBox anchor = await _pumpAnchor(tester);
-        DateTime? popped;
+    testWidgets('reverse animation pops the route with the selected date', (
+      WidgetTester tester,
+    ) async {
+      final RenderBox anchor = await _pumpAnchor(tester);
+      DateTime? popped;
 
-        await tester.pumpWidget(
-          wrapWithApp(
-            Builder(
-              builder: (BuildContext context) {
-                return Center(
-                  child: CupertinoButton(
-                    onPressed: () async {
-                      popped = await Navigator.of(context).push<DateTime>(
-                        PageRouteBuilder<DateTime>(
-                          opaque: false,
-                          pageBuilder: (
-                            BuildContext _,
-                            Animation<double> __,
-                            Animation<double> ___,
-                          ) {
-                            return CupertinoCalendarOverlay(
-                              widgetRenderBox: anchor,
-                              minimumDateTime: min,
-                              maximumDateTime: max,
-                              initialDateTime: initial,
-                              firstDayOfWeekIndex: 0,
-                              horizontalSpacing: 15.0,
-                              verticalSpacing: 15.0,
-                              offset: const Offset(0.0, 10.0),
-                              mainColor: const Color(0xFFFF0000),
-                              dismissBehavior:
-                                  CalendarDismissBehavior.onDateSelect,
-                              mode: CupertinoCalendarMode.date,
-                              minuteInterval: 1,
-                              use24hFormat: true,
-                              actions: null,
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    child: const Text('open'),
-                  ),
-                );
-              },
-            ),
+      await tester.pumpWidget(
+        wrapWithApp(
+          Builder(
+            builder: (BuildContext context) {
+              return Center(
+                child: CupertinoButton(
+                  onPressed: () async {
+                    popped = await Navigator.of(context).push<DateTime>(
+                      PageRouteBuilder<DateTime>(
+                        opaque: false,
+                        pageBuilder:
+                            (
+                              BuildContext _,
+                              Animation<double> _,
+                              Animation<double> _,
+                            ) {
+                              return CupertinoCalendarOverlay(
+                                widgetRenderBox: anchor,
+                                minimumDateTime: min,
+                                maximumDateTime: max,
+                                initialDateTime: initial,
+                                firstDayOfWeekIndex: 0,
+                                horizontalSpacing: 15.0,
+                                verticalSpacing: 15.0,
+                                offset: const Offset(0.0, 10.0),
+                                mainColor: const Color(0xFFFF0000),
+                                dismissBehavior:
+                                    CalendarDismissBehavior.onDateSelect,
+                                mode: CupertinoCalendarMode.date,
+                                minuteInterval: 1,
+                                use24hFormat: true,
+                                actions: null,
+                              );
+                            },
+                      ),
+                    );
+                  },
+                  child: const Text('open'),
+                ),
+              );
+            },
           ),
-        );
+        ),
+      );
 
-        await tester.tap(find.text('open'));
-        await tester.pumpAndSettle();
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
 
-        final Finder day12 = find.byWidgetPredicate(
-          (Widget w) =>
-              w is CalendarMonthPickerDay &&
-              w.dayDate.day == 12 &&
-              w.dayDate.month == 6 &&
-              w.dayDate.year == 2024,
-        );
-        await tester.tap(day12.first, warnIfMissed: false);
-        await tester.pumpAndSettle();
+      final Finder day12 = find.byWidgetPredicate(
+        (Widget w) =>
+            w is CalendarMonthPickerDay &&
+            w.dayDate.day == 12 &&
+            w.dayDate.month == 6 &&
+            w.dayDate.year == 2024,
+      );
+      await tester.tap(day12.first, warnIfMissed: false);
+      await tester.pumpAndSettle();
 
-        expect(popped?.day, 12);
-        expect(find.byType(CupertinoCalendarOverlay), findsNothing);
-      },
-    );
+      expect(popped?.day, 12);
+      expect(find.byType(CupertinoCalendarOverlay), findsNothing);
+    });
 
     testWidgets(
       'time picker change in dateTime mode invokes onDateTimeChanged',
@@ -357,10 +384,8 @@ void main() {
       );
       await tester.pump();
 
-      final CupertinoPickerOverlay overlay =
-          tester.widget<CupertinoPickerOverlay>(
-        find.byType(CupertinoPickerOverlay),
-      );
+      final CupertinoPickerOverlay overlay = tester
+          .widget<CupertinoPickerOverlay>(find.byType(CupertinoPickerOverlay));
       expect(
         overlay.height,
         calendarDateTimePickerHeight + calendarActionsHeight,

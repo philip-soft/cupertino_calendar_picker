@@ -7,11 +7,11 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('CancelCupertinoCalendarAction', () {
-    test('defaults to label Cancel and not default action', () {
+    test('defaults to a localized label and not default action', () {
       const CancelCupertinoCalendarAction action =
           CancelCupertinoCalendarAction();
 
-      expect(action.label, 'Cancel');
+      expect(action.label, isNull);
       expect(action.isDefaultAction, isFalse);
       expect(action.decoration, isNull);
       expect(action.onPressed, isNull);
@@ -22,10 +22,10 @@ void main() {
 
       final CancelCupertinoCalendarAction action =
           CancelCupertinoCalendarAction(
-        label: 'Custom',
-        isDefaultAction: true,
-        onPressed: cb,
-      );
+            label: 'Custom',
+            isDefaultAction: true,
+            onPressed: cb,
+          );
 
       expect(action.label, 'Custom');
       expect(action.isDefaultAction, isTrue);
@@ -42,51 +42,54 @@ void main() {
 
     test('two actions with different labels are not equal', () {
       const CancelCupertinoCalendarAction a = CancelCupertinoCalendarAction();
-      const CancelCupertinoCalendarAction b =
-          CancelCupertinoCalendarAction(label: 'Other');
+      const CancelCupertinoCalendarAction b = CancelCupertinoCalendarAction(
+        label: 'Other',
+      );
 
       expect(a, isNot(b));
     });
 
     test('two actions with different isDefaultAction are not equal', () {
       const CancelCupertinoCalendarAction a = CancelCupertinoCalendarAction();
-      const CancelCupertinoCalendarAction b =
-          CancelCupertinoCalendarAction(isDefaultAction: true);
+      const CancelCupertinoCalendarAction b = CancelCupertinoCalendarAction(
+        isDefaultAction: true,
+      );
 
       expect(a, isNot(b));
     });
 
-    test('identical reference is equal to itself', () {
-      const CancelCupertinoCalendarAction a = CancelCupertinoCalendarAction();
+    test('two actions with different callbacks are not equal', () {
+      final CancelCupertinoCalendarAction a = CancelCupertinoCalendarAction(
+        onPressed: () {},
+      );
+      final CancelCupertinoCalendarAction b = CancelCupertinoCalendarAction(
+        onPressed: () {},
+      );
 
-      // ignore: unrelated_type_equality_checks
-      expect(a == a, isTrue);
+      expect(a, isNot(b));
     });
   });
 
   group('ConfirmCupertinoCalendarAction', () {
-    test('defaults to label Done and isDefaultAction true', () {
+    test('defaults to a localized label and isDefaultAction true', () {
       const ConfirmCupertinoCalendarAction action =
           ConfirmCupertinoCalendarAction();
 
-      expect(action.label, 'Done');
+      expect(action.label, isNull);
       expect(action.isDefaultAction, isTrue);
       expect(action.decoration, isNull);
       expect(action.onPressed, isNull);
     });
 
-    test('accepts a ValueChanged<DateTime> callback as onPressed', () {
+    test('exposes a typed ValueChanged<DateTime> callback', () {
       DateTime? captured;
-      void cb(DateTime d) {
-        captured = d;
-      }
-
       final ConfirmCupertinoCalendarAction action =
-          ConfirmCupertinoCalendarAction(onPressed: cb);
+          ConfirmCupertinoCalendarAction(
+            onPressed: (DateTime date) => captured = date,
+          );
 
-      expect(action.onPressed, isNotNull);
-      // ignore: avoid_dynamic_calls
-      (action.onPressed! as Function)(DateTime(2024, 1, 2));
+      action.onPressed?.call(DateTime(2024, 1, 2));
+
       expect(captured, DateTime(2024, 1, 2));
     });
 
@@ -100,22 +103,13 @@ void main() {
   });
 
   group('CupertinoCalendarAction equality cross-type', () {
-    test('a Cancel and Confirm with same fields are equal as base type', () {
+    test('a Cancel and a Confirm with the same fields are not equal', () {
       const CancelCupertinoCalendarAction cancel =
           CancelCupertinoCalendarAction(label: 'X', isDefaultAction: true);
       const ConfirmCupertinoCalendarAction confirm =
           ConfirmCupertinoCalendarAction(label: 'X');
 
-      expect(cancel == confirm, isTrue);
-    });
-
-    test('different label means not equal', () {
-      const CancelCupertinoCalendarAction a =
-          CancelCupertinoCalendarAction(label: 'A');
-      const CancelCupertinoCalendarAction b =
-          CancelCupertinoCalendarAction(label: 'B');
-
-      expect(a == b, isFalse);
+      expect(cancel == confirm, isFalse);
     });
   });
 }

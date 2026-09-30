@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 class CupertinoPickerMediaQuery extends StatelessWidget {
   const CupertinoPickerMediaQuery({required this.child, super.key});
@@ -12,12 +12,8 @@ class CupertinoPickerMediaQuery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQuery(
-      data: MediaQuery.of(context).copyWith(
-        textScaler: context.textScaler.clamp(
-          maxScaleFactor: calendarMaxTextScaleFactor,
-        ),
-      ),
+    return MediaQuery.withClampedTextScaling(
+      maxScaleFactor: calendarMaxTextScaleFactor,
       child: child,
     );
   }

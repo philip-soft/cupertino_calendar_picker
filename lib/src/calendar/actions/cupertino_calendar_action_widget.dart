@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 typedef CalendarActionCallback = void Function(CupertinoCalendarAction action);
 
@@ -25,29 +25,10 @@ class CupertinoCalendarActionWidget extends StatefulWidget {
 class _CupertinoCalendarActionWidgetState
     extends State<CupertinoCalendarActionWidget> {
   bool _isPressed = false;
-  bool get isPressed => _isPressed;
-  set isPressed(bool value) {
-    if (value != _isPressed) {
-      setState(() {
-        _isPressed = value;
-      });
-    }
-  }
 
-  void _onTapDown(TapDownDetails details) {
-    isPressed = true;
-  }
-
-  void _onTapUp(TapUpDetails details) {
-    isPressed = false;
-  }
-
-  void _onTapCancel() {
-    isPressed = false;
-  }
-
-  void _onTap() {
-    widget.onPressed(widget.action);
+  void _setPressed(bool value) {
+    if (value == _isPressed) return;
+    setState(() => _isPressed = value);
   }
 
   @override
@@ -55,26 +36,30 @@ class _CupertinoCalendarActionWidgetState
     final CupertinoCalendarAction action = widget.action;
     final CalendarActionDecoration decoration =
         action.decoration ?? CalendarActionDecoration.withDynamicColor(context);
-    final TextStyle? style = action.isDefaultAction
-        ? decoration.labelStyle?.copyWith(fontWeight: FontWeight.w600)
-        : decoration.labelStyle;
+    final TextStyle labelStyle = decoration.labelStyle.resolveDynamic(context);
+    final String label = action.effectiveLabel(context);
 
     return Expanded(
-      child: GestureDetector(
-        onTapDown: _onTapDown,
-        onTapUp: _onTapUp,
-        onTapCancel: _onTapCancel,
-        onTap: _onTap,
+      child: CupertinoPickerTapTarget(
+        onTap: () => widget.onPressed(action),
+        onTapDown: (_) => _setPressed(true),
+        onTapUp: (_) => _setPressed(false),
+        onTapCancel: () => _setPressed(false),
         behavior: HitTestBehavior.opaque,
+        semanticsLabel: label,
         child: ColoredBox(
-          color: isPressed ? decoration.pressedColor : Colors.transparent,
+          color: _isPressed
+              ? decoration.pressedColor.resolveDynamic(context)
+              : Colors.transparent,
           child: Center(
             child: Text(
-              action.label,
+              label,
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: style,
+              style: action.isDefaultAction
+                  ? labelStyle.copyWith(fontWeight: FontWeight.w600)
+                  : labelStyle,
             ),
           ),
         ),

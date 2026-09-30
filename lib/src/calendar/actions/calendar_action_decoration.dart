@@ -2,7 +2,7 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 const CupertinoDynamicColor calendarActionPressedColor =
     CupertinoColors.tertiarySystemFill;
@@ -14,9 +14,13 @@ const TextStyle calendarActionLabelStyle = TextStyle(
 );
 
 /// A decoration class for the calendar's action.
+@immutable
 class CalendarActionDecoration {
   /// Creates a calendar's action decoration class with default values
   /// for non-provided parameters.
+  ///
+  /// [CupertinoDynamicColor]s are resolved against the ambient brightness
+  /// when the action is built.
   factory CalendarActionDecoration({
     TextStyle? labelStyle,
     Color? pressedColor,
@@ -45,11 +49,10 @@ class CalendarActionDecoration {
           context,
         ),
       ),
-      pressedColor: pressedColor ??
-          CupertinoDynamicColor.resolve(
-            calendarActionPressedColor,
-            context,
-          ),
+      pressedColor: CupertinoDynamicColor.resolve(
+        pressedColor ?? calendarActionPressedColor,
+        context,
+      ),
     );
   }
 
@@ -58,13 +61,13 @@ class CalendarActionDecoration {
     required this.pressedColor,
   });
 
-  /// The `TextStyle` of the calendar's action label.
-  final TextStyle? labelStyle;
+  /// The [TextStyle] of the action's label.
+  final TextStyle labelStyle;
 
-  /// The `Color` of the calendar's action when pressed.
+  /// The background color of the action while it is pressed.
   final Color pressedColor;
 
-  /// Creates a copy of the class with the provided parameters.
+  /// Creates a copy of this class with the given fields replaced with the new values.
   CalendarActionDecoration copyWith({
     TextStyle? labelStyle,
     Color? pressedColor,
@@ -74,4 +77,15 @@ class CalendarActionDecoration {
       pressedColor: pressedColor ?? this.pressedColor,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is CalendarActionDecoration &&
+        other.labelStyle == labelStyle &&
+        other.pressedColor == pressedColor;
+  }
+
+  @override
+  int get hashCode => Object.hash(labelStyle, pressedColor);
 }

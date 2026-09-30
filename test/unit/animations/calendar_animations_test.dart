@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -52,9 +52,9 @@ void main() {
 
         final List<TweenSequenceItem<double>> items =
             CalendarAnimations.generateHeightAnimation(
-          height: 100.0,
-          percentageList: percentages,
-        ).toList();
+              height: 100.0,
+              percentageList: percentages,
+            ).toList();
 
         expect(items.length, percentages.length);
       });
@@ -64,9 +64,9 @@ void main() {
 
         final TweenSequenceItem<double> first =
             CalendarAnimations.generateHeightAnimation(
-          height: 100.0,
-          percentageList: percentages,
-        ).first;
+              height: 100.0,
+              percentageList: percentages,
+            ).first;
 
         final Tween<double> tween = first.tween as Tween<double>;
         expect(tween.begin, 0.0);
@@ -77,9 +77,9 @@ void main() {
 
         final List<TweenSequenceItem<double>> items =
             CalendarAnimations.generateHeightAnimation(
-          height: 100.0,
-          percentageList: percentages,
-        ).toList();
+              height: 100.0,
+              percentageList: percentages,
+            ).toList();
 
         final Tween<double> t0 = items[0].tween as Tween<double>;
         final Tween<double> t1 = items[1].tween as Tween<double>;
@@ -93,9 +93,9 @@ void main() {
 
         final List<TweenSequenceItem<double>> items =
             CalendarAnimations.generateHeightAnimation(
-          height: 50.0,
-          percentageList: percentages,
-        ).toList();
+              height: 50.0,
+              percentageList: percentages,
+            ).toList();
 
         for (final TweenSequenceItem<double> item in items) {
           expect(item.weight, 1.0);
@@ -105,9 +105,9 @@ void main() {
       test('emits no items when percentageList is empty', () {
         final List<TweenSequenceItem<double>> items =
             CalendarAnimations.generateHeightAnimation(
-          height: 100.0,
-          percentageList: <double>[],
-        ).toList();
+              height: 100.0,
+              percentageList: <double>[],
+            ).toList();
 
         expect(items, isEmpty);
       });
@@ -163,9 +163,9 @@ void main() {
 
         final List<TweenSequenceItem<double>> items =
             CalendarAnimations.generateScaleAnimation(
-          maxScale: 1.0,
-          valueList: values,
-        ).toList();
+              maxScale: 1.0,
+              valueList: values,
+            ).toList();
 
         expect(items.length, values.length);
       });
@@ -173,9 +173,9 @@ void main() {
       test('first item begins at 0', () {
         final TweenSequenceItem<double> first =
             CalendarAnimations.generateScaleAnimation(
-          maxScale: 1.0,
-          valueList: <double>[0.25, 1.0],
-        ).first;
+              maxScale: 1.0,
+              valueList: <double>[0.25, 1.0],
+            ).first;
 
         final Tween<double> tween = first.tween as Tween<double>;
         expect(tween.begin, 0.0);
@@ -184,9 +184,9 @@ void main() {
       test('successive items chain begin to previous end', () {
         final List<TweenSequenceItem<double>> items =
             CalendarAnimations.generateScaleAnimation(
-          maxScale: 1.0,
-          valueList: <double>[0.25, 0.5, 1.0],
-        ).toList();
+              maxScale: 1.0,
+              valueList: <double>[0.25, 0.5, 1.0],
+            ).toList();
 
         final Tween<double> t0 = items[0].tween as Tween<double>;
         final Tween<double> t1 = items[1].tween as Tween<double>;
@@ -200,9 +200,9 @@ void main() {
 
         final List<TweenSequenceItem<double>> items =
             CalendarAnimations.generateScaleAnimation(
-          maxScale: maxScale,
-          valueList: <double>[0.5, 1.0],
-        ).toList();
+              maxScale: maxScale,
+              valueList: <double>[0.5, 1.0],
+            ).toList();
 
         final Tween<double> t0 = items[0].tween as Tween<double>;
         final Tween<double> t1 = items[1].tween as Tween<double>;
@@ -213,9 +213,9 @@ void main() {
       test('emits no items when valueList is empty', () {
         final List<TweenSequenceItem<double>> items =
             CalendarAnimations.generateScaleAnimation(
-          maxScale: 1.0,
-          valueList: <double>[],
-        ).toList();
+              maxScale: 1.0,
+              valueList: <double>[],
+            ).toList();
 
         expect(items, isEmpty);
       });

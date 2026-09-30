@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -46,8 +46,9 @@ void main() {
       expect(find.byKey(childKey), findsOneWidget);
     });
 
-    testWidgets('does nothing for non-scroll pointer events',
-        (WidgetTester tester) async {
+    testWidgets('does nothing for non-scroll pointer events', (
+      WidgetTester tester,
+    ) async {
       final FixedExtentScrollController controller =
           FixedExtentScrollController(initialItem: 5);
       addTearDown(controller.dispose);
@@ -62,10 +63,7 @@ void main() {
               child: ListWheelScrollView(
                 controller: controller,
                 itemExtent: 32,
-                children: List<Widget>.generate(
-                  20,
-                  (int i) => Text('$i'),
-                ),
+                children: List<Widget>.generate(20, (int i) => Text('$i')),
               ),
             ),
           ),
@@ -82,8 +80,9 @@ void main() {
       expect(controller.selectedItem, 5);
     });
 
-    testWidgets('accepts a null scroll controller without throwing',
-        (WidgetTester tester) async {
+    testWidgets('accepts a null scroll controller without throwing', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         const CupertinoApp(
           home: CupertinoFixedItemMouseScrolling(
@@ -96,84 +95,68 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets(
-      'scroll-down mouse-wheel event advances selectedItem by one',
-      (WidgetTester tester) async {
-        final FixedExtentScrollController controller =
-            FixedExtentScrollController(initialItem: 5);
-        addTearDown(controller.dispose);
+    testWidgets('scroll-down mouse-wheel event advances selectedItem by one', (
+      WidgetTester tester,
+    ) async {
+      final FixedExtentScrollController controller =
+          FixedExtentScrollController(initialItem: 5);
+      addTearDown(controller.dispose);
 
-        await tester.pumpWidget(
-          CupertinoApp(
-            home: SizedBox(
-              width: 200,
-              height: 200,
-              child: CupertinoFixedItemMouseScrolling(
-                scrollController: controller,
-                child: ListWheelScrollView(
-                  controller: controller,
-                  itemExtent: 32,
-                  children: List<Widget>.generate(
-                    20,
-                    (int i) => Text('$i'),
-                  ),
-                ),
+      await tester.pumpWidget(
+        CupertinoApp(
+          home: SizedBox(
+            width: 200,
+            height: 200,
+            child: CupertinoFixedItemMouseScrolling(
+              scrollController: controller,
+              child: ListWheelScrollView(
+                controller: controller,
+                itemExtent: 32,
+                children: List<Widget>.generate(20, (int i) => Text('$i')),
               ),
             ),
           ),
-        );
+        ),
+      );
 
-        final TestPointer pointer = TestPointer(
-          1,
-          PointerDeviceKind.mouse,
-        )..hover(const Offset(100, 100));
-        await tester.sendEventToBinding(
-          pointer.scroll(const Offset(0, 32)),
-        );
-        await tester.pumpAndSettle();
+      final TestPointer pointer = TestPointer(1, PointerDeviceKind.mouse)
+        ..hover(const Offset(100, 100));
+      await tester.sendEventToBinding(pointer.scroll(const Offset(0, 32)));
+      await tester.pumpAndSettle();
 
-        expect(controller.selectedItem, greaterThanOrEqualTo(5));
-      },
-    );
+      expect(controller.selectedItem, greaterThanOrEqualTo(5));
+    });
 
-    testWidgets(
-      'scroll-up mouse-wheel event moves selectedItem back by one',
-      (WidgetTester tester) async {
-        final FixedExtentScrollController controller =
-            FixedExtentScrollController(initialItem: 5);
-        addTearDown(controller.dispose);
+    testWidgets('scroll-up mouse-wheel event moves selectedItem back by one', (
+      WidgetTester tester,
+    ) async {
+      final FixedExtentScrollController controller =
+          FixedExtentScrollController(initialItem: 5);
+      addTearDown(controller.dispose);
 
-        await tester.pumpWidget(
-          CupertinoApp(
-            home: SizedBox(
-              width: 200,
-              height: 200,
-              child: CupertinoFixedItemMouseScrolling(
-                scrollController: controller,
-                child: ListWheelScrollView(
-                  controller: controller,
-                  itemExtent: 32,
-                  children: List<Widget>.generate(
-                    20,
-                    (int i) => Text('$i'),
-                  ),
-                ),
+      await tester.pumpWidget(
+        CupertinoApp(
+          home: SizedBox(
+            width: 200,
+            height: 200,
+            child: CupertinoFixedItemMouseScrolling(
+              scrollController: controller,
+              child: ListWheelScrollView(
+                controller: controller,
+                itemExtent: 32,
+                children: List<Widget>.generate(20, (int i) => Text('$i')),
               ),
             ),
           ),
-        );
+        ),
+      );
 
-        final TestPointer pointer = TestPointer(
-          2,
-          PointerDeviceKind.mouse,
-        )..hover(const Offset(100, 100));
-        await tester.sendEventToBinding(
-          pointer.scroll(const Offset(0, -32)),
-        );
-        await tester.pumpAndSettle();
+      final TestPointer pointer = TestPointer(2, PointerDeviceKind.mouse)
+        ..hover(const Offset(100, 100));
+      await tester.sendEventToBinding(pointer.scroll(const Offset(0, -32)));
+      await tester.pumpAndSettle();
 
-        expect(controller.selectedItem, lessThanOrEqualTo(5));
-      },
-    );
+      expect(controller.selectedItem, lessThanOrEqualTo(5));
+    });
   });
 }

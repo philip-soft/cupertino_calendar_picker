@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _wrap(Widget child, {Brightness brightness = Brightness.light}) {
@@ -49,8 +49,9 @@ void main() {
         final CalendarActionDecoration original = CalendarActionDecoration();
         const Color override = Color(0xFF010203);
 
-        final CalendarActionDecoration copy =
-            original.copyWith(pressedColor: override);
+        final CalendarActionDecoration copy = original.copyWith(
+          pressedColor: override,
+        );
 
         expect(copy.pressedColor, override);
         expect(copy.labelStyle, original.labelStyle);
@@ -58,8 +59,9 @@ void main() {
     });
 
     group('withDynamicColor', () {
-      testWidgets('resolves labelStyle color in light mode',
-          (WidgetTester tester) async {
+      testWidgets('resolves labelStyle color in light mode', (
+        WidgetTester tester,
+      ) async {
         late BuildContext ctx;
         await tester.pumpWidget(
           _wrap(
@@ -75,12 +77,13 @@ void main() {
         final CalendarActionDecoration decoration =
             CalendarActionDecoration.withDynamicColor(ctx);
 
-        expect(decoration.labelStyle?.color, isNotNull);
+        expect(decoration.labelStyle.color, isNotNull);
         expect(decoration.pressedColor, isNotNull);
       });
 
-      testWidgets('uses provided pressedColor verbatim when supplied',
-          (WidgetTester tester) async {
+      testWidgets('uses provided pressedColor verbatim when supplied', (
+        WidgetTester tester,
+      ) async {
         late BuildContext ctx;
         await tester.pumpWidget(
           _wrap(
@@ -96,15 +99,16 @@ void main() {
         const Color pressed = Color(0xFF112233);
         final CalendarActionDecoration decoration =
             CalendarActionDecoration.withDynamicColor(
-          ctx,
-          pressedColor: pressed,
-        );
+              ctx,
+              pressedColor: pressed,
+            );
 
         expect(decoration.pressedColor, pressed);
       });
 
-      testWidgets('produces different colors in dark mode',
-          (WidgetTester tester) async {
+      testWidgets('produces different colors in dark mode', (
+        WidgetTester tester,
+      ) async {
         late BuildContext lightCtx;
         await tester.pumpWidget(
           _wrap(
@@ -134,7 +138,7 @@ void main() {
         final CalendarActionDecoration dark =
             CalendarActionDecoration.withDynamicColor(darkCtx);
 
-        expect(light.labelStyle?.color, isNot(dark.labelStyle?.color));
+        expect(light.labelStyle.color, isNot(dark.labelStyle.color));
       });
     });
   });

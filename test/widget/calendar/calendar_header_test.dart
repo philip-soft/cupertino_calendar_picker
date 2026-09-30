@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'test_helpers.dart';
@@ -19,10 +19,12 @@ void main() {
       VoidCallback? onNext,
       VoidCallback? onPrev,
       YearPickerCallback? onYearPickerStateChanged,
+      bool isYearPickerVisible = false,
     }) {
       return wrapWithApp(
         CalendarHeader(
           currentMonth: currentMonth ?? DateTime.utc(2024, 6),
+          isYearPickerVisible: isYearPickerVisible,
           onPreviousMonthIconTapped: onPrev,
           onNextMonthIconTapped: onNext,
           onYearPickerStateChanged: onYearPickerStateChanged ?? (bool show) {},
@@ -39,15 +41,8 @@ void main() {
       expect(find.text('June 2024'), findsOneWidget);
     });
 
-    testWidgets('renders two navigation chevrons', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(
-        buildHeader(
-          onNext: () {},
-          onPrev: () {},
-        ),
-      );
+    testWidgets('renders two navigation chevrons', (WidgetTester tester) async {
+      await tester.pumpWidget(buildHeader(onNext: () {}, onPrev: () {}));
 
       expect(find.byIcon(CupertinoIcons.chevron_back), findsOneWidget);
       expect(find.byIcon(CupertinoIcons.chevron_forward), findsNWidgets(2));
@@ -58,10 +53,7 @@ void main() {
     ) async {
       int nextCount = 0;
       await tester.pumpWidget(
-        buildHeader(
-          onNext: () => nextCount++,
-          onPrev: () {},
-        ),
+        buildHeader(onNext: () => nextCount++, onPrev: () {}),
       );
 
       final Finder forwardFinder = find.descendant(
@@ -82,10 +74,7 @@ void main() {
     ) async {
       int prevCount = 0;
       await tester.pumpWidget(
-        buildHeader(
-          onNext: () {},
-          onPrev: () => prevCount++,
-        ),
+        buildHeader(onNext: () {}, onPrev: () => prevCount++),
       );
 
       await tester.tap(find.byIcon(CupertinoIcons.chevron_back));
@@ -94,7 +83,7 @@ void main() {
       expect(prevCount, 1);
     });
 
-    testWidgets('tapping the month title calls onYearPickerStateChanged', (
+    testWidgets('tapping the month title requests the toggled year picker', (
       WidgetTester tester,
     ) async {
       final List<bool> events = <bool>[];
@@ -111,6 +100,14 @@ void main() {
 
       expect(events, <bool>[true]);
 
+      await tester.pumpWidget(
+        buildHeader(
+          onNext: () {},
+          onPrev: () {},
+          onYearPickerStateChanged: events.add,
+          isYearPickerVisible: true,
+        ),
+      );
       await tester.tap(find.text('June 2024'));
       await tester.pumpAndSettle();
 
@@ -129,9 +126,7 @@ void main() {
     testWidgets('updates display when currentMonth changes', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(
-        buildHeader(currentMonth: DateTime.utc(2024, 6)),
-      );
+      await tester.pumpWidget(buildHeader(currentMonth: DateTime.utc(2024, 6)));
       expect(find.text('June 2024'), findsOneWidget);
 
       await tester.pumpWidget(

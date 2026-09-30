@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _wrap(Widget child, {Brightness brightness = Brightness.light}) {
@@ -25,8 +25,9 @@ void main() {
     test('uses supplied textStyle when provided', () {
       const TextStyle style = TextStyle(fontSize: 22.0);
 
-      final PickerButtonDecoration decoration =
-          PickerButtonDecoration(textStyle: style);
+      final PickerButtonDecoration decoration = PickerButtonDecoration(
+        textStyle: style,
+      );
 
       expect(decoration.textStyle, style);
     });
@@ -34,8 +35,9 @@ void main() {
     test('uses supplied backgroundColor when provided', () {
       const Color color = Color(0xFF112233);
 
-      final PickerButtonDecoration decoration =
-          PickerButtonDecoration(backgroundColor: color);
+      final PickerButtonDecoration decoration = PickerButtonDecoration(
+        backgroundColor: color,
+      );
 
       expect(decoration.backgroundColor, color);
     });
@@ -64,8 +66,9 @@ void main() {
         final PickerButtonDecoration original = PickerButtonDecoration();
         const Color color = Color(0xFFAABBCC);
 
-        final PickerButtonDecoration copy =
-            original.copyWith(backgroundColor: color);
+        final PickerButtonDecoration copy = original.copyWith(
+          backgroundColor: color,
+        );
 
         expect(copy.backgroundColor, color);
         expect(copy.textStyle, original.textStyle);
@@ -73,29 +76,32 @@ void main() {
     });
 
     group('withDynamicColor', () {
-      testWidgets('resolves textStyle color and backgroundColor for light mode',
-          (WidgetTester tester) async {
-        late BuildContext ctx;
-        await tester.pumpWidget(
-          _wrap(
-            Builder(
-              builder: (BuildContext context) {
-                ctx = context;
-                return const SizedBox.shrink();
-              },
+      testWidgets(
+        'resolves textStyle color and backgroundColor for light mode',
+        (WidgetTester tester) async {
+          late BuildContext ctx;
+          await tester.pumpWidget(
+            _wrap(
+              Builder(
+                builder: (BuildContext context) {
+                  ctx = context;
+                  return const SizedBox.shrink();
+                },
+              ),
             ),
-          ),
-        );
+          );
 
-        final PickerButtonDecoration decoration =
-            PickerButtonDecoration.withDynamicColor(ctx);
+          final PickerButtonDecoration decoration =
+              PickerButtonDecoration.withDynamicColor(ctx);
 
-        expect(decoration.textStyle?.color, isNotNull);
-        expect(decoration.backgroundColor, isNotNull);
-      });
+          expect(decoration.textStyle.color, isNotNull);
+          expect(decoration.backgroundColor, isNotNull);
+        },
+      );
 
-      testWidgets('produces different colors in dark vs light brightness',
-          (WidgetTester tester) async {
+      testWidgets('produces different colors in dark vs light brightness', (
+        WidgetTester tester,
+      ) async {
         late BuildContext lightCtx;
         await tester.pumpWidget(
           _wrap(
@@ -131,8 +137,9 @@ void main() {
         );
       });
 
-      testWidgets('uses supplied textStyle when provided',
-          (WidgetTester tester) async {
+      testWidgets('uses supplied textStyle when provided', (
+        WidgetTester tester,
+      ) async {
         late BuildContext ctx;
         await tester.pumpWidget(
           _wrap(
@@ -147,13 +154,10 @@ void main() {
 
         const TextStyle inputStyle = TextStyle(fontSize: 25.0);
         final PickerButtonDecoration decoration =
-            PickerButtonDecoration.withDynamicColor(
-          ctx,
-          textStyle: inputStyle,
-        );
+            PickerButtonDecoration.withDynamicColor(ctx, textStyle: inputStyle);
 
-        expect(decoration.textStyle?.fontSize, 25.0);
-        expect(decoration.textStyle?.color, isNotNull);
+        expect(decoration.textStyle.fontSize, 25.0);
+        expect(decoration.textStyle.color, isNotNull);
       });
     });
   });

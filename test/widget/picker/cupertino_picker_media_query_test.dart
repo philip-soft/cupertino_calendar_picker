@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'test_helpers.dart';
 
@@ -18,9 +18,7 @@ void main() {
       await tester.pumpWidget(
         wrapWithApp(
           MediaQuery(
-            data: const MediaQueryData(
-              textScaler: TextScaler.linear(3.0),
-            ),
+            data: const MediaQueryData(textScaler: TextScaler.linear(3.0)),
             child: CupertinoPickerMediaQuery(
               child: Builder(
                 builder: (BuildContext context) {
@@ -48,9 +46,7 @@ void main() {
       await tester.pumpWidget(
         wrapWithApp(
           MediaQuery(
-            data: const MediaQueryData(
-              textScaler: TextScaler.noScaling,
-            ),
+            data: const MediaQueryData(textScaler: TextScaler.noScaling),
             child: CupertinoPickerMediaQuery(
               child: Builder(
                 builder: (BuildContext context) {
@@ -71,9 +67,7 @@ void main() {
     ) async {
       await tester.pumpWidget(
         wrapWithApp(
-          const CupertinoPickerMediaQuery(
-            child: Text('hello-media-query'),
-          ),
+          const CupertinoPickerMediaQuery(child: Text('hello-media-query')),
         ),
       );
 

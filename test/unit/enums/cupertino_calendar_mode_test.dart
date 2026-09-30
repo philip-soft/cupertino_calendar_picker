@@ -7,18 +7,15 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('CupertinoCalendarMode', () {
-    test('exposes date and dateTime values', () {
-      const List<CupertinoCalendarMode> values = CupertinoCalendarMode.values;
-
-      expect(values, contains(CupertinoCalendarMode.date));
-      expect(values, contains(CupertinoCalendarMode.dateTime));
-      expect(values.length, 2);
-    });
-
-    test('values are distinct', () {
+    // The value set and its order are part of the published API: renaming a
+    // value breaks `switch` statements downstream, and reordering shifts the
+    // `index` that consumers may have persisted.
+    test('declares the documented values in order', () {
       expect(
-        CupertinoCalendarMode.date,
-        isNot(CupertinoCalendarMode.dateTime),
+        CupertinoCalendarMode.values.map(
+          (CupertinoCalendarMode value) => value.name,
+        ),
+        <String>['date', 'dateTime'],
       );
     });
   });

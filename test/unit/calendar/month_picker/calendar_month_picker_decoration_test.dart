@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _wrap(Widget child, {Brightness brightness = Brightness.light}) {
@@ -16,7 +16,7 @@ Widget _wrap(Widget child, {Brightness brightness = Brightness.light}) {
 void main() {
   group('CalendarMonthPickerDecoration', () {
     test('default factory leaves all day styles null', () {
-      final CalendarMonthPickerDecoration decoration =
+      const CalendarMonthPickerDecoration decoration =
           CalendarMonthPickerDecoration();
 
       expect(decoration.defaultDayStyle, isNull);
@@ -40,12 +40,12 @@ void main() {
 
       final CalendarMonthPickerDecoration decoration =
           CalendarMonthPickerDecoration(
-        defaultDayStyle: defaultStyle,
-        currentDayStyle: currentStyle,
-        selectedDayStyle: selectedStyle,
-        selectedCurrentDayStyle: selectedCurrentStyle,
-        disabledDayStyle: disabledStyle,
-      );
+            defaultDayStyle: defaultStyle,
+            currentDayStyle: currentStyle,
+            selectedDayStyle: selectedStyle,
+            selectedCurrentDayStyle: selectedCurrentStyle,
+            disabledDayStyle: disabledStyle,
+          );
 
       expect(decoration.defaultDayStyle, defaultStyle);
       expect(decoration.currentDayStyle, currentStyle);
@@ -55,31 +55,33 @@ void main() {
     });
 
     group('copyWith', () {
-      test('preserves selectedDayStyle and disabledDayStyle when not provided',
-          () {
-        final CalendarMonthPickerSelectedDayStyle selectedStyle =
-            CalendarMonthPickerSelectedDayStyle();
-        final CalendarMonthPickerDisabledDayStyle disabledStyle =
-            CalendarMonthPickerDisabledDayStyle();
-        final CalendarMonthPickerDecoration original =
-            CalendarMonthPickerDecoration(
-          selectedDayStyle: selectedStyle,
-          disabledDayStyle: disabledStyle,
-        );
+      test(
+        'preserves selectedDayStyle and disabledDayStyle when not provided',
+        () {
+          final CalendarMonthPickerSelectedDayStyle selectedStyle =
+              CalendarMonthPickerSelectedDayStyle();
+          final CalendarMonthPickerDisabledDayStyle disabledStyle =
+              CalendarMonthPickerDisabledDayStyle();
+          final CalendarMonthPickerDecoration original =
+              CalendarMonthPickerDecoration(
+                selectedDayStyle: selectedStyle,
+                disabledDayStyle: disabledStyle,
+              );
 
-        final CalendarMonthPickerDecoration copy = original.copyWith();
+          final CalendarMonthPickerDecoration copy = original.copyWith();
 
-        expect(copy.selectedDayStyle, selectedStyle);
-        expect(copy.disabledDayStyle, disabledStyle);
-      });
+          expect(copy.selectedDayStyle, selectedStyle);
+          expect(copy.disabledDayStyle, disabledStyle);
+        },
+      );
 
       test('overrides selectedDayStyle when provided', () {
         final CalendarMonthPickerSelectedDayStyle initial =
             CalendarMonthPickerSelectedDayStyle();
         final CalendarMonthPickerSelectedDayStyle replacement =
             CalendarMonthPickerSelectedDayStyle(
-          mainColor: const Color(0xFF000000),
-        );
+              mainColor: const Color(0xFF000000),
+            );
         final CalendarMonthPickerDecoration original =
             CalendarMonthPickerDecoration(selectedDayStyle: initial);
 
@@ -92,8 +94,9 @@ void main() {
     });
 
     group('withDynamicColor', () {
-      testWidgets('populates every day style with non-null instances',
-          (WidgetTester tester) async {
+      testWidgets('populates every day style with non-null instances', (
+        WidgetTester tester,
+      ) async {
         late BuildContext ctx;
         await tester.pumpWidget(
           _wrap(
@@ -116,8 +119,9 @@ void main() {
         expect(decoration.disabledDayStyle, isNotNull);
       });
 
-      testWidgets('respects pre-supplied styles instead of recreating them',
-          (WidgetTester tester) async {
+      testWidgets('respects pre-supplied styles instead of recreating them', (
+        WidgetTester tester,
+      ) async {
         late BuildContext ctx;
         await tester.pumpWidget(
           _wrap(
@@ -134,9 +138,9 @@ void main() {
 
         final CalendarMonthPickerDecoration decoration =
             CalendarMonthPickerDecoration.withDynamicColor(
-          ctx,
-          defaultDayStyle: defaultStyle,
-        );
+              ctx,
+              defaultDayStyle: defaultStyle,
+            );
 
         expect(decoration.defaultDayStyle, defaultStyle);
       });

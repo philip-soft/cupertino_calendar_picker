@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _wrap(Widget child, {Brightness brightness = Brightness.light}) {
@@ -83,8 +83,9 @@ void main() {
         final CalendarHeaderDecoration original = CalendarHeaderDecoration();
         const Color override = Color(0xFFFF00FF);
 
-        final CalendarHeaderDecoration copy =
-            original.copyWith(forwardButtonColor: override);
+        final CalendarHeaderDecoration copy = original.copyWith(
+          forwardButtonColor: override,
+        );
 
         expect(copy.forwardButtonColor, override);
         expect(copy.backwardButtonColor, original.backwardButtonColor);
@@ -92,8 +93,9 @@ void main() {
     });
 
     group('withDynamicColor', () {
-      testWidgets('resolves dynamic colors in light mode',
-          (WidgetTester tester) async {
+      testWidgets('resolves dynamic colors in light mode', (
+        WidgetTester tester,
+      ) async {
         late BuildContext ctx;
         await tester.pumpWidget(
           _wrap(
@@ -109,13 +111,14 @@ void main() {
         final CalendarHeaderDecoration decoration =
             CalendarHeaderDecoration.withDynamicColor(ctx);
 
-        expect(decoration.monthDateStyle?.color, isNotNull);
+        expect(decoration.monthDateStyle.color, isNotNull);
         expect(decoration.forwardDisabledButtonColor, isNotNull);
         expect(decoration.backwardDisabledButtonColor, isNotNull);
       });
 
-      testWidgets('uses mainColor when other colors are not provided',
-          (WidgetTester tester) async {
+      testWidgets('uses mainColor when other colors are not provided', (
+        WidgetTester tester,
+      ) async {
         late BuildContext ctx;
         await tester.pumpWidget(
           _wrap(

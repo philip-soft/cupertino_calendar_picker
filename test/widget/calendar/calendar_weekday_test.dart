@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'test_helpers.dart';
@@ -14,9 +14,7 @@ void main() {
       const String weekday = 'MON';
 
       await tester.pumpWidget(
-        wrapWithApp(
-          const CalendarWeekday(weekday: weekday),
-        ),
+        wrapWithApp(const CalendarWeekday(weekday: weekday)),
       );
 
       expect(find.text(weekday), findsOneWidget);
@@ -26,9 +24,7 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(
-        wrapWithApp(
-          const CalendarWeekday(weekday: 'TUE'),
-        ),
+        wrapWithApp(const CalendarWeekday(weekday: 'TUE')),
       );
 
       final Text textWidget = tester.widget<Text>(find.text('TUE'));
@@ -46,12 +42,7 @@ void main() {
       );
 
       await tester.pumpWidget(
-        wrapWithApp(
-          CalendarWeekday(
-            weekday: 'WED',
-            decoration: decoration,
-          ),
-        ),
+        wrapWithApp(CalendarWeekday(weekday: 'WED', decoration: decoration)),
       );
 
       final Text textWidget = tester.widget<Text>(find.text('WED'));
@@ -62,17 +53,12 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(
-        wrapWithApp(
-          const CalendarWeekday(weekday: 'FRI'),
-        ),
+        wrapWithApp(const CalendarWeekday(weekday: 'FRI')),
       );
 
       final SizedBox box = tester.widget<SizedBox>(
         find
-            .ancestor(
-              of: find.text('FRI'),
-              matching: find.byType(SizedBox),
-            )
+            .ancestor(of: find.text('FRI'), matching: find.byType(SizedBox))
             .first,
       );
       expect(box.width, 40.0);

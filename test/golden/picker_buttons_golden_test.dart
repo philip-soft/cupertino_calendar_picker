@@ -4,9 +4,9 @@
 
 import 'package:alchemist/alchemist.dart';
 import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show TimeOfDay;
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart'
+    show GlobalMaterialLocalizations, TimeOfDay;
 
 void main() {
   final DateTime minimum = DateTime.utc(2020);
@@ -19,11 +19,7 @@ void main() {
       debugShowCheckedModeBanner: false,
       theme: CupertinoThemeData(brightness: brightness),
       locale: const Locale('en', 'US'),
-      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: CupertinoPageScaffold(
         child: Center(
           child: CupertinoCalendarPickerButton(
@@ -41,11 +37,7 @@ void main() {
       debugShowCheckedModeBanner: false,
       theme: CupertinoThemeData(brightness: brightness),
       locale: const Locale('en', 'US'),
-      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: CupertinoPageScaffold(
         child: Center(
           child: CupertinoCalendarPickerButton(
@@ -65,11 +57,7 @@ void main() {
       debugShowCheckedModeBanner: false,
       theme: CupertinoThemeData(brightness: brightness),
       locale: const Locale('en', 'US'),
-      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: const CupertinoPageScaffold(
         child: Center(
           child: CupertinoTimePickerButton(

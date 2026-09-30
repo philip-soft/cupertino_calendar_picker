@@ -2,6 +2,8 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
+import 'package:cupertino_calendar_picker/src/src.dart';
+
 /// Specifies the mode of the Cupertino calendar.
 ///
 /// This enum defines whether the calendar allows selection of just the date
@@ -18,4 +20,12 @@ enum CupertinoCalendarMode {
   /// In this mode, users can select both a date (year, month, day) and a time
   /// (hours, minutes), providing a complete date-time selection experience.
   dateTime;
+
+  /// The height of the calendar in this mode, without actions.
+  double get calendarHeight {
+    return switch (this) {
+      CupertinoCalendarMode.date => calendarDatePickerHeight,
+      CupertinoCalendarMode.dateTime => calendarDateTimePickerHeight,
+    };
+  }
 }

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 const CupertinoDynamicColor pickerButtonTextColor = CupertinoColors.label;
 const TextStyle pickerButtonTextStyle = TextStyle(
@@ -15,9 +15,13 @@ const CupertinoDynamicColor pickerButtonBackgroundColor =
     CupertinoColors.tertiarySystemFill;
 
 /// A decoration class for the cupertino picker button.
+@immutable
 class PickerButtonDecoration {
   /// Creates a cupertino picker button decoration class with default values
   /// for non-provided parameters.
+  ///
+  /// [CupertinoDynamicColor]s are resolved against the ambient brightness
+  /// when the button is built.
   factory PickerButtonDecoration({
     TextStyle? textStyle,
     Color? backgroundColor,
@@ -29,8 +33,8 @@ class PickerButtonDecoration {
   }
 
   const PickerButtonDecoration._({
-    this.textStyle,
-    this.backgroundColor,
+    required this.textStyle,
+    required this.backgroundColor,
   });
 
   /// Creates a cupertino picker button decoration class with default values
@@ -58,10 +62,10 @@ class PickerButtonDecoration {
   }
 
   /// The [TextStyle] of the picker button.
-  final TextStyle? textStyle;
+  final TextStyle textStyle;
 
   /// The background [Color] of the picker button.
-  final Color? backgroundColor;
+  final Color backgroundColor;
 
   /// Creates a copy of the class with the provided parameters.
   PickerButtonDecoration copyWith({
@@ -73,4 +77,15 @@ class PickerButtonDecoration {
       backgroundColor: backgroundColor ?? this.backgroundColor,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is PickerButtonDecoration &&
+        other.textStyle == textStyle &&
+        other.backgroundColor == backgroundColor;
+  }
+
+  @override
+  int get hashCode => Object.hash(textStyle, backgroundColor);
 }

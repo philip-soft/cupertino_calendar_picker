@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 Widget _wrap(
   Widget child, {
@@ -16,15 +15,8 @@ Widget _wrap(
 }) {
   return MaterialApp(
     locale: locale,
-    localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-      GlobalMaterialLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-    ],
-    supportedLocales: const <Locale>[
-      Locale('en', 'US'),
-      Locale('fr'),
-    ],
+    localizationsDelegates: GlobalMaterialLocalizations.delegates,
+    supportedLocales: const <Locale>[Locale('en', 'US'), Locale('fr')],
     home: MediaQuery(
       data: MediaQueryData(
         alwaysUse24HourFormat: alwaysUse24HourFormat,
@@ -38,8 +30,9 @@ Widget _wrap(
 void main() {
   group('PackageBuildContextExtension', () {
     group('alwaysUse24hFormat', () {
-      testWidgets('returns false when MediaQuery is set to 12-hour format',
-          (WidgetTester tester) async {
+      testWidgets('returns false when MediaQuery is set to 12-hour format', (
+        WidgetTester tester,
+      ) async {
         late BuildContext capturedContext;
         await tester.pumpWidget(
           _wrap(
@@ -57,8 +50,9 @@ void main() {
         expect(result, isFalse);
       });
 
-      testWidgets('returns true when MediaQuery is set to 24-hour format',
-          (WidgetTester tester) async {
+      testWidgets('returns true when MediaQuery is set to 24-hour format', (
+        WidgetTester tester,
+      ) async {
         late BuildContext capturedContext;
         await tester.pumpWidget(
           _wrap(
@@ -79,8 +73,9 @@ void main() {
     });
 
     group('materialLocalization', () {
-      testWidgets('returns a MaterialLocalizations instance',
-          (WidgetTester tester) async {
+      testWidgets('returns a MaterialLocalizations instance', (
+        WidgetTester tester,
+      ) async {
         late BuildContext capturedContext;
         await tester.pumpWidget(
           _wrap(
@@ -101,8 +96,9 @@ void main() {
     });
 
     group('cupertinoLocalization', () {
-      testWidgets('returns a CupertinoLocalizations instance',
-          (WidgetTester tester) async {
+      testWidgets('returns a CupertinoLocalizations instance', (
+        WidgetTester tester,
+      ) async {
         late BuildContext capturedContext;
         await tester.pumpWidget(
           _wrap(
@@ -123,8 +119,9 @@ void main() {
     });
 
     group('locale', () {
-      testWidgets('returns the locale from Localizations',
-          (WidgetTester tester) async {
+      testWidgets('returns the locale from Localizations', (
+        WidgetTester tester,
+      ) async {
         late BuildContext capturedContext;
         await tester.pumpWidget(
           _wrap(
@@ -144,8 +141,9 @@ void main() {
     });
 
     group('localeString', () {
-      testWidgets('appends country code with underscore when present',
-          (WidgetTester tester) async {
+      testWidgets('appends country code with underscore when present', (
+        WidgetTester tester,
+      ) async {
         late BuildContext capturedContext;
         await tester.pumpWidget(
           _wrap(
@@ -163,8 +161,9 @@ void main() {
         expect(result, 'en_US');
       });
 
-      testWidgets('returns language code only when country code is null',
-          (WidgetTester tester) async {
+      testWidgets('returns language code only when country code is null', (
+        WidgetTester tester,
+      ) async {
         late BuildContext capturedContext;
         await tester.pumpWidget(
           _wrap(
@@ -185,8 +184,9 @@ void main() {
     });
 
     group('textScaler', () {
-      testWidgets('returns the TextScaler from MediaQuery',
-          (WidgetTester tester) async {
+      testWidgets('returns the TextScaler from MediaQuery', (
+        WidgetTester tester,
+      ) async {
         const TextScaler scaler = TextScaler.linear(1.25);
         late BuildContext capturedContext;
         await tester.pumpWidget(
@@ -208,8 +208,9 @@ void main() {
     });
 
     group('textScaleFactor', () {
-      testWidgets('returns 1.0 when no text scaling is applied',
-          (WidgetTester tester) async {
+      testWidgets('returns 1.0 when no text scaling is applied', (
+        WidgetTester tester,
+      ) async {
         late BuildContext capturedContext;
         await tester.pumpWidget(
           _wrap(
@@ -227,8 +228,9 @@ void main() {
         expect(result, 1.0);
       });
 
-      testWidgets('returns the linear scale factor from MediaQuery',
-          (WidgetTester tester) async {
+      testWidgets('returns the linear scale factor from MediaQuery', (
+        WidgetTester tester,
+      ) async {
         late BuildContext capturedContext;
         await tester.pumpWidget(
           _wrap(

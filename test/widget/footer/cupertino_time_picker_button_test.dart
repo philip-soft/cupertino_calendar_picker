@@ -3,9 +3,10 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
+import '../../support/test_durations.dart';
 import 'test_helpers.dart';
 
 void main() {
@@ -84,7 +85,7 @@ void main() {
 
       await tester.tap(find.byType(CupertinoTimePickerButton));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(overlayClosePumpDuration);
 
       expect(pressedCount, 1);
       expect(find.byType(CupertinoTimePicker), findsOneWidget);
@@ -113,7 +114,7 @@ void main() {
 
         await tester.tap(find.byType(CupertinoTimePickerButton));
         await tester.pump();
-        await tester.pump(const Duration(milliseconds: 600));
+        await tester.pump(overlayOpenPumpDuration);
 
         final Finder wheels = find.byType(ListWheelScrollView);
         expect(wheels, findsWidgets);

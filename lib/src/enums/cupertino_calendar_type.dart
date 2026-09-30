@@ -10,5 +10,5 @@ enum CupertinoCalendarType {
   compact,
 
   /// An inline version of the calendar.
-  inline;
+  inline,
 }

@@ -7,28 +7,15 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('CupertinoCalendarViewMode', () {
-    test('exposes monthPicker, yearPicker and timePicker values', () {
-      const List<CupertinoCalendarViewMode> values =
-          CupertinoCalendarViewMode.values;
-
-      expect(values, contains(CupertinoCalendarViewMode.monthPicker));
-      expect(values, contains(CupertinoCalendarViewMode.yearPicker));
-      expect(values, contains(CupertinoCalendarViewMode.timePicker));
-      expect(values.length, 3);
-    });
-
-    test('values are distinct from each other', () {
+    // The value set and its order are part of the published API: renaming a
+    // value breaks `switch` statements downstream, and reordering shifts the
+    // `index` that consumers may have persisted.
+    test('declares the documented values in order', () {
       expect(
-        CupertinoCalendarViewMode.monthPicker,
-        isNot(CupertinoCalendarViewMode.yearPicker),
-      );
-      expect(
-        CupertinoCalendarViewMode.yearPicker,
-        isNot(CupertinoCalendarViewMode.timePicker),
-      );
-      expect(
-        CupertinoCalendarViewMode.monthPicker,
-        isNot(CupertinoCalendarViewMode.timePicker),
+        CupertinoCalendarViewMode.values.map(
+          (CupertinoCalendarViewMode value) => value.name,
+        ),
+        <String>['monthPicker', 'yearPicker', 'timePicker'],
       );
     });
   });

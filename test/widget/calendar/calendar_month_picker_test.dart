@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'test_helpers.dart';
@@ -52,9 +52,10 @@ void main() {
       final DateTime effectiveDisplayed = displayedMonth;
       final int initialPage =
           (effectiveDisplayed.year - effectiveMin.year) * 12 +
-              (effectiveDisplayed.month - effectiveMin.month);
-      final PageController controller =
-          PageController(initialPage: initialPage);
+          (effectiveDisplayed.month - effectiveMin.month);
+      final PageController controller = PageController(
+        initialPage: initialPage,
+      );
       return wrapWithApp(
         SizedBox(
           height: 300.0,
@@ -110,7 +111,7 @@ void main() {
                         maximumDate: DateTime.utc(2024, 6, 20),
                         selectedDate: selectedDate,
                         onChanged: (DateTime _) {},
-                        decoration: CalendarMonthPickerDecoration(),
+                        decoration: const CalendarMonthPickerDecoration(),
                         mainColor: CupertinoColors.systemRed,
                         firstDayOfWeekIndex: 0,
                         selectableDayPredicate: null,
@@ -200,17 +201,17 @@ void main() {
 
       expect(selected, isNull);
 
-      final CalendarMonthPickerDay enabledDay =
-          tester.widget<CalendarMonthPickerDay>(
-        find
-            .byWidgetPredicate(
-              (Widget w) =>
-                  w is CalendarMonthPickerDay &&
-                  w.dayDate.day == 11 &&
-                  w.dayDate.month == 6,
-            )
-            .first,
-      );
+      final CalendarMonthPickerDay enabledDay = tester
+          .widget<CalendarMonthPickerDay>(
+            find
+                .byWidgetPredicate(
+                  (Widget w) =>
+                      w is CalendarMonthPickerDay &&
+                      w.dayDate.day == 11 &&
+                      w.dayDate.month == 6,
+                )
+                .first,
+          );
       expect(enabledDay.onDaySelected, isNotNull);
     });
 
@@ -225,64 +226,64 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final CalendarMonthPickerDay before =
-          tester.widget<CalendarMonthPickerDay>(
-        find
-            .byWidgetPredicate(
-              (Widget w) =>
-                  w is CalendarMonthPickerDay &&
-                  w.dayDate.day == 5 &&
-                  w.dayDate.month == 6,
-            )
-            .first,
-      );
-      final CalendarMonthPickerDay within =
-          tester.widget<CalendarMonthPickerDay>(
-        find
-            .byWidgetPredicate(
-              (Widget w) =>
-                  w is CalendarMonthPickerDay &&
-                  w.dayDate.day == 15 &&
-                  w.dayDate.month == 6,
-            )
-            .first,
-      );
-      final CalendarMonthPickerDay after =
-          tester.widget<CalendarMonthPickerDay>(
-        find
-            .byWidgetPredicate(
-              (Widget w) =>
-                  w is CalendarMonthPickerDay &&
-                  w.dayDate.day == 25 &&
-                  w.dayDate.month == 6,
-            )
-            .first,
-      );
+      final CalendarMonthPickerDay before = tester
+          .widget<CalendarMonthPickerDay>(
+            find
+                .byWidgetPredicate(
+                  (Widget w) =>
+                      w is CalendarMonthPickerDay &&
+                      w.dayDate.day == 5 &&
+                      w.dayDate.month == 6,
+                )
+                .first,
+          );
+      final CalendarMonthPickerDay within = tester
+          .widget<CalendarMonthPickerDay>(
+            find
+                .byWidgetPredicate(
+                  (Widget w) =>
+                      w is CalendarMonthPickerDay &&
+                      w.dayDate.day == 15 &&
+                      w.dayDate.month == 6,
+                )
+                .first,
+          );
+      final CalendarMonthPickerDay after = tester
+          .widget<CalendarMonthPickerDay>(
+            find
+                .byWidgetPredicate(
+                  (Widget w) =>
+                      w is CalendarMonthPickerDay &&
+                      w.dayDate.day == 25 &&
+                      w.dayDate.month == 6,
+                )
+                .first,
+          );
 
       // The bounds themselves are inclusive: day 10 (minimum) and day 20
       // (maximum) must stay enabled — guards against an off-by-one.
-      final CalendarMonthPickerDay minBoundary =
-          tester.widget<CalendarMonthPickerDay>(
-        find
-            .byWidgetPredicate(
-              (Widget w) =>
-                  w is CalendarMonthPickerDay &&
-                  w.dayDate.day == 10 &&
-                  w.dayDate.month == 6,
-            )
-            .first,
-      );
-      final CalendarMonthPickerDay maxBoundary =
-          tester.widget<CalendarMonthPickerDay>(
-        find
-            .byWidgetPredicate(
-              (Widget w) =>
-                  w is CalendarMonthPickerDay &&
-                  w.dayDate.day == 20 &&
-                  w.dayDate.month == 6,
-            )
-            .first,
-      );
+      final CalendarMonthPickerDay minBoundary = tester
+          .widget<CalendarMonthPickerDay>(
+            find
+                .byWidgetPredicate(
+                  (Widget w) =>
+                      w is CalendarMonthPickerDay &&
+                      w.dayDate.day == 10 &&
+                      w.dayDate.month == 6,
+                )
+                .first,
+          );
+      final CalendarMonthPickerDay maxBoundary = tester
+          .widget<CalendarMonthPickerDay>(
+            find
+                .byWidgetPredicate(
+                  (Widget w) =>
+                      w is CalendarMonthPickerDay &&
+                      w.dayDate.day == 20 &&
+                      w.dayDate.month == 6,
+                )
+                .first,
+          );
 
       expect(before.onDaySelected, isNull);
       expect(within.onDaySelected, isNotNull);
@@ -317,9 +318,9 @@ void main() {
                         onChanged: (DateTime _) {},
                         decoration:
                             CalendarMonthPickerDecoration.withDynamicColor(
-                          context,
-                          mainColor: CupertinoColors.systemRed,
-                        ),
+                              context,
+                              mainColor: CupertinoColors.systemRed,
+                            ),
                         mainColor: CupertinoColors.systemRed,
                         firstDayOfWeekIndex: 0,
                         selectableDayPredicate: null,
@@ -336,17 +337,17 @@ void main() {
         expect(find.byType(CalendarMonthPicker), findsOneWidget);
         expect(tester.takeException(), isNull);
 
-        final CalendarMonthPickerDay day15 =
-            tester.widget<CalendarMonthPickerDay>(
-          find
-              .byWidgetPredicate(
-                (Widget w) =>
-                    w is CalendarMonthPickerDay &&
-                    w.dayDate.day == 15 &&
-                    w.dayDate.month == 6,
-              )
-              .first,
-        );
+        final CalendarMonthPickerDay day15 = tester
+            .widget<CalendarMonthPickerDay>(
+              find
+                  .byWidgetPredicate(
+                    (Widget w) =>
+                        w is CalendarMonthPickerDay &&
+                        w.dayDate.day == 15 &&
+                        w.dayDate.month == 6,
+                  )
+                  .first,
+            );
         expect(day15.onDaySelected, isNotNull);
       },
     );
@@ -375,7 +376,7 @@ void main() {
                         maximumDate: maximum,
                         selectedDate: sameDay,
                         onChanged: (DateTime _) {},
-                        decoration: CalendarMonthPickerDecoration(),
+                        decoration: const CalendarMonthPickerDecoration(),
                         mainColor: CupertinoColors.systemRed,
                         firstDayOfWeekIndex: 0,
                         selectableDayPredicate: null,

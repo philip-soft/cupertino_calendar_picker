@@ -8,13 +8,20 @@ import 'dart:io';
 import 'package:alchemist/alchemist.dart';
 import 'package:flutter/services.dart';
 
+import 'support/tolerant_golden_comparator.dart';
+
 /// Global test configuration picked up automatically by `flutter test`.
 ///
 /// Both CI and platform goldens render with real fonts — CI goldens use
 /// alchemist's software renderer for cross-platform pixel stability, while
 /// platform goldens additionally capture native blur and shadow effects.
+///
+/// Golden comparison runs through [TolerantGoldenFileComparator] so that
+/// sub-pixel hairline anti-aliasing, which drifts between engine revisions
+/// and host platforms, does not turn every toolchain bump into a red build.
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   await _loadFonts();
+  TolerantGoldenFileComparator.install();
 
   return AlchemistConfig.runWithConfig(
     config: const AlchemistConfig(

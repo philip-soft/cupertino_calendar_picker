@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'test_helpers.dart';
 
@@ -18,17 +18,12 @@ void main() {
       ];
 
       await tester.pumpWidget(
-        wrapWithApp(
-          CalendarActions(
-            actions: actions,
-            onPressed: (_) {},
-          ),
-        ),
+        wrapWithApp(CalendarActions(actions: actions, onPressed: (_) {})),
       );
 
       expect(find.byType(CupertinoCalendarActionWidget), findsOneWidget);
       expect(find.byType(CupertinoPickerVerticalDivider), findsNothing);
-      expect(find.text('Done'), findsOneWidget);
+      expect(find.text('OK'), findsOneWidget);
     });
 
     testWidgets('renders two actions separated by a vertical divider', (
@@ -40,18 +35,13 @@ void main() {
       ];
 
       await tester.pumpWidget(
-        wrapWithApp(
-          CalendarActions(
-            actions: actions,
-            onPressed: (_) {},
-          ),
-        ),
+        wrapWithApp(CalendarActions(actions: actions, onPressed: (_) {})),
       );
 
       expect(find.byType(CupertinoCalendarActionWidget), findsNWidgets(2));
       expect(find.byType(CupertinoPickerVerticalDivider), findsOneWidget);
       expect(find.text('Cancel'), findsOneWidget);
-      expect(find.text('Done'), findsOneWidget);
+      expect(find.text('OK'), findsOneWidget);
     });
 
     testWidgets('forwards the tapped action to onPressed', (

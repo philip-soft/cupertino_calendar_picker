@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _wrap(Widget child, {Brightness brightness = Brightness.light}) {
@@ -15,19 +15,22 @@ Widget _wrap(Widget child, {Brightness brightness = Brightness.light}) {
 
 void main() {
   group('PickerContainerDecoration', () {
-    test('default factory populates borderRadius, backgroundType and shadow',
-        () {
-      final PickerContainerDecoration decoration = PickerContainerDecoration();
+    test(
+      'default factory populates borderRadius, backgroundType and shadow',
+      () {
+        final PickerContainerDecoration decoration =
+            PickerContainerDecoration();
 
-      expect(decoration.borderRadius, BorderRadius.circular(13.0));
-      expect(
-        decoration.backgroundType,
-        PickerBackgroundType.transparentAndBlured,
-      );
-      expect(decoration.boxShadow, isNotEmpty);
-    });
+        expect(decoration.borderRadius, BorderRadius.circular(13.0));
+        expect(
+          decoration.backgroundType,
+          PickerBackgroundType.transparentAndBlurred,
+        );
+        expect(decoration.boxShadow, isNotEmpty);
+      },
+    );
 
-    test('clamps alpha for transparentAndBlured when above threshold', () {
+    test('clamps alpha for transparentAndBlurred when above threshold', () {
       const Color opaque = Color(0xFFFFFFFF);
 
       final PickerContainerDecoration decoration = PickerContainerDecoration(
@@ -36,7 +39,7 @@ void main() {
 
       expect(
         (decoration.backgroundColor.a * 255.0).round().clamp(0, 255),
-        calendarBluredLightBackgroundColorAlpha,
+        calendarBlurredLightBackgroundColorAlpha,
       );
     });
 
@@ -63,9 +66,7 @@ void main() {
 
     test('uses supplied borderRadius and boxShadow when provided', () {
       final BorderRadius radius = BorderRadius.circular(8.0);
-      const List<BoxShadow> shadow = <BoxShadow>[
-        BoxShadow(blurRadius: 1.0),
-      ];
+      const List<BoxShadow> shadow = <BoxShadow>[BoxShadow(blurRadius: 1.0)];
 
       final PickerContainerDecoration decoration = PickerContainerDecoration(
         borderRadius: radius,
@@ -92,8 +93,9 @@ void main() {
         final PickerContainerDecoration original = PickerContainerDecoration();
         final BorderRadius newRadius = BorderRadius.circular(4.0);
 
-        final PickerContainerDecoration copy =
-            original.copyWith(borderRadius: newRadius);
+        final PickerContainerDecoration copy = original.copyWith(
+          borderRadius: newRadius,
+        );
 
         expect(copy.borderRadius, newRadius);
         expect(copy.backgroundColor, original.backgroundColor);
@@ -101,8 +103,9 @@ void main() {
     });
 
     group('withDynamicColor', () {
-      testWidgets('produces a non-null backgroundColor in light mode',
-          (WidgetTester tester) async {
+      testWidgets('produces a non-null backgroundColor in light mode', (
+        WidgetTester tester,
+      ) async {
         late BuildContext ctx;
         await tester.pumpWidget(
           _wrap(
@@ -122,45 +125,47 @@ void main() {
       });
 
       testWidgets(
-          'resolves a different backgroundColor in dark mode versus light',
-          (WidgetTester tester) async {
-        late BuildContext lightCtx;
-        await tester.pumpWidget(
-          _wrap(
-            Builder(
-              builder: (BuildContext context) {
-                lightCtx = context;
-                return const SizedBox.shrink();
-              },
+        'resolves a different backgroundColor in dark mode versus light',
+        (WidgetTester tester) async {
+          late BuildContext lightCtx;
+          await tester.pumpWidget(
+            _wrap(
+              Builder(
+                builder: (BuildContext context) {
+                  lightCtx = context;
+                  return const SizedBox.shrink();
+                },
+              ),
             ),
-          ),
-        );
-        final PickerContainerDecoration lightDecoration =
-            PickerContainerDecoration.withDynamicColor(lightCtx);
+          );
+          final PickerContainerDecoration lightDecoration =
+              PickerContainerDecoration.withDynamicColor(lightCtx);
 
-        late BuildContext darkCtx;
-        await tester.pumpWidget(
-          _wrap(
-            Builder(
-              builder: (BuildContext context) {
-                darkCtx = context;
-                return const SizedBox.shrink();
-              },
+          late BuildContext darkCtx;
+          await tester.pumpWidget(
+            _wrap(
+              Builder(
+                builder: (BuildContext context) {
+                  darkCtx = context;
+                  return const SizedBox.shrink();
+                },
+              ),
+              brightness: Brightness.dark,
             ),
-            brightness: Brightness.dark,
-          ),
-        );
-        final PickerContainerDecoration darkDecoration =
-            PickerContainerDecoration.withDynamicColor(darkCtx);
+          );
+          final PickerContainerDecoration darkDecoration =
+              PickerContainerDecoration.withDynamicColor(darkCtx);
 
-        expect(
-          lightDecoration.backgroundColor,
-          isNot(darkDecoration.backgroundColor),
-        );
-      });
+          expect(
+            lightDecoration.backgroundColor,
+            isNot(darkDecoration.backgroundColor),
+          );
+        },
+      );
 
-      testWidgets('keeps plainColor backgroundType when requested',
-          (WidgetTester tester) async {
+      testWidgets('keeps plainColor backgroundType when requested', (
+        WidgetTester tester,
+      ) async {
         late BuildContext ctx;
         await tester.pumpWidget(
           _wrap(
@@ -175,14 +180,11 @@ void main() {
 
         final PickerContainerDecoration decoration =
             PickerContainerDecoration.withDynamicColor(
-          ctx,
-          backgroundType: PickerBackgroundType.plainColor,
-        );
+              ctx,
+              backgroundType: PickerBackgroundType.plainColor,
+            );
 
-        expect(
-          decoration.backgroundType,
-          PickerBackgroundType.plainColor,
-        );
+        expect(decoration.backgroundType, PickerBackgroundType.plainColor);
       });
     });
   });

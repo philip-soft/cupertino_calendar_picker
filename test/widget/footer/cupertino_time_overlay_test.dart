@@ -3,9 +3,10 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
+import '../../support/test_durations.dart';
 import 'test_helpers.dart';
 
 Future<RenderBox> _pumpAnchor(WidgetTester tester) async {
@@ -39,9 +40,6 @@ void main() {
         wrapWithApp(
           CupertinoTimeOverlay(
             widgetRenderBox: anchor,
-            horizontalSpacing: 15.0,
-            verticalSpacing: 15.0,
-            offset: const Offset(0.0, 10.0),
             minuteInterval: 1,
             use24hFormat: true,
             initialTime: const TimeOfDay(hour: 10, minute: 0),
@@ -49,7 +47,7 @@ void main() {
         ),
       );
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(overlayClosePumpDuration);
 
       expect(find.byType(CupertinoTimePicker), findsOneWidget);
     });
@@ -63,113 +61,129 @@ void main() {
         wrapWithApp(
           CupertinoTimeOverlay(
             widgetRenderBox: anchor,
-            horizontalSpacing: 15.0,
-            verticalSpacing: 15.0,
-            offset: const Offset(0.0, 10.0),
             minuteInterval: 1,
             use24hFormat: true,
           ),
         ),
       );
 
-      final CupertinoTimeOverlay overlay = tester.widget<CupertinoTimeOverlay>(
-        find.byType(CupertinoTimeOverlay),
+      final TimeOfDay now = TimeOfDay.now();
+      final CupertinoTimePicker picker = tester.widget<CupertinoTimePicker>(
+        find.byType(CupertinoTimePicker),
       );
-      expect(overlay.initialTime, isA<TimeOfDay>());
+      final int minutesFromNow =
+          (picker.initialTime.hour * 60 + picker.initialTime.minute) -
+          (now.hour * 60 + now.minute);
+      expect(minutesFromNow.abs(), lessThanOrEqualTo(1));
+    });
+
+    testWidgets('clamps the default time to the range', (
+      WidgetTester tester,
+    ) async {
+      const TimeOfDay bound = TimeOfDay(hour: 0, minute: 0);
+
+      await tester.pumpWidget(
+        wrapWithApp(
+          const CupertinoTimeOverlay(
+            minuteInterval: 1,
+            use24hFormat: true,
+            minimumTime: bound,
+            maximumTime: bound,
+          ),
+        ),
+      );
+
+      final CupertinoTimePicker picker = tester.widget<CupertinoTimePicker>(
+        find.byType(CupertinoTimePicker),
+      );
+      expect(picker.initialTime, bound);
     });
 
     testWidgets('asserts when maximumTime is before minimumTime', (
       WidgetTester tester,
     ) async {
-      expect(
-        () => CupertinoTimeOverlay(
-          widgetRenderBox: null,
-          horizontalSpacing: 15.0,
-          verticalSpacing: 15.0,
-          offset: const Offset(0.0, 10.0),
-          minuteInterval: 1,
-          use24hFormat: true,
-          minimumTime: const TimeOfDay(hour: 10, minute: 0),
-          maximumTime: const TimeOfDay(hour: 9, minute: 0),
+      await tester.pumpWidget(
+        wrapWithApp(
+          const CupertinoTimeOverlay(
+            minuteInterval: 1,
+            use24hFormat: true,
+            minimumTime: TimeOfDay(hour: 10, minute: 0),
+            maximumTime: TimeOfDay(hour: 9, minute: 0),
+          ),
         ),
-        throwsAssertionError,
       );
+
+      expect(tester.takeException(), isAssertionError);
     });
 
     testWidgets('asserts when initialTime is before minimumTime', (
       WidgetTester tester,
     ) async {
-      expect(
-        () => CupertinoTimeOverlay(
-          widgetRenderBox: null,
-          horizontalSpacing: 15.0,
-          verticalSpacing: 15.0,
-          offset: const Offset(0.0, 10.0),
-          minuteInterval: 1,
-          use24hFormat: true,
-          minimumTime: const TimeOfDay(hour: 10, minute: 0),
-          maximumTime: const TimeOfDay(hour: 20, minute: 0),
-          initialTime: const TimeOfDay(hour: 9, minute: 0),
+      await tester.pumpWidget(
+        wrapWithApp(
+          const CupertinoTimeOverlay(
+            minuteInterval: 1,
+            use24hFormat: true,
+            minimumTime: TimeOfDay(hour: 10, minute: 0),
+            maximumTime: TimeOfDay(hour: 20, minute: 0),
+            initialTime: TimeOfDay(hour: 9, minute: 0),
+          ),
         ),
-        throwsAssertionError,
       );
+
+      expect(tester.takeException(), isAssertionError);
     });
 
     testWidgets('asserts when initialTime is after maximumTime', (
       WidgetTester tester,
     ) async {
-      expect(
-        () => CupertinoTimeOverlay(
-          widgetRenderBox: null,
-          horizontalSpacing: 15.0,
-          verticalSpacing: 15.0,
-          offset: const Offset(0.0, 10.0),
-          minuteInterval: 1,
-          use24hFormat: true,
-          minimumTime: const TimeOfDay(hour: 10, minute: 0),
-          maximumTime: const TimeOfDay(hour: 12, minute: 0),
-          initialTime: const TimeOfDay(hour: 13, minute: 0),
+      await tester.pumpWidget(
+        wrapWithApp(
+          const CupertinoTimeOverlay(
+            minuteInterval: 1,
+            use24hFormat: true,
+            minimumTime: TimeOfDay(hour: 10, minute: 0),
+            maximumTime: TimeOfDay(hour: 12, minute: 0),
+            initialTime: TimeOfDay(hour: 13, minute: 0),
+          ),
         ),
-        throwsAssertionError,
       );
+
+      expect(tester.takeException(), isAssertionError);
     });
 
-    testWidgets(
-      'wheel scroll inside the overlay invokes onTimeChanged',
-      (WidgetTester tester) async {
-        final RenderBox anchor = await _pumpAnchor(tester);
-        TimeOfDay? changed;
+    testWidgets('wheel scroll inside the overlay invokes onTimeChanged', (
+      WidgetTester tester,
+    ) async {
+      final RenderBox anchor = await _pumpAnchor(tester);
+      TimeOfDay? changed;
 
-        await tester.pumpWidget(
-          wrapWithApp(
-            CupertinoTimeOverlay(
-              widgetRenderBox: anchor,
-              horizontalSpacing: 15.0,
-              verticalSpacing: 15.0,
-              offset: const Offset(0.0, 10.0),
-              minuteInterval: 1,
-              use24hFormat: true,
-              initialTime: const TimeOfDay(hour: 10, minute: 0),
-              onTimeChanged: (TimeOfDay t) => changed = t,
-            ),
+      await tester.pumpWidget(
+        wrapWithApp(
+          CupertinoTimeOverlay(
+            widgetRenderBox: anchor,
+            minuteInterval: 1,
+            use24hFormat: true,
+            initialTime: const TimeOfDay(hour: 10, minute: 0),
+            onTimeChanged: (TimeOfDay t) => changed = t,
           ),
-        );
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 600));
+        ),
+      );
+      await tester.pump();
+      await tester.pump(overlayOpenPumpDuration);
 
-        final Finder wheels = find.byType(ListWheelScrollView);
-        expect(wheels, findsWidgets);
-        await tester.fling(
-          wheels.first,
-          const Offset(0, -100),
-          600,
-          warnIfMissed: false,
-        );
-        await tester.pumpAndSettle();
+      final Finder wheels = find.byType(ListWheelScrollView);
+      expect(wheels, findsWidgets);
+      await tester.fling(
+        wheels.first,
+        const Offset(0, -100),
+        600,
+        warnIfMissed: false,
+      );
+      await tester.pumpAndSettle();
 
-        expect(changed, isNotNull);
-      },
-    );
+      expect(changed, isNotNull);
+    });
 
     testWidgets('forwards onTimeChanged callback through the overlay', (
       WidgetTester tester,
@@ -181,9 +195,6 @@ void main() {
         wrapWithApp(
           CupertinoTimeOverlay(
             widgetRenderBox: anchor,
-            horizontalSpacing: 15.0,
-            verticalSpacing: 15.0,
-            offset: const Offset(0.0, 10.0),
             minuteInterval: 1,
             use24hFormat: true,
             initialTime: const TimeOfDay(hour: 10, minute: 0),

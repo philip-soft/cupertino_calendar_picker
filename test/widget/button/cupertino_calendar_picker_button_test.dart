@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'test_helpers.dart';
@@ -113,39 +113,38 @@ void main() {
       expect(find.text('Dec 25, 2024'), findsOneWidget);
     });
 
-    testWidgets(
-      'selecting a date in the overlay updates the button label',
-      (WidgetTester tester) async {
-        DateTime? changed;
-        await tester.pumpWidget(
-          wrapWithApp(
-            CupertinoCalendarPickerButton(
-              minimumDateTime: min,
-              maximumDateTime: max,
-              initialDateTime: DateTime.utc(2024, 6, 15),
-              onDateTimeChanged: (DateTime d) => changed = d,
-            ),
+    testWidgets('selecting a date in the overlay updates the button label', (
+      WidgetTester tester,
+    ) async {
+      DateTime? changed;
+      await tester.pumpWidget(
+        wrapWithApp(
+          CupertinoCalendarPickerButton(
+            minimumDateTime: min,
+            maximumDateTime: max,
+            initialDateTime: DateTime.utc(2024, 6, 15),
+            onDateTimeChanged: (DateTime d) => changed = d,
           ),
-        );
+        ),
+      );
 
-        await tester.tap(find.byType(CupertinoCalendarPickerButton));
-        await tester.pumpAndSettle();
+      await tester.tap(find.byType(CupertinoCalendarPickerButton));
+      await tester.pumpAndSettle();
 
-        final Finder day20 = find.byWidgetPredicate(
-          (Widget w) =>
-              w is CalendarMonthPickerDay &&
-              w.dayDate.day == 20 &&
-              w.dayDate.month == 6 &&
-              w.dayDate.year == 2024,
-        );
-        await tester.tap(day20.first, warnIfMissed: false);
-        await tester.pumpAndSettle();
+      final Finder day20 = find.byWidgetPredicate(
+        (Widget w) =>
+            w is CalendarMonthPickerDay &&
+            w.dayDate.day == 20 &&
+            w.dayDate.month == 6 &&
+            w.dayDate.year == 2024,
+      );
+      await tester.tap(day20.first, warnIfMissed: false);
+      await tester.pumpAndSettle();
 
-        expect(changed, isNotNull);
-        expect(changed?.day, 20);
-        expect(find.text('Jun 20, 2024'), findsOneWidget);
-      },
-    );
+      expect(changed, isNotNull);
+      expect(changed?.day, 20);
+      expect(find.text('Jun 20, 2024'), findsOneWidget);
+    });
 
     testWidgets(
       'does not update label after onDateTimeChanged when a confirm action is set',
@@ -208,46 +207,45 @@ void main() {
       expect(find.byType(CupertinoCalendar), findsOneWidget);
     });
 
-    testWidgets(
-      'onCompleted is called after calendar picker is dismissed',
-      (WidgetTester tester) async {
-        DateTime? completedWith;
-        bool completedCalled = false;
+    testWidgets('onCompleted is called after calendar picker is dismissed', (
+      WidgetTester tester,
+    ) async {
+      DateTime? completedWith;
+      bool completedCalled = false;
 
-        await tester.pumpWidget(
-          wrapWithApp(
-            CupertinoCalendarPickerButton(
-              minimumDateTime: min,
-              maximumDateTime: max,
-              initialDateTime: DateTime.utc(2024, 6, 15),
-              onCompleted: (DateTime? val) {
-                completedCalled = true;
-                completedWith = val;
-              },
-            ),
+      await tester.pumpWidget(
+        wrapWithApp(
+          CupertinoCalendarPickerButton(
+            minimumDateTime: min,
+            maximumDateTime: max,
+            initialDateTime: DateTime.utc(2024, 6, 15),
+            onCompleted: (DateTime? val) {
+              completedCalled = true;
+              completedWith = val;
+            },
           ),
-        );
+        ),
+      );
 
-        await tester.tap(find.byType(CupertinoCalendarPickerButton));
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 500));
+      await tester.tap(find.byType(CupertinoCalendarPickerButton));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
-        final Finder day20 = find.byWidgetPredicate(
-          (Widget w) =>
-              w is CalendarMonthPickerDay &&
-              w.dayDate.day == 20 &&
-              w.dayDate.month == 6 &&
-              w.dayDate.year == 2024,
-        );
-        await tester.tap(day20.first, warnIfMissed: false);
-        await tester.pumpAndSettle();
+      final Finder day20 = find.byWidgetPredicate(
+        (Widget w) =>
+            w is CalendarMonthPickerDay &&
+            w.dayDate.day == 20 &&
+            w.dayDate.month == 6 &&
+            w.dayDate.year == 2024,
+      );
+      await tester.tap(day20.first, warnIfMissed: false);
+      await tester.pumpAndSettle();
 
-        await tester.tapAt(const Offset(5.0, 5.0));
-        await tester.pumpAndSettle();
+      await tester.tapAt(const Offset(5.0, 5.0));
+      await tester.pumpAndSettle();
 
-        expect(completedCalled, isTrue);
-        expect(completedWith, anyOf(isNull, isA<DateTime>()));
-      },
-    );
+      expect(completedCalled, isTrue);
+      expect(completedWith, anyOf(isNull, isA<DateTime>()));
+    });
   });
 }

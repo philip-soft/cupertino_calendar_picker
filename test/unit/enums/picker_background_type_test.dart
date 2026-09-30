@@ -7,18 +7,15 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('PickerBackgroundType', () {
-    test('exposes plainColor and transparentAndBlured values', () {
-      const List<PickerBackgroundType> values = PickerBackgroundType.values;
-
-      expect(values, contains(PickerBackgroundType.plainColor));
-      expect(values, contains(PickerBackgroundType.transparentAndBlured));
-      expect(values.length, 2);
-    });
-
-    test('values are distinct', () {
+    // The value set and its order are part of the published API: renaming a
+    // value breaks `switch` statements downstream, and reordering shifts the
+    // `index` that consumers may have persisted.
+    test('declares the documented values in order', () {
       expect(
-        PickerBackgroundType.plainColor,
-        isNot(PickerBackgroundType.transparentAndBlured),
+        PickerBackgroundType.values.map(
+          (PickerBackgroundType value) => value.name,
+        ),
+        <String>['plainColor', 'transparentAndBlurred'],
       );
     });
   });

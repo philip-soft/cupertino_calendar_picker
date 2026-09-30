@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'test_helpers.dart';
@@ -17,17 +17,11 @@ void main() {
     ) async {
       await tester.pumpWidget(
         wrapWithApp(
-          CalendarWeekdays(
-            decoration: decoration,
-            firstDayOfWeekIndex: 0,
-          ),
+          CalendarWeekdays(decoration: decoration, firstDayOfWeekIndex: 0),
         ),
       );
 
-      expect(
-        find.byType(CalendarWeekday),
-        findsNWidgets(DateTime.daysPerWeek),
-      );
+      expect(find.byType(CalendarWeekday), findsNWidgets(DateTime.daysPerWeek));
     });
 
     testWidgets('starts with Sunday when firstDayOfWeekIndex is 0', (
@@ -35,10 +29,7 @@ void main() {
     ) async {
       await tester.pumpWidget(
         wrapWithApp(
-          CalendarWeekdays(
-            decoration: decoration,
-            firstDayOfWeekIndex: 0,
-          ),
+          CalendarWeekdays(decoration: decoration, firstDayOfWeekIndex: 0),
         ),
       );
 
@@ -53,10 +44,7 @@ void main() {
     ) async {
       await tester.pumpWidget(
         wrapWithApp(
-          CalendarWeekdays(
-            decoration: decoration,
-            firstDayOfWeekIndex: 1,
-          ),
+          CalendarWeekdays(decoration: decoration, firstDayOfWeekIndex: 1),
         ),
       );
 
@@ -71,15 +59,12 @@ void main() {
     ) async {
       await tester.pumpWidget(
         wrapWithApp(
-          CalendarWeekdays(
-            decoration: decoration,
-            firstDayOfWeekIndex: 0,
-          ),
+          CalendarWeekdays(decoration: decoration, firstDayOfWeekIndex: 0),
         ),
       );
 
-      final Iterable<CalendarWeekday> weekdays =
-          tester.widgetList<CalendarWeekday>(find.byType(CalendarWeekday));
+      final Iterable<CalendarWeekday> weekdays = tester
+          .widgetList<CalendarWeekday>(find.byType(CalendarWeekday));
       for (final CalendarWeekday w in weekdays) {
         expect(w.weekday, w.weekday.toUpperCase());
       }
@@ -90,10 +75,7 @@ void main() {
     ) async {
       await tester.pumpWidget(
         wrapWithApp(
-          CalendarWeekdays(
-            decoration: decoration,
-            firstDayOfWeekIndex: null,
-          ),
+          CalendarWeekdays(decoration: decoration, firstDayOfWeekIndex: null),
         ),
       );
 
@@ -109,9 +91,7 @@ void main() {
         await tester.pumpWidget(
           wrapWithApp(
             MediaQuery(
-              data: const MediaQueryData(
-                textScaler: TextScaler.linear(2.0),
-              ),
+              data: const MediaQueryData(textScaler: TextScaler.linear(2.0)),
               child: CalendarWeekdays(
                 decoration: decoration,
                 firstDayOfWeekIndex: 0,
@@ -120,8 +100,8 @@ void main() {
           ),
         );
 
-        final Iterable<CalendarWeekday> weekdays =
-            tester.widgetList<CalendarWeekday>(find.byType(CalendarWeekday));
+        final Iterable<CalendarWeekday> weekdays = tester
+            .widgetList<CalendarWeekday>(find.byType(CalendarWeekday));
         for (final CalendarWeekday w in weekdays) {
           expect(w.weekday.length, 1);
         }

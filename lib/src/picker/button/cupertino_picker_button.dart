@@ -1,11 +1,11 @@
-// Copyright 2014 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
+// Copyright (c) 2026 Philip Softworks. All rights reserved.
+// Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
 import 'dart:async';
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 class CupertinoPickerButton<T> extends StatefulWidget {
   const CupertinoPickerButton({
@@ -13,14 +13,12 @@ class CupertinoPickerButton<T> extends StatefulWidget {
     required this.showPickerFunction,
     required this.onPressed,
     this.mainColor,
-    super.key,
-    this.onSelected,
     this.decoration,
+    super.key,
   });
 
   final String title;
   final Future<T> Function(RenderBox? renderBox) showPickerFunction;
-  final ValueChanged<T?>? onSelected;
   final Color? mainColor;
   final PickerButtonDecoration? decoration;
   final VoidCallback? onPressed;
@@ -32,21 +30,11 @@ class CupertinoPickerButton<T> extends StatefulWidget {
 
 class _CupertinoPickerButtonState<T> extends State<CupertinoPickerButton<T>>
     with SingleTickerProviderStateMixin {
-  final Tween<double> _opacityTween = Tween<double>(begin: 1.0);
-
-  late AnimationController _animationController;
-  late Animation<double> _opacityAnimation;
+  late final AnimationController _animationController;
+  late final Animation<double> _opacityAnimation;
 
   bool _buttonHeldDown = false;
-
-  bool _isCalendarOpened = false;
-  bool get isCalendarOpened => _isCalendarOpened;
-  set isCalendarOpened(bool value) {
-    if (!mounted) return;
-    setState(() {
-      _isCalendarOpened = value;
-    });
-  }
+  bool _isPickerOpened = false;
 
   @override
   void initState() {
@@ -58,48 +46,33 @@ class _CupertinoPickerButtonState<T> extends State<CupertinoPickerButton<T>>
     );
     _opacityAnimation = _animationController
         .drive(CurveTween(curve: Curves.decelerate))
-        .drive(_opacityTween);
-    _setTween();
+        .drive(Tween<double>(begin: 1.0, end: pickerButtonPressedOpacity));
   }
 
-  void _setTween() {
-    _opacityTween.end = 0.4;
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
-  Future<void> _onTap(BuildContext context) async {
+  void _setPickerOpened(bool value) {
+    if (!mounted) return;
+    setState(() => _isPickerOpened = value);
+  }
+
+  Future<void> _onTap() async {
+    if (_isPickerOpened) return;
     widget.onPressed?.call();
 
     final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
-    isCalendarOpened = true;
-
-    final T? data = await widget.showPickerFunction.call(renderBox);
-    widget.onSelected?.call(data);
-
-    isCalendarOpened = false;
+    _setPickerOpened(true);
+    await widget.showPickerFunction(renderBox);
+    _setPickerOpened(false);
   }
 
-  void _handleTapDown(TapDownDetails event) {
-    if (!_buttonHeldDown) {
-      _buttonHeldDown = true;
-      _animate();
-    }
-  }
-
-  void _handleTapUp(TapUpDetails event) {
-    if (_buttonHeldDown) {
-      _buttonHeldDown = false;
-      _animate();
-    }
-  }
-
-  void _handleTapCancel() {
-    if (_buttonHeldDown) {
-      _buttonHeldDown = false;
-      _animate();
-    }
-  }
-
-  void _animate() {
+  void _setHeldDown(bool value) {
+    if (_buttonHeldDown == value) return;
+    _buttonHeldDown = value;
     unawaited(
       _buttonHeldDown
           ? _animationController.animateTo(
@@ -119,40 +92,38 @@ class _CupertinoPickerButtonState<T> extends State<CupertinoPickerButton<T>>
   Widget build(BuildContext context) {
     final PickerButtonDecoration decoration =
         widget.decoration ?? PickerButtonDecoration.withDynamicColor(context);
+    final TextStyle textStyle = decoration.textStyle.resolveDynamic(context);
+    final Color? mainColor = widget.mainColor;
 
-    return GestureDetector(
-      onTap: () => _onTap(context),
+    return CupertinoPickerTapTarget(
+      onTap: _onTap,
+      onTapDown: (_) => _setHeldDown(true),
+      onTapUp: (_) => _setHeldDown(false),
+      onTapCancel: () => _setHeldDown(false),
       behavior: HitTestBehavior.opaque,
-      onTapDown: _handleTapDown,
-      onTapUp: _handleTapUp,
-      onTapCancel: _handleTapCancel,
+      semanticsLabel: widget.title,
+      isExpanded: _isPickerOpened,
       child: Container(
         decoration: BoxDecoration(
-          color: decoration.backgroundColor,
-          borderRadius: BorderRadius.circular(8.0),
+          color: decoration.backgroundColor.resolveDynamic(context),
+          borderRadius: BorderRadius.circular(pickerButtonBorderRadius),
         ),
         alignment: Alignment.center,
-        height: 34.0.scale(context),
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        height: pickerButtonHeight.scale(context),
+        padding: const EdgeInsets.symmetric(
+          horizontal: pickerButtonHorizontalPadding,
+        ),
         child: FadeTransition(
           opacity: _opacityAnimation,
           child: AnimatedDefaultTextStyle(
             duration: pickerButtonTextStyleDuration,
-            style: decoration.textStyle!.copyWith(
-              color: isCalendarOpened
-                  ? widget.mainColor
-                  : widget.decoration?.textStyle?.color,
-            ),
+            style: _isPickerOpened && mainColor != null
+                ? textStyle.copyWith(color: mainColor)
+                : textStyle,
             child: Text(widget.title),
           ),
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
   }
 }

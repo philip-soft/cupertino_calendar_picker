@@ -20,7 +20,7 @@ The package provides a sleek and stylish cupertino calendar widgets designed to 
 In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
-  cupertino_calendar_picker: ^2.2.7
+  cupertino_calendar_picker: ^3.0.0
 ```
 
 Import it:
@@ -29,15 +29,13 @@ Import it:
 import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
 ```
 
-In your `CupertinoApp` or `MaterialApp` add the `localizationsDelegates`
+This package is built on the standalone [`cupertino_ui`](https://pub.dev/packages/cupertino_ui) and [`material_ui`](https://pub.dev/packages/material_ui) packages and requires Flutter 3.47 or newer. Your app should import them instead of `package:flutter/cupertino.dart` and `package:flutter/material.dart` (see the [migration guide](https://docs.flutter.dev/release/breaking-changes/material-ui-and-cupertino-ui)).
+
+In your `CupertinoApp` or `MaterialApp` add the `localizationsDelegates` (exported by `package:material_ui/material_ui.dart`)
 
 ```dart
 CupertinoApp(
-  localizationsDelegates: const [
-    GlobalMaterialLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-  ],
+  localizationsDelegates: GlobalMaterialLocalizations.delegates,
 );
 ```
 
@@ -178,18 +176,20 @@ Future<DateTime?> onCalendarWidgetTap(BuildContext context) async {
     timeLabel: 'Ends',
     actions: [
       CancelCupertinoCalendarAction(
-        label: 'Cancel',
         onPressed: () {},
       ),
       ConfirmCupertinoCalendarAction(
         label: 'Done',
-        isDefaultAction: true,
         onPressed: (dateTime) {},
       ),
     ],
   );
 }
 ```
+
+Pressing an action closes the picker. The returned `Future` completes with the selected date when `ConfirmCupertinoCalendarAction` is pressed and with `null` when `CancelCupertinoCalendarAction` is pressed. When a `ConfirmCupertinoCalendarAction` is present, dismissing the picker by an outside tap or the back gesture also completes with `null`.
+
+When no `label` is provided, the actions use the localized "Cancel" and "OK" labels.
 
 > [!NOTE]
 > Works only when the calendar is in the `CupertinoCalendarType.compact` mode.
@@ -220,11 +220,7 @@ Call the `showCupertinoCalendarPicker` passing date constrains and widget's `Ren
 @override
 Widget build(BuildContext context) {
   return CupertinoApp(
-    localizationsDelegates: const [
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
+    localizationsDelegates: GlobalMaterialLocalizations.delegates,
     home: CupertinoPageScaffold(
       child: Builder(
         builder: (context) {
@@ -287,11 +283,7 @@ final globalKey = GlobalKey();
 @override
 Widget build(BuildContext context) {
   return CupertinoApp(
-    localizationsDelegates: const [
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
+    localizationsDelegates: GlobalMaterialLocalizations.delegates,
     home: CupertinoPageScaffold(
       child: YourWidget(
         key: globalKey,

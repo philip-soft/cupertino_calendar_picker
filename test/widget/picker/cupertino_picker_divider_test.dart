@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'test_helpers.dart';
 
@@ -13,11 +13,7 @@ void main() {
     testWidgets('renders a Divider with default horizontalIndent', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(
-        wrapWithApp(
-          const CupertinoPickerDivider(),
-        ),
-      );
+      await tester.pumpWidget(wrapWithApp(const CupertinoPickerDivider()));
 
       final Divider divider = tester.widget<Divider>(find.byType(Divider));
       expect(divider.indent, 16.0);
@@ -44,9 +40,7 @@ void main() {
 
     testWidgets('allows zero indent', (WidgetTester tester) async {
       await tester.pumpWidget(
-        wrapWithApp(
-          const CupertinoPickerDivider(horizontalIndent: 0.0),
-        ),
+        wrapWithApp(const CupertinoPickerDivider(horizontalIndent: 0.0)),
       );
 
       final Divider divider = tester.widget<Divider>(find.byType(Divider));

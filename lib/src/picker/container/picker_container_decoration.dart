@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:flutter/foundation.dart';
 
 const List<BoxShadow> pickerBoxShadow = <BoxShadow>[
   BoxShadow(
@@ -12,37 +13,40 @@ const List<BoxShadow> pickerBoxShadow = <BoxShadow>[
     spreadRadius: 9.0,
   ),
 ];
-final BorderRadius pickerBorderRadius = BorderRadius.circular(13.0);
+const BorderRadius pickerBorderRadius = BorderRadius.all(Radius.circular(13.0));
 final CupertinoDynamicColor pickerBackgroundColor =
     CupertinoDynamicColor.withBrightness(
-  color: CupertinoColors.systemBackground,
-  darkColor: CupertinoColors.tertiarySystemBackground.darkColor,
-);
+      color: CupertinoColors.systemBackground,
+      darkColor: CupertinoColors.tertiarySystemBackground.darkColor,
+    );
 const PickerBackgroundType pickerBackgroundType =
-    PickerBackgroundType.transparentAndBlured;
+    PickerBackgroundType.transparentAndBlurred;
 
 /// A decoration class for the picker's background container.
+@immutable
 class PickerContainerDecoration {
   /// Creates a picker's container decoration class with default values
   /// for non-provided parameters.
+  ///
+  /// With [PickerBackgroundType.transparentAndBlurred], the alpha of
+  /// [backgroundColor] is capped so that the blur stays visible.
+  ///
+  /// [CupertinoDynamicColor]s are resolved against the ambient brightness
+  /// when the container is built.
   factory PickerContainerDecoration({
     BorderRadius? borderRadius,
     Color? backgroundColor,
     PickerBackgroundType backgroundType = pickerBackgroundType,
     List<BoxShadow>? boxShadow,
   }) {
-    Color color = backgroundColor ?? pickerBackgroundColor;
-
-    if (backgroundType == PickerBackgroundType.transparentAndBlured) {
-      final int alpha = (color.a * 255.0).round().clamp(0, 255);
-      color = alpha > calendarBluredLightBackgroundColorAlpha
-          ? color.withAlpha(calendarBluredLightBackgroundColorAlpha)
-          : color;
-    }
+    final Color color = backgroundColor ?? pickerBackgroundColor;
 
     return PickerContainerDecoration._(
       borderRadius: borderRadius ?? pickerBorderRadius,
-      backgroundColor: color,
+      backgroundColor: switch (backgroundType) {
+        PickerBackgroundType.plainColor => color,
+        PickerBackgroundType.transparentAndBlurred => _capAlpha(color),
+      },
       backgroundType: backgroundType,
       boxShadow: boxShadow ?? pickerBoxShadow,
     );
@@ -68,11 +72,11 @@ class PickerContainerDecoration {
   }) {
     CupertinoDynamicColor color = backgroundColor ?? pickerBackgroundColor;
 
-    if (backgroundType == PickerBackgroundType.transparentAndBlured) {
+    if (backgroundType == PickerBackgroundType.transparentAndBlurred) {
       color = CupertinoDynamicColor.withBrightness(
-        color: color.withAlpha(calendarBluredLightBackgroundColorAlpha),
+        color: color.withAlpha(calendarBlurredLightBackgroundColorAlpha),
         darkColor: color.darkColor.withAlpha(
-          calendarBluredDarkBackgroundColorAlpha,
+          calendarBlurredDarkBackgroundColorAlpha,
         ),
       );
     }
@@ -83,6 +87,12 @@ class PickerContainerDecoration {
       boxShadow: boxShadow,
       borderRadius: borderRadius ?? pickerBorderRadius,
     );
+  }
+
+  static Color _capAlpha(Color color) {
+    final int alpha = (color.a * 255.0).round().clamp(0, 255);
+    if (alpha <= calendarBlurredLightBackgroundColorAlpha) return color;
+    return color.withAlpha(calendarBlurredLightBackgroundColorAlpha);
   }
 
   /// The [borderRadius] of the calendar container.
@@ -101,12 +111,34 @@ class PickerContainerDecoration {
   PickerContainerDecoration copyWith({
     BorderRadius? borderRadius,
     Color? backgroundColor,
+    PickerBackgroundType? backgroundType,
     List<BoxShadow>? boxShadow,
   }) {
     return PickerContainerDecoration(
       borderRadius: borderRadius ?? this.borderRadius,
       backgroundColor: backgroundColor ?? this.backgroundColor,
+      backgroundType: backgroundType ?? this.backgroundType,
       boxShadow: boxShadow ?? this.boxShadow,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is PickerContainerDecoration &&
+        other.borderRadius == borderRadius &&
+        other.backgroundColor == backgroundColor &&
+        other.backgroundType == backgroundType &&
+        listEquals(other.boxShadow, boxShadow);
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      borderRadius,
+      backgroundColor,
+      backgroundType,
+      Object.hashAll(boxShadow),
     );
   }
 }

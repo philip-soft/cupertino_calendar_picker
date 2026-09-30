@@ -5,7 +5,7 @@
 import 'dart:async';
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'test_helpers.dart';
@@ -52,34 +52,48 @@ void main() {
       expect(showCount, 1);
     });
 
-    testWidgets('invokes onSelected with the picker result', (
+    testWidgets('ignores taps while the picker is open', (
       WidgetTester tester,
     ) async {
-      int? selected;
+      final Completer<int?> completer = Completer<int?>();
+      int showCount = 0;
 
       await tester.pumpWidget(
         wrapWithApp(
           CupertinoPickerButton<int?>(
             title: 'Open',
             onPressed: null,
-            onSelected: (int? value) => selected = value,
-            showPickerFunction: (RenderBox? _) async => 7,
+            showPickerFunction: (RenderBox? _) {
+              showCount++;
+              return completer.future;
+            },
           ),
         ),
       );
 
       await tester.tap(find.text('Open'));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.tap(find.text('Open'));
+      await tester.pump();
 
-      expect(selected, 7);
+      expect(showCount, 1);
+
+      completer.complete(7);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Open'));
+      await tester.pump();
+
+      expect(showCount, 2);
     });
 
     testWidgets('uses the provided decoration text style', (
       WidgetTester tester,
     ) async {
       final PickerButtonDecoration decoration = PickerButtonDecoration(
-        textStyle:
-            const TextStyle(fontSize: 22.0, color: CupertinoColors.activeBlue),
+        textStyle: const TextStyle(
+          fontSize: 22.0,
+          color: CupertinoColors.activeBlue,
+        ),
       );
 
       await tester.pumpWidget(
@@ -93,10 +107,10 @@ void main() {
         ),
       );
 
-      final AnimatedDefaultTextStyle textStyle =
-          tester.widget<AnimatedDefaultTextStyle>(
-        find.byType(AnimatedDefaultTextStyle),
-      );
+      final AnimatedDefaultTextStyle textStyle = tester
+          .widget<AnimatedDefaultTextStyle>(
+            find.byType(AnimatedDefaultTextStyle),
+          );
       expect(textStyle.style.fontSize, 22.0);
     });
 
@@ -200,14 +214,11 @@ void main() {
         await tester.tap(find.text('Open'));
         await tester.pump();
 
-        final AnimatedDefaultTextStyle textWidget =
-            tester.widget<AnimatedDefaultTextStyle>(
-          find.byType(AnimatedDefaultTextStyle),
-        );
-        expect(
-          textWidget.style.color,
-          CupertinoColors.activeBlue,
-        );
+        final AnimatedDefaultTextStyle textWidget = tester
+            .widget<AnimatedDefaultTextStyle>(
+              find.byType(AnimatedDefaultTextStyle),
+            );
+        expect(textWidget.style.color, CupertinoColors.activeBlue);
 
         completer.complete(null);
         await tester.pumpAndSettle();

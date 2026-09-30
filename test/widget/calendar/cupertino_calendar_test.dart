@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'test_helpers.dart';
@@ -61,18 +61,14 @@ void main() {
       expect(find.text('June 2024'), findsOneWidget);
     });
 
-    testWidgets('renders no footer in date mode', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('renders no footer in date mode', (WidgetTester tester) async {
       await tester.pumpWidget(buildCalendar());
       await tester.pumpAndSettle();
 
       expect(find.byType(CalendarFooter), findsNothing);
     });
 
-    testWidgets('renders footer in dateTime mode', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('renders footer in dateTime mode', (WidgetTester tester) async {
       await tester.pumpWidget(
         buildCalendar(mode: CupertinoCalendarMode.dateTime),
       );
@@ -113,9 +109,7 @@ void main() {
     testWidgets('initial date is shown in the header', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(
-        buildCalendar(init: DateTime.utc(2024, 3)),
-      );
+      await tester.pumpWidget(buildCalendar(init: DateTime.utc(2024, 3)));
       await tester.pumpAndSettle();
 
       expect(find.text('March 2024'), findsOneWidget);
@@ -168,9 +162,7 @@ void main() {
       expect(lastMonth?.month, 7);
     });
 
-    testWidgets('back chevron rewinds the month', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('back chevron rewinds the month', (WidgetTester tester) async {
       await tester.pumpWidget(buildCalendar());
       await tester.pumpAndSettle();
       expect(find.text('June 2024'), findsOneWidget);
@@ -217,8 +209,8 @@ void main() {
 
       expect(selected, isNull);
 
-      final CalendarMonthPickerDay disabled =
-          tester.widget<CalendarMonthPickerDay>(day10.first);
+      final CalendarMonthPickerDay disabled = tester
+          .widget<CalendarMonthPickerDay>(day10.first);
       expect(disabled.onDaySelected, isNull);
     });
 
@@ -234,45 +226,41 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final CalendarMonthPickerDay disabledBefore =
-          tester.widget<CalendarMonthPickerDay>(
-        find
-            .byWidgetPredicate(
-              (Widget w) =>
-                  w is CalendarMonthPickerDay &&
-                  w.dayDate.day == 5 &&
-                  w.dayDate.month == 6,
-            )
-            .first,
-      );
+      final CalendarMonthPickerDay disabledBefore = tester
+          .widget<CalendarMonthPickerDay>(
+            find
+                .byWidgetPredicate(
+                  (Widget w) =>
+                      w is CalendarMonthPickerDay &&
+                      w.dayDate.day == 5 &&
+                      w.dayDate.month == 6,
+                )
+                .first,
+          );
       expect(disabledBefore.onDaySelected, isNull);
 
-      final CalendarMonthPickerDay disabledAfter =
-          tester.widget<CalendarMonthPickerDay>(
-        find
-            .byWidgetPredicate(
-              (Widget w) =>
-                  w is CalendarMonthPickerDay &&
-                  w.dayDate.day == 25 &&
-                  w.dayDate.month == 6,
-            )
-            .first,
-      );
+      final CalendarMonthPickerDay disabledAfter = tester
+          .widget<CalendarMonthPickerDay>(
+            find
+                .byWidgetPredicate(
+                  (Widget w) =>
+                      w is CalendarMonthPickerDay &&
+                      w.dayDate.day == 25 &&
+                      w.dayDate.month == 6,
+                )
+                .first,
+          );
       expect(disabledAfter.onDaySelected, isNull);
     });
 
     testWidgets('updating initialDateTime resets displayed month', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(
-        buildCalendar(init: DateTime.utc(2024, 6, 15)),
-      );
+      await tester.pumpWidget(buildCalendar(init: DateTime.utc(2024, 6, 15)));
       await tester.pumpAndSettle();
       expect(find.text('June 2024'), findsOneWidget);
 
-      await tester.pumpWidget(
-        buildCalendar(init: DateTime.utc(2025, 1, 5)),
-      );
+      await tester.pumpWidget(buildCalendar(init: DateTime.utc(2025, 1, 5)));
       await tester.pumpAndSettle();
 
       expect(find.text('January 2025'), findsOneWidget);
@@ -280,30 +268,27 @@ void main() {
   });
 
   group('CupertinoCalendar – picker wheel paths', () {
-    testWidgets(
-      'scrolling the year picker wheel updates the displayed date',
-      (WidgetTester tester) async {
-        DateTime? changed;
-        await tester.pumpWidget(
-          buildCalendar(
-            onDateChanged: (DateTime d) => changed = d,
-          ),
-        );
-        await tester.pumpAndSettle();
+    testWidgets('scrolling the year picker wheel updates the displayed date', (
+      WidgetTester tester,
+    ) async {
+      DateTime? changed;
+      await tester.pumpWidget(
+        buildCalendar(onDateChanged: (DateTime d) => changed = d),
+      );
+      await tester.pumpAndSettle();
 
-        await tester.tap(find.text('June 2024'));
-        await tester.pumpAndSettle();
+      await tester.tap(find.text('June 2024'));
+      await tester.pumpAndSettle();
 
-        await tester.drag(
-          find.byType(CustomCupertinoDatePicker),
-          const Offset(0, -120),
-          warnIfMissed: false,
-        );
-        await tester.pumpAndSettle();
+      await tester.drag(
+        find.byType(CustomCupertinoDatePicker),
+        const Offset(0, -120),
+        warnIfMissed: false,
+      );
+      await tester.pumpAndSettle();
 
-        expect(changed, isNotNull);
-      },
-    );
+      expect(changed, isNotNull);
+    });
 
     testWidgets(
       'tapping the time label in dateTime mode opens the time picker view',
@@ -326,30 +311,27 @@ void main() {
       },
     );
 
-    testWidgets(
-      'flinging the year picker wheel triggers onDateTimeChanged',
-      (WidgetTester tester) async {
-        DateTime? changed;
-        await tester.pumpWidget(
-          buildCalendar(
-            onDateChanged: (DateTime d) => changed = d,
-          ),
-        );
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('June 2024'));
-        await tester.pumpAndSettle();
+    testWidgets('flinging the year picker wheel triggers onDateTimeChanged', (
+      WidgetTester tester,
+    ) async {
+      DateTime? changed;
+      await tester.pumpWidget(
+        buildCalendar(onDateChanged: (DateTime d) => changed = d),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('June 2024'));
+      await tester.pumpAndSettle();
 
-        await tester.fling(
-          find.byType(CustomCupertinoDatePicker),
-          const Offset(0, -120),
-          800,
-          warnIfMissed: false,
-        );
-        await tester.pumpAndSettle();
+      await tester.fling(
+        find.byType(CustomCupertinoDatePicker),
+        const Offset(0, -120),
+        800,
+        warnIfMissed: false,
+      );
+      await tester.pumpAndSettle();
 
-        expect(changed, isNotNull);
-      },
-    );
+      expect(changed, isNotNull);
+    });
   });
 
   group('CupertinoCalendar – appearance modes', () {
@@ -366,9 +348,7 @@ void main() {
     testWidgets('renders in RTL direction without errors', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(
-        buildCalendar(direction: TextDirection.rtl),
-      );
+      await tester.pumpWidget(buildCalendar(direction: TextDirection.rtl));
       await tester.pumpAndSettle();
 
       expect(find.byType(CupertinoCalendar), findsOneWidget);
@@ -495,77 +475,107 @@ void main() {
   });
 
   group('CupertinoCalendar – asserts', () {
-    test('throws when maximumDateTime is before minimumDateTime', () {
-      expect(
-        () => CupertinoCalendar(
-          minimumDateTime: DateTime.utc(2024, 6),
-          maximumDateTime: DateTime.utc(2020, 6),
+    testWidgets('throws when maximumDateTime is before minimumDateTime', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWithApp(
+          CupertinoCalendar(
+            minimumDateTime: DateTime.utc(2024, 6),
+            maximumDateTime: DateTime.utc(2020, 6),
+          ),
         ),
-        throwsAssertionError,
       );
+
+      expect(tester.takeException(), isAssertionError);
     });
 
-    test('throws when initialDateTime is before minimumDateTime', () {
-      expect(
-        () => CupertinoCalendar(
-          minimumDateTime: DateTime.utc(2024, 6),
-          maximumDateTime: DateTime.utc(2025, 6),
-          initialDateTime: DateTime.utc(2020),
+    testWidgets('throws when initialDateTime is before minimumDateTime', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWithApp(
+          CupertinoCalendar(
+            minimumDateTime: DateTime.utc(2024, 6),
+            maximumDateTime: DateTime.utc(2025, 6),
+            initialDateTime: DateTime.utc(2020),
+          ),
         ),
-        throwsAssertionError,
       );
+
+      expect(tester.takeException(), isAssertionError);
     });
 
-    test('throws when initialDateTime is after maximumDateTime', () {
-      expect(
-        () => CupertinoCalendar(
-          minimumDateTime: DateTime.utc(2024, 6),
-          maximumDateTime: DateTime.utc(2025, 6),
-          initialDateTime: DateTime.utc(2030),
+    testWidgets('throws when initialDateTime is after maximumDateTime', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWithApp(
+          CupertinoCalendar(
+            minimumDateTime: DateTime.utc(2024, 6),
+            maximumDateTime: DateTime.utc(2025, 6),
+            initialDateTime: DateTime.utc(2030),
+          ),
         ),
-        throwsAssertionError,
       );
+
+      expect(tester.takeException(), isAssertionError);
     });
 
-    test('throws when actions are used with inline type', () {
-      expect(
-        () => CupertinoCalendar(
-          minimumDateTime: DateTime.utc(2024, 6),
-          maximumDateTime: DateTime.utc(2025, 6),
-          actions: const <CupertinoCalendarAction>[
-            CancelCupertinoCalendarAction(),
-          ],
+    testWidgets('throws when actions are used with inline type', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWithApp(
+          CupertinoCalendar(
+            minimumDateTime: DateTime.utc(2024, 6),
+            maximumDateTime: DateTime.utc(2025, 6),
+            actions: const <CupertinoCalendarAction>[
+              CancelCupertinoCalendarAction(),
+            ],
+          ),
         ),
-        throwsAssertionError,
       );
+
+      expect(tester.takeException(), isAssertionError);
     });
 
-    test('throws when actions list is empty', () {
-      expect(
-        () => CupertinoCalendar(
-          minimumDateTime: DateTime.utc(2024, 6),
-          maximumDateTime: DateTime.utc(2025, 6),
-          type: CupertinoCalendarType.compact,
-          actions: const <CupertinoCalendarAction>[],
+    testWidgets('throws when actions list is empty', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWithApp(
+          CupertinoCalendar(
+            minimumDateTime: DateTime.utc(2024, 6),
+            maximumDateTime: DateTime.utc(2025, 6),
+            type: CupertinoCalendarType.compact,
+            actions: const <CupertinoCalendarAction>[],
+          ),
         ),
-        throwsAssertionError,
       );
+
+      expect(tester.takeException(), isAssertionError);
     });
 
-    test('throws when actions list has more than two entries', () {
-      expect(
-        () => CupertinoCalendar(
-          minimumDateTime: DateTime.utc(2024, 6),
-          maximumDateTime: DateTime.utc(2025, 6),
-          type: CupertinoCalendarType.compact,
-          actions: const <CupertinoCalendarAction>[
-            CancelCupertinoCalendarAction(),
-            ConfirmCupertinoCalendarAction(),
-            ConfirmCupertinoCalendarAction(),
-          ],
+    testWidgets('throws when actions list has more than two entries', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWithApp(
+          CupertinoCalendar(
+            minimumDateTime: DateTime.utc(2024, 6),
+            maximumDateTime: DateTime.utc(2025, 6),
+            type: CupertinoCalendarType.compact,
+            actions: const <CupertinoCalendarAction>[
+              CancelCupertinoCalendarAction(),
+              ConfirmCupertinoCalendarAction(),
+              ConfirmCupertinoCalendarAction(),
+            ],
+          ),
         ),
-        throwsAssertionError,
       );
+
+      expect(tester.takeException(), isAssertionError);
     });
   });
 }

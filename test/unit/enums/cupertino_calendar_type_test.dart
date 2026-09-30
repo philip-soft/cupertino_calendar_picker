@@ -7,18 +7,15 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('CupertinoCalendarType', () {
-    test('exposes compact and inline values', () {
-      const List<CupertinoCalendarType> values = CupertinoCalendarType.values;
-
-      expect(values, contains(CupertinoCalendarType.compact));
-      expect(values, contains(CupertinoCalendarType.inline));
-      expect(values.length, 2);
-    });
-
-    test('values are distinct', () {
+    // The value set and its order are part of the published API: renaming a
+    // value breaks `switch` statements downstream, and reordering shifts the
+    // `index` that consumers may have persisted.
+    test('declares the documented values in order', () {
       expect(
-        CupertinoCalendarType.compact,
-        isNot(CupertinoCalendarType.inline),
+        CupertinoCalendarType.values.map(
+          (CupertinoCalendarType value) => value.name,
+        ),
+        <String>['compact', 'inline'],
       );
     });
   });

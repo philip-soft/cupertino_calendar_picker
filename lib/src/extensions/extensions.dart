@@ -6,4 +6,5 @@ export 'build_context_extension.dart';
 export 'date_time_extension.dart';
 export 'day_period_extension.dart';
 export 'double_extension.dart';
+export 'dynamic_color_extension.dart';
 export 'time_of_day_extension.dart';

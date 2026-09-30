@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show DayPeriod, TimeOfDay;
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' show DayPeriod;
 
+import '../../support/test_durations.dart';
 import 'test_helpers.dart';
 
 void main() {
@@ -48,19 +49,21 @@ void main() {
                 onTimeChanged: onTimeChanged ?? (DateTime _) {},
                 onDisplayedMonthChanged: onMonthChanged ?? (DateTime _) {},
                 onYearPickerChanged: onYearPickerChanged ?? (DateTime _) {},
-                weekdayDecoration:
-                    CalendarWeekdayDecoration.withDynamicColor(context),
+                weekdayDecoration: CalendarWeekdayDecoration.withDynamicColor(
+                  context,
+                ),
                 monthPickerDecoration:
                     CalendarMonthPickerDecoration.withDynamicColor(
-                  context,
-                  mainColor: CupertinoColors.systemRed,
-                ),
+                      context,
+                      mainColor: CupertinoColors.systemRed,
+                    ),
                 headerDecoration: CalendarHeaderDecoration.withDynamicColor(
                   context,
                   mainColor: CupertinoColors.systemRed,
                 ),
-                footerDecoration:
-                    CalendarFooterDecoration.withDynamicColor(context),
+                footerDecoration: CalendarFooterDecoration.withDynamicColor(
+                  context,
+                ),
                 mainColor: CupertinoColors.systemRed,
                 mode: mode,
                 type: type,
@@ -196,30 +199,27 @@ void main() {
       },
     );
 
-    testWidgets(
-      'year picker wheel scroll fires onYearPickerChanged',
-      (WidgetTester tester) async {
-        DateTime? yearPicked;
-        await tester.pumpWidget(
-          buildPicker(
-            onYearPickerChanged: (DateTime d) => yearPicked = d,
-          ),
-        );
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('June 2024'));
-        await tester.pumpAndSettle();
+    testWidgets('year picker wheel scroll fires onYearPickerChanged', (
+      WidgetTester tester,
+    ) async {
+      DateTime? yearPicked;
+      await tester.pumpWidget(
+        buildPicker(onYearPickerChanged: (DateTime d) => yearPicked = d),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('June 2024'));
+      await tester.pumpAndSettle();
 
-        await tester.fling(
-          find.byType(CustomCupertinoDatePicker),
-          const Offset(0, -120),
-          800,
-          warnIfMissed: false,
-        );
-        await tester.pumpAndSettle();
+      await tester.fling(
+        find.byType(CustomCupertinoDatePicker),
+        const Offset(0, -120),
+        800,
+        warnIfMissed: false,
+      );
+      await tester.pumpAndSettle();
 
-        expect(yearPicked, isNotNull);
-      },
-    );
+      expect(yearPicked, isNotNull);
+    });
 
     testWidgets(
       'dateTime mode + tapping time button switches to time picker view',
@@ -250,7 +250,7 @@ void main() {
             Navigator(
               onGenerateRoute: (RouteSettings _) {
                 return PageRouteBuilder<void>(
-                  pageBuilder: (BuildContext context, _, __) {
+                  pageBuilder: (BuildContext context, _, _) {
                     return Builder(
                       builder: (BuildContext context) {
                         return SizedBox(
@@ -270,22 +270,22 @@ void main() {
                             onYearPickerChanged: (_) {},
                             weekdayDecoration:
                                 CalendarWeekdayDecoration.withDynamicColor(
-                              context,
-                            ),
+                                  context,
+                                ),
                             monthPickerDecoration:
                                 CalendarMonthPickerDecoration.withDynamicColor(
-                              context,
-                              mainColor: CupertinoColors.systemRed,
-                            ),
+                                  context,
+                                  mainColor: CupertinoColors.systemRed,
+                                ),
                             headerDecoration:
                                 CalendarHeaderDecoration.withDynamicColor(
-                              context,
-                              mainColor: CupertinoColors.systemRed,
-                            ),
+                                  context,
+                                  mainColor: CupertinoColors.systemRed,
+                                ),
                             footerDecoration:
                                 CalendarFooterDecoration.withDynamicColor(
-                              context,
-                            ),
+                                  context,
+                                ),
                             mainColor: CupertinoColors.systemRed,
                             mode: CupertinoCalendarMode.date,
                             type: CupertinoCalendarType.compact,
@@ -310,202 +310,197 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text('Done'));
+        await tester.tap(find.text('OK'));
         await tester.pumpAndSettle();
 
         expect(confirmedWith, isNotNull);
       },
     );
 
-    testWidgets(
-      'tapping Cancel action invokes its callback',
-      (WidgetTester tester) async {
-        int cancelCount = 0;
-        await tester.pumpWidget(
-          wrapWithApp(
-            Navigator(
-              onGenerateRoute: (RouteSettings _) {
-                return PageRouteBuilder<void>(
-                  pageBuilder: (BuildContext context, _, __) {
-                    return Builder(
-                      builder: (BuildContext context) {
-                        return SizedBox(
-                          width: 320.0,
-                          height: 380.0,
-                          child: CupertinoCalendarPicker(
-                            initialMonth: initialMonth,
-                            currentDateTime: currentDate,
-                            minimumDateTime: minimum,
-                            maximumDateTime: maximum,
-                            selectedDateTime: selected,
-                            selectableDayPredicate: null,
-                            firstDayOfWeekIndex: 0,
-                            onDateChanged: (_) {},
-                            onTimeChanged: (_) {},
-                            onDisplayedMonthChanged: (_) {},
-                            onYearPickerChanged: (_) {},
-                            weekdayDecoration:
-                                CalendarWeekdayDecoration.withDynamicColor(
-                              context,
-                            ),
-                            monthPickerDecoration:
-                                CalendarMonthPickerDecoration.withDynamicColor(
-                              context,
-                              mainColor: CupertinoColors.systemRed,
-                            ),
-                            headerDecoration:
-                                CalendarHeaderDecoration.withDynamicColor(
-                              context,
-                              mainColor: CupertinoColors.systemRed,
-                            ),
-                            footerDecoration:
-                                CalendarFooterDecoration.withDynamicColor(
-                              context,
-                            ),
-                            mainColor: CupertinoColors.systemRed,
-                            mode: CupertinoCalendarMode.date,
-                            type: CupertinoCalendarType.compact,
-                            timeLabel: null,
-                            minuteInterval: 1,
-                            use24hFormat: true,
-                            actions: <CupertinoCalendarAction>[
-                              CancelCupertinoCalendarAction(
-                                onPressed: () => cancelCount++,
+    testWidgets('tapping Cancel action invokes its callback', (
+      WidgetTester tester,
+    ) async {
+      int cancelCount = 0;
+      await tester.pumpWidget(
+        wrapWithApp(
+          Navigator(
+            onGenerateRoute: (RouteSettings _) {
+              return PageRouteBuilder<void>(
+                pageBuilder: (BuildContext context, _, _) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return SizedBox(
+                        width: 320.0,
+                        height: 380.0,
+                        child: CupertinoCalendarPicker(
+                          initialMonth: initialMonth,
+                          currentDateTime: currentDate,
+                          minimumDateTime: minimum,
+                          maximumDateTime: maximum,
+                          selectedDateTime: selected,
+                          selectableDayPredicate: null,
+                          firstDayOfWeekIndex: 0,
+                          onDateChanged: (_) {},
+                          onTimeChanged: (_) {},
+                          onDisplayedMonthChanged: (_) {},
+                          onYearPickerChanged: (_) {},
+                          weekdayDecoration:
+                              CalendarWeekdayDecoration.withDynamicColor(
+                                context,
                               ),
-                              const ConfirmCupertinoCalendarAction(),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-            ),
+                          monthPickerDecoration:
+                              CalendarMonthPickerDecoration.withDynamicColor(
+                                context,
+                                mainColor: CupertinoColors.systemRed,
+                              ),
+                          headerDecoration:
+                              CalendarHeaderDecoration.withDynamicColor(
+                                context,
+                                mainColor: CupertinoColors.systemRed,
+                              ),
+                          footerDecoration:
+                              CalendarFooterDecoration.withDynamicColor(
+                                context,
+                              ),
+                          mainColor: CupertinoColors.systemRed,
+                          mode: CupertinoCalendarMode.date,
+                          type: CupertinoCalendarType.compact,
+                          timeLabel: null,
+                          minuteInterval: 1,
+                          use24hFormat: true,
+                          actions: <CupertinoCalendarAction>[
+                            CancelCupertinoCalendarAction(
+                              onPressed: () => cancelCount++,
+                            ),
+                            const ConfirmCupertinoCalendarAction(),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+            },
           ),
-        );
-        await tester.pumpAndSettle();
+        ),
+      );
+      await tester.pumpAndSettle();
 
-        await tester.tap(find.text('Cancel'));
-        await tester.pumpAndSettle();
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
 
-        expect(cancelCount, 1);
-      },
-    );
+      expect(cancelCount, 1);
+    });
 
     testWidgets('updating initialMonth jumps to new month', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(
-        buildPicker(initial: DateTime.utc(2024, 6)),
-      );
+      await tester.pumpWidget(buildPicker(initial: DateTime.utc(2024, 6)));
       await tester.pumpAndSettle();
       expect(find.text('June 2024'), findsOneWidget);
 
-      await tester.pumpWidget(
-        buildPicker(initial: DateTime.utc(2025, 3)),
-      );
+      await tester.pumpWidget(buildPicker(initial: DateTime.utc(2025, 3)));
       await tester.pumpAndSettle();
 
       expect(find.text('March 2025'), findsOneWidget);
     });
 
-    testWidgets(
-      'showMonth with jump:false animates to the requested month',
-      (WidgetTester tester) async {
-        final GlobalKey<CupertinoCalendarPickerState> pickerKey =
-            GlobalKey<CupertinoCalendarPickerState>();
+    testWidgets('showMonth with jump:false animates to the requested month', (
+      WidgetTester tester,
+    ) async {
+      final GlobalKey<CupertinoCalendarPickerState> pickerKey =
+          GlobalKey<CupertinoCalendarPickerState>();
 
-        await tester.pumpWidget(
-          wrapWithApp(
-            SizedBox(
-              width: 320.0,
-              height: 380.0,
-              child: Builder(
-                builder: (BuildContext context) {
-                  return CupertinoCalendarPicker(
-                    key: pickerKey,
-                    initialMonth: initialMonth,
-                    currentDateTime: currentDate,
-                    minimumDateTime: minimum,
-                    maximumDateTime: maximum,
-                    selectedDateTime: selected,
-                    selectableDayPredicate: null,
-                    firstDayOfWeekIndex: 0,
-                    onDateChanged: (DateTime _) {},
-                    onTimeChanged: (DateTime _) {},
-                    onDisplayedMonthChanged: (DateTime _) {},
-                    onYearPickerChanged: (DateTime _) {},
-                    weekdayDecoration:
-                        CalendarWeekdayDecoration.withDynamicColor(context),
-                    monthPickerDecoration:
-                        CalendarMonthPickerDecoration.withDynamicColor(
-                      context,
-                      mainColor: CupertinoColors.systemRed,
-                    ),
-                    headerDecoration: CalendarHeaderDecoration.withDynamicColor(
-                      context,
-                      mainColor: CupertinoColors.systemRed,
-                    ),
-                    footerDecoration:
-                        CalendarFooterDecoration.withDynamicColor(context),
+      await tester.pumpWidget(
+        wrapWithApp(
+          SizedBox(
+            width: 320.0,
+            height: 380.0,
+            child: Builder(
+              builder: (BuildContext context) {
+                return CupertinoCalendarPicker(
+                  key: pickerKey,
+                  initialMonth: initialMonth,
+                  currentDateTime: currentDate,
+                  minimumDateTime: minimum,
+                  maximumDateTime: maximum,
+                  selectedDateTime: selected,
+                  selectableDayPredicate: null,
+                  firstDayOfWeekIndex: 0,
+                  onDateChanged: (DateTime _) {},
+                  onTimeChanged: (DateTime _) {},
+                  onDisplayedMonthChanged: (DateTime _) {},
+                  onYearPickerChanged: (DateTime _) {},
+                  weekdayDecoration: CalendarWeekdayDecoration.withDynamicColor(
+                    context,
+                  ),
+                  monthPickerDecoration:
+                      CalendarMonthPickerDecoration.withDynamicColor(
+                        context,
+                        mainColor: CupertinoColors.systemRed,
+                      ),
+                  headerDecoration: CalendarHeaderDecoration.withDynamicColor(
+                    context,
                     mainColor: CupertinoColors.systemRed,
-                    mode: CupertinoCalendarMode.date,
-                    type: CupertinoCalendarType.inline,
-                    timeLabel: null,
-                    minuteInterval: 1,
-                    use24hFormat: true,
-                    actions: null,
-                  );
-                },
-              ),
+                  ),
+                  footerDecoration: CalendarFooterDecoration.withDynamicColor(
+                    context,
+                  ),
+                  mainColor: CupertinoColors.systemRed,
+                  mode: CupertinoCalendarMode.date,
+                  type: CupertinoCalendarType.inline,
+                  timeLabel: null,
+                  minuteInterval: 1,
+                  use24hFormat: true,
+                  actions: null,
+                );
+              },
             ),
           ),
-        );
-        await tester.pumpAndSettle();
+        ),
+      );
+      await tester.pumpAndSettle();
 
-        pickerKey.currentState!.showMonth(DateTime.utc(2024, 8));
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 400));
-        await tester.pumpAndSettle();
+      pickerKey.currentState!.showMonth(DateTime.utc(2024, 8));
+      await tester.pump();
+      await tester.pump(monthScrollPumpDuration);
+      await tester.pumpAndSettle();
 
-        expect(find.text('August 2024'), findsOneWidget);
-        expect(tester.takeException(), isNull);
-      },
-    );
+      expect(find.text('August 2024'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
 
-    testWidgets(
-      'scrolling the time picker wheel fires onTimeChanged',
-      (WidgetTester tester) async {
-        DateTime? timeChanged;
-        await tester.pumpWidget(
-          buildPicker(
-            mode: CupertinoCalendarMode.dateTime,
-            onTimeChanged: (DateTime d) => timeChanged = d,
-          ),
-        );
-        await tester.pumpAndSettle();
+    testWidgets('scrolling the time picker wheel fires onTimeChanged', (
+      WidgetTester tester,
+    ) async {
+      DateTime? timeChanged;
+      await tester.pumpWidget(
+        buildPicker(
+          mode: CupertinoCalendarMode.dateTime,
+          onTimeChanged: (DateTime d) => timeChanged = d,
+        ),
+      );
+      await tester.pumpAndSettle();
 
-        final Finder tapTarget = find.byWidgetPredicate(
-          (Widget w) =>
-              w is GestureDetector && w.behavior == HitTestBehavior.translucent,
-        );
-        await tester.tap(tapTarget.last);
-        await tester.pumpAndSettle();
+      final Finder tapTarget = find.byWidgetPredicate(
+        (Widget w) =>
+            w is GestureDetector && w.behavior == HitTestBehavior.translucent,
+      );
+      await tester.tap(tapTarget.last);
+      await tester.pumpAndSettle();
 
-        expect(find.byType(CupertinoTimePickerWheel), findsOneWidget);
+      expect(find.byType(CupertinoTimePickerWheel), findsOneWidget);
 
-        await tester.drag(
-          find.byType(CupertinoTimePickerWheel),
-          const Offset(0, -80),
-          warnIfMissed: false,
-        );
-        await tester.pumpAndSettle();
+      await tester.drag(
+        find.byType(CupertinoTimePickerWheel),
+        const Offset(0, -80),
+        warnIfMissed: false,
+      );
+      await tester.pumpAndSettle();
 
-        expect(timeChanged, isNotNull);
-        expect(tester.takeException(), isNull);
-      },
-    );
+      expect(timeChanged, isNotNull);
+      expect(tester.takeException(), isNull);
+    });
 
     testWidgets(
       'changing AM/PM fires onTimeChanged when not in the time picker view',
@@ -543,15 +538,16 @@ void main() {
                         CalendarWeekdayDecoration.withDynamicColor(context),
                     monthPickerDecoration:
                         CalendarMonthPickerDecoration.withDynamicColor(
-                      context,
-                      mainColor: CupertinoColors.systemRed,
-                    ),
+                          context,
+                          mainColor: CupertinoColors.systemRed,
+                        ),
                     headerDecoration: CalendarHeaderDecoration.withDynamicColor(
                       context,
                       mainColor: CupertinoColors.systemRed,
                     ),
-                    footerDecoration:
-                        CalendarFooterDecoration.withDynamicColor(context),
+                    footerDecoration: CalendarFooterDecoration.withDynamicColor(
+                      context,
+                    ),
                     mainColor: CupertinoColors.systemRed,
                     mode: CupertinoCalendarMode.dateTime,
                     type: CupertinoCalendarType.compact,
@@ -581,35 +577,33 @@ void main() {
       },
     );
 
-    testWidgets(
-      'closing the time picker returns to the previous view mode',
-      (WidgetTester tester) async {
-        await tester.pumpWidget(
-          buildPicker(mode: CupertinoCalendarMode.dateTime),
-        );
-        await tester.pumpAndSettle();
+    testWidgets('closing the time picker returns to the previous view mode', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        buildPicker(mode: CupertinoCalendarMode.dateTime),
+      );
+      await tester.pumpAndSettle();
 
-        final Finder tapTarget = find.byWidgetPredicate(
-          (Widget w) =>
-              w is GestureDetector && w.behavior == HitTestBehavior.translucent,
-        );
-        await tester.tap(tapTarget.last);
-        await tester.pumpAndSettle();
-        expect(find.byType(CupertinoTimePickerWheel), findsOneWidget);
+      final Finder tapTarget = find.byWidgetPredicate(
+        (Widget w) =>
+            w is GestureDetector && w.behavior == HitTestBehavior.translucent,
+      );
+      await tester.tap(tapTarget.last);
+      await tester.pumpAndSettle();
+      expect(find.byType(CupertinoTimePickerWheel), findsOneWidget);
 
-        await tester.tap(tapTarget.last);
-        await tester.pumpAndSettle();
+      await tester.tap(tapTarget.last);
+      await tester.pumpAndSettle();
 
-        expect(find.byType(CalendarMonthPicker), findsOneWidget);
-        expect(tester.takeException(), isNull);
-      },
-    );
+      expect(find.byType(CalendarMonthPicker), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
 
     testWidgets(
       'changing AM/PM scrolls the time picker wheel when it is open',
       (WidgetTester tester) async {
-        final GlobalKey<CupertinoCalendarPickerState> pickerKey =
-            GlobalKey<CupertinoCalendarPickerState>();
+        DateTime? changedTime;
 
         await tester.pumpWidget(
           wrapWithApp(
@@ -619,7 +613,6 @@ void main() {
               child: Builder(
                 builder: (BuildContext context) {
                   return CupertinoCalendarPicker(
-                    key: pickerKey,
                     initialMonth: initialMonth,
                     currentDateTime: currentDate,
                     minimumDateTime: minimum,
@@ -628,22 +621,23 @@ void main() {
                     selectableDayPredicate: null,
                     firstDayOfWeekIndex: 0,
                     onDateChanged: (DateTime _) {},
-                    onTimeChanged: (DateTime _) {},
+                    onTimeChanged: (DateTime time) => changedTime = time,
                     onDisplayedMonthChanged: (DateTime _) {},
                     onYearPickerChanged: (DateTime _) {},
                     weekdayDecoration:
                         CalendarWeekdayDecoration.withDynamicColor(context),
                     monthPickerDecoration:
                         CalendarMonthPickerDecoration.withDynamicColor(
-                      context,
-                      mainColor: CupertinoColors.systemRed,
-                    ),
+                          context,
+                          mainColor: CupertinoColors.systemRed,
+                        ),
                     headerDecoration: CalendarHeaderDecoration.withDynamicColor(
                       context,
                       mainColor: CupertinoColors.systemRed,
                     ),
-                    footerDecoration:
-                        CalendarFooterDecoration.withDynamicColor(context),
+                    footerDecoration: CalendarFooterDecoration.withDynamicColor(
+                      context,
+                    ),
                     mainColor: CupertinoColors.systemRed,
                     mode: CupertinoCalendarMode.dateTime,
                     type: CupertinoCalendarType.compact,
@@ -659,21 +653,24 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        pickerKey.currentState!
-            .setViewModeForTest(CupertinoCalendarViewMode.timePicker);
-        await tester.pump();
-        await tester.pump();
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 500));
+        // Drive the real UI: tapping the footer's time chip opens the wheel.
+        expect(find.byType(CupertinoTimePickerWheel), findsNothing);
+        await tester.tap(find.byType(CalendarFooter));
         await tester.pumpAndSettle();
         expect(find.byType(CupertinoTimePickerWheel), findsOneWidget);
 
-        pickerKey.currentState!
-            .onDayPeriodChanged(const TimeOfDay(hour: 9, minute: 30));
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 500));
+        // Switching the day period keeps the wheel mounted and reports a
+        // time shifted by twelve hours.
+        final Finder pmSegment = find.descendant(
+          of: find.byType(CupertinoSlidingSegmentedControl<DayPeriod>),
+          matching: find.text('PM'),
+        );
+        await tester.tap(pmSegment);
         await tester.pumpAndSettle();
 
+        expect(find.byType(CupertinoTimePickerWheel), findsOneWidget);
+        expect(changedTime?.hour, 21);
+        expect(changedTime?.minute, 0);
         expect(tester.takeException(), isNull);
       },
     );

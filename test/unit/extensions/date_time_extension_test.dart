@@ -80,8 +80,10 @@ void main() {
 
       test('overrides both hour and minute simultaneously', () {
         final DateTime date = DateTime(2024, 6, 10, 14, 30);
-        final DateTime result =
-            date.truncateToMinutes(newHour: 8, newMinute: 45);
+        final DateTime result = date.truncateToMinutes(
+          newHour: 8,
+          newMinute: 45,
+        );
         expect(result.hour, 8);
         expect(result.minute, 45);
       });

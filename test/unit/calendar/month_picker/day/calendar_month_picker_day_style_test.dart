@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _wrap(Widget child, {Brightness brightness = Brightness.light}) {
@@ -36,10 +36,11 @@ void main() {
           CalendarMonthPickerDisabledDayStyle();
       const TextStyle replacement = TextStyle(fontSize: 11.0);
 
-      final CalendarMonthPickerDisabledDayStyle? copy =
-          original.copyWith(textStyle: replacement);
+      final CalendarMonthPickerDisabledDayStyle copy = original.copyWith(
+        textStyle: replacement,
+      );
 
-      expect(copy?.textStyle, replacement);
+      expect(copy.textStyle, replacement);
     });
 
     test('copyWith with no args preserves the original textStyle', () {
@@ -47,13 +48,14 @@ void main() {
       final CalendarMonthPickerDisabledDayStyle original =
           CalendarMonthPickerDisabledDayStyle(textStyle: initial);
 
-      final CalendarMonthPickerDisabledDayStyle? copy = original.copyWith();
+      final CalendarMonthPickerDisabledDayStyle copy = original.copyWith();
 
-      expect(copy?.textStyle, initial);
+      expect(copy.textStyle, initial);
     });
 
-    testWidgets('withDynamicColor resolves the disabled color',
-        (WidgetTester tester) async {
+    testWidgets('withDynamicColor resolves the disabled color', (
+      WidgetTester tester,
+    ) async {
       late BuildContext ctx;
       await tester.pumpWidget(
         _wrap(
@@ -86,10 +88,11 @@ void main() {
           CalendarMonthPickerDefaultDayStyle();
       const TextStyle replacement = TextStyle(fontSize: 9.0);
 
-      final CalendarMonthPickerDefaultDayStyle? copy =
-          original.copyWith(textStyle: replacement);
+      final CalendarMonthPickerDefaultDayStyle copy = original.copyWith(
+        textStyle: replacement,
+      );
 
-      expect(copy?.textStyle, replacement);
+      expect(copy.textStyle, replacement);
     });
 
     test('copyWith with no args preserves the original textStyle', () {
@@ -97,13 +100,14 @@ void main() {
       final CalendarMonthPickerDefaultDayStyle original =
           CalendarMonthPickerDefaultDayStyle(textStyle: initial);
 
-      final CalendarMonthPickerDefaultDayStyle? copy = original.copyWith();
+      final CalendarMonthPickerDefaultDayStyle copy = original.copyWith();
 
-      expect(copy?.textStyle, initial);
+      expect(copy.textStyle, initial);
     });
 
-    testWidgets('withDynamicColor resolves the default color',
-        (WidgetTester tester) async {
+    testWidgets('withDynamicColor resolves the default color', (
+      WidgetTester tester,
+    ) async {
       late BuildContext ctx;
       await tester.pumpWidget(
         _wrap(
@@ -124,16 +128,18 @@ void main() {
   });
 
   group('CalendarMonthPickerSelectedDayStyle', () {
-    test('uses mainColor for textStyle and background circle when supplied',
-        () {
-      const Color main = Color(0xFFAA1122);
+    test(
+      'uses mainColor for textStyle and background circle when supplied',
+      () {
+        const Color main = Color(0xFFAA1122);
 
-      final CalendarMonthPickerSelectedDayStyle style =
-          CalendarMonthPickerSelectedDayStyle(mainColor: main);
+        final CalendarMonthPickerSelectedDayStyle style =
+            CalendarMonthPickerSelectedDayStyle(mainColor: main);
 
-      expect(style.textStyle.color, main);
-      expect(style.backgroundCircleColor, main.withAlpha(30));
-    });
+        expect(style.textStyle.color, main);
+        expect(style.backgroundCircleColor, main.withAlpha(30));
+      },
+    );
 
     test('uses supplied backgroundCircleColor over mainColor', () {
       const Color main = Color(0xFFAA1122);
@@ -141,9 +147,9 @@ void main() {
 
       final CalendarMonthPickerSelectedDayStyle style =
           CalendarMonthPickerSelectedDayStyle(
-        mainColor: main,
-        backgroundCircleColor: override,
-      );
+            mainColor: main,
+            backgroundCircleColor: override,
+          );
 
       expect(style.backgroundCircleColor, override);
     });
@@ -165,10 +171,11 @@ void main() {
           CalendarMonthPickerSelectedDayStyle();
       const TextStyle replacement = TextStyle(fontSize: 8.0);
 
-      final CalendarMonthPickerSelectedDayStyle? copy =
-          original.copyWith(textStyle: replacement);
+      final CalendarMonthPickerSelectedDayStyle copy = original.copyWith(
+        textStyle: replacement,
+      );
 
-      expect(copy?.textStyle, replacement);
+      expect(copy.textStyle, replacement);
     });
 
     test('copyWith with no args preserves the original textStyle', () {
@@ -176,13 +183,14 @@ void main() {
       final CalendarMonthPickerSelectedDayStyle original =
           CalendarMonthPickerSelectedDayStyle(textStyle: initial);
 
-      final CalendarMonthPickerSelectedDayStyle? copy = original.copyWith();
+      final CalendarMonthPickerSelectedDayStyle copy = original.copyWith();
 
-      expect(copy?.textStyle, initial);
+      expect(copy.textStyle, initial);
     });
 
-    testWidgets('withDynamicColor populates background and text colors',
-        (WidgetTester tester) async {
+    testWidgets('withDynamicColor populates background and text colors', (
+      WidgetTester tester,
+    ) async {
       late BuildContext ctx;
       await tester.pumpWidget(
         _wrap(
@@ -197,9 +205,9 @@ void main() {
 
       final CalendarMonthPickerSelectedDayStyle style =
           CalendarMonthPickerSelectedDayStyle.withDynamicColor(
-        ctx,
-        mainColor: const Color(0xFF112233),
-      );
+            ctx,
+            mainColor: const Color(0xFF112233),
+          );
 
       expect(style.textStyle.color, isNotNull);
       expect(style.backgroundCircleColor, isNotNull);
@@ -207,15 +215,17 @@ void main() {
   });
 
   group('CalendarMonthPickerSelectedCurrentDayStyle', () {
-    test('uses mainColor as background circle when no override is provided',
-        () {
-      const Color main = Color(0xFF445566);
+    test(
+      'uses mainColor as background circle when no override is provided',
+      () {
+        const Color main = Color(0xFF445566);
 
-      final CalendarMonthPickerSelectedCurrentDayStyle style =
-          CalendarMonthPickerSelectedCurrentDayStyle(mainColor: main);
+        final CalendarMonthPickerSelectedCurrentDayStyle style =
+            CalendarMonthPickerSelectedCurrentDayStyle(mainColor: main);
 
-      expect(style.backgroundCircleColor, main);
-    });
+        expect(style.backgroundCircleColor, main);
+      },
+    );
 
     test('uses supplied backgroundCircleColor over mainColor', () {
       const Color main = Color(0xFF445566);
@@ -223,30 +233,33 @@ void main() {
 
       final CalendarMonthPickerSelectedCurrentDayStyle style =
           CalendarMonthPickerSelectedCurrentDayStyle(
-        mainColor: main,
-        backgroundCircleColor: override,
-      );
+            mainColor: main,
+            backgroundCircleColor: override,
+          );
 
       expect(style.backgroundCircleColor, override);
     });
 
-    test('defaults textStyle to calendarMonthPickerSelectedCurrentDayStyle',
-        () {
-      final CalendarMonthPickerSelectedCurrentDayStyle style =
-          CalendarMonthPickerSelectedCurrentDayStyle();
+    test(
+      'defaults textStyle to calendarMonthPickerSelectedCurrentDayStyle',
+      () {
+        final CalendarMonthPickerSelectedCurrentDayStyle style =
+            CalendarMonthPickerSelectedCurrentDayStyle();
 
-      expect(style.textStyle, calendarMonthPickerSelectedCurrentDayStyle);
-    });
+        expect(style.textStyle, calendarMonthPickerSelectedCurrentDayStyle);
+      },
+    );
 
     test('copyWith overrides textStyle', () {
       final CalendarMonthPickerSelectedCurrentDayStyle original =
           CalendarMonthPickerSelectedCurrentDayStyle();
       const TextStyle replacement = TextStyle(fontSize: 6.0);
 
-      final CalendarMonthPickerSelectedCurrentDayStyle? copy =
-          original.copyWith(textStyle: replacement);
+      final CalendarMonthPickerSelectedCurrentDayStyle copy = original.copyWith(
+        textStyle: replacement,
+      );
 
-      expect(copy?.textStyle, replacement);
+      expect(copy.textStyle, replacement);
     });
 
     test('copyWith with no args preserves the original textStyle', () {
@@ -254,14 +267,15 @@ void main() {
       final CalendarMonthPickerSelectedCurrentDayStyle original =
           CalendarMonthPickerSelectedCurrentDayStyle(textStyle: initial);
 
-      final CalendarMonthPickerSelectedCurrentDayStyle? copy =
-          original.copyWith();
+      final CalendarMonthPickerSelectedCurrentDayStyle copy = original
+          .copyWith();
 
-      expect(copy?.textStyle, initial);
+      expect(copy.textStyle, initial);
     });
 
-    testWidgets('withDynamicColor resolves both textStyle and circle colors',
-        (WidgetTester tester) async {
+    testWidgets('withDynamicColor resolves both textStyle and circle colors', (
+      WidgetTester tester,
+    ) async {
       late BuildContext ctx;
       await tester.pumpWidget(
         _wrap(
@@ -276,9 +290,9 @@ void main() {
 
       final CalendarMonthPickerSelectedCurrentDayStyle style =
           CalendarMonthPickerSelectedCurrentDayStyle.withDynamicColor(
-        ctx,
-        mainColor: const Color(0xFF334455),
-      );
+            ctx,
+            mainColor: const Color(0xFF334455),
+          );
 
       expect(style.textStyle.color, isNotNull);
       expect(style.backgroundCircleColor, isNotNull);
@@ -286,18 +300,41 @@ void main() {
   });
 
   group('CalendarMonthPickerCurrentDayStyle', () {
-    test('defaults to calendarMonthPickerCurrentDayStyle', () {
-      final CalendarMonthPickerCurrentDayStyle style =
-          CalendarMonthPickerCurrentDayStyle();
+    test(
+      'defaults to calendarMonthPickerCurrentDayStyle in the main color',
+      () {
+        final CalendarMonthPickerCurrentDayStyle style =
+            CalendarMonthPickerCurrentDayStyle();
 
-      expect(style.textStyle, calendarMonthPickerCurrentDayStyle);
-    });
+        expect(
+          style.textStyle,
+          calendarMonthPickerCurrentDayStyle.copyWith(
+            color: CupertinoColors.systemRed,
+          ),
+        );
+      },
+    );
 
-    test('uses supplied textStyle', () {
+    test('uses supplied textStyle, colored with mainColor if uncolored', () {
       const TextStyle input = TextStyle(fontSize: 18.0);
 
       final CalendarMonthPickerCurrentDayStyle style =
-          CalendarMonthPickerCurrentDayStyle(textStyle: input);
+          CalendarMonthPickerCurrentDayStyle(
+            textStyle: input,
+            mainColor: const Color(0xFF00FF00),
+          );
+
+      expect(style.textStyle, input.copyWith(color: const Color(0xFF00FF00)));
+    });
+
+    test('keeps the color of a supplied textStyle', () {
+      const TextStyle input = TextStyle(color: Color(0xFF0000FF));
+
+      final CalendarMonthPickerCurrentDayStyle style =
+          CalendarMonthPickerCurrentDayStyle(
+            textStyle: input,
+            mainColor: const Color(0xFF00FF00),
+          );
 
       expect(style.textStyle, input);
     });
@@ -307,24 +344,27 @@ void main() {
           CalendarMonthPickerCurrentDayStyle();
       const TextStyle replacement = TextStyle(fontSize: 5.0);
 
-      final CalendarMonthPickerCurrentDayStyle? copy =
-          original.copyWith(textStyle: replacement);
+      final CalendarMonthPickerCurrentDayStyle copy = original.copyWith(
+        textStyle: replacement,
+      );
 
-      expect(copy?.textStyle, replacement);
+      expect(copy.textStyle, replacement);
     });
 
     test('copyWith with no args preserves the original textStyle', () {
-      const TextStyle initial = TextStyle(fontSize: 16.5);
+      const TextStyle initial = TextStyle(
+        fontSize: 16.5,
+        color: Color(0xFF000000),
+      );
       final CalendarMonthPickerCurrentDayStyle original =
           CalendarMonthPickerCurrentDayStyle(textStyle: initial);
 
-      final CalendarMonthPickerCurrentDayStyle? copy = original.copyWith();
+      final CalendarMonthPickerCurrentDayStyle copy = original.copyWith();
 
-      expect(copy?.textStyle, initial);
+      expect(copy.textStyle, initial);
     });
 
-    testWidgets(
-        'withDynamicColor falls back to mainColor when style has no '
+    testWidgets('withDynamicColor falls back to mainColor when style has no '
         'explicit color', (WidgetTester tester) async {
       late BuildContext ctx;
       await tester.pumpWidget(
@@ -341,36 +381,38 @@ void main() {
       const Color main = Color(0xFF010203);
       final CalendarMonthPickerCurrentDayStyle style =
           CalendarMonthPickerCurrentDayStyle.withDynamicColor(
-        ctx,
-        mainColor: main,
-      );
+            ctx,
+            mainColor: main,
+          );
 
       expect(style.textStyle.color, main);
     });
 
     testWidgets(
-        'withDynamicColor returns resolved color when explicit textStyle '
-        'color is provided', (WidgetTester tester) async {
-      late BuildContext ctx;
-      await tester.pumpWidget(
-        _wrap(
-          Builder(
-            builder: (BuildContext context) {
-              ctx = context;
-              return const SizedBox.shrink();
-            },
+      'withDynamicColor returns resolved color when explicit textStyle '
+      'color is provided',
+      (WidgetTester tester) async {
+        late BuildContext ctx;
+        await tester.pumpWidget(
+          _wrap(
+            Builder(
+              builder: (BuildContext context) {
+                ctx = context;
+                return const SizedBox.shrink();
+              },
+            ),
           ),
-        ),
-      );
+        );
 
-      const TextStyle input = TextStyle(color: Color(0xFF010101));
-      final CalendarMonthPickerCurrentDayStyle style =
-          CalendarMonthPickerCurrentDayStyle.withDynamicColor(
-        ctx,
-        textStyle: input,
-      );
+        const TextStyle input = TextStyle(color: Color(0xFF010101));
+        final CalendarMonthPickerCurrentDayStyle style =
+            CalendarMonthPickerCurrentDayStyle.withDynamicColor(
+              ctx,
+              textStyle: input,
+            );
 
-      expect(style.textStyle.color, const Color(0xFF010101));
-    });
+        expect(style.textStyle.color, const Color(0xFF010101));
+      },
+    );
   });
 }

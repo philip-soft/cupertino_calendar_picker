@@ -4,8 +4,8 @@
 
 import 'package:alchemist/alchemist.dart';
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart' show GlobalMaterialLocalizations;
 
 void main() {
   final DateTime fixedMonth = DateTime.utc(2024, 6);
@@ -19,11 +19,7 @@ void main() {
       debugShowCheckedModeBanner: false,
       theme: CupertinoThemeData(brightness: brightness),
       locale: const Locale('en', 'US'),
-      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: CupertinoPageScaffold(
         child: Center(
           child: SizedBox(
@@ -33,6 +29,7 @@ void main() {
               builder: (BuildContext context) {
                 return CalendarHeader(
                   currentMonth: fixedMonth,
+                  isYearPickerVisible: false,
                   decoration: CalendarHeaderDecoration.withDynamicColor(
                     context,
                     mainColor: CupertinoColors.systemRed.resolveFrom(context),

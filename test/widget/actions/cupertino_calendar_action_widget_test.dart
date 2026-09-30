@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'test_helpers.dart';
@@ -55,7 +55,7 @@ void main() {
         ),
       );
 
-      final Text text = tester.widget<Text>(find.text('Done'));
+      final Text text = tester.widget<Text>(find.text('OK'));
       expect(text.style?.fontWeight, FontWeight.w600);
     });
 
@@ -159,66 +159,65 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets(
-      'cancelling a press restores the transparent background',
-      (WidgetTester tester) async {
-        const CancelCupertinoCalendarAction action =
-            CancelCupertinoCalendarAction();
+    testWidgets('cancelling a press restores the transparent background', (
+      WidgetTester tester,
+    ) async {
+      const CancelCupertinoCalendarAction action =
+          CancelCupertinoCalendarAction();
 
-        await tester.pumpWidget(
-          wrapWithApp(
-            SizedBox(
-              height: 44.0,
-              child: Row(
-                children: <Widget>[
-                  CupertinoCalendarActionWidget(
-                    action: action,
-                    onPressed: (_) {},
-                  ),
-                ],
-              ),
+      await tester.pumpWidget(
+        wrapWithApp(
+          SizedBox(
+            height: 44.0,
+            child: Row(
+              children: <Widget>[
+                CupertinoCalendarActionWidget(
+                  action: action,
+                  onPressed: (_) {},
+                ),
+              ],
             ),
           ),
+        ),
+      );
+
+      ColoredBox getColoredBox() {
+        return tester.widget<ColoredBox>(
+          find
+              .descendant(
+                of: find.byType(CupertinoCalendarActionWidget),
+                matching: find.byType(ColoredBox),
+              )
+              .first,
         );
+      }
 
-        ColoredBox getColoredBox() {
-          return tester.widget<ColoredBox>(
-            find
-                .descendant(
-                  of: find.byType(CupertinoCalendarActionWidget),
-                  matching: find.byType(ColoredBox),
-                )
-                .first,
-          );
-        }
+      final TestGesture gesture = await tester.startGesture(
+        tester.getCenter(find.text('Cancel')),
+      );
+      await tester.pump();
+      expect(getColoredBox().color, isNot(const Color(0x00000000)));
 
-        final TestGesture gesture = await tester.startGesture(
-          tester.getCenter(find.text('Cancel')),
-        );
-        await tester.pump();
-        expect(getColoredBox().color, isNot(const Color(0x00000000)));
+      await gesture.moveBy(const Offset(0, 500));
+      await tester.pump();
+      await gesture.cancel();
+      await tester.pump();
 
-        await gesture.moveBy(const Offset(0, 500));
-        await tester.pump();
-        await gesture.cancel();
-        await tester.pump();
-
-        expect(getColoredBox().color, const Color(0x00000000));
-      },
-    );
+      expect(getColoredBox().color, const Color(0x00000000));
+    });
 
     testWidgets('uses custom decoration when provided', (
       WidgetTester tester,
     ) async {
       final CalendarActionDecoration custom = CalendarActionDecoration(
-        labelStyle:
-            const TextStyle(fontSize: 22.0, color: CupertinoColors.activeBlue),
+        labelStyle: const TextStyle(
+          fontSize: 22.0,
+          color: CupertinoColors.activeBlue,
+        ),
         pressedColor: CupertinoColors.activeOrange,
       );
       final CancelCupertinoCalendarAction action =
-          CancelCupertinoCalendarAction(
-        decoration: custom,
-      );
+          CancelCupertinoCalendarAction(decoration: custom);
 
       await tester.pumpWidget(
         wrapWithApp(

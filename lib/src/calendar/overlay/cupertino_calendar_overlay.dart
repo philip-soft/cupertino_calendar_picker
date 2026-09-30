@@ -3,11 +3,19 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
+/// Displays a compact [CupertinoCalendar] in a [CupertinoPickerOverlay].
+///
+/// The route completes with:
+/// - the selected date when a [ConfirmCupertinoCalendarAction] is pressed or
+///   when the overlay closes on date selection;
+/// - `null` when a [CancelCupertinoCalendarAction] is pressed;
+/// - on an outside tap or the system back gesture, `null` if a
+///   [ConfirmCupertinoCalendarAction] is present, otherwise the last changed
+///   date (or `null` if nothing changed).
 class CupertinoCalendarOverlay extends StatefulWidget {
   const CupertinoCalendarOverlay({
-    required this.widgetRenderBox,
     required this.minimumDateTime,
     required this.maximumDateTime,
     required this.firstDayOfWeekIndex,
@@ -20,12 +28,12 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     required this.minuteInterval,
     required this.use24hFormat,
     required this.actions,
+    this.widgetRenderBox,
     this.selectableDayPredicate,
     this.onDateTimeChanged,
     this.onDateSelected,
     this.currentDateTime,
     this.initialDateTime,
-    super.key,
     this.onDisplayedMonthChanged,
     this.containerDecoration,
     this.weekdayDecoration,
@@ -33,6 +41,7 @@ class CupertinoCalendarOverlay extends StatefulWidget {
     this.headerDecoration,
     this.footerDecoration,
     this.timeLabel,
+    super.key,
   });
 
   final double horizontalSpacing;
@@ -67,59 +76,51 @@ class CupertinoCalendarOverlay extends StatefulWidget {
 }
 
 class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
-  AnimationController? _controller;
-  DateTime? _selectedDateTime;
+  DateTime? _changedDateTime;
 
-  void _onInitialized(AnimationController animationController) {
-    _controller = animationController;
-    _controller?.forward();
-    _controller?.addStatusListener(_statusListener);
+  @override
+  void initState() {
+    super.initState();
+    assert(
+      widget.dismissBehavior != CalendarDismissBehavior.onActionTap ||
+          (widget.actions?.isNotEmpty ?? false),
+      'CalendarDismissBehavior.onActionTap requires at least one action, '
+      'otherwise the calendar can only be closed by the system back gesture.',
+    );
   }
 
-  void _statusListener(AnimationStatus status) {
-    if (status == AnimationStatus.dismissed) {
-      Navigator.of(context).pop(_selectedDateTime);
-    }
+  bool get _requiresConfirmation {
+    final List<CupertinoCalendarAction> actions =
+        widget.actions ?? const <CupertinoCalendarAction>[];
+    return actions.any(
+      (CupertinoCalendarAction action) =>
+          action is ConfirmCupertinoCalendarAction,
+    );
   }
 
-  void _closeOverlay() {
-    if (_controller != null) {
-      final bool isReverseInProgress =
-          _controller!.status == AnimationStatus.reverse;
-      if (!isReverseInProgress) {
-        _controller?.reverse(from: 0.75);
-      }
-    }
-  }
+  Object? _dismissResult() => _requiresConfirmation ? null : _changedDateTime;
 
   void _onDateTimeChanged(DateTime date) {
-    _selectedDateTime = date;
+    _changedDateTime = date;
     widget.onDateTimeChanged?.call(date);
   }
 
-  void _onDateSelected(DateTime date) {
-    _selectedDateTime = date;
+  void _onDateSelected(BuildContext context, DateTime date) {
     widget.onDateSelected?.call(date);
 
     if (widget.dismissBehavior.hasDateSelectDismiss) {
-      _closeOverlay();
+      CupertinoPickerOverlayScope.maybeOf(context)?.close(date);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    double height = switch (widget.mode) {
-      CupertinoCalendarMode.date => calendarDatePickerHeight,
-      CupertinoCalendarMode.dateTime => calendarDateTimePickerHeight,
-    };
-    final bool withActions =
-        widget.actions != null && widget.actions!.isNotEmpty;
-    if (withActions) {
-      height += calendarActionsHeight;
-    }
+    final bool withActions = widget.actions?.isNotEmpty ?? false;
+    final double height =
+        widget.mode.calendarHeight +
+        (withActions ? calendarActionsHeight : 0.0);
 
     return CupertinoPickerOverlay(
-      onInitialized: _onInitialized,
       containerDecoration: widget.containerDecoration,
       widgetRenderBox: widget.widgetRenderBox,
       height: height,
@@ -127,35 +128,34 @@ class _CupertinoCalendarOverlayState extends State<CupertinoCalendarOverlay> {
       horizontalSpacing: widget.horizontalSpacing,
       verticalSpacing: widget.verticalSpacing,
       offset: widget.offset,
-      outsideTapDismissable: widget.dismissBehavior.hasOusideTapDismiss,
-      child: CupertinoCalendar(
-        weekdayDecoration: widget.weekdayDecoration,
-        monthPickerDecoration: widget.monthPickerDecoration,
-        footerDecoration: widget.footerDecoration,
-        headerDecoration: widget.headerDecoration,
-        minimumDateTime: widget.minimumDateTime,
-        initialDateTime: widget.initialDateTime,
-        currentDateTime: widget.currentDateTime,
-        maximumDateTime: widget.maximumDateTime,
-        selectableDayPredicate: widget.selectableDayPredicate,
-        onDateTimeChanged: _onDateTimeChanged,
-        onDateSelected: _onDateSelected,
-        onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
-        mainColor: widget.mainColor,
-        mode: widget.mode,
-        timeLabel: widget.timeLabel,
-        type: CupertinoCalendarType.compact,
-        minuteInterval: widget.minuteInterval,
-        use24hFormat: widget.use24hFormat,
-        firstDayOfWeekIndex: widget.firstDayOfWeekIndex,
-        actions: widget.actions,
+      outsideTapDismissable: widget.dismissBehavior.hasOutsideTapDismiss,
+      dismissResult: _dismissResult,
+      child: Builder(
+        builder: (BuildContext context) {
+          return CupertinoCalendar(
+            weekdayDecoration: widget.weekdayDecoration,
+            monthPickerDecoration: widget.monthPickerDecoration,
+            footerDecoration: widget.footerDecoration,
+            headerDecoration: widget.headerDecoration,
+            minimumDateTime: widget.minimumDateTime,
+            initialDateTime: widget.initialDateTime,
+            currentDateTime: widget.currentDateTime,
+            maximumDateTime: widget.maximumDateTime,
+            selectableDayPredicate: widget.selectableDayPredicate,
+            onDateTimeChanged: _onDateTimeChanged,
+            onDateSelected: (DateTime date) => _onDateSelected(context, date),
+            onDisplayedMonthChanged: widget.onDisplayedMonthChanged,
+            mainColor: widget.mainColor,
+            mode: widget.mode,
+            timeLabel: widget.timeLabel,
+            type: CupertinoCalendarType.compact,
+            minuteInterval: widget.minuteInterval,
+            use24hFormat: widget.use24hFormat,
+            firstDayOfWeekIndex: widget.firstDayOfWeekIndex,
+            actions: widget.actions,
+          );
+        },
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _controller?.removeStatusListener(_statusListener);
-    super.dispose();
   }
 }

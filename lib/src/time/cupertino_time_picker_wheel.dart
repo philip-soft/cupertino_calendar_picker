@@ -3,15 +3,15 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 class CupertinoTimePickerWheel extends StatelessWidget {
   const CupertinoTimePickerWheel({
     required this.initialDateTime,
-    required this.minimumDateTime,
-    required this.maximumDateTime,
     required this.onTimeChanged,
     required this.minuteInterval,
+    this.minimumDateTime,
+    this.maximumDateTime,
     this.use24hFormat,
     this.pickerKey,
     super.key,
@@ -19,8 +19,8 @@ class CupertinoTimePickerWheel extends StatelessWidget {
 
   final GlobalKey<CustomCupertinoDatePickerDateTimeState>? pickerKey;
   final DateTime initialDateTime;
-  final DateTime minimumDateTime;
-  final DateTime maximumDateTime;
+  final DateTime? minimumDateTime;
+  final DateTime? maximumDateTime;
   final ValueChanged<DateTime> onTimeChanged;
   final int minuteInterval;
   final bool? use24hFormat;

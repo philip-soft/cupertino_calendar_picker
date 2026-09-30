@@ -3,20 +3,24 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
+/// Displays [child] in an animated container next to [widgetRenderBox] and
+/// pops the enclosing route with a result once the dismiss animation ends.
+///
+/// Descendants close the overlay through [CupertinoPickerOverlayScope].
 class CupertinoPickerOverlay extends StatefulWidget {
   const CupertinoPickerOverlay({
-    required this.widgetRenderBox,
-    required this.horizontalSpacing,
-    required this.verticalSpacing,
-    required this.offset,
-    required this.outsideTapDismissable,
     required this.height,
     required this.width,
-    required this.containerDecoration,
-    required this.onInitialized,
     required this.child,
+    this.widgetRenderBox,
+    this.horizontalSpacing = pickerDefaultHorizontalSpacing,
+    this.verticalSpacing = pickerDefaultVerticalSpacing,
+    this.offset = pickerDefaultOffset,
+    this.outsideTapDismissable = true,
+    this.containerDecoration,
+    this.dismissResult,
     super.key,
   });
 
@@ -25,197 +29,189 @@ class CupertinoPickerOverlay extends StatefulWidget {
   final double horizontalSpacing;
   final double verticalSpacing;
   final Offset offset;
+
+  /// The widget the overlay is displayed next to.
+  ///
+  /// When `null` or detached, the overlay is centered.
   final RenderBox? widgetRenderBox;
   final bool outsideTapDismissable;
   final PickerContainerDecoration? containerDecoration;
-  final void Function(AnimationController controller) onInitialized;
+
+  /// Returns the result of the route when the overlay is dismissed by an
+  /// outside tap or the system back gesture.
+  final ValueGetter<Object?>? dismissResult;
   final Widget child;
 
   @override
   State<CupertinoPickerOverlay> createState() => _CupertinoPickerOverlayState();
 }
 
-class _CupertinoPickerOverlayState extends State<CupertinoPickerOverlay> {
-  AnimationController? _controller;
-  Offset? _widgetPosition;
+class _CupertinoPickerOverlayState extends State<CupertinoPickerOverlay>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final CurvedAnimation _animation;
+  Rect? _anchorRect;
+  Object? _result;
+  bool _isClosing = false;
 
-  void _onInitialized(AnimationController animationController) {
-    _controller = animationController;
-    _controller?.forward();
-    widget.onInitialized.call(animationController);
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: calendarAnimationDuration,
+      reverseDuration: calendarAnimationReverseDuration,
+    )..addStatusListener(_handleAnimationStatus);
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: calendarAnimationCurve,
+    );
+    _controller.forward();
   }
 
-  void _onOutsideTap() {
-    _closeOverlay();
+  @override
+  void dispose() {
+    _animation.dispose();
+    _controller.dispose();
+    super.dispose();
   }
 
-  void _closeOverlay() {
-    if (_controller != null) {
-      final bool isReverseInProgress =
-          _controller!.status == AnimationStatus.reverse;
-      if (!isReverseInProgress) {
-        _controller?.reverse(from: 0.75);
-      }
+  void _handleAnimationStatus(AnimationStatus status) {
+    if (status.isDismissed && _isClosing && mounted) {
+      Navigator.of(context).pop(_result);
     }
+  }
+
+  void _close(Object? result) {
+    if (_isClosing) return;
+    _isClosing = true;
+    _result = result;
+    _controller.reverse(from: pickerDismissAnimationStartValue);
+  }
+
+  void _dismiss() => _close(widget.dismissResult?.call());
+
+  /// Returns the anchor's rect relative to the navigator the overlay's route
+  /// is displayed in, remembering the last known rect once it detaches.
+  Rect? _resolveAnchorRect() {
+    final RenderBox? anchor = widget.widgetRenderBox;
+    if (anchor == null || !anchor.attached || !anchor.hasSize) {
+      return _anchorRect;
+    }
+
+    final RenderObject? navigatorBox = Navigator.maybeOf(context)?.context
+        .findRenderObject();
+    final Offset origin = navigatorBox is RenderBox && navigatorBox.attached
+        ? navigatorBox.localToGlobal(Offset.zero)
+        : Offset.zero;
+    return _anchorRect =
+        anchor.localToGlobal(Offset.zero) - origin & anchor.size;
   }
 
   @override
   Widget build(BuildContext context) {
-    final double width = widget.width;
-    final double height = widget.height;
-
-    final RenderBox? renderBox = widget.widgetRenderBox;
-    final double horizontalSpacing = widget.horizontalSpacing;
-    final double verticalSpacing = widget.verticalSpacing;
-    final Offset offset = widget.offset;
-
-    final Size screenSize = MediaQuery.sizeOf(context);
-    final EdgeInsets safeArea = MediaQuery.viewPaddingOf(context);
-    final double screenWidth = screenSize.width;
-    final double screenHeight = screenSize.height;
-
-    final bool isAttached = renderBox?.attached ?? false;
-    if (isAttached) {
-      _widgetPosition = renderBox?.localToGlobal(Offset.zero);
-    }
-
-    final Offset widgetPosition = _widgetPosition ?? Offset.zero;
-    final Size widgetSize = renderBox?.size ?? Size.zero;
-    final double widgetWidth = widgetSize.width;
-    final double widgetHeight = widgetSize.height;
-    final double widgetHalfWidth = widgetWidth / 2;
-    final double widgetCenterX = widgetPosition.dx + widgetHalfWidth;
-    final double widgetTopCenterY = widgetPosition.dy;
-    final double widgetBottomCenterY = widgetPosition.dy + widgetHeight;
-
-    final double spaceOnTop =
-        widgetTopCenterY - offset.dy - verticalSpacing - safeArea.top;
-    final double spaceOnLeft =
-        widgetCenterX - horizontalSpacing - safeArea.left;
-    final double spaceOnRight =
-        screenWidth - widgetCenterX - horizontalSpacing - safeArea.right;
-    final double spaceOnBottom = screenHeight -
-        widgetBottomCenterY -
-        offset.dy -
-        verticalSpacing -
-        safeArea.bottom;
-
-    final double halfWidth = width / 2;
-    final double neededSpaceOnRight =
-        spaceOnLeft < halfWidth ? width - spaceOnLeft : halfWidth;
-    final double neededSpaceOnLeft =
-        spaceOnRight < halfWidth ? width - spaceOnRight : halfWidth;
-
-    final bool fitsOnTop = spaceOnTop >= spaceOnBottom;
-    final bool fitsOnLeft = spaceOnLeft >= neededSpaceOnLeft;
-    final bool fitsOnRight = spaceOnRight >= neededSpaceOnRight;
-    final bool fitsHorizontally = fitsOnLeft && fitsOnRight;
-
-    double? top;
-    double? left;
-    double? right;
-    double? bottom;
-
-    if (fitsOnTop) {
-      top = widgetTopCenterY - height - offset.dy;
-    } else {
-      top = widgetBottomCenterY + offset.dy;
-    }
-
-    if (fitsHorizontally) {
-      left = widgetCenterX - halfWidth;
-    } else if (fitsOnLeft) {
-      left = screenWidth - width - horizontalSpacing;
-    } else if (fitsOnRight) {
-      left = horizontalSpacing;
-    } else {
-      left = 0;
-      right = 0;
-    }
-
-    left += offset.dx;
-
-    final double verticalSpace = fitsOnTop ? spaceOnTop : spaceOnBottom;
-
-    double xAlignment;
-
-    if (!fitsOnRight && !fitsOnLeft) {
-      xAlignment = 0.0;
-    } else if (!fitsOnRight) {
-      final double offsetOnRight = neededSpaceOnRight - spaceOnRight;
-      xAlignment = offsetOnRight / halfWidth;
-    } else if (!fitsOnLeft) {
-      final double offsetOnLeft = neededSpaceOnLeft - spaceOnLeft;
-      xAlignment = -offsetOnLeft / halfWidth;
-    } else {
-      xAlignment = 0.0;
-    }
-
-    final Alignment scaleAlignment = Alignment(
-      xAlignment,
-      fitsOnTop ? 1.0 : -1.0,
-    );
-
-    double maxScale = 1.0;
-
-    final double availableWidth =
-        screenWidth - (horizontalSpacing * 2) - offset.dx;
-    final double availableHeight = verticalSpace;
-    if (availableHeight < height) {
-      maxScale = availableHeight / height;
-    }
-
-    if (availableWidth < width) {
-      final double newMaxScale = availableWidth / width;
-      if (newMaxScale < maxScale) {
-        maxScale = newMaxScale;
-      }
-
-      if (maxScale < 1.0) {
-        if (left == right) {
-          left = -width * 2;
-          right = -width * 2;
-        } else {
-          left = 0;
-          right = 0;
-        }
-      }
-    }
+    final Rect? anchorRect = _resolveAnchorRect();
+    final EdgeInsets padding = MediaQuery.viewPaddingOf(context);
 
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (_, __) => _closeOverlay(),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: <Widget>[
-          Positioned.fill(
-            child: GestureDetector(
-              onTap: widget.outsideTapDismissable ? _onOutsideTap : null,
-              behavior: HitTestBehavior.translucent,
-              child: const ColoredBox(color: Colors.transparent),
-            ),
-          ),
-          Positioned(
-            top: top,
-            left: left,
-            right: right,
-            bottom: bottom,
-            child: Material(
-              color: Colors.transparent,
-              child: CupertinoPickerContainer(
-                height: height,
-                width: width,
-                onInitialized: _onInitialized,
-                decoration: widget.containerDecoration ??
-                    PickerContainerDecoration.withDynamicColor(context),
-                maxScale: maxScale,
-                scaleAlignment: scaleAlignment,
-                child: widget.child,
-              ),
-            ),
-          ),
-        ],
+      onPopInvokedWithResult: (bool didPop, Object? _) {
+        if (!didPop) _dismiss();
+      },
+      child: CupertinoPickerOverlayScope(
+        close: _close,
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            final PickerOverlayLayout layout = PickerOverlayLayout.compute(
+              anchor: anchorRect,
+              bounds: constraints.biggest,
+              padding: padding,
+              size: Size(widget.width, widget.height),
+              horizontalSpacing: widget.horizontalSpacing,
+              verticalSpacing: widget.verticalSpacing,
+              offset: widget.offset,
+            );
+
+            return Stack(
+              clipBehavior: Clip.none,
+              children: <Widget>[
+                Positioned.fill(
+                  child: _OutsideTapBarrier(
+                    onDismiss: widget.outsideTapDismissable ? _dismiss : null,
+                  ),
+                ),
+                Positioned(
+                  top: layout.top,
+                  left: layout.left,
+                  width: widget.width,
+                  child: Semantics(
+                    scopesRoute: true,
+                    explicitChildNodes: true,
+                    child: CupertinoPickerContainer(
+                      animation: _animation,
+                      height: widget.height,
+                      width: widget.width,
+                      decoration:
+                          widget.containerDecoration ??
+                          PickerContainerDecoration.withDynamicColor(context),
+                      maxScale: layout.scale,
+                      scaleAlignment: layout.scaleAlignment,
+                      child: widget.child,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
+  }
+}
+
+class _OutsideTapBarrier extends StatelessWidget {
+  const _OutsideTapBarrier({required this.onDismiss});
+
+  final VoidCallback? onDismiss;
+
+  @override
+  Widget build(BuildContext context) {
+    final VoidCallback? onDismiss = this.onDismiss;
+    final Widget barrier = GestureDetector(
+      onTap: onDismiss,
+      behavior: HitTestBehavior.translucent,
+      excludeFromSemantics: true,
+      child: const SizedBox.expand(),
+    );
+    if (onDismiss == null) return barrier;
+
+    return Semantics(
+      label: CupertinoLocalizations.of(context).modalBarrierDismissLabel,
+      onTap: onDismiss,
+      child: barrier,
+    );
+  }
+}
+
+/// Exposes closing of the enclosing [CupertinoPickerOverlay].
+class CupertinoPickerOverlayScope extends InheritedWidget {
+  const CupertinoPickerOverlayScope({
+    required this.close,
+    required super.child,
+    super.key,
+  });
+
+  /// Closes the overlay and completes its route with the given result.
+  final ValueChanged<Object?> close;
+
+  /// Returns the closest enclosing scope, or `null` when [context] is not
+  /// inside of a [CupertinoPickerOverlay].
+  static CupertinoPickerOverlayScope? maybeOf(BuildContext context) {
+    return context.getInheritedWidgetOfExactType<CupertinoPickerOverlayScope>();
+  }
+
+  @override
+  bool updateShouldNotify(CupertinoPickerOverlayScope oldWidget) {
+    return close != oldWidget.close;
   }
 }

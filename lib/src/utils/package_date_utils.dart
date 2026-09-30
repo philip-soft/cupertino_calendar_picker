@@ -7,11 +7,7 @@ abstract final class PackageDateUtils {
     return DateTime(date.year, date.month);
   }
 
-  static int firstDayOffset(
-    int year,
-    int month,
-    int firstDayOfWeekIndex,
-  ) {
+  static int firstDayOffset(int year, int month, int firstDayOfWeekIndex) {
     // 0-based day of week for the month and year, with 0 representing Monday.
     final int weekdayFromMonday = DateTime(year, month).weekday - 1;
 

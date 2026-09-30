@@ -86,10 +86,12 @@ void main() {
     });
 
     test('shouldRelayout always returns false', () {
-      const CalendarMonthPickerGridDelegate a =
-          CalendarMonthPickerGridDelegate(rowSize: 40.0);
-      const CalendarMonthPickerGridDelegate b =
-          CalendarMonthPickerGridDelegate(rowSize: 50.0);
+      const CalendarMonthPickerGridDelegate a = CalendarMonthPickerGridDelegate(
+        rowSize: 40.0,
+      );
+      const CalendarMonthPickerGridDelegate b = CalendarMonthPickerGridDelegate(
+        rowSize: 50.0,
+      );
 
       expect(a.shouldRelayout(b), isFalse);
       expect(a.shouldRelayout(a), isFalse);

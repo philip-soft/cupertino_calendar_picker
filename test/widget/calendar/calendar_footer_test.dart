@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'test_helpers.dart';
 
@@ -24,6 +24,7 @@ void main() {
       return wrapWithApp(
         CalendarFooter(
           time: time,
+          isTimePickerVisible: false,
           onTimePickerStateChanged: onTimePickerStateChanged ?? (bool _) {},
           onTimeChanged: onTimeChanged ?? (TimeOfDay _) {},
           type: type,
@@ -74,10 +75,7 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(
-        buildFooter(
-          type: CupertinoCalendarType.compact,
-          use24h: false,
-        ),
+        buildFooter(type: CupertinoCalendarType.compact, use24h: false),
       );
 
       expect(
@@ -89,11 +87,7 @@ void main() {
     testWidgets('hides day period switcher in 24h mode', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(
-        buildFooter(
-          type: CupertinoCalendarType.compact,
-        ),
-      );
+      await tester.pumpWidget(buildFooter(type: CupertinoCalendarType.compact));
 
       expect(
         find.byType(CupertinoSlidingSegmentedControl<DayPeriod>),
@@ -104,11 +98,7 @@ void main() {
     testWidgets('hides day period switcher when type is inline', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(
-        buildFooter(
-          use24h: false,
-        ),
-      );
+      await tester.pumpWidget(buildFooter(use24h: false));
 
       expect(
         find.byType(CupertinoSlidingSegmentedControl<DayPeriod>),
@@ -116,48 +106,46 @@ void main() {
       );
     });
 
-    testWidgets(
-      'tapping PM in the day period switcher updates hour by +12',
-      (WidgetTester tester) async {
-        TimeOfDay? changed;
-        await tester.pumpWidget(
-          buildFooter(
-            time: const TimeOfDay(hour: 9, minute: 0),
-            type: CupertinoCalendarType.compact,
-            use24h: false,
-            onTimeChanged: (TimeOfDay t) => changed = t,
-          ),
-        );
+    testWidgets('tapping PM in the day period switcher updates hour by +12', (
+      WidgetTester tester,
+    ) async {
+      TimeOfDay? changed;
+      await tester.pumpWidget(
+        buildFooter(
+          time: const TimeOfDay(hour: 9, minute: 0),
+          type: CupertinoCalendarType.compact,
+          use24h: false,
+          onTimeChanged: (TimeOfDay t) => changed = t,
+        ),
+      );
 
-        await tester.tap(find.text('PM'));
-        await tester.pumpAndSettle();
+      await tester.tap(find.text('PM'));
+      await tester.pumpAndSettle();
 
-        expect(changed, isNotNull);
-        expect(changed?.hour, 21);
-        expect(changed?.minute, 0);
-      },
-    );
+      expect(changed, isNotNull);
+      expect(changed?.hour, 21);
+      expect(changed?.minute, 0);
+    });
 
-    testWidgets(
-      'tapping AM in the day period switcher updates hour by -12',
-      (WidgetTester tester) async {
-        TimeOfDay? changed;
-        await tester.pumpWidget(
-          buildFooter(
-            time: const TimeOfDay(hour: 21, minute: 0),
-            type: CupertinoCalendarType.compact,
-            use24h: false,
-            onTimeChanged: (TimeOfDay t) => changed = t,
-          ),
-        );
+    testWidgets('tapping AM in the day period switcher updates hour by -12', (
+      WidgetTester tester,
+    ) async {
+      TimeOfDay? changed;
+      await tester.pumpWidget(
+        buildFooter(
+          time: const TimeOfDay(hour: 21, minute: 0),
+          type: CupertinoCalendarType.compact,
+          use24h: false,
+          onTimeChanged: (TimeOfDay t) => changed = t,
+        ),
+      );
 
-        await tester.tap(find.text('AM'));
-        await tester.pumpAndSettle();
+      await tester.tap(find.text('AM'));
+      await tester.pumpAndSettle();
 
-        expect(changed, isNotNull);
-        expect(changed?.hour, 9);
-      },
-    );
+      expect(changed, isNotNull);
+      expect(changed?.hour, 9);
+    });
 
     testWidgets('updates displayed time when widget.time changes', (
       WidgetTester tester,

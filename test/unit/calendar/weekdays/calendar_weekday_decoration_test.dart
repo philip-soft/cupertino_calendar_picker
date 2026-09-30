@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _wrap(Widget child, {Brightness brightness = Brightness.light}) {
@@ -24,8 +24,9 @@ void main() {
     test('uses supplied textStyle', () {
       const TextStyle style = TextStyle(fontSize: 15.0);
 
-      final CalendarWeekdayDecoration decoration =
-          CalendarWeekdayDecoration(textStyle: style);
+      final CalendarWeekdayDecoration decoration = CalendarWeekdayDecoration(
+        textStyle: style,
+      );
 
       expect(decoration.textStyle, style);
     });
@@ -43,16 +44,18 @@ void main() {
         const TextStyle style = TextStyle(fontSize: 9.0);
         final CalendarWeekdayDecoration original = CalendarWeekdayDecoration();
 
-        final CalendarWeekdayDecoration copy =
-            original.copyWith(textStyle: style);
+        final CalendarWeekdayDecoration copy = original.copyWith(
+          textStyle: style,
+        );
 
         expect(copy.textStyle, style);
       });
     });
 
     group('withDynamicColor', () {
-      testWidgets('resolves the textStyle color in light mode',
-          (WidgetTester tester) async {
+      testWidgets('resolves the textStyle color in light mode', (
+        WidgetTester tester,
+      ) async {
         late BuildContext ctx;
         await tester.pumpWidget(
           _wrap(
@@ -71,8 +74,9 @@ void main() {
         expect(decoration.textStyle.color, isNotNull);
       });
 
-      testWidgets('produces different resolved colors in dark vs light',
-          (WidgetTester tester) async {
+      testWidgets('produces different resolved colors in dark vs light', (
+        WidgetTester tester,
+      ) async {
         late BuildContext lightCtx;
         await tester.pumpWidget(
           _wrap(

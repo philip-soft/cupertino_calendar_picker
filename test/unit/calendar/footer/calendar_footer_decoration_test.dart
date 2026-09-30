@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _wrap(Widget child, {Brightness brightness = Brightness.light}) {
@@ -54,8 +54,9 @@ void main() {
         const TextStyle override = TextStyle(fontSize: 7.0);
         final CalendarFooterDecoration original = CalendarFooterDecoration();
 
-        final CalendarFooterDecoration copy =
-            original.copyWith(timeStyle: override);
+        final CalendarFooterDecoration copy = original.copyWith(
+          timeStyle: override,
+        );
 
         expect(copy.timeStyle, override);
         expect(copy.timeLabelStyle, original.timeLabelStyle);
@@ -64,8 +65,9 @@ void main() {
     });
 
     group('withDynamicColor', () {
-      testWidgets('resolves all three style colors in light mode',
-          (WidgetTester tester) async {
+      testWidgets('resolves all three style colors in light mode', (
+        WidgetTester tester,
+      ) async {
         late BuildContext ctx;
         await tester.pumpWidget(
           _wrap(
@@ -81,13 +83,14 @@ void main() {
         final CalendarFooterDecoration decoration =
             CalendarFooterDecoration.withDynamicColor(ctx);
 
-        expect(decoration.timeLabelStyle?.color, isNotNull);
-        expect(decoration.timeStyle?.color, isNotNull);
-        expect(decoration.dayPeriodTextStyle?.color, isNotNull);
+        expect(decoration.timeLabelStyle.color, isNotNull);
+        expect(decoration.timeStyle.color, isNotNull);
+        expect(decoration.dayPeriodTextStyle.color, isNotNull);
       });
 
-      testWidgets('produces different colors in dark vs light brightness',
-          (WidgetTester tester) async {
+      testWidgets('produces different colors in dark vs light brightness', (
+        WidgetTester tester,
+      ) async {
         late BuildContext lightCtx;
         await tester.pumpWidget(
           _wrap(
@@ -117,7 +120,7 @@ void main() {
         final CalendarFooterDecoration dark =
             CalendarFooterDecoration.withDynamicColor(darkCtx);
 
-        expect(light.timeStyle?.color, isNot(dark.timeStyle?.color));
+        expect(light.timeStyle.color, isNot(dark.timeStyle.color));
       });
     });
   });

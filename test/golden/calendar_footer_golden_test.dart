@@ -4,9 +4,8 @@
 
 import 'package:alchemist/alchemist.dart';
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   const TimeOfDay fixedTime = TimeOfDay(hour: 14, minute: 30);
@@ -20,11 +19,7 @@ void main() {
       debugShowCheckedModeBanner: false,
       theme: CupertinoThemeData(brightness: brightness),
       locale: const Locale('en', 'US'),
-      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: CupertinoPageScaffold(
         child: Center(
           child: SizedBox(
@@ -33,13 +28,15 @@ void main() {
               builder: (BuildContext context) {
                 return CalendarFooter(
                   time: fixedTime,
+                  isTimePickerVisible: false,
                   onTimePickerStateChanged: (_) {},
                   onTimeChanged: (_) {},
                   type: CupertinoCalendarType.compact,
                   label: label,
                   mainColor: CupertinoColors.systemRed.resolveFrom(context),
-                  decoration:
-                      CalendarFooterDecoration.withDynamicColor(context),
+                  decoration: CalendarFooterDecoration.withDynamicColor(
+                    context,
+                  ),
                   use24hFormat: use24h,
                 );
               },
@@ -76,17 +73,11 @@ void main() {
       children: <Widget>[
         GoldenTestScenario(
           name: 'light',
-          child: buildScenario(
-            brightness: Brightness.light,
-            label: 'Time',
-          ),
+          child: buildScenario(brightness: Brightness.light, label: 'Time'),
         ),
         GoldenTestScenario(
           name: 'dark',
-          child: buildScenario(
-            brightness: Brightness.dark,
-            label: 'Time',
-          ),
+          child: buildScenario(brightness: Brightness.dark, label: 'Time'),
         ),
       ],
     ),

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -13,8 +13,8 @@ class CupertinoAnyDeviceScrollBehavior extends CupertinoScrollBehavior {
 
   @override
   Set<PointerDeviceKind> get dragDevices => <PointerDeviceKind>{
-        ...PointerDeviceKind.values,
-      };
+    ...PointerDeviceKind.values,
+  };
 }
 
 /// Fixes the behavior for mouse wheel scrolling by always scrolling in fixed

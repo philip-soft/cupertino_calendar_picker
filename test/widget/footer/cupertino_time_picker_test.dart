@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:cupertino_calendar_picker/src/src.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'test_helpers.dart';
 
@@ -56,10 +56,10 @@ void main() {
         ),
       );
 
-      final CupertinoTimePickerWheel wheel =
-          tester.widget<CupertinoTimePickerWheel>(
-        find.byType(CupertinoTimePickerWheel),
-      );
+      final CupertinoTimePickerWheel wheel = tester
+          .widget<CupertinoTimePickerWheel>(
+            find.byType(CupertinoTimePickerWheel),
+          );
       expect(wheel.initialDateTime.hour, 7);
       expect(wheel.initialDateTime.minute, 15);
     });
@@ -83,10 +83,10 @@ void main() {
         ),
       );
 
-      final CupertinoTimePickerWheel wheel =
-          tester.widget<CupertinoTimePickerWheel>(
-        find.byType(CupertinoTimePickerWheel),
-      );
+      final CupertinoTimePickerWheel wheel = tester
+          .widget<CupertinoTimePickerWheel>(
+            find.byType(CupertinoTimePickerWheel),
+          );
       expect(wheel.minuteInterval, 5);
       expect(wheel.use24hFormat, false);
     });
